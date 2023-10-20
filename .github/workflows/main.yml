@@ -1,0 +1,58 @@
+##
+# @author Alexander Breuer (alex.breuer AT uni-jena.de)
+# @section DESCRIPTION
+# Continuous integration using GitHub Actions.
+##
+name: Tsunami Lab
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: 0 0 * * *
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install cmake
+          sudo apt-get install valgrind
+          sudo apt-get install cppcheck
+          git submodule init
+          git submodule update
+
+      - name: Configure the project
+        uses: threeal/cmake-action@v1.3.0
+
+      - name: Static Code Analysis
+        run:
+          cppcheck src/ --template=gcc --force --error-exitcode=1
+
+      - name: Sanitize
+        run: |
+          cmake --build build --config Debug --target sanitize
+          ./build/sanitize 25
+          cmake --build build --config Release --target sanitize
+          ./build/sanitize 500
+
+      - name: Valgrind
+        run: |
+          cmake --build build --config Debug --target test
+          valgrind build/test
+          cmake --build build --config Debug --target build
+          valgrind build/build 25
+
+      - name: Release
+        run: |
+          cmake --build build --config Release --target test
+          ./build/test
+          cmake --build build --config Release --target build
+          ./build/build 500

@@ -1,0 +1,6 @@
+build/
+.vscode/
+docs_sphinx/_build/
+.sconsign.dblite
+cmake-build-debug/
+cmake-build-release/
