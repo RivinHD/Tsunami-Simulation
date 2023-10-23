@@ -116,15 +116,39 @@ Installation
 
     Options for ``--target`` are **build**, **sanitize** and **test**
 
-    +-----------+-----------------------------------------------------------+
-    |Option     |  Description                                              |
-    +===========+===========================================================+
-    | build     | Is the Option to build the project with default flags     |
-    +-----------+-----------------------------------------------------------+
-    | sanitize  | Enables code sanitization                                 |
-    +-----------+-----------------------------------------------------------+
-    | test      | Builds the unit test executable                           |
-    +-----------+-----------------------------------------------------------+
+    +----------------+-----------------------------------------------------------+
+    | Option         |  Description                                              |
+    +================+===========================================================+
+    | build          | Is the Option to build the project with default flags     |
+    +----------------+-----------------------------------------------------------+
+    | sanitize       | Enables code sanitization                                 |
+    +----------------+-----------------------------------------------------------+
+    | test           | Builds the unit test executable                           |
+    +----------------+-----------------------------------------------------------+
+    | sanitize_test  | Builds the unit test executable with sanitizer            |
+    +----------------+-----------------------------------------------------------+
+
+Running the Executables
+-----------------------
+
+The Executables have been build in to the ``../Tsunami-Simulation/build`` directory with their corresponding name.
+E.g. If ``test`` is built than the executable name is ``test`` (or ``test.exe`` on Windows),
+for ``build`` the executable name would be ``build`` (or ``build.exe`` on Windows), etc.
+
+All the executables can be found in ``../Tsunami-Simulation/build``
+
+The executables can be run with the following command:
+
+.. code-block::
+
+    ./build
+
+Or on Windows with
+
+.. code-block::
+
+    ./build.exe
+
 
     
 
