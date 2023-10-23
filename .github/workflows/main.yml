@@ -40,8 +40,12 @@ jobs:
         run: |
           cmake --build build --config Debug --target sanitize
           ./build/sanitize 25
+          cmake --build build --config Debug --target sanitize_test
+          ./build/sanitize_test 25
           cmake --build build --config Release --target sanitize
           ./build/sanitize 500
+          cmake --build build --config Release --target sanitize_test
+          ./build/sanitize_test 500
 
       - name: Valgrind
         run: |
