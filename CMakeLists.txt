@@ -50,13 +50,18 @@ endforeach()
 # Set up such that your IDE organizes the files correctly
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
-# Setup Testing
-set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1) # hack to prevent CTest added targets
-add_executable(test ${SOURCE_FILES})
 add_subdirectory(submodules/Catch2)
 include_directories(SYSTEM submodules/Catch2/single_include)
+
+# Setup Testing
+add_executable(test ${SOURCE_FILES})
 target_link_libraries(test PRIVATE Catch2::Catch2)
 target_sources(test PRIVATE ${TEST_FILES})
+
+# Setup Testing + Sanitizer
+add_executable(sanitize_test ${SOURCE_FILES})
+target_link_libraries(sanitize_test PRIVATE Catch2::Catch2)
+target_sources(sanitize_test PRIVATE ${TEST_FILES})
 
 add_executable(build ${SOURCE_FILES})
 target_sources(build PRIVATE ${MAIN_FILE})
@@ -71,8 +76,17 @@ if (MSVC)
         PROPERTIES
         COMPILE_FLAGS "/fsanitize=address /Zi"
     )
+    set_target_properties(sanitize_test
+        PROPERTIES
+        COMPILE_FLAGS "/fsanitize=address /Zi"
+    )
 else()
     set_target_properties(sanitize
+        PROPERTIES
+        COMPILE_FLAGS "-g -fsanitize=float-divide-by-zero -fsanitize=bounds -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer"
+        LINK_FLAGS "-g -fsanitize=address -fsanitize=undefined"
+    )
+    set_target_properties(sanitize_test
         PROPERTIES
         COMPILE_FLAGS "-g -fsanitize=float-divide-by-zero -fsanitize=bounds -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer"
         LINK_FLAGS "-g -fsanitize=address -fsanitize=undefined"
