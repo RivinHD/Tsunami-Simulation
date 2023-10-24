@@ -69,8 +69,8 @@ You can check if ``CMake`` is installed by running
             brew install cmake
 
 
-Installation
-------------
+Building
+--------
 
 1. Download the `git repository <https://github.com/RivinHD/Tsunami-Simulation>`_ by clicking on the Code Button
 
