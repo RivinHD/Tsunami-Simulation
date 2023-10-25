@@ -4,4 +4,6 @@ docs_sphinx/_build/
 .sconsign.dblite
 cmake-build-debug/
 cmake-build-release/
+cmake-build-test/
 .clang-tidy
+.idea/
