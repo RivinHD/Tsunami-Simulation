@@ -4,7 +4,7 @@
     :format: html
 
 Building the Simulation
-====================
+=======================
 
 
 Requirements
@@ -131,13 +131,17 @@ Building
 Running the Executables
 -----------------------
 
-The Executables have been build in to the ``../Tsunami-Simulation/build`` directory with their corresponding name.
+The executables have been build in to the ``../Tsunami-Simulation/build`` directory with their corresponding name.
 E.g. If ``test`` is built than the executable name is ``test`` (or ``test.exe`` on Windows),
 for ``build`` the executable name would be ``build`` (or ``build.exe`` on Windows), etc.
 
-All the executables can be found in ``../Tsunami-Simulation/build``
+All the executables can be found in ``../Tsunami-Simulation/build``.
+The available executables are ``build``, ``sanitize``, ``test`` and ``sanitize_test``.
 
-The executables can be run with the following command:
+.. note::
+    They are only available when built with their respective ``--target``
+
+E.g. the ``build`` executable can be run with the following command:
 
 .. code-block::
 
