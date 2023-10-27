@@ -1,0 +1,38 @@
+name: Prebuild Docs
+
+on:
+  workflow_dispatch: 
+  push:
+    branches: [ main ]
+permissions:
+  contents: write
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Requirements
+        run: sudo apt-get install doxygen
+          && pip3 install sphinx
+          && pip3 install sphinx-rtd-theme
+          && pip3 install breathe
+          && pip3 install sphinx-copybutton
+
+      - name: Checkout repo
+        uses: actions/checkout@v4.1.0
+
+      - name: Build docs
+        run: cd docs_sphinx
+          && make clean
+          && make html
+          && rm -rf prebuild
+          && mv _build/html prebuild
+
+      - name: Update files on GitHub
+        uses: test-room-7/action-update-file@v1.8.0
+        with:
+          file-path: docs_sphinx/prebuild/*
+          commit-msg: Update Prebuild Documentation
+          github-token: ${{ secrets.PREBUILD_UPDATER }}
