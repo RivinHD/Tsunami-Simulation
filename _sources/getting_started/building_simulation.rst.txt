@@ -3,8 +3,8 @@
 .. role:: raw-html(raw)
     :format: html
 
-Building the Project
-====================
+Building the Simulation
+=======================
 
 
 Requirements
@@ -69,8 +69,8 @@ You can check if ``CMake`` is installed by running
             brew install cmake
 
 
-Installation
-------------
+Building
+--------
 
 1. Download the `git repository <https://github.com/RivinHD/Tsunami-Simulation>`_ by clicking on the Code Button
 
@@ -116,15 +116,43 @@ Installation
 
     Options for ``--target`` are **build**, **sanitize** and **test**
 
-    +-----------+-----------------------------------------------------------+
-    |Option     |  Description                                              |
-    +===========+===========================================================+
-    | build     | Is the Option to build the project with default flags     |
-    +-----------+-----------------------------------------------------------+
-    | sanitize  | Enables code sanitization                                 |
-    +-----------+-----------------------------------------------------------+
-    | test      | Builds the unit test executable                           |
-    +-----------+-----------------------------------------------------------+
+    +----------------+-----------------------------------------------------------+
+    | Option         |  Description                                              |
+    +================+===========================================================+
+    | build          | Is the Option to build the project with default flags     |
+    +----------------+-----------------------------------------------------------+
+    | sanitize       | Enables code sanitization                                 |
+    +----------------+-----------------------------------------------------------+
+    | test           | Builds the unit test executable                           |
+    +----------------+-----------------------------------------------------------+
+    | sanitize_test  | Builds the unit test executable with sanitizer            |
+    +----------------+-----------------------------------------------------------+
+
+Running the Executables
+-----------------------
+
+The executables have been build in to the ``../Tsunami-Simulation/build`` directory with their corresponding name.
+E.g. If ``test`` is built than the executable name is ``test`` (or ``test.exe`` on Windows),
+for ``build`` the executable name would be ``build`` (or ``build.exe`` on Windows), etc.
+
+All the executables can be found in ``../Tsunami-Simulation/build``.
+The available executables are ``build``, ``sanitize``, ``test`` and ``sanitize_test``.
+
+.. note::
+    They are only available when build with their respective ``--target``
+
+E.g. the ``build`` executable can be run with the following command:
+
+.. code-block::
+
+    ./build
+
+Or on Windows with
+
+.. code-block::
+
+    ./build.exe
+
 
     
 

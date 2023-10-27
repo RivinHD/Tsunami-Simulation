@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building the Project &mdash; Tsunami Simulation  documentation</title>
+  <title>Building the Simulation &mdash; Tsunami Simulation  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
@@ -22,9 +22,7 @@
         <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Building the Documentation" href="building_docs.html" />
-    <link rel="prev" title="Indices and tables" href="../index.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,12 +45,7 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">GETTING STARTED</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Building the Project</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
-</ul>
-</li>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="building_docs.html">Building the Documentation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
@@ -74,9 +67,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Building the Project</li>
+      <li class="breadcrumb-item active">Building the Simulation</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/getting_started/building_project.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/getting_started/building_simulation.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -84,8 +77,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="building-the-project">
-<span id="getting-started-building-project"></span><h1>Building the Project<a class="headerlink" href="#building-the-project" title="Link to this heading"></a></h1>
+  <section id="building-the-simulation">
+<span id="getting-started-building-project"></span><h1>Building the Simulation<a class="headerlink" href="#building-the-simulation" title="Link to this heading"></a></h1>
 <section id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
 <p>To use this project <code class="docutils literal notranslate"><span class="pre">CMake</span></code> is required.
@@ -133,8 +126,8 @@ You can check if <code class="docutils literal notranslate"><span class="pre">CM
 </dl>
 </div>
 </section>
-<section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<section id="building">
+<h2>Building<a class="headerlink" href="#building" title="Link to this heading"></a></h2>
 <ol class="arabic">
 <li><p>Download the <a class="reference external" href="https://github.com/RivinHD/Tsunami-Simulation">git repository</a> by clicking on the Code Button</p></li>
 <li><p>Go into the project folder. Your current path should look like this <code class="docutils literal notranslate"><span class="pre">../Tsunami-Simulation</span></code>.</p></li>
@@ -188,21 +181,41 @@ An Example could look like this</p>
 <tr class="row-even"><td><p>test</p></td>
 <td><p>Builds the unit test executable</p></td>
 </tr>
+<tr class="row-odd"><td><p>sanitize_test</p></td>
+<td><p>Builds the unit test executable with sanitizer</p></td>
+</tr>
 </tbody>
 </table>
 </div></blockquote>
 </li>
 </ol>
 </section>
+<section id="running-the-executables">
+<h2>Running the Executables<a class="headerlink" href="#running-the-executables" title="Link to this heading"></a></h2>
+<p>The executables have been build in to the <code class="docutils literal notranslate"><span class="pre">../Tsunami-Simulation/build</span></code> directory with their corresponding name.
+E.g. If <code class="docutils literal notranslate"><span class="pre">test</span></code> is built than the executable name is <code class="docutils literal notranslate"><span class="pre">test</span></code> (or <code class="docutils literal notranslate"><span class="pre">test.exe</span></code> on Windows),
+for <code class="docutils literal notranslate"><span class="pre">build</span></code> the executable name would be <code class="docutils literal notranslate"><span class="pre">build</span></code> (or <code class="docutils literal notranslate"><span class="pre">build.exe</span></code> on Windows), etc.</p>
+<p>All the executables can be found in <code class="docutils literal notranslate"><span class="pre">../Tsunami-Simulation/build</span></code>.
+The available executables are <code class="docutils literal notranslate"><span class="pre">build</span></code>, <code class="docutils literal notranslate"><span class="pre">sanitize</span></code>, <code class="docutils literal notranslate"><span class="pre">test</span></code> and <code class="docutils literal notranslate"><span class="pre">sanitize_test</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>They are only available when build with their respective <code class="docutils literal notranslate"><span class="pre">--target</span></code></p>
+</div>
+<p>E.g. the <code class="docutils literal notranslate"><span class="pre">build</span></code> executable can be run with the following command:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="p">.</span><span class="o">/</span><span class="n">build</span>
+</pre></div>
+</div>
+<p>Or on Windows with</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="p">.</span><span class="o">/</span><span class="n">build</span><span class="p">.</span><span class="n">exe</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../index.html" class="btn btn-neutral float-left" title="Indices and tables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="building_docs.html" class="btn btn-neutral float-right" title="Building the Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 
