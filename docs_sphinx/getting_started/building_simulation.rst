@@ -139,7 +139,7 @@ All the executables can be found in ``../Tsunami-Simulation/build``.
 The available executables are ``build``, ``sanitize``, ``test`` and ``sanitize_test``.
 
 .. note::
-    They are only available when built with their respective ``--target``
+    They are only available when build with their respective ``--target``
 
 E.g. the ``build`` executable can be run with the following command:
 
