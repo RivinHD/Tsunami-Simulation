@@ -9,7 +9,8 @@
    :caption: GETTING STARTED
    :glob:
 
-   getting_started/*
+   getting_started/building_project.rst
+   getting_started/building_docs.rst
 
 .. toctree::
    :maxdepth: 2
