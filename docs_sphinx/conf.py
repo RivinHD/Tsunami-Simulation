@@ -12,9 +12,9 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-from sphinx.builders.html import StandaloneHTMLBuilder
+# from sphinx.builders.html import StandaloneHTMLBuilder
 import subprocess
-import os
+# import os
 
 # Doxygen
 subprocess.call('doxygen Doxyfile.in', shell=True)
