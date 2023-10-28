@@ -5,15 +5,12 @@
  * Unit tests of the f-wave Riemann solver.
  **/
 #include "../../include/constants.h"
-using namespace tsunami_lab;
 #include <catch2/catch.hpp>
 #define private public
 #include "../../include/solvers/FWave.h"
 #undef public
 
-/*
- * TODO rename
- */
+using namespace tsunami_lab;
 
 TEST_CASE( "Test the derivation of the F-Wave eigenvalues.", "[FWaveEigenvalue]" )
 {
