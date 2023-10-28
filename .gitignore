@@ -5,3 +5,4 @@ docs_sphinx/_build/
 cmake-build-debug/
 cmake-build-release/
 .clang-tidy
+.idea/
