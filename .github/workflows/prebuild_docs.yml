@@ -27,8 +27,11 @@ jobs:
         run: cd docs_sphinx
           && make clean
           && make html
-          && rm -rf prebuild
-          && mv _build/html prebuild
+
+      - name: Move Files
+        run: rm -rf prebuild/
+          && mkdir prebuild
+          && mv _build/html/* prebuild/
 
       - name: Update files on GitHub
         uses: test-room-7/action-update-file@v1.8.0
