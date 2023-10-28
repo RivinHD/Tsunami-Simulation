@@ -13,6 +13,11 @@
 #include <fstream>
 #include <limits>
 #include <string>
+#include <filesystem> // requieres C++17 and up
+    
+namespace fs = std::filesystem;
+
+const std::string SOLUTION_FOLDER = "solutions";
 
 int main( int   i_argc,
           char *i_argv[] ) {
@@ -110,13 +115,23 @@ int main( int   i_argc,
 
   std::cout << "entering time loop" << std::endl;
 
+  if (!fs::is_directory(SOLUTION_FOLDER)) 
+  {
+    if (fs::exists(SOLUTION_FOLDER))
+    {
+      fs::rename(SOLUTION_FOLDER.c_str(), (SOLUTION_FOLDER + ".file").c_str());
+    }
+    
+    fs::create_directory(SOLUTION_FOLDER); 
+  }
+
   // iterate over time
   while( l_simTime < l_endTime ){
     if( l_timeStep % 25 == 0 ) {
       std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
 
-      std::string l_path = "solution_" + std::to_string(l_nOut) + ".csv";
+      std::string l_path = SOLUTION_FOLDER + "/solution_" + std::to_string(l_nOut) + ".csv";
       std::cout << "  writing wave field to " << l_path << std::endl;
 
       std::ofstream l_file;
