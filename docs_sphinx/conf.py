@@ -13,6 +13,7 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 # from sphinx.builders.html import StandaloneHTMLBuilder
+from datetime import date
 import subprocess
 # import os
 
@@ -23,7 +24,7 @@ subprocess.call('doxygen Doxyfile.in', shell=True)
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'Tsunami Simulation'
-copyright = '2023, Fabian Hofer, Vincent Gerlach'
+copyright = f'{date.today().year}, Fabian Hofer, Vincent Gerlach'
 author = 'Fabian Hofer, Vincent Gerlach'
 
 # -- General configuration ---------------------------------------------------

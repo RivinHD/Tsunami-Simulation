@@ -233,12 +233,36 @@ net effect of the waves to the left and right “cell”:
     }
 
 
+Visualization 
+-------------
+
+**Height**
+
+    .. raw:: html
+        
+        <center>
+            <video width="700" controls>
+                <source src="../_static/videos/01_Visulization_height.mp4" type="video/mp4">
+            </video>
+        </center>
+
+
+**Momentum X**
+
+    .. raw:: html
+
+        <center>
+            <video width="700" controls>
+                <source src="../_static/videos/01_Visulization_momentum_x.mp4" type="video/mp4">
+            </video>
+        </center>
+
 Sphinx with Doxygen
 -------------------
 
 1. First we install ``Doxygen``.
 
-2. We install ``Sphinx`` and ``breathe`` and set breath as an extension. An installation guide can be found at `Building the Documentation`_.
+2. We install ``Sphinx`` and ``breathe`` and set breath as an extension. An installation guide can be found at :ref:`Building the Documentation`.
     
     .. code-block:: python
 
