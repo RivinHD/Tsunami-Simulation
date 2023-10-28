@@ -29,13 +29,14 @@ jobs:
           && make html
 
       - name: Move Files
-        run: rm -rf prebuild/
-          && mkdir prebuild
-          && mv _build/html/* prebuild/
+        run: cd docs_sphinx
+          && rm -v -rf prebuild
+          && mkdir -v prebuild
+          && mv -v _build/html/* prebuild/
 
       - name: Update files on GitHub
         uses: test-room-7/action-update-file@v1.8.0
         with:
-          file-path: docs_sphinx/prebuild/*
+          file-path: docs_sphinx/prebuild/**
           commit-msg: Update Prebuild Documentation
           github-token: ${{ secrets.PREBUILD_UPDATER }}
