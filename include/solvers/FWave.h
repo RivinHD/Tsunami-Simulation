@@ -24,14 +24,14 @@ private:
     static t_real constexpr m_g = 9.80665;
 
     /**
-     * Computes the wave speeds.
+     * Computes the eigenvalues for the left and right wave
      *
      * @param i_hL height of the left side.
      * @param i_hR height of the right side.
      * @param i_uL particle velocity of the leftside.
      * @param i_uR particles velocity of the right side.
-     * @param o_eigenvalue1 Roe eigenvalue one.
-     * @param o_eigenvalue2 Roe eigenvalue one.
+     * @param o_eigenvalue1 output: Roe eigenvalue one.
+     * @param o_eigenvalue2 output: Roe eigenvalue two.
      **/
     static void computeEigenvalues(t_real i_hL,
                              t_real i_hR,
@@ -41,13 +41,13 @@ private:
                              t_real & o_eigenvalue2);
 
     /**
-     * Computes flux delta of left i_qL (i_hL, i_uL) and right i_qR (i_hR, i_uR)
+     * Computes delta flux of left i_qL (i_hL, i_uL) and right i_qR (i_hR, i_uR)
      *
      * @param i_hL height of the left side.
      * @param i_hR height of the right side.
      * @param i_uL particle velocity of the leftside.
      * @param i_uR particles velocity of the right side.
-     * @param o_deltaFlux difference of left and right quantities
+     * @param o_deltaFlux output: difference of left and right quantities
      */
      static void computeDeltaFlux(t_real i_hL,
                              t_real i_hR,
@@ -55,6 +55,15 @@ private:
                              t_real i_uR,
                              t_real o_deltaFlux[2]);
 
+    /**
+     * Compute the eigencoefficients for left and right wave
+     * 
+     * @param i_eigenvalue1 Roe eigenvalue one.
+     * @param i_eigenvalue2 Roe eigenvalue two.
+     * @param i_deltaFlux the compute delta Flux with the same inputs used for the eigenvalues
+     * @param o_eigencoefficient1 ouput: the eigencoefficient ot eigenvalue one.
+     * @param o_eigencoefficient2 ouput: the eigencoefficient ot eigenvalue two.
+     */
     static void computeEigencoefficients(t_real i_eigenvalue1,
                                          t_real i_eigenvalue2,
                                          t_real i_deltaFlux[2],
