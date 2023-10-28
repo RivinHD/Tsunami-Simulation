@@ -27,6 +27,7 @@ set(PROJECT_SOURCE_DIR "src")
 set(PROJECT_INCLUDE_DIR "include")
 
 set(SRC_FILES
+    solvers/FWave
     solvers/Roe
     setups/DamBreak1d
     patches/WavePropagation1d
