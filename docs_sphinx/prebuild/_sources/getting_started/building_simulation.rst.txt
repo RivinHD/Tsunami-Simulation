@@ -72,19 +72,38 @@ You can check if ``CMake`` is installed by running
 Building
 --------
 
-1. Download the `git repository <https://github.com/RivinHD/Tsunami-Simulation>`_ by clicking on the Code Button
+1. Download the `git repository <https://github.com/RivinHD/Tsunami-Simulation>`_ with git
+
+    HTTPS
+
+    .. code-block:: bash
+
+        git clone https://github.com/RivinHD/Tsunami-Simulation.git
+
+    SSH
+
+    .. code-block:: bash
+
+        git clone git@github.com:RivinHD/Tsunami-Simulation.git
 
 2. Go into the project folder. Your current path should look like this ``../Tsunami-Simulation``.
 
-3. Now create a new folder called ``build`` with
+3. Install submodules with git
+
+    .. code-block:: bash
+
+        1. git submodule init
+        2. git submodule update
+
+4. Now create a new folder called ``build`` with
 
     .. code-block:: bash
 
         mkdir build
 
-4. Go into this directory. Your current path should look like this ``../Tsunami-Simulation/build``.
+5. Go into this directory. Your current path should look like this ``../Tsunami-Simulation/build``.
 
-5. Now we can start with CMake. Run the following command
+6. Now we can start with CMake. Run the following command
 
     .. code-block:: bash
 
@@ -102,7 +121,7 @@ Building
 
     Now our make files are being build from the ``CMakeLists.txt`` that are used to build the project.
 
-6. Now we can build the project. The most desired command might be
+7. Now we can build the project. The most desired command might be
 
     .. code-block:: bash
 
