@@ -180,37 +180,28 @@ TEST_CASE( "Test the derivation of the F-Wave net-updates.", "[FWaveUpdate]" )
     * Test case (dam break):
     *
     *     left | right
-    *   h:  10 | 0
-    *   hu:  4 | 0
+    *   h:  10 | 1
+    *   hu:  -100 | 0
     *
-    * eigenvalues are given as:
+    * eigenvalues are calculated from computeEigenvalues as:
     *
-    *   s1 = -sqrt(9.80665 * 9)
-    *   s2 =  sqrt(9.80665 * 9)
+    *   s1 = -14.9416
+    *   s2 = -0.253316
     *
-    * Inversion of the matrix of right Eigenvectors:
+    * eigencoefficient are calculated form computeEigencoefficients as:
     *
-    *   wolframalpha.com query: invert {{1, 1}, {-sqrt(9.80665 * 9), sqrt(9.80665 * 9)}}
-    *
-    *          | 0.5 -0.0532217 |
-    *   Rinv = |                |
-    *          | 0.5 -0.0532217 |
-    *
-    * Multiplicaton with the jump in quantities gives the eigencoefficient:
-    *
-    *        | 8 - 10 |   | -1 |   | a1 |
-    * Rinv * |        | = |    | = |    |
-    *        |  0 - 0 |   | -1 |   | a2 |
+    *   a1 = 99.4054
+    *   a2 = 0.594551
     *
     * The net-updates are given through the scaled eigenvectors.
     *
-    *                      |  1 |   |   9.394671362 |
-    * update #1: s1 * a1 * |    | = |               |
-    *                      | s1 |   | -88.25985     |
+    *                      |  1 |   |     100     |
+    * update #1: s1 * a1 * |    | = |             |
+    *                      | s1 |   | -1485.4292  |
     *
-    *                      |  1 |   |  -9.394671362 |
-    * update #2: s2 * a2 * |    | = |               |
-    *                      | s2 |   | -88.25985     |
+    *                      |  1 |   |  0  |
+    * update #2: s2 * a2 * |    | = |     |
+    *                      | s2 |   |  0  |
     */
 
     tsunami_lab::solvers::FWave::netUpdates( 10,
@@ -220,26 +211,11 @@ TEST_CASE( "Test the derivation of the F-Wave net-updates.", "[FWaveUpdate]" )
                                              l_netUpdatesL,
                                              l_netUpdatesR );
 
-    t_real l_uL = -100.0f / 10;
-    t_real l_uR = 0.0f / 1;
-
-    t_real eig1;
-    t_real eig2;
-    tsunami_lab::solvers::FWave::computeEigenvalues(10,
-                                                    1,
-                                                    l_uL,
-                                                    l_uR,
-                                                    eig1,
-                                                    eig2);
-    INFO("eigenvalue1: " << eig1);
-    INFO("eigenvalue2: " << eig2);
-
-
     REQUIRE( l_netUpdatesL[0] == Approx(100) );
     REQUIRE( l_netUpdatesL[1] == Approx(-1485.4292) );
 
     REQUIRE( l_netUpdatesR[0] == Approx(0) );
-    REQUIRE( l_netUpdatesR[1] == Approx(0)    );
+    REQUIRE( l_netUpdatesR[1] == Approx(0) );
 
     /*
      * Test case (trivial steady state):
