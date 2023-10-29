@@ -6,6 +6,9 @@
 Building the Documentation
 ==========================
 
+.. note::
+    A prebuild HTML of the documentation can be found at ``../Tsunami-Simulation/docs_sphinx/prebuild``.
+
 
 Requirements
 ------------
