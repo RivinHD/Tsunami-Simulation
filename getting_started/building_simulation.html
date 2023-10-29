@@ -24,7 +24,9 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Building the Documentation" href="building_docs.html" />
-    <link rel="prev" title="Indices and tables" href="../index.html" /> 
+    <link rel="prev" title="Indices and tables" href="../index.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -55,6 +57,10 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="building_docs.html">Building the Documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SUBMISSIONS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../submissions/riemann_solver.html">1. Riemann Solver</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -137,8 +143,27 @@ You can check if <code class="docutils literal notranslate"><span class="pre">CM
 <section id="building">
 <h2>Building<a class="headerlink" href="#building" title="Link to this heading"></a></h2>
 <ol class="arabic">
-<li><p>Download the <a class="reference external" href="https://github.com/RivinHD/Tsunami-Simulation">git repository</a> by clicking on the Code Button</p></li>
+<li><p>Download the <a class="reference external" href="https://github.com/RivinHD/Tsunami-Simulation">git repository</a> with git</p>
+<blockquote>
+<div><p>HTTPS</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/RivinHD/Tsunami-Simulation.git
+</pre></div>
+</div>
+<p>SSH</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:RivinHD/Tsunami-Simulation.git
+</pre></div>
+</div>
+</div></blockquote>
+</li>
 <li><p>Go into the project folder. Your current path should look like this <code class="docutils literal notranslate"><span class="pre">../Tsunami-Simulation</span></code>.</p></li>
+<li><p>Install submodules with git</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">1</span>.<span class="w"> </span>git<span class="w"> </span>submodule<span class="w"> </span>init
+<span class="m">2</span>.<span class="w"> </span>git<span class="w"> </span>submodule<span class="w"> </span>update
+</pre></div>
+</div>
+</div></blockquote>
+</li>
 <li><p>Now create a new folder called <code class="docutils literal notranslate"><span class="pre">build</span></code> with</p>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>build

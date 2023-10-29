@@ -1,8 +1,7 @@
-.. Tsunami Simulation documentation master file, created by
+cd .. Tsunami Simulation documentation master file, created by
    sphinx-quickstart on Mon Oct 16 19:27:14 2023.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
-
 
 .. toctree::
    :maxdepth: 2
@@ -11,6 +10,13 @@
 
    getting_started/building_simulation.rst
    getting_started/building_docs.rst
+
+.. toctree::
+   :maxdepth: 2
+   :caption: SUBMISSIONS
+   :glob:
+
+   submissions/*
 
 .. toctree::
    :maxdepth: 2
