@@ -45,7 +45,7 @@ TEST_CASE( "Test the computation of the delta flux.", "[FWaveDeltaFlux]")
      *  h: 10 | 9
      *  u: -3 | 3
      *
-     * roe height: 9.5
+     * height: 9.5
      * delta f: {9 * 3, 9 * 3 * 3 + 0.5 * m_g * 9 * 9} - {10 * -3, 10 * -3 * -3 + 0.5 * m_g * 10 * 10}
      * delta f: {57, -102.163175}
      */
@@ -179,8 +179,8 @@ TEST_CASE( "Test the derivation of the F-Wave net-updates.", "[FWaveUpdate]" )
     /*
     * Test case (dam break):
     *
-    *     left | right
-    *   h:  10 | 1
+    *        left | right
+    *   h:     10 | 1
     *   hu:  -100 | 0
     *
     * eigenvalues are calculated from computeEigenvalues as:

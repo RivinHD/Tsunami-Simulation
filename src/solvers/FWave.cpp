@@ -23,7 +23,7 @@ void tsunami_lab::solvers::FWave::computeEigenvalues(t_real   i_hL,
     t_real l_u = l_hSqrtL * i_uL + l_hSqrtR * i_uR;
     l_u /= l_hSqrtL + l_hSqrtR;
 
-    // compute wave speeds
+    // compute eigenvalues
     t_real l_ghSqrtRoe = m_gSqrt * std::sqrt( l_h );
     o_eigenvalue1 = l_u - l_ghSqrtRoe;
     o_eigenvalue2 = l_u + l_ghSqrtRoe;
@@ -43,10 +43,10 @@ void tsunami_lab::solvers::FWave::computeDeltaFlux(t_real i_hL,
 }
 
 void tsunami_lab::solvers::FWave::computeEigencoefficients(t_real i_eigenvalue1,
-                                                         t_real i_eigenvalue2,
-                                                         t_real i_deltaFlux[2],
-                                                         t_real &o_eigencoefficient1,
-                                                         t_real &o_eigencoefficient2) {
+                                                           t_real i_eigenvalue2,
+                                                           t_real i_deltaFlux[2],
+                                                           t_real &o_eigencoefficient1,
+                                                           t_real &o_eigencoefficient2) {
     // compute inverse matrix
     t_real denominator = i_eigenvalue2 - i_eigenvalue1;
     t_real invertedMatrix[2][2] = {
