@@ -10,12 +10,7 @@
     <option name="reloaded" value="true" />
   </component>
   <component name="CMakeRunConfigurationManager">
-    <generated>
-      <config projectName="TsunamiSimulation" targetName="docs" />
-      <config projectName="TsunamiSimulation" targetName="test" />
-      <config projectName="TsunamiSimulation" targetName="build" />
-      <config projectName="TsunamiSimulation" targetName="sanitize" />
-    </generated>
+    <generated />
   </component>
   <component name="CMakeSettings">
     <configurations>
@@ -26,9 +21,8 @@
   <component name="ChangeListManager">
     <list default="true" id="283ee9fe-0899-406a-8cc7-5cf07b799c82" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs_sphinx/index.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs_sphinx/index.rst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs_sphinx/submissions/riemann_solver.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs_sphinx/submissions/riemann_solver.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/solvers/FWave.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/solvers/FWave.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/solvers/FWave.test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/solvers/FWave.test.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +67,7 @@
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;documentation&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Fabian/Desktop/Workspace/FSU/Tsunami-Simulation/Tsunami-Simulation&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Fabian/Desktop/Workspace/FSU/Tsunami-Simulation/Tsunami-Simulation/CMakeLists.txt&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -83,34 +77,12 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Catch.test">
-    <configuration name="test" type="CMakeCatchTestRunConfigurationType" factoryName="Catch Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TsunamiSimulation" TARGET_NAME="test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="TsunamiSimulation" RUN_TARGET_NAME="test" TEST_MODE="SUITE_TEST">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-        <option name="BeforeTestRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="build" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TsunamiSimulation" TARGET_NAME="build" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="TsunamiSimulation" RUN_TARGET_NAME="build">
+  <component name="RunManager">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="docs" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TsunamiSimulation" TARGET_NAME="docs" CONFIG_NAME="Debug">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="sanitize" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TsunamiSimulation" TARGET_NAME="sanitize" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="TsunamiSimulation" RUN_TARGET_NAME="sanitize">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <list>
-      <item itemvalue="Catch.test" />
-      <item itemvalue="CMake Application.build" />
-      <item itemvalue="CMake Application.docs" />
-      <item itemvalue="CMake Application.sanitize" />
-    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -124,7 +96,9 @@
       <workItem from="1698072010236" duration="2841000" />
       <workItem from="1698074887249" duration="4806000" />
       <workItem from="1698080140749" duration="5122000" />
-      <workItem from="1698497236637" duration="5573000" />
+      <workItem from="1698497236637" duration="6171000" />
+      <workItem from="1698569842394" duration="167000" />
+      <workItem from="1698570020628" duration="1642000" />
     </task>
     <servers />
   </component>

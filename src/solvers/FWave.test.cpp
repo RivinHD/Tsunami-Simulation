@@ -11,10 +11,6 @@ using namespace tsunami_lab;
 #include "../../include/solvers/FWave.h"
 #undef public
 
-/*
- * TODO rename
- */
-
 TEST_CASE( "Test the derivation of the F-Wave eigenvalues.", "[FWaveEigenvalue]" )
 {
     /*
@@ -48,7 +44,7 @@ TEST_CASE( "Test the computation of the delta flux.", "[FWaveDeltaFlux]")
      *  h: 10 | 9
      *  u: -3 | 3
      *
-     * roe height: 9.5
+     * height: 9.5
      * delta f: {9 * 3, 9 * 3 * 3 + 0.5 * m_g * 9 * 9} - {10 * -3, 10 * -3 * -3 + 0.5 * m_g * 10 * 10}
      * delta f: {57, -102.163175}
      */

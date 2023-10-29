@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. Riemann Solver &mdash; Tsunami Simulation  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tsunami_lab" href="../api/tsunami_lab.html" />
+    <link rel="prev" title="Building the Project" href="../getting_started/building_project.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Tsunami Simulation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">GETTING STARTED</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/building_project.html">Building the Project</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SUBMISSIONS</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Riemann Solver</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#f-wave-solver">F-wave Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#f-wave-solver-unit-testing">F-wave Solver Unit Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#visualization">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sphinx-with-doxygen">Sphinx with Doxygen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contribution">Contribution</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/tsunami_lab.html">tsunami_lab</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Tsunami Simulation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">1. Riemann Solver</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/submissions/riemann_solver.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="riemann-solver">
+<span id="submissions-riemann-solver"></span><h1>1. Riemann Solver<a class="headerlink" href="#riemann-solver" title="Permalink to this headline"></a></h1>
+<section id="f-wave-solver">
+<h2>F-wave Solver<a class="headerlink" href="#f-wave-solver" title="Permalink to this headline"></a></h2>
+<p>Header file: <code class="docutils literal notranslate"><span class="pre">.../Tsunami-Simulation/include/solvers/FWave.h</span></code></p>
+<p>Implementation file: <code class="docutils literal notranslate"><span class="pre">.../Tsunami-Simulation/src/solvers/FWave.cpp</span></code></p>
+<p>Test file: <code class="docutils literal notranslate"><span class="pre">.../Tsunami-Simulation/src/solvers/FWave.test.cpp</span></code></p>
+<p>The f-wave solver approximately solves the following Initial Value Problem (IVP) for the shallow water equations over time:</p>
+<p><span class="raw-html"><center>(1.3.1)</center></span></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{split}q(x,0) =
+  \begin{cases}
+    q_{l} \quad   &amp;\text{if } x &lt; 0 \\
+    q_{r} \quad &amp;\text{if }   x &gt; 0
+  \end{cases} \qquad q_l, q_r \in \mathbb{R}^+ \times \mathbb{R}.\end{split}\end{split}\]</div>
+<p>Theory shows that the solution, arising from the discontinuity at <span class="math notranslate nohighlight">\(x=0\)</span>,
+consist of two waves. Each wave is either a shock or a rarefaction wave.
+The f-wave solver uses two shock waves to approximate the true solution.</p>
+<p>First, we use the Roe eigenvalues <span class="math notranslate nohighlight">\(\lambda^{\text{Roe}}_{1/2}\)</span> in terms
+of the left and right quantities <span class="math notranslate nohighlight">\(q_l\)</span> and <span class="math notranslate nohighlight">\(q_r\)</span> with respect to
+position <span class="math notranslate nohighlight">\(x=0\)</span> to approximate the true wave speeds:</p>
+<p><span class="raw-html"><center>(1.3.2)</center></span></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{split}\begin{aligned}
+  \lambda^{\text{Roe}}_{1}(q_l, q_r) &amp;= u^{\text{Roe}}(q_l, q_r) - \sqrt{gh^{\text{Roe}}(q_l, q_r)}, \\
+  \lambda^{\text{Roe}}_{2}(q_l, q_r) &amp;= u^{\text{Roe}}(q_l, q_r) + \sqrt{gh^{\text{Roe}}(q_l, q_r)},
+\end{aligned}\end{split}\end{split}\]</div>
+<p>where the height <span class="math notranslate nohighlight">\(h^{\text{Roe}}\)</span> and particle velocity <span class="math notranslate nohighlight">\(u^{\text{Roe}}\)</span>
+are given as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{split}\begin{aligned}
+  h^{\text{Roe}}(q_l, q_r) &amp;= \frac{1}{2} (h_l + h_r), \\
+  u^{\text{Roe}}(q_l, q_r) &amp;=  \frac{u_l \sqrt{h_l} + u_r \sqrt{h_r}}{\sqrt{h_l}+\sqrt{h_r}}.
+\end{aligned}\end{split}\end{split}\]</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>void tsunami_lab::solvers::FWave::computeEigenvalues<span class="o">(</span>t_real   i_hL,
+                                                     t_real   i_hR,
+                                                     t_real   i_uL,
+                                                     t_real   i_uR,
+                                                     t_real <span class="p">&amp;</span> o_eigenvalue1,
+                                                     t_real <span class="p">&amp;</span> o_eigenvalue2<span class="o">){</span>
+    // pre-compute square-root ops
+    t_real <span class="nv">l_hSqrtL</span> <span class="o">=</span> std::sqrt<span class="o">(</span> i_hL <span class="o">)</span><span class="p">;</span>
+    t_real <span class="nv">l_hSqrtR</span> <span class="o">=</span> std::sqrt<span class="o">(</span> i_hR <span class="o">)</span><span class="p">;</span>
+
+    // compute averages
+    t_real <span class="nv">l_h</span> <span class="o">=</span> <span class="m">0</span>.5f * <span class="o">(</span> i_hL + i_hR <span class="o">)</span><span class="p">;</span>
+    t_real <span class="nv">l_u</span> <span class="o">=</span> l_hSqrtL * i_uL + l_hSqrtR * i_uR<span class="p">;</span>
+    l_u /<span class="o">=</span> l_hSqrtL + l_hSqrtR<span class="p">;</span>
+
+    // compute eigenvalues
+    t_real <span class="nv">l_ghSqrtRoe</span> <span class="o">=</span> m_gSqrt * std::sqrt<span class="o">(</span> l_h <span class="o">)</span><span class="p">;</span>
+    <span class="nv">o_eigenvalue1</span> <span class="o">=</span> l_u - l_ghSqrtRoe<span class="p">;</span>
+    <span class="nv">o_eigenvalue2</span> <span class="o">=</span> l_u + l_ghSqrtRoe<span class="p">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{split}\begin{aligned}
+  r_1^{\text{Roe}} &amp;=
+    \begin{bmatrix}
+      1 \\ \lambda^{\text{Roe}}_1
+    \end{bmatrix}, \\
+  r_2^{\text{Roe}} &amp;=
+    \begin{bmatrix}
+      1 \\ \lambda^{\text{Roe}}_2
+    \end{bmatrix}.
+\end{aligned}\end{split}\end{split}\]</div>
+<p>Compute flux function:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}f := [hu, hu^2 + \frac{1}{2}gh^2]^T \\
+\Delta f := f(q_r) - f(q_l)\end{split}\]</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>void tsunami_lab::solvers::FWave::computeDeltaFlux<span class="o">(</span>t_real i_hL,
+                                                   t_real i_hR,
+                                                   t_real i_uL,
+                                                   t_real i_uR,
+                                                   t_real o_deltaFlux<span class="o">[</span><span class="m">2</span><span class="o">]){</span>
+    t_real <span class="nv">i_huL</span> <span class="o">=</span> i_hL * i_uL<span class="p">;</span>
+    t_real <span class="nv">i_huR</span> <span class="o">=</span> i_hR * i_uR<span class="p">;</span>
+
+    o_deltaFlux<span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">=</span> i_huR - i_huL<span class="p">;</span>
+    o_deltaFlux<span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">=</span> <span class="o">(</span>i_hR * i_uR * i_uR + <span class="m">0</span>.5f * m_g * i_hR * i_hR<span class="o">)</span>
+                    -<span class="o">(</span>i_hL * i_uL * i_uL + <span class="m">0</span>.5f * m_g * i_hL * i_hL<span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>The eigencoefficients <span class="math notranslate nohighlight">\(\alpha_p\)</span> in Equation are obtained by
+multiplying the inverse of the matrix of right eigenvectors <span class="math notranslate nohighlight">\(R=[r_1^\text{Roe}, r_2^\text{Roe}]\)</span>
+with the jump in fluxes:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{split}\begin{bmatrix}
+  \alpha_1 \\
+  \alpha_2
+\end{bmatrix} =
+\begin{bmatrix}
+  1 &amp; 1 \\
+  \lambda^{\text{Roe}}_1 &amp; \lambda^{\text{Roe}}_2
+\end{bmatrix}^{-1} \Delta f.\end{split}\end{split}\]</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>void tsunami_lab::solvers::FWave::computeEigencoefficients<span class="o">(</span>t_real i_eigenvalue1,
+                                                           t_real i_eigenvalue2,
+                                                           t_real i_deltaFlux<span class="o">[</span><span class="m">2</span><span class="o">]</span>,
+                                                           t_real <span class="p">&amp;</span>o_eigencoefficient1,
+                                                           t_real <span class="p">&amp;</span>o_eigencoefficient2<span class="o">)</span> <span class="o">{</span>
+    // compute inverse matrix
+    t_real <span class="nv">denominator</span> <span class="o">=</span> i_eigenvalue2 - i_eigenvalue1<span class="p">;</span>
+    t_real invertedMatrix<span class="o">[</span><span class="m">2</span><span class="o">][</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span> <span class="o">{</span>
+            <span class="o">{</span>i_eigenvalue2 / denominator, -1 / denominator<span class="o">}</span>,
+            <span class="o">{</span>-i_eigenvalue1 / denominator, <span class="m">1</span> / denominator<span class="o">}</span>
+    <span class="o">}</span><span class="p">;</span>
+
+    // compute eigencoefficients
+    <span class="nv">o_eigencoefficient1</span> <span class="o">=</span> invertedMatrix<span class="o">[</span><span class="m">0</span><span class="o">][</span><span class="m">0</span><span class="o">]</span> * i_deltaFlux<span class="o">[</span><span class="m">0</span><span class="o">]</span> + invertedMatrix<span class="o">[</span><span class="m">0</span><span class="o">][</span><span class="m">1</span><span class="o">]</span> * i_deltaFlux<span class="o">[</span><span class="m">1</span><span class="o">]</span><span class="p">;</span>
+    <span class="nv">o_eigencoefficient2</span> <span class="o">=</span> invertedMatrix<span class="o">[</span><span class="m">1</span><span class="o">][</span><span class="m">0</span><span class="o">]</span> * i_deltaFlux<span class="o">[</span><span class="m">0</span><span class="o">]</span> + invertedMatrix<span class="o">[</span><span class="m">1</span><span class="o">][</span><span class="m">1</span><span class="o">]</span> * i_deltaFlux<span class="o">[</span><span class="m">1</span><span class="o">]</span><span class="p">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Using the eigenvalues we can define corresponding eigenvectors <span class="math notranslate nohighlight">\(r_{1/2}^{\text{Roe}}\)</span></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{split}\begin{aligned}
+  r_1^{\text{Roe}} &amp;=
+    \begin{bmatrix}
+      1 \\ \lambda^{\text{Roe}}_1
+    \end{bmatrix}, \\
+  r_2^{\text{Roe}} &amp;=
+    \begin{bmatrix}
+      1 \\ \lambda^{\text{Roe}}_2
+    \end{bmatrix}.
+\end{aligned}\end{split}\end{split}\]</div>
+<p>Using the eigenvectors and our eigencoefficients we can compute
+the waves <span class="math notranslate nohighlight">\(Z_{1/2}\)</span></p>
+<p><span class="raw-html"><center>(1.3.3)</center></span></p>
+<div class="math notranslate nohighlight">
+\[\Delta f = \sum_{p=1}^2 \alpha_p r_p \equiv  \sum_{p=1}^2 Z_p, \qquad \alpha_p \in \mathbb{R}.\]</div>
+<p>This leads to the definition of net updates which summarize the
+net effect of the waves to the left and right “cell”:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{split}\begin{split}
+  A^- \Delta Q := \sum_{p:\{ \lambda_p^\text{Roe} &lt; 0 \}} Z_p \\
+  A^+ \Delta Q := \sum_{p:\{ \lambda_p^\text{Roe} &gt; 0 \}} Z_p
+\end{split}\end{split}\end{split}\]</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>void tsunami_lab::solvers::FWave::netUpdates<span class="o">(</span>t_real i_hL,
+                                             t_real i_hR,
+                                             t_real i_huL,
+                                             t_real i_huR,
+                                             t_real *o_netUpdateL,
+                                             t_real *o_netUpdateR<span class="o">)</span> <span class="o">{</span>
+
+    // compute particle velocities
+    t_real <span class="nv">l_uL</span> <span class="o">=</span> i_huL / i_hL<span class="p">;</span>
+    t_real <span class="nv">l_uR</span> <span class="o">=</span> i_huR / i_hR<span class="p">;</span>
+
+    // compute eigenvalues
+    t_real <span class="nv">eigenvalue1</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span>
+    t_real <span class="nv">eigenvalue2</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span>
+    computeEigenvalues<span class="o">(</span>i_hL, i_hR, l_uL, l_uR, eigenvalue1, eigenvalue2<span class="o">)</span><span class="p">;</span>
+
+    // create eigenvectors
+    t_real eigenvector1<span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span> <span class="o">{</span><span class="m">1</span>, eigenvalue1<span class="o">}</span><span class="p">;</span>
+    t_real eigenvector2<span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span> <span class="o">{</span><span class="m">1</span>, eigenvalue2<span class="o">}</span><span class="p">;</span>
+
+    // compute delta flux
+    t_real deltaFlux<span class="o">[</span><span class="m">2</span><span class="o">]</span><span class="p">;</span>
+    computeDeltaFlux<span class="o">(</span>i_hL, i_hR, l_uL, l_uR, deltaFlux<span class="o">)</span><span class="p">;</span>
+
+    // compute eigencoefficients
+    t_real <span class="nv">eigencoefficient1</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span>
+    t_real <span class="nv">eigencoefficient2</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span>
+    computeEigencoefficients<span class="o">(</span>eigenvalue1, eigenvalue2, deltaFlux, eigencoefficient1, eigencoefficient2<span class="o">)</span><span class="p">;</span>
+
+    // compute waves / net updates
+    <span class="k">for</span><span class="o">(</span> unsigned short <span class="nv">l_qt</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span> l_qt &lt; <span class="m">2</span><span class="p">;</span> l_qt++ <span class="o">)</span>
+    <span class="o">{</span>
+        // init
+        o_netUpdateL<span class="o">[</span>l_qt<span class="o">]</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span>
+        o_netUpdateR<span class="o">[</span>l_qt<span class="o">]</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span>
+
+        // 1st wave
+        <span class="k">if</span><span class="o">(</span> eigenvalue1 &lt; <span class="m">0</span> <span class="o">)</span>
+        <span class="o">{</span>
+            o_netUpdateL<span class="o">[</span>l_qt<span class="o">]</span> +<span class="o">=</span> eigencoefficient1 * eigenvector1<span class="o">[</span>l_qt<span class="o">]</span><span class="p">;</span>
+        <span class="o">}</span>
+        <span class="k">else</span>
+        <span class="o">{</span>
+            o_netUpdateR<span class="o">[</span>l_qt<span class="o">]</span> +<span class="o">=</span> eigencoefficient1 * eigenvector1<span class="o">[</span>l_qt<span class="o">]</span><span class="p">;</span>
+        <span class="o">}</span>
+
+        // 2nd wave
+        <span class="k">if</span><span class="o">(</span> eigenvalue2 &lt; <span class="m">0</span> <span class="o">)</span>
+        <span class="o">{</span>
+            o_netUpdateL<span class="o">[</span>l_qt<span class="o">]</span> +<span class="o">=</span> eigencoefficient2 * eigenvector2<span class="o">[</span>l_qt<span class="o">]</span><span class="p">;</span>
+        <span class="o">}</span>
+        <span class="k">else</span>
+        <span class="o">{</span>
+            o_netUpdateR<span class="o">[</span>l_qt<span class="o">]</span> +<span class="o">=</span> eigencoefficient2 * eigenvector2<span class="o">[</span>l_qt<span class="o">]</span><span class="p">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</section>
+<section id="f-wave-solver-unit-testing">
+<h2>F-wave Solver Unit Testing<a class="headerlink" href="#f-wave-solver-unit-testing" title="Permalink to this headline"></a></h2>
+<p><strong>Test the derivation of the F-Wave eigenvalues.</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>TEST_CASE<span class="o">(</span> <span class="s2">&quot;Test the derivation of the F-Wave eigenvalues.&quot;</span>, <span class="s2">&quot;[FWaveEigenvalue]&quot;</span> <span class="o">)</span>
+<span class="o">{</span>
+    /*
+     * Test <span class="k">case</span>:
+     *  h: <span class="m">10</span> <span class="p">|</span> <span class="m">9</span>
+     *  u: -3 <span class="p">|</span> <span class="m">3</span>
+     *
+     *  height: <span class="m">9</span>.5
+     *  velocity: <span class="o">(</span>sqrt<span class="o">(</span><span class="m">10</span><span class="o">)</span> * -3 + <span class="m">3</span> * <span class="m">3</span><span class="o">)</span> / <span class="o">(</span> sqrt<span class="o">(</span><span class="m">10</span><span class="o">)</span> + sqrt<span class="o">(</span><span class="m">9</span><span class="o">)</span> <span class="o">)</span>
+     *               <span class="o">=</span> -0.0790021169691720
+     * eigenvalue: <span class="nv">s1</span> <span class="o">=</span> -0.079002116969172024 - sqrt<span class="o">(</span><span class="m">9</span>.80665 * <span class="m">9</span>.5<span class="o">)</span> <span class="o">=</span> -9.7311093998375095
+     *             <span class="nv">s2</span> <span class="o">=</span> -0.079002116969172024 + sqrt<span class="o">(</span><span class="m">9</span>.80665 * <span class="m">9</span>.5<span class="o">)</span> <span class="o">=</span>  <span class="m">9</span>.5731051658991654
+     */
+    t_real <span class="nv">l_eigenvalue1</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span>
+    t_real <span class="nv">l_eigenvalue2</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span>
+    tsunami_lab::solvers::FWave::computeEigenvalues<span class="o">(</span> <span class="m">10</span>,
+                                           <span class="m">9</span>,
+                                           -3,
+                                           <span class="m">3</span>,
+                                           l_eigenvalue1,
+                                           l_eigenvalue2 <span class="o">)</span><span class="p">;</span>
+
+    REQUIRE<span class="o">(</span> <span class="nv">l_eigenvalue1</span> <span class="o">==</span> Approx<span class="o">(</span> -9.7311093998375095 <span class="o">)</span> <span class="o">)</span><span class="p">;</span>
+    REQUIRE<span class="o">(</span> <span class="nv">l_eigenvalue2</span> <span class="o">==</span> Approx<span class="o">(</span>  <span class="m">9</span>.5731051658991654 <span class="o">)</span> <span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p><strong>Test the computation of the delta flux.</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>TEST_CASE<span class="o">(</span> <span class="s2">&quot;Test the computation of the delta flux.&quot;</span>, <span class="s2">&quot;[FWaveDeltaFlux]&quot;</span><span class="o">)</span>
+<span class="o">{</span>
+    /*
+     * Test <span class="k">case</span>:
+     *  h: <span class="m">10</span> <span class="p">|</span> <span class="m">9</span>
+     *  u: -3 <span class="p">|</span> <span class="m">3</span>
+     *
+     * height: <span class="m">9</span>.5
+     * delta f: <span class="o">{</span><span class="m">9</span> * <span class="m">3</span>, <span class="m">9</span> * <span class="m">3</span> * <span class="m">3</span> + <span class="m">0</span>.5 * m_g * <span class="m">9</span> * <span class="m">9</span><span class="o">}</span> - <span class="o">{</span><span class="m">10</span> * -3, <span class="m">10</span> * -3 * -3 + <span class="m">0</span>.5 * m_g * <span class="m">10</span> * <span class="m">10</span><span class="o">}</span>
+     * delta f: <span class="o">{</span><span class="m">57</span>, -102.163175<span class="o">}</span>
+     */
+    t_real l_deltaFlux<span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span> <span class="o">{</span><span class="m">0</span><span class="o">}</span><span class="p">;</span>
+    tsunami_lab::solvers::FWave::computeDeltaFlux<span class="o">(</span><span class="m">10</span>,
+                                                  <span class="m">9</span>,
+                                                  -3,
+                                                  <span class="m">3</span>,
+                                                  l_deltaFlux<span class="o">)</span><span class="p">;</span>
+    REQUIRE<span class="o">(</span> l_deltaFlux<span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">==</span> Approx<span class="o">(</span><span class="m">57</span><span class="o">)</span> <span class="o">)</span><span class="p">;</span>
+    REQUIRE<span class="o">(</span> l_deltaFlux<span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">==</span> Approx<span class="o">(</span>-102.163175<span class="o">)</span> <span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p><strong>Test the computation of the eigencoefficients.</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>TEST_CASE<span class="o">(</span> <span class="s2">&quot;Test the computation of the eigencoefficients.&quot;</span>, <span class="s2">&quot;[FWaveEigencoefficients]&quot;</span><span class="o">)</span>
+<span class="o">{</span>
+    /*
+     * Test <span class="k">case</span>:
+     *  eigenvalue1: <span class="m">4</span>
+     *  eigenvalue2: <span class="m">5</span>
+     *  delta flux: <span class="o">{</span><span class="m">10</span>, <span class="m">2</span><span class="o">}</span>
+     *
+     *    Matrix of right eigenvectors:
+     *
+     *      <span class="p">|</span> <span class="m">1</span>   <span class="m">1</span> <span class="p">|</span>
+     *  <span class="nv">R</span> <span class="o">=</span> <span class="p">|</span>       <span class="p">|</span>
+     *      <span class="p">|</span> <span class="m">4</span>   <span class="m">5</span> <span class="p">|</span>
+     *
+     * <span class="nv">inverted</span> <span class="o">=</span> <span class="o">{{</span><span class="m">5</span>, -1<span class="o">}</span>, <span class="o">{</span>-4, <span class="m">1</span><span class="o">}}</span>
+     *
+     * inverted * <span class="o">{</span><span class="m">10</span>, <span class="m">2</span><span class="o">}</span> <span class="o">=</span> <span class="o">{</span><span class="m">48</span>, -38<span class="o">}</span>
+     */
+    t_real <span class="nv">l_eigencoefficient1</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span>
+    t_real <span class="nv">l_eigencoefficient2</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span>
+    t_real l_deltaFlux<span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span> <span class="o">{</span><span class="m">10</span>, <span class="m">2</span><span class="o">}</span><span class="p">;</span>
+    tsunami_lab::solvers::FWave::computeEigencoefficients<span class="o">(</span><span class="m">4</span>,
+                                                          <span class="m">5</span>,
+                                                          l_deltaFlux,
+                                                          l_eigencoefficient1,
+                                                          l_eigencoefficient2<span class="o">)</span><span class="p">;</span>
+    REQUIRE<span class="o">(</span> <span class="nv">l_eigencoefficient1</span> <span class="o">==</span> Approx<span class="o">(</span><span class="m">48</span><span class="o">)</span> <span class="o">)</span><span class="p">;</span>
+    REQUIRE<span class="o">(</span> <span class="nv">l_eigencoefficient2</span> <span class="o">==</span> Approx<span class="o">(</span>-38<span class="o">)</span> <span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p><strong>Test the derivation of the F-Wave net-updates.</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>TEST_CASE<span class="o">(</span> <span class="s2">&quot;Test the derivation of the F-Wave net-updates.&quot;</span>, <span class="s2">&quot;[FWaveUpdate]&quot;</span> <span class="o">)</span>
+<span class="o">{</span>
+    /*
+     * Test <span class="k">case</span>:
+     *
+     *      left <span class="p">|</span> right
+     *  h:    <span class="m">10</span> <span class="p">|</span> <span class="m">9</span>
+     *  u:    -3 <span class="p">|</span> <span class="m">3</span>
+     *  hu:  -30 <span class="p">|</span> <span class="m">27</span>
+     *
+     * The derivation of the eigenvalues <span class="o">(</span>s1, s2<span class="o">)</span> and eigencoefficient <span class="o">(</span>a1, a1<span class="o">)</span> is given above.
+     *
+     * The net-updates are given through the scaled eigenvectors.
+     *
+     *                      <span class="p">|</span>  <span class="m">1</span> <span class="p">|</span>   <span class="p">|</span> <span class="m">33</span>.5590017014261447899292 <span class="p">|</span>
+     * update <span class="c1">#1: s1 * a1 * |    | = |                           |</span>
+     *                      <span class="p">|</span> s1 <span class="p">|</span>   <span class="p">|</span> -326.56631690591093200508 <span class="p">|</span>
+     *
+     *                      <span class="p">|</span>  <span class="m">1</span> <span class="p">|</span>   <span class="p">|</span> <span class="m">23</span>.4409982985738561366777 <span class="p">|</span>
+     * update <span class="c1">#2: s2 * a2 * |    | = |                           |</span>
+     *                      <span class="p">|</span> s2 <span class="p">|</span>   <span class="p">|</span> <span class="m">224</span>.403141905910928927533 <span class="p">|</span>
+     */
+    float l_netUpdatesL<span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span> <span class="o">{</span> -5, <span class="m">3</span> <span class="o">}</span><span class="p">;</span>
+    float l_netUpdatesR<span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="o">=</span> <span class="o">{</span>  <span class="m">4</span>, <span class="m">7</span> <span class="o">}</span><span class="p">;</span>
+
+    tsunami_lab::solvers::FWave::netUpdates<span class="o">(</span> <span class="m">10</span>,
+                                           <span class="m">9</span>,
+                                           -30,
+                                           <span class="m">27</span>,
+                                           l_netUpdatesL,
+                                           l_netUpdatesR <span class="o">)</span><span class="p">;</span>
+
+    REQUIRE<span class="o">(</span> l_netUpdatesL<span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">==</span> Approx<span class="o">(</span> <span class="m">33</span>.5590017014261447899292 <span class="o">)</span> <span class="o">)</span><span class="p">;</span>
+    REQUIRE<span class="o">(</span> l_netUpdatesL<span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">==</span> Approx<span class="o">(</span> -326.56631690591093200508 <span class="o">)</span> <span class="o">)</span><span class="p">;</span>
+
+    REQUIRE<span class="o">(</span> l_netUpdatesR<span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">==</span> Approx<span class="o">(</span> <span class="m">23</span>.4409982985738561366777 <span class="o">)</span> <span class="o">)</span><span class="p">;</span>
+    REQUIRE<span class="o">(</span> l_netUpdatesR<span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">==</span> Approx<span class="o">(</span> <span class="m">224</span>.403141905910928927533 <span class="o">)</span> <span class="o">)</span><span class="p">;</span>
+
+    /*
+     * Test <span class="k">case</span> <span class="o">(</span>dam <span class="nb">break</span><span class="o">)</span>:
+     *
+     *     left <span class="p">|</span> right
+     *   h:  <span class="m">10</span> <span class="p">|</span> <span class="m">8</span>
+     *   hu:  <span class="m">0</span> <span class="p">|</span> <span class="m">0</span>
+     *
+     * eigenvalues are given as:
+     *
+     *   <span class="nv">s1</span> <span class="o">=</span> -sqrt<span class="o">(</span><span class="m">9</span>.80665 * <span class="m">9</span><span class="o">)</span>
+     *   <span class="nv">s2</span> <span class="o">=</span>  sqrt<span class="o">(</span><span class="m">9</span>.80665 * <span class="m">9</span><span class="o">)</span>
+     *
+     * Inversion of the matrix of right Eigenvectors:
+     *
+     *   wolframalpha.com query: invert <span class="o">{{</span><span class="m">1</span>, <span class="m">1</span><span class="o">}</span>, <span class="o">{</span>-sqrt<span class="o">(</span><span class="m">9</span>.80665 * <span class="m">9</span><span class="o">)</span>, sqrt<span class="o">(</span><span class="m">9</span>.80665 * <span class="m">9</span><span class="o">)}}</span>
+     *
+     *          <span class="p">|</span> <span class="m">0</span>.5 -0.0532217 <span class="p">|</span>
+     *   <span class="nv">Rinv</span> <span class="o">=</span> <span class="p">|</span>                <span class="p">|</span>
+     *          <span class="p">|</span> <span class="m">0</span>.5 -0.0532217 <span class="p">|</span>
+     *
+     * Multiplicaton with the jump <span class="k">in</span> quantities gives the eigencoefficient:
+     *
+     *        <span class="p">|</span> <span class="m">8</span> - <span class="m">10</span> <span class="p">|</span>   <span class="p">|</span> -1 <span class="p">|</span>   <span class="p">|</span> a1 <span class="p">|</span>
+     * Rinv * <span class="p">|</span>        <span class="p">|</span> <span class="o">=</span> <span class="p">|</span>    <span class="p">|</span> <span class="o">=</span> <span class="p">|</span>    <span class="p">|</span>
+     *        <span class="p">|</span>  <span class="m">0</span> - <span class="m">0</span> <span class="p">|</span>   <span class="p">|</span> -1 <span class="p">|</span>   <span class="p">|</span> a2 <span class="p">|</span>
+     *
+     * The net-updates are given through the scaled eigenvectors.
+     *
+     *                      <span class="p">|</span>  <span class="m">1</span> <span class="p">|</span>   <span class="p">|</span>   <span class="m">9</span>.394671362 <span class="p">|</span>
+     * update <span class="c1">#1: s1 * a1 * |    | = |               |</span>
+     *                      <span class="p">|</span> s1 <span class="p">|</span>   <span class="p">|</span> -88.25985     <span class="p">|</span>
+     *
+     *                      <span class="p">|</span>  <span class="m">1</span> <span class="p">|</span>   <span class="p">|</span>  -9.394671362 <span class="p">|</span>
+     * update <span class="c1">#2: s2 * a2 * |    | = |               |</span>
+     *                      <span class="p">|</span> s2 <span class="p">|</span>   <span class="p">|</span> -88.25985     <span class="p">|</span>
+     */
+    tsunami_lab::solvers::FWave::netUpdates<span class="o">(</span> <span class="m">10</span>,
+                                           <span class="m">8</span>,
+                                           <span class="m">0</span>,
+                                           <span class="m">0</span>,
+                                           l_netUpdatesL,
+                                           l_netUpdatesR <span class="o">)</span><span class="p">;</span>
+
+    REQUIRE<span class="o">(</span> l_netUpdatesL<span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">==</span>  Approx<span class="o">(</span><span class="m">9</span>.394671362<span class="o">)</span> <span class="o">)</span><span class="p">;</span>
+    REQUIRE<span class="o">(</span> l_netUpdatesL<span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">==</span> -Approx<span class="o">(</span><span class="m">88</span>.25985<span class="o">)</span>    <span class="o">)</span><span class="p">;</span>
+
+    REQUIRE<span class="o">(</span> l_netUpdatesR<span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="o">==</span> -Approx<span class="o">(</span><span class="m">9</span>.394671362<span class="o">)</span> <span class="o">)</span><span class="p">;</span>
+    REQUIRE<span class="o">(</span> l_netUpdatesR<span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="o">==</span> -Approx<span class="o">(</span><span class="m">88</span>.25985<span class="o">)</span>    <span class="o">)</span><span class="p">;</span>
+
+    /*
+    * Test <span class="k">case</span> <span class="o">(</span>dam <span class="nb">break</span><span class="o">)</span>:
+    *
+    *     left <span class="p">|</span> right
+    *   h:  <span class="m">10</span> <span class="p">|</span> <span class="m">0</span>
+    *   hu:  <span class="m">4</span> <span class="p">|</span> <span class="m">0</span>
+    *
+    * eigenvalues are given as:
+    *
+    *   <span class="nv">s1</span> <span class="o">=</span> -sqrt<span class="o">(</span><span class="m">9</span>.80665 * <span class="m">9</span><span class="o">)</span>
+    *   <span class="nv">s2</span> <span class="o">=</span>  sqrt<span class="o">(</span><span class="m">9</span>.80665 * <span class="m">9</span><span class="o">)</span>
+    *
+    * Inversion of the matrix of right Eigenvectors:
+    *
+    *   wolframalpha.com query: invert <span class="o">{{</span><span class="m">1</span>, <span class="m">1</span><span class="o">}</span>, <span class="o">{</span>-sqrt<span class="o">(</span><span class="m">9</span>.80665 * <span class="m">9</span><span class="o">)</span>, sqrt<span class="o">(</span><span class="m">9</span>.80665 * <span class="m">9</span><span class="o">)}}</span>
+    *
+    *          <span class="p">|</span> <span class="m">0</span>.5 -0.0532217 <span class="p">|</span>
+    *   <span class="nv">Rinv</span> <span class="o">=</span> <span class="p">|</span>                <span class="p">|</span>
+    *          <span class="p">|</span> <span class="m">0</span>.5 -0.0532217 <span class="p">|</span>
+    *
+    * Multiplicaton with the jump <span class="k">in</span> quantities gives the eigencoefficient:
+    *
+    *        <span class="p">|</span> <span class="m">8</span> - <span class="m">10</span> <span class="p">|</span>   <span class="p">|</span> -1 <span class="p">|</span>   <span class="p">|</span> a1 <span class="p">|</span>
+    * Rinv * <span class="p">|</span>        <span class="p">|</span> <span class="o">=</span> <span class="p">|</span>    <span class="p">|</span> <span class="o">=</span> <span class="p">|</span>    <span class="p">|</span>
+    *        <span class="p">|</span>  <span class="m">0</span> - <span class="m">0</span> <span class="p">|</span>   <span class="p">|</span> -1 <span class="p">|</span>   <span class="p">|</span> a2 <span class="p">|</span>
+    *
+    * The net-updates are given through the scaled eigenvectors.
+    *
+    *                      <span class="p">|</span>  <span class="m">1</span> <span class="p">|</span>   <span class="p">|</span>   <span class="m">9</span>.394671362 <span class="p">|</span>
+    * update <span class="c1">#1: s1 * a1 * |    | = |               |</span>
+    *                      <span class="p">|</span> s1 <span class="p">|</span>   <span class="p">|</span> -88.25985     <span class="p">|</span>
+    *
+    *                      <span class="p">|</span>  <span class="m">1</span> <span class="p">|</span>   <span class="p">|</span>  -9.394671362 <span class="p">|</span>
+    * update <span class="c1">#2: s2 * a2 * |    | = |               |</span>
+    *                      <span class="p">|</span> s2 <span class="p">|</span>   <span class="p">|</span> -88.25985     <span class="p">|</span>
+    */
+
+    tsunami_lab::solvers::FWave::netUpdates<span class="o">(</span> <span class="m">10</span>,
+                                             <span class="m">1</span>,
+                                             -100,
+                                             <span class="m">0</span>,
+                                             l_netUpdatesL,
+                                             l_netUpdatesR <span class="o">)</span><span class="p">;</span>
+
+    t_real <span class="nv">l_uL</span> <span class="o">=</span> -100.0f / <span class="m">10</span><span class="p">;</span>
+    t_real <span class="nv">l_uR</span> <span class="o">=</span> <span class="m">0</span>.0f / <span class="m">1</span><span class="p">;</span>
+
+    t_real eig1<span class="p">;</span>
+    t_real eig2<span class="p">;</span>
+    tsunami_lab::solvers::FWave::computeEigenvalues<span class="o">(</span><span class="m">10</span>,
+                                                    <span class="m">1</span>,
+                                                    l_uL,
+                                                    l_uR,
+                                                    eig1,
+                                                    eig2<span class="o">)</span><span class="p">;</span>
+    INFO<span class="o">(</span><span class="s2">&quot;eigenvalue1: &quot;</span> <span class="s">&lt;&lt; eig1);</span>
+<span class="s">    INFO(&quot;eig</span>envalue2: <span class="s2">&quot; &lt;&lt; eig2);</span>
+
+
+<span class="s2">    REQUIRE( l_netUpdatesL[0] == Approx(100) );</span>
+<span class="s2">    REQUIRE( l_netUpdatesL[1] == Approx(-1485.4292) );</span>
+
+<span class="s2">    REQUIRE( l_netUpdatesR[0] == Approx(0) );</span>
+<span class="s2">    REQUIRE( l_netUpdatesR[1] == Approx(0)    );</span>
+
+<span class="s2">    /*</span>
+<span class="s2">     * Test case (trivial steady state):</span>
+<span class="s2">     *</span>
+<span class="s2">     *     left | right</span>
+<span class="s2">     *   h:  10 | 10</span>
+<span class="s2">     *  hu:   0 |  0</span>
+<span class="s2">     */</span>
+<span class="s2">    tsunami_lab::solvers::FWave::netUpdates( 10,</span>
+<span class="s2">                                           10,</span>
+<span class="s2">                                           0,</span>
+<span class="s2">                                           0,</span>
+<span class="s2">                                           l_netUpdatesL,</span>
+<span class="s2">                                           l_netUpdatesR );</span>
+
+<span class="s2">    REQUIRE( l_netUpdatesL[0] == Approx(0) );</span>
+<span class="s2">    REQUIRE( l_netUpdatesL[1] == Approx(0) );</span>
+
+<span class="s2">    REQUIRE( l_netUpdatesR[0] == Approx(0) );</span>
+<span class="s2">    REQUIRE( l_netUpdatesR[1] == Approx(0) );</span>
+<span class="s2">}</span>
+</pre></div>
+</div>
+</section>
+<section id="visualization">
+<h2>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline"></a></h2>
+<p><strong>Height</strong></p>
+<blockquote>
+<div><center>
+    <video width="700" controls>
+        <source src="../_static/videos/01_Visulization_height.mp4" type="video/mp4">
+    </video>
+</center></div></blockquote>
+<p><strong>Momentum X</strong></p>
+<blockquote>
+<div><center>
+    <video width="700" controls>
+        <source src="../_static/videos/01_Visulization_momentum_x.mp4" type="video/mp4">
+    </video>
+</center></div></blockquote>
+</section>
+<section id="sphinx-with-doxygen">
+<h2>Sphinx with Doxygen<a class="headerlink" href="#sphinx-with-doxygen" title="Permalink to this headline"></a></h2>
+<ol class="arabic">
+<li><p>First we install <code class="docutils literal notranslate"><span class="pre">Doxygen</span></code>.</p></li>
+<li><p>We install <code class="docutils literal notranslate"><span class="pre">Sphinx</span></code> and <code class="docutils literal notranslate"><span class="pre">breathe</span></code> and set breath as an extension. An installation guide can be found at <span class="xref std std-ref">Building the Documentation</span>.</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">extensions</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="o">...</span>
+    <span class="s1">&#39;breathe&#39;</span><span class="p">,</span>
+    <span class="o">...</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>We set up the Doxyfile by setting the variables</p>
+<blockquote>
+<div><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="p">...</span><span class="w"></span>
+<span class="n">OUTPUT_DIRECTORY</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;_build&quot;</span><span class="w"></span>
+<span class="p">...</span><span class="w"></span>
+<span class="n">INPUT</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;../include/&quot;</span><span class="w"></span>
+<span class="p">...</span><span class="w"></span>
+<span class="n">RECURSIVE</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="n">YES</span><span class="w"></span>
+<span class="p">...</span><span class="w"></span>
+<span class="n">GENERATE_XML</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">YES</span><span class="w"></span>
+<span class="p">...</span><span class="w"></span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">GENERATE_XML</span></code> is need, because breathe uses the xml files to generate the respective sphinx files.</p>
+</div></blockquote>
+</li>
+<li><p>We include the following code at the top of the <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> to build the doxygen documentation together with sphinx.</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;doxygen Doxyfile.in&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>We set up breathe by adding the following configurations to the <code class="docutils literal notranslate"><span class="pre">conf.py</span></code></p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># -- Breathe configuration -------------------------------------------------</span>
+
+<span class="n">breathe_projects</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Tsunami Simulation&quot;</span><span class="p">:</span> <span class="s2">&quot;_build/xml/&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">breathe_default_project</span> <span class="o">=</span> <span class="s2">&quot;Tsunami Simulation&quot;</span>
+<span class="n">breathe_default_members</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;members&#39;</span><span class="p">,</span> <span class="s1">&#39;undoc-members&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Now we can include a whole namespace e.g. the <em>tsunami_lab::io</em> namespace into sphinx</p>
+<blockquote>
+<div><div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">doxygennamespace</span><span class="p">::</span> tsunami_lab::io
+    <span class="nc">:project:</span> Tsunami Simulation
+    <span class="nc">:content-only:</span>
+    <span class="nc">:members:</span>
+    <span class="nc">:private-members:</span>
+    <span class="nc">:undoc-members:</span>
+</pre></div>
+</div>
+<p>More information about directives to include the doxygen into sphinx can be found at the <a class="reference external" href="https://breathe.readthedocs.io/en/latest/directives.html">official breathe website</a>.</p>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="contribution">
+<h2>Contribution<a class="headerlink" href="#contribution" title="Permalink to this headline"></a></h2>
+<p>All team members contributed equally to the tasks.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../getting_started/building_project.html" class="btn btn-neutral float-left" title="Building the Project" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api/tsunami_lab.html" class="btn btn-neutral float-right" title="tsunami_lab" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Fabian Hofer, Vincent Gerlach.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
