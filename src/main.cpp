@@ -14,7 +14,9 @@
 #include <limits>
 #include <string>
 #include <filesystem> // requieres C++17 and up
-    
+
+#define ARG_SOLVER "-s"
+
 namespace fs = std::filesystem;
 
 const std::string SOLUTION_FOLDER = "solutions";
@@ -28,17 +30,44 @@ int main( int   i_argc,
   // set cell size
   tsunami_lab::t_real l_dxy = 1;
 
+  tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWave;
+
   std::cout << "####################################" << std::endl;
   std::cout << "### Tsunami Lab                  ###" << std::endl;
   std::cout << "###                              ###" << std::endl;
   std::cout << "### https://scalable.uni-jena.de ###" << std::endl;
   std::cout << "####################################" << std::endl;
 
-  if( i_argc != 2 ) {
-    std::cerr << "invalid number of arguments, usage:" << std::endl;
-    std::cerr << "  ./build/tsunami_lab N_CELLS_X" << std::endl;
-    std::cerr << "where N_CELLS_X is the number of cells in x-direction." << std::endl;
+  if( i_argc < 2 || i_argc == 3 || i_argc > 4) {
+    std::cerr << "invalid number of arguments, usage:" << std::endl
+              << "  ./build/tsunami_lab N_CELLS_X [-s <fwave|roe>]" << std::endl
+              << "where N_CELLS_X is the number of cells in x-direction." << std::endl
+              << "optional flag: '-s' set used solvers requires 'fwave' or 'roe' as inputs" << std::endl;
     return EXIT_FAILURE;
+  }
+  else if ( i_argc == 4)
+  {
+    if ( ARG_SOLVER != std::string(i_argv[2]))
+    {
+      std::cerr << "unknown flag: " << i_argv[2] << std::endl; 
+      return EXIT_FAILURE;
+    }
+    if ( "roe" == std::string(i_argv[3]))
+    {
+      std::cout << "Set Solver: Roe" << std::endl;
+      solver = tsunami_lab::patches::Solver::Roe;
+    }
+    else if ( "fwave" == std::string(i_argv[3]))
+    {
+      std::cout << "Set Solver: FWave" << std::endl;
+    }
+    else
+    {
+      std::cerr << "unknown argument for flag -s" << std::endl
+                << "valid arguments are 'fwave', 'roe'" << std::endl;
+      return EXIT_FAILURE;
+    }
+    
   }
   else {
     l_nx = atoi( i_argv[1] );
@@ -47,6 +76,8 @@ int main( int   i_argc,
       return EXIT_FAILURE;
     }
     l_dxy = 10.0 / l_nx;
+    
+    std::cout << "Set Solver: FWave" << std::endl;
   }
   std::cout << "runtime configuration" << std::endl;
   std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
@@ -55,12 +86,15 @@ int main( int   i_argc,
 
   // construct setup
   tsunami_lab::setups::Setup *l_setup;
-  l_setup = new tsunami_lab::setups::DamBreak1d( 10,
-                                                 5,
+  l_setup = new tsunami_lab::setups::DamBreak1d( 3355.320152644279,
+                                                 3530.971494481364,
                                                  5 );
   // construct solver
   tsunami_lab::patches::WavePropagation *l_waveProp;
   l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx );
+  
+  // set the solver to use
+  l_waveProp->setSolver(solver);
 
   // maximum observed height in the setup
   tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
@@ -115,13 +149,13 @@ int main( int   i_argc,
 
   std::cout << "entering time loop" << std::endl;
 
+  // create solution folder
   if (!fs::is_directory(SOLUTION_FOLDER)) 
   {
     if (fs::exists(SOLUTION_FOLDER))
     {
       fs::rename(SOLUTION_FOLDER.c_str(), (SOLUTION_FOLDER + ".file").c_str());
     }
-    
     fs::create_directory(SOLUTION_FOLDER); 
   }
 

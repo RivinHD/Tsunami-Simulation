@@ -29,6 +29,9 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     //! momenta for the current and next time step for all cells
     t_real * m_hu[2] = { nullptr, nullptr };
 
+    //! the solver used for the netUpdates
+    Solver solver = Solver::FWave;
+
   public:
     /**
      * Constructs the 1d wave propagation solver.
@@ -117,7 +120,17 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      **/
     void setMomentumY( t_idx,
                        t_idx,
-                       t_real ) {};
+                       t_real ) {};   
+                       
+    /**
+     * Set the solver for the netUpdate
+     * 
+     * @param solver used solver
+     */
+    void setSolver(Solver solver)
+    {
+      WavePropagation1d::solver = solver;
+    }
 };
 
 #endif

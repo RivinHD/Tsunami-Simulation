@@ -10,6 +10,9 @@
 #include "../constants.h"
 #include <cstring>
 #include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
 
 namespace tsunami_lab {
   namespace io {
@@ -19,6 +22,7 @@ namespace tsunami_lab {
 
 class tsunami_lab::io::Csv {
   public:
+
     /**
      * Writes the data as CSV to the given stream.
      *
@@ -39,6 +43,13 @@ class tsunami_lab::io::Csv {
                        t_real       const * i_hu,
                        t_real       const * i_hv,
                        std::ostream       & io_stream );
+
+    static bool next_middle_states ( std::ifstream & stream,
+                                     t_real & o_hLeft,
+                                     t_real & o_hRight,
+                                     t_real & o_huLeft,
+                                     t_real & o_huRight,
+                                     t_real & o_hStar );
 };
 
 #endif

@@ -35,6 +35,7 @@ set(SRC_FILES
 )
 set(TEST_FILES ${PROJECT_SOURCE_DIR}/tests.cpp)
 set(MAIN_FILE ${PROJECT_SOURCE_DIR}/main.cpp)
+set(MIDDLE_STATE_FILE ${PROJECT_SOURCE_DIR}/test_middle_states.cpp)
 
 # Create SOURCE_FILES
 foreach(file ${SRC_FILES})
@@ -64,9 +65,15 @@ add_executable(sanitize_test ${SOURCE_FILES})
 target_link_libraries(sanitize_test PRIVATE Catch2::Catch2)
 target_sources(sanitize_test PRIVATE ${TEST_FILES})
 
+# Setup Testing for middle states
+add_executable(test_middle_states ${SOURCE_FILES})
+target_sources(test_middle_states PRIVATE ${MIDDLE_STATE_FILE})
+
+# Setup Build
 add_executable(build ${SOURCE_FILES})
 target_sources(build PRIVATE ${MAIN_FILE})
 
+# Setup Build + Sanitizer
 add_executable(sanitize ${SOURCE_FILES})
 target_sources(sanitize PRIVATE ${MAIN_FILE})
 

@@ -12,10 +12,17 @@
 namespace tsunami_lab {
   namespace patches {
     class WavePropagation;
+    enum Solver
+    {
+      FWave,
+      Roe
+    };
   }
 }
 
 class tsunami_lab::patches::WavePropagation {
+
+
   public:
     /**
      * Virtual destructor for base class.
@@ -94,6 +101,13 @@ class tsunami_lab::patches::WavePropagation {
     virtual void setMomentumY( t_idx  i_ix,
                                t_idx  i_iy,
                                t_real i_hv ) = 0;
+
+    /**
+     * Set the solver for the netUpdate
+     * 
+     * @param solver used solver
+     */
+    virtual void setSolver(Solver solver) = 0;
 };
 
 #endif
