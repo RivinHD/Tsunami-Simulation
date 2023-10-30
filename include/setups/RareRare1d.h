@@ -16,23 +16,63 @@ namespace tsunami_lab {
   }
 }
 
+/**
+ * 1d rare-rare setup.
+ */
 class tsunami_lab::setups::RareRare1d : public Setup
 {
 private:
+  //! height of left side
   t_real m_heightLeft = 0;
+  //! height of right side
   t_real m_heightRight = 0;
+  //! momentum of left side
   t_real m_momentumLeft = 0;
+  //! momentum of right side
   t_real m_locationRare = 0;
 public:
+    /**
+     * @brief Construct a new rare-rare 1d object.
+     *
+     * @param i_heightLeft water height of left side of the bare location.
+     * @param i_heightRight water height of right side of the bare location.
+     * @param i_momentumLeft momentum of the water of the left side.
+     * @param i_locationRare location (x-coordinate) of the bare.
+     */
   RareRare1d( t_real i_heightLeft,
                 t_real i_heightRight,
                 t_real i_momentumLeft,
                 t_real i_locationRare);
-  ~RareRare1d();
 
-  t_real getHeight( t_real i_x, t_real i_y ) const;
-  t_real getMomentumX( t_real i_x, t_real i_y ) const;
-  t_real getMomentumY( t_real i_x, t_real i_y ) const;
+  /**
+   * Destroy the rare-rare 1d object.
+   */
+  ~RareRare1d(){};
+
+  /**
+   * Get the ware height at a given point.
+   *
+   * @param i_x x-coordinate of the queried point.
+   * @param i_y y-coordinate of the queried point.
+   * @return height at the given point.
+   */
+  t_real getHeight( t_real i_x, t_real ) const;
+
+  /**
+   * Get the momentum in x-direction at a given point.
+   *
+   * @param i_x
+   * @param i_y
+   * @return momentum in x-direction at a given point.
+   */
+  t_real getMomentumX( t_real i_x, t_real ) const;
+
+    /**
+     * Get the momentum in y-direction at a given point.
+     *
+     * @return momentum in y-direction at a given point.
+     */
+  t_real getMomentumY( t_real, t_real ) const;
 };
 
 #endif // RARERARE1D_H

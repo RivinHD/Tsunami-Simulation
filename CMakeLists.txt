@@ -32,6 +32,7 @@ set(SRC_FILES
     setups/DamBreak1d
     patches/WavePropagation1d
     io/Csv
+    setups/RareRare1d
 )
 set(TEST_FILES ${PROJECT_SOURCE_DIR}/tests.cpp)
 set(MAIN_FILE ${PROJECT_SOURCE_DIR}/main.cpp)
