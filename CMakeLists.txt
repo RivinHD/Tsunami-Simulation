@@ -30,6 +30,7 @@ set(SRC_FILES
     solvers/FWave
     solvers/Roe
     setups/DamBreak1d
+    setups/ShockShock1d
     patches/WavePropagation1d
     io/Csv
 )
