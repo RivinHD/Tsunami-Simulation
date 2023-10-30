@@ -5,6 +5,7 @@
  * IO-routines for writing a snapshot as Comma Separated Values (CSV).
  **/
 #include "../../include/io/Csv.h"
+#include <iostream>
 
 void tsunami_lab::io::Csv::write( t_real               i_dxy,
                                   t_idx                i_nx,
@@ -49,13 +50,17 @@ bool tsunami_lab::io::Csv::next_middle_states ( std::ifstream & stream,
                                                 t_real & o_hStar )
 {
   std::string line; 
+
+  // read next complete line
   while (std::getline(stream, line))
   {
+    // skip commented lines
     if (line[0] == '#')
     {
       continue;
     }
 
+    // parse lines divided by ',' to single values
     std::istringstream lineStream(line);
     std::string hLeft;
     std::getline(lineStream, hLeft, ',');
@@ -74,5 +79,6 @@ bool tsunami_lab::io::Csv::next_middle_states ( std::ifstream & stream,
     o_hStar = atof(hStar.c_str());
     return true;
   }
+  // no lines left to read
   return false;
 }

@@ -18,7 +18,7 @@
 
 int main()
 {
-    std::ifstream middle_states("C:\\Users\\Vincent\\Documents\\GitHub\\Tsunami-Simulation\\resources\\middle_states.csv");
+    std::ifstream middle_states("../resources/middle_states.csv");
     
     tsunami_lab::t_real hLeft, hRight, huLeft, huRight, hStar;
     while (tsunami_lab::io::Csv::next_middle_states( middle_states,

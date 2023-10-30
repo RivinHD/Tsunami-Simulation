@@ -44,6 +44,18 @@ class tsunami_lab::io::Csv {
                        t_real       const * i_hv,
                        std::ostream       & io_stream );
 
+    /**
+     * get's the next parsed value pair from the middle_state.csv file stream
+     * 
+     * @param stream file stream of middle_state.csv
+     * @param o_hLeft ouput the height left
+     * @param o_hRight ouput the height right
+     * @param o_huLeft output the momentum left
+     * @param o_huRight output the momentum right
+     * @param o_hStar output the computed height 
+     * @return true 
+     * @return false 
+     */
     static bool next_middle_states ( std::ifstream & stream,
                                      t_real & o_hLeft,
                                      t_real & o_hRight,

@@ -12,6 +12,10 @@
 namespace tsunami_lab {
   namespace patches {
     class WavePropagation;
+
+    /**
+     * solver options for wave propagation.
+     */
     enum Solver
     {
       FWave,

@@ -6,6 +6,8 @@
  **/
 #include "../include/patches/WavePropagation1d.h"
 #include "../include/setups/DamBreak1d.h"
+#include "../include/setups/RareRare1d.h"
+#include "../include/setups/ShockShock1d.h"
 #include "../include/io/Csv.h"
 #include <cstdlib>
 #include <iostream>
@@ -38,6 +40,7 @@ int main( int   i_argc,
   std::cout << "### https://scalable.uni-jena.de ###" << std::endl;
   std::cout << "####################################" << std::endl;
 
+  // error: wrong number of arguments.
   if( i_argc < 2 || i_argc == 3 || i_argc > 4) {
     std::cerr << "invalid number of arguments, usage:" << std::endl
               << "  ./build/tsunami_lab N_CELLS_X [-s <fwave|roe>]" << std::endl
@@ -45,18 +48,22 @@ int main( int   i_argc,
               << "optional flag: '-s' set used solvers requires 'fwave' or 'roe' as inputs" << std::endl;
     return EXIT_FAILURE;
   }
+  // flag: set solver.
   else if ( i_argc == 4)
   {
+    // unknown flag.
     if ( ARG_SOLVER != std::string(i_argv[2]))
     {
       std::cerr << "unknown flag: " << i_argv[2] << std::endl; 
       return EXIT_FAILURE;
     }
+    // set solver: roe
     if ( "roe" == std::string(i_argv[3]))
     {
       std::cout << "Set Solver: Roe" << std::endl;
       solver = tsunami_lab::patches::Solver::Roe;
     }
+    // set solver: fwave
     else if ( "fwave" == std::string(i_argv[3]))
     {
       std::cout << "Set Solver: FWave" << std::endl;
@@ -75,8 +82,8 @@ int main( int   i_argc,
       std::cerr << "invalid number of cells" << std::endl;
       return EXIT_FAILURE;
     }
+    // choose default solver: fwave
     l_dxy = 10.0 / l_nx;
-    
     std::cout << "Set Solver: FWave" << std::endl;
   }
   std::cout << "runtime configuration" << std::endl;
@@ -86,9 +93,17 @@ int main( int   i_argc,
 
   // construct setup
   tsunami_lab::setups::Setup *l_setup;
-  l_setup = new tsunami_lab::setups::DamBreak1d( 3355.320152644279,
-                                                 3530.971494481364,
-                                                 5 );
+
+  tsunami_lab::t_real l_hl = 10;
+  tsunami_lab::t_real l_hr = 15;
+  tsunami_lab::t_real l_ml = -555;
+  tsunami_lab::t_real l_location = 2;
+
+  // l_setup = new tsunami_lab::setups::DamBreak1d(l_hl, l_hr, l_location);
+  // l_setup = new tsunami_lab::setups::RareRare1d(l_hl, l_hr, l_ml, l_location);
+  l_setup = new tsunami_lab::setups::ShockShock1d(l_hl, l_hr, l_ml, l_location);
+
+
   // construct solver
   tsunami_lab::patches::WavePropagation *l_waveProp;
   l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx );

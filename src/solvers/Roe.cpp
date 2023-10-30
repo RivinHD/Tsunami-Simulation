@@ -6,6 +6,7 @@
  **/
 #include "../../include/solvers/Roe.h"
 #include <cmath>
+#include <iostream>
 
 void tsunami_lab::solvers::Roe::waveSpeeds( t_real   i_hL,
                                             t_real   i_hR,
@@ -77,6 +78,7 @@ void tsunami_lab::solvers::Roe::netUpdates( t_real i_hL,
               l_uR,
               l_sL,
               l_sR );
+    std::cout << "Eigenvalue 1: " << l_sL << "; Eigenvalue 2: " << l_sR << std::endl;
 
   // compute wave strengths
   t_real l_aL = 0;
