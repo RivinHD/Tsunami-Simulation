@@ -78,7 +78,6 @@ void tsunami_lab::solvers::Roe::netUpdates( t_real i_hL,
               l_uR,
               l_sL,
               l_sR );
-    std::cout << "Eigenvalue 1: " << l_sL << "; Eigenvalue 2: " << l_sR << std::endl;
 
   // compute wave strengths
   t_real l_aL = 0;

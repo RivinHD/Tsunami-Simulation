@@ -76,16 +76,15 @@ int main( int   i_argc,
     }
     
   }
-  else {
-    l_nx = atoi( i_argv[1] );
-    if( l_nx < 1 ) {
+
+  l_nx = atoi( i_argv[1] );
+  if( l_nx < 1 ) {
       std::cerr << "invalid number of cells" << std::endl;
       return EXIT_FAILURE;
-    }
-    // choose default solver: fwave
-    l_dxy = 10.0 / l_nx;
-    std::cout << "Set Solver: FWave" << std::endl;
   }
+  // choose default solver: fwave
+  l_dxy = 10.0 / l_nx;
+
   std::cout << "runtime configuration" << std::endl;
   std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
   std::cout << "  number of cells in y-direction: " << l_ny << std::endl;
@@ -94,14 +93,14 @@ int main( int   i_argc,
   // construct setup
   tsunami_lab::setups::Setup *l_setup;
 
-  tsunami_lab::t_real l_hl = 10;
-  tsunami_lab::t_real l_hr = 15;
-  tsunami_lab::t_real l_ml = -555;
-  tsunami_lab::t_real l_location = 2;
+  tsunami_lab::t_real l_hl = 14;
+  tsunami_lab::t_real l_hr = 3.5;
+  // tsunami_lab::t_real l_ml = 2000;
+  tsunami_lab::t_real l_location = 5;
 
-  // l_setup = new tsunami_lab::setups::DamBreak1d(l_hl, l_hr, l_location);
-  // l_setup = new tsunami_lab::setups::RareRare1d(l_hl, l_hr, l_ml, l_location);
-  l_setup = new tsunami_lab::setups::ShockShock1d(l_hl, l_hr, l_ml, l_location);
+  l_setup = new tsunami_lab::setups::DamBreak1d(l_hl, l_hr, l_location);
+  // l_setup = new tsunami_lab::setups::RareRare1d(l_hl, l_ml, l_location);
+  // l_setup = new tsunami_lab::setups::ShockShock1d(l_hl, l_ml, l_location);
 
 
   // construct solver

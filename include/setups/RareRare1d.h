@@ -24,8 +24,6 @@ class tsunami_lab::setups::RareRare1d : public Setup
 private:
   //! height of left side
   t_real m_heightLeft = 0;
-  //! height of right side
-  t_real m_heightRight = 0;
   //! momentum of left side
   t_real m_momentumLeft = 0;
   //! momentum of right side
@@ -35,12 +33,10 @@ public:
      * @brief Construct a new rare-rare 1d object.
      *
      * @param i_heightLeft water height of left side of the bare location.
-     * @param i_heightRight water height of right side of the bare location.
      * @param i_momentumLeft momentum of the water of the left side.
      * @param i_locationRare location (x-coordinate) of the bare.
      */
   RareRare1d( t_real i_heightLeft,
-                t_real i_heightRight,
                 t_real i_momentumLeft,
                 t_real i_locationRare);
 
@@ -52,17 +48,15 @@ public:
   /**
    * Get the ware height at a given point.
    *
-   * @param i_x x-coordinate of the queried point.
-   * @param i_y y-coordinate of the queried point.
    * @return height at the given point.
    */
-  t_real getHeight( t_real i_x, t_real ) const;
+  t_real getHeight( t_real , t_real ) const;
 
   /**
    * Get the momentum in x-direction at a given point.
    *
-   * @param i_x
-   * @param i_y
+   * @param i_x x-coordinate of the queried point.
+   *
    * @return momentum in x-direction at a given point.
    */
   t_real getMomentumX( t_real i_x, t_real ) const;

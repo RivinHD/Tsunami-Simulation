@@ -74,7 +74,8 @@ void tsunami_lab::solvers::FWave::netUpdates(t_real i_hL,
     t_real eigenvalue1 = 0;
     t_real eigenvalue2 = 0;
     computeEigenvalues(i_hL, i_hR, l_uL, l_uR, eigenvalue1, eigenvalue2);
-    std::cout << "Eigenvalue 1: " << eigenvalue1 << "; Eigenvalue 2: " << eigenvalue2 << std::endl;
+
+    std::cout << "eigenvalue_1: " << eigenvalue1 << ", eigenvalue_2: " << eigenvalue2 << std::endl;
 
     // create eigenvectors
     t_real eigenvector1[2] = {1, eigenvalue1};
