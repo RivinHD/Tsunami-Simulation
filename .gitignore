@@ -7,3 +7,5 @@ cmake-build-release/
 cmake-build-test/
 .clang-tidy
 .idea/
+.vs/
+CMakeSettings.json
