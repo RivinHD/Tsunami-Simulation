@@ -9,7 +9,6 @@
 
 TEST_CASE( "Test the one-dimensional rare-rare setup.", "[RareRare1d]" ) {
     tsunami_lab::setups::RareRare1d l_rareRare( 25,
-                                                55,
                                                 35,
                                                 3 );
 
@@ -27,13 +26,13 @@ TEST_CASE( "Test the one-dimensional rare-rare setup.", "[RareRare1d]" ) {
     REQUIRE( l_rareRare.getMomentumY( 2, 2 ) == 0 );
 
     // right side
-    REQUIRE( l_rareRare.getHeight( 4, 0 ) == 55 );
+    REQUIRE( l_rareRare.getHeight( 4, 0 ) == 25 );
 
     REQUIRE( l_rareRare.getMomentumX( 4, 0 ) == 35 );
 
     REQUIRE( l_rareRare.getMomentumY( 4, 0 ) == 0 );
 
-    REQUIRE( l_rareRare.getHeight( 4, 5 ) == 55 );
+    REQUIRE( l_rareRare.getHeight( 4, 5 ) == 25 );
 
     REQUIRE( l_rareRare.getMomentumX( 4, 5 ) == 35 );
 
