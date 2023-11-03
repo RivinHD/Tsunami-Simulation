@@ -4,7 +4,6 @@
  * @section DESCRIPTION
  * One-dimensional wave propagation patch.
  **/
-#include <iostream>
 #include "../../include/patches/WavePropagation1d.h"
 #include "../../include/solvers/Roe.h"
 #include "../../include/solvers/FWave.h"

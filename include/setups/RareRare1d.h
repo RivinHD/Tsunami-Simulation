@@ -32,9 +32,9 @@ public:
     /**
      * @brief Construct a new rare-rare 1d object.
      *
-     * @param i_heightLeft water height of left side of the bare location.
+     * @param i_heightLeft water height of left side of the rare location.
      * @param i_momentumLeft momentum of the water of the left side.
-     * @param i_locationRare location (x-coordinate) of the bare.
+     * @param i_locationRare location (x-coordinate) of the rare.
      */
   RareRare1d( t_real i_heightLeft,
                 t_real i_momentumLeft,

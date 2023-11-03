@@ -161,8 +161,6 @@ int main( int   i_argc,
   tsunami_lab::t_real l_endTime = 1.25;
   tsunami_lab::t_real l_simTime = 0;
 
-  std::cout << "entering time loop" << std::endl;
-
   // create solution folder
   if (!fs::is_directory(SOLUTION_FOLDER)) 
   {
@@ -172,6 +170,8 @@ int main( int   i_argc,
     }
     fs::create_directory(SOLUTION_FOLDER); 
   }
+
+  std::cout << "entering time loop" << std::endl;
 
   // iterate over time
   while( l_simTime < l_endTime ){

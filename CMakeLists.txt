@@ -31,13 +31,22 @@ set(SRC_FILES
     solvers/Roe
     setups/DamBreak1d
     setups/ShockShock1d
+    setups/RareRare1d
     patches/WavePropagation1d
     io/Csv
-    setups/RareRare1d
+)
+set(SRC_FILES_NO_TEST
+    setups/MiddleStates1d
 )
 set(TEST_FILES ${PROJECT_SOURCE_DIR}/tests.cpp)
 set(MAIN_FILE ${PROJECT_SOURCE_DIR}/main.cpp)
 set(MIDDLE_STATE_FILE ${PROJECT_SOURCE_DIR}/test_middle_states.cpp)
+
+# Add the Resources. Added resources can be accessed relatively as if they were in the project directory.
+set(PROJECT_RESOURCE_DIR "resources")
+set(RESOURCE_FILES
+    middle_states.csv
+)
 
 # Create SOURCE_FILES
 foreach(file ${SRC_FILES})
@@ -48,6 +57,17 @@ foreach(file ${SRC_FILES})
     list(APPEND TEST_FILES
         ${PROJECT_SOURCE_DIR}/${file}.test.cpp
     )
+endforeach()
+foreach(file ${SRC_FILES_NO_TEST})
+    list(APPEND SOURCE_FILES
+        ${PROJECT_SOURCE_DIR}/${file}.cpp
+        ${PROJECT_INCLUDE_DIR}/${file}.h
+    )
+endforeach()
+
+# Copy the RESOURCE_FILES
+foreach(file ${RESOURCE_FILES})
+    configure_file(${PROJECT_RESOURCE_DIR}/${file} ${PROJECT_RESOURCE_DIR}/${file} COPYONLY)
 endforeach()
 
 
