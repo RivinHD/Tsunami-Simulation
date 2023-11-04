@@ -34,11 +34,12 @@ int main( int   i_argc,
 
   tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWave;
 
-  std::cout << "####################################" << std::endl;
-  std::cout << "### Tsunami Lab                  ###" << std::endl;
-  std::cout << "###                              ###" << std::endl;
-  std::cout << "### https://scalable.uni-jena.de ###" << std::endl;
-  std::cout << "####################################" << std::endl;
+  std::cout << "#####################################################" << std::endl;
+  std::cout << "###                  Tsunami Lab                  ###" << std::endl;
+  std::cout << "###                                               ###" << std::endl;
+  std::cout << "### https://scalable.uni-jena.de                  ###" << std::endl;
+  std::cout << "### https://rivinhd.github.io/Tsunami-Simulation/ ###" << std::endl;
+  std::cout << "#####################################################" << std::endl;
 
   // error: wrong number of arguments.
   if( i_argc < 2 || i_argc == 3 || i_argc > 4) {
@@ -148,6 +149,7 @@ int main( int   i_argc,
 
   // derive maximum wave speed in setup; the momentum is ignored
   tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
+  std::cout << "Max speed" << l_speedMax << std::endl;
 
   // derive constant time step; changes at simulation time are ignored
   tsunami_lab::t_real l_dt = 0.5 * l_dxy / l_speedMax;

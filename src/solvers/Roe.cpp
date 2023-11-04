@@ -27,6 +27,8 @@ void tsunami_lab::solvers::Roe::waveSpeeds( t_real   i_hL,
   t_real l_ghSqrtRoe = m_gSqrt * std::sqrt( l_hRoe );
   o_waveSpeedL = l_uRoe - l_ghSqrtRoe;
   o_waveSpeedR = l_uRoe + l_ghSqrtRoe;
+
+    std::cout << o_waveSpeedL << std::endl;
 }
 
 void tsunami_lab::solvers::Roe::waveStrengths( t_real   i_hL,
