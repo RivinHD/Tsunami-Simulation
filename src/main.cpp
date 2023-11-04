@@ -43,7 +43,7 @@ int main( int   i_argc,
   // error: wrong number of arguments.
   if( i_argc < 2 || i_argc == 3 || i_argc > 4) {
     std::cerr << "invalid number of arguments, usage:" << std::endl
-              << "  ./build/tsunami_lab N_CELLS_X [-s <fwave|roe>]" << std::endl
+              << "  ./build/simulation N_CELLS_X [-s <fwave|roe>]" << std::endl
               << "where N_CELLS_X is the number of cells in x-direction." << std::endl
               << "optional flag: '-s' set used solvers requires 'fwave' or 'roe' as inputs" << std::endl;
     return EXIT_FAILURE;

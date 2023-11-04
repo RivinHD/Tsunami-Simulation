@@ -101,8 +101,8 @@ add_executable(test_middle_states ${SOURCE_FILES})
 target_sources(test_middle_states PRIVATE ${MIDDLE_STATE_FILE})
 
 # Setup Build
-add_executable(build ${SOURCE_FILES})
-target_sources(build PRIVATE ${MAIN_FILE})
+add_executable(simulation ${SOURCE_FILES})
+target_sources(simulation PRIVATE ${MAIN_FILE})
 
 # Setup Build + Sanitizer
 add_executable(sanitize ${SOURCE_FILES})
