@@ -34,16 +34,17 @@ int main( int   i_argc,
 
   tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWave;
 
-  std::cout << "####################################" << std::endl;
-  std::cout << "### Tsunami Lab                  ###" << std::endl;
-  std::cout << "###                              ###" << std::endl;
-  std::cout << "### https://scalable.uni-jena.de ###" << std::endl;
-  std::cout << "####################################" << std::endl;
+  std::cout << "#####################################################" << std::endl;
+  std::cout << "###                  Tsunami Lab                  ###" << std::endl;
+  std::cout << "###                                               ###" << std::endl;
+  std::cout << "### https://scalable.uni-jena.de                  ###" << std::endl;
+  std::cout << "### https://rivinhd.github.io/Tsunami-Simulation/ ###" << std::endl;
+  std::cout << "#####################################################" << std::endl;
 
   // error: wrong number of arguments.
   if( i_argc < 2 || i_argc == 3 || i_argc > 4) {
     std::cerr << "invalid number of arguments, usage:" << std::endl
-              << "  ./build/tsunami_lab N_CELLS_X [-s <fwave|roe>]" << std::endl
+              << "./build N_CELLS_X [-s <fwave|roe>]" << std::endl
               << "where N_CELLS_X is the number of cells in x-direction." << std::endl
               << "optional flag: '-s' set used solvers requires 'fwave' or 'roe' as inputs" << std::endl;
     return EXIT_FAILURE;
@@ -148,6 +149,7 @@ int main( int   i_argc,
 
   // derive maximum wave speed in setup; the momentum is ignored
   tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
+  std::cout << "Max speed" << l_speedMax << std::endl;
 
   // derive constant time step; changes at simulation time are ignored
   tsunami_lab::t_real l_dt = 0.5 * l_dxy / l_speedMax;

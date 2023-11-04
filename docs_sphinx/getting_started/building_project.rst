@@ -3,8 +3,8 @@
 .. role:: raw-html(raw)
     :format: html
 
-Building the Simulation
-=======================
+Building the Project
+====================
 
 
 Requirements

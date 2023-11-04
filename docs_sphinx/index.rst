@@ -3,7 +3,7 @@
    :caption: GETTING STARTED
    :glob:
 
-   getting_started/building_simulation.rst
+   getting_started/building_project.rst
    getting_started/building_docs.rst
 
 .. toctree::

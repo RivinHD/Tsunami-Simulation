@@ -106,14 +106,27 @@ Compute evacuation time
 
 .. math::
 
-    q_l=[14, 0]^T\\
-    q_r=[3.5, 0.7]^T
+    q_l = [14, 0]^T\\
+    q_r = [3.5, 0.7]^T
 
 Distance: :math:`25,000\,m` :raw-html:`<br>`
 Wave speed: :math:`11.7120\,m/s`
 
 Time: :math:`\frac{25,000\,m}{11.7120\,m/s} = 35,5760\,s \approx \text{35:34 min}`
 
+**New (hand-calculated)**
 
+.. math::
 
+    q_l = [14, 0]^T, u_l = \frac{0}{14} =0\\
+    q_r = [3.5, 0.7]^T, u_l = \frac{0.7}{3.5} = 0.2\\
+    h^{\text{Roe}} = \frac{1}{2}\cdot(14+3.5) = 8.75\\
+    u^{\text{Roe}} = \frac{0\cdot\sqrt{14}+0.2\cdot\sqrt{3.5}}{\sqrt{1}+\sqrt{3.5}} = \frac{1}{15}\\
+    \sqrt{gh^{\text{Roe}}} = \sqrt{9.80665\cdot8.75} = 9.263270886\\
+    \lambda_1 = \frac{1}{15}-9.263270886 = -9.196604219\\
+    \lambda_2 = \frac{1}{15}+9.263270886 = 9.329937553
 
+Distance: :math:`25,000\,m` :raw-html:`<br>`
+Wave speed: :math:`9.329937553\,m/s`
+
+Time: :math:`\frac{25,000\,m}{9.329937553\,m/s} = 2679.546\,s \approx \text{44:40 min}`
