@@ -29,6 +29,7 @@ set(PROJECT_INCLUDE_DIR "include")
 set(SRC_FILES
     solvers/FWave
     solvers/Roe
+    setups/MiddleStates1d
     setups/DamBreak1d
     setups/ShockShock1d
     setups/RareRare1d
@@ -36,7 +37,10 @@ set(SRC_FILES
     io/Csv
 )
 set(SRC_FILES_NO_TEST
-    setups/MiddleStates1d
+
+)
+set(SRC_FILES_HEADER_ONLY
+
 )
 set(TEST_FILES ${PROJECT_SOURCE_DIR}/tests.cpp)
 set(MAIN_FILE ${PROJECT_SOURCE_DIR}/main.cpp)
@@ -61,6 +65,11 @@ endforeach()
 foreach(file ${SRC_FILES_NO_TEST})
     list(APPEND SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/${file}.cpp
+        ${PROJECT_INCLUDE_DIR}/${file}.h
+    )
+endforeach()
+foreach(file ${SRC_FILES_HEADER_ONLY})
+    list(APPEND SOURCE_FILES
         ${PROJECT_INCLUDE_DIR}/${file}.h
     )
 endforeach()

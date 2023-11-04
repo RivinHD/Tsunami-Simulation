@@ -4,8 +4,6 @@
  * @section DESCRIPTION
  * Entry-point for middle states tests.
  **/
-#include "../include/solvers/FWave.h"
-#include "../include/solvers/Roe.h"
 #include "../include/patches/WavePropagation1d.h"
 #include "../include/io/Csv.h"
 #include "../include/constants.h"
@@ -16,19 +14,20 @@
 #include <fstream>
 #include <limits>
 #include <string>
-#include <filesystem> // requieres C++17 and up
 
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
 #undef CATCH_CONFIG_RUNNER
 
+// Setup the Configuration Variables for the Test against middle_states.csv
 const tsunami_lab::t_idx numberOfCells = 10;
-const unsigned int numberOfTests = 500000;
+const unsigned int numberOfTests = 1000000;
 const double testAccuracy = 0.99;
 const double accuracyMargin = 0.0001;
 
 int main( int i_argc, char* i_argv[] )
 {
+	// Run the MiddleStates Test with Catch2
 	std::cout << "Run MiddleStates Test" << std::endl;
 	int l_result = Catch::Session().run( i_argc, i_argv );
 	return ( l_result < 0xff ? l_result : 0xff );
@@ -36,11 +35,13 @@ int main( int i_argc, char* i_argv[] )
 
 TEST_CASE( "Test against the middle_states.csv with DamBreak", "[MiddleStates]" )
 {
+	// Read the middle_states.csv
 	std::ifstream middle_states( "resources/middle_states.csv" );
 
 	unsigned int successfullTests = 0;
 	unsigned int evaluatedTests = 0;
 
+	// parese each line of the middle_states.csv and test against the simulation
 	tsunami_lab::t_real hLeft, hRight, huLeft, huRight, hStar;
 	while( evaluatedTests < numberOfTests
 		  && tsunami_lab::io::Csv::next_middle_states( middle_states,
@@ -55,14 +56,14 @@ TEST_CASE( "Test against the middle_states.csv with DamBreak", "[MiddleStates]" 
 		tsunami_lab::t_real l_middle = 0.5;
 
 		// construct setup
-		tsunami_lab::setups::Setup* l_setup = new tsunami_lab::setups::MiddleStates( hLeft, hRight, huLeft, huRight, l_middle );
+		tsunami_lab::setups::Setup* l_setup = new tsunami_lab::setups::MiddleStates1d( hLeft, hRight, huLeft, huRight, l_middle );
 
 		// construct solver
 		tsunami_lab::patches::WavePropagation* l_waveProp;
 		l_waveProp = new tsunami_lab::patches::WavePropagation1d( numberOfCells );
 
 		// set the solver to use
-		l_waveProp->setSolver( tsunami_lab::patches::Solver::FWave );
+		l_waveProp->setSolver( tsunami_lab::patches::Solver::Roe );
 
 		// maximum observed height in the setup
 		tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
@@ -138,11 +139,13 @@ TEST_CASE( "Test against the middle_states.csv with DamBreak", "[MiddleStates]" 
 			std::cout << "FAILED: Deviation to high from Test " << evaluatedTests << " (Deviation:" << hStar - heights[l_id] << ")" << std::endl;
 		}
 
+		// free memory
 		delete l_setup;
 		delete l_waveProp;
 		++evaluatedTests;
 	}
 
+	// close the file and print the results
 	middle_states.close();
 	std::cout << successfullTests << " Tests were succesfull of " << evaluatedTests << std::endl
 		<< "Accuracy of " << successfullTests / static_cast<double>( evaluatedTests ) << " with Margin of " << accuracyMargin << " and " << numberOfCells << " Cells" << std::endl;

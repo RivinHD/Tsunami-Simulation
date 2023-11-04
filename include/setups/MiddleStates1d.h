@@ -2,7 +2,7 @@
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
  * @section DESCRIPTION
- * One-dimensional rare-rare problem.
+ * One-dimensional middle-states problem.
  **/
 
 #ifndef MIDDKESTATES1D_H
@@ -14,14 +14,14 @@ namespace tsunami_lab
 {
     namespace setups
     {
-        class MiddleStates;
+        class MiddleStates1d;
     }
 }
 
 /**
  * 1d rare-rare setup.
  */
-class tsunami_lab::setups::MiddleStates : public Setup
+class tsunami_lab::setups::MiddleStates1d : public Setup
 {
 private:
     //! height of left side
@@ -44,7 +44,7 @@ public:
      * @param i_momentumRight momentum of the water of the right side.
      * @param i_location location (x-coordinate) of the middle state.
     */
-    MiddleStates( t_real i_heightLeft,
+    MiddleStates1d( t_real i_heightLeft,
                   t_real i_heightRight,
                   t_real i_momentumLeft,
                   t_real i_momentumRight,
@@ -53,7 +53,7 @@ public:
     /**
      * Destroy the middleStates 1d object.
      */
-    ~MiddleStates()
+    ~MiddleStates1d()
     {
     };
 

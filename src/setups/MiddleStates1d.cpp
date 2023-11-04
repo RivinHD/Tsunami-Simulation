@@ -1,7 +1,7 @@
 #include "../../include/setups/MiddleStates1d.h"
 #include "../../include/constants.h"
 
-tsunami_lab::setups::MiddleStates::MiddleStates( t_real i_heightLeft, t_real i_heightRight, t_real i_momentumLeft, t_real i_momentumRight, t_real i_location )
+tsunami_lab::setups::MiddleStates1d::MiddleStates1d( t_real i_heightLeft, t_real i_heightRight, t_real i_momentumLeft, t_real i_momentumRight, t_real i_location )
 {
 	m_heightLeft = i_heightLeft;
 	m_heightRight = i_heightRight;
@@ -10,7 +10,7 @@ tsunami_lab::setups::MiddleStates::MiddleStates( t_real i_heightLeft, t_real i_h
 	m_location = i_location;
 }
 
-tsunami_lab::t_real tsunami_lab::setups::MiddleStates::getHeight( t_real i_x, t_real ) const
+tsunami_lab::t_real tsunami_lab::setups::MiddleStates1d::getHeight( t_real i_x, t_real ) const
 {
 	if( i_x <= m_location )
 	{
@@ -22,7 +22,7 @@ tsunami_lab::t_real tsunami_lab::setups::MiddleStates::getHeight( t_real i_x, t_
 	}
 }
 
-tsunami_lab::t_real tsunami_lab::setups::MiddleStates::getMomentumX( t_real i_x, t_real ) const
+tsunami_lab::t_real tsunami_lab::setups::MiddleStates1d::getMomentumX( t_real i_x, t_real ) const
 {
 	if( i_x <= m_location )
 	{
@@ -34,7 +34,7 @@ tsunami_lab::t_real tsunami_lab::setups::MiddleStates::getMomentumX( t_real i_x,
 	}
 }
 
-tsunami_lab::t_real tsunami_lab::setups::MiddleStates::getMomentumY( t_real, t_real ) const
+tsunami_lab::t_real tsunami_lab::setups::MiddleStates1d::getMomentumY( t_real, t_real ) const
 {
 	return 0;
 }
