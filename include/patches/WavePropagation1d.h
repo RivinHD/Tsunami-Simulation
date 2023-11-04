@@ -124,6 +124,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
                        
     /**
      * Set the solver for the netUpdate
+     * Default: FWave
      * 
      * @param solver used solver
      */

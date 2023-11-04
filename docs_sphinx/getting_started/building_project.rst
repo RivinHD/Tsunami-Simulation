@@ -133,7 +133,7 @@ Building
 
     Where **Release** enable the Optimization flags and **Debug** disable the Optimization flags.
 
-    Options for ``--target`` are **build**, **sanitize** and **test**
+    Options for ``--target`` are **simulation**, **sanitize**, **test**, **sanitize_test** and **test_middle_states**.
 
     +--------------------+--------------------------------------------------------------------------------------------------------------------+
     | Option             |  Description                                                                                                       |
