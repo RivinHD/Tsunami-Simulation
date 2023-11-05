@@ -75,9 +75,9 @@ int main( int   i_argc,
                 << "valid arguments are 'fwave', 'roe'" << std::endl;
       return EXIT_FAILURE;
     }
-    
   }
 
+  // number of arguments == 2
   l_nx = atoi( i_argv[1] );
   if( l_nx < 1 ) {
       std::cerr << "invalid number of cells" << std::endl;

@@ -6,10 +6,249 @@
 2. Finite Volume Discretization
 ===============================
 
-Add exercise.
+Switch Solver
+-------------
+
+The default solver used in ``WavePropagation1d.h``, ``WavePropagation1d.cpp`` and
+``WavePropagation1d.test.cpp`` is the f-wave solver. To change the solver, use the ``-s``
+flag and choose between ``roe`` and ``fwave`` as argument to specify the solver used.
+Internally, a function pointer is used to select between the solvers.
+
+Logic is in the ``main.cpp`` file:
+
+.. code-block:: cpp
+
+    // error: wrong number of arguments.
+    if( i_argc < 2 || i_argc == 3 || i_argc > 4) {
+        std::cerr << "invalid number of arguments, usage:" << std::endl
+                  << "  ./build/simulation N_CELLS_X [-s <fwave|roe>]" << std::endl
+                  << "where N_CELLS_X is the number of cells in x-direction." << std::endl
+                  << "optional flag: '-s' set used solvers requires 'fwave' or 'roe' as inputs" << std::endl;
+        return EXIT_FAILURE;
+    }
+    // flag: set solver.
+    else if ( i_argc == 4)
+    {
+        // unknown flag.
+        if ( ARG_SOLVER != std::string(i_argv[2]))
+        {
+          std::cerr << "unknown flag: " << i_argv[2] << std::endl;
+          return EXIT_FAILURE;
+        }
+        // set solver: roe
+        if ( "roe" == std::string(i_argv[3]))
+        {
+          std::cout << "Set Solver: Roe" << std::endl;
+          solver = tsunami_lab::patches::Solver::Roe;
+        }
+        // set solver: fwave
+        else if ( "fwave" == std::string(i_argv[3]))
+        {
+          std::cout << "Set Solver: FWave" << std::endl;
+        }
+        else
+        {
+          std::cerr << "unknown argument for flag -s" << std::endl
+                    << "valid arguments are 'fwave', 'roe'" << std::endl;
+          return EXIT_FAILURE;
+        }
+    }
+
+    // number of arguments == 2
+    l_nx = atoi( i_argv[1] );
+    if( l_nx < 1 ) {
+      std::cerr << "invalid number of cells" << std::endl;
+      return EXIT_FAILURE;
+    }
+    // choose default solver: fwave
+
+Sanity Check
+------------
+
+Use these middle states as a sanity check.
+
+Continuous Integration
+----------------------
+
+**Using GitHub Actions** file: ``.github/workflows/main.yml``
+
+.. code-block:: bash
+
+    ##
+    # @author Alexander Breuer (alex.breuer AT uni-jena.de)
+    # @section DESCRIPTION
+    # Continuous integration using GitHub Actions.
+    ##
+    name: Tsunami Lab
+
+    on:
+      push:
+        branches: [ main ]
+      pull_request:
+        branches: [ main ]
+      schedule:
+        - cron: 0 0 * * *
+
+    jobs:
+      CI:
+        runs-on: ubuntu-latest
+
+        steps:
+          - uses: actions/checkout@v4
+
+          - name: Dependencies
+            run: |
+              sudo apt-get update
+              sudo apt-get install cmake
+              sudo apt-get install valgrind
+              sudo apt-get install cppcheck
+              git submodule init
+              git submodule update
+          - name: Configure the project
+            uses: threeal/cmake-action@v1.3.0
+
+          - name: Static Code Analysis
+            run:
+              cppcheck src/ --template=gcc --force --error-exitcode=1
+
+          - name: Sanitize
+            run: |
+              cmake --build build --config Debug --target sanitize
+              ./build/sanitize 25
+              cmake --build build --config Debug --target sanitize_test
+              ./build/sanitize_test 25
+              cmake --build build --config Release --target sanitize
+              ./build/sanitize 500
+              cmake --build build --config Release --target sanitize_test
+              ./build/sanitize_test 500
+          - name: Valgrind
+            run: |
+              cmake --build build --config Debug --target test
+              valgrind build/test
+              cmake --build build --config Debug --target build
+              valgrind build/build 25
+          - name: Release
+            run: |
+              cmake --build build --config Release --target test
+              ./build/test
+              cmake --build build --config Release --target build
+              ./build/build 500
+
+???? Ensure to run at least the **solver’s** unit tests after every commit to your git repository. ????
 
 2.1. Shock and Rarefaction Waves
 --------------------------------
+
+Implementation of shock-shock setup
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+"**Shock-Shock Problem**: Let’s use our solver to solve shock-shock Riemann problems. Imagine two streams
+of water which move in opposite directions and smash into each other at some position :math:`x_\text{dis}`.
+The scenario is given by the following setup"[1]_:
+
+.. math::
+
+    \begin{split}\begin{cases}
+        Q_i = q_{l} \quad &\text{if } x_i \le x_\text{dis} \\
+        Q_i = q_{r} \quad &\text{if }   x_i > x_\text{dis}
+    \end{cases} \qquad q_l \in \mathbb{R}^+ \times \mathbb{R}^+, \; q_r \in \mathbb{R}^+ \times \mathbb{R}^-,\end{split}
+
+with initial conditions:
+
+:raw-html:`<center>(2.1.1)</center>`
+
+.. math::
+
+    \begin{split}q_l=
+        \begin{bmatrix}
+          h_l \\ (hu)_l
+        \end{bmatrix}, \quad
+      q_r =
+        \begin{bmatrix}
+          h_r \\ (hu)_r
+        \end{bmatrix} =
+        \begin{bmatrix}
+          h_l \\ -(hu)_l
+        \end{bmatrix}.
+    \end{split}
+
+.. code-block:: cpp
+
+    tsunami_lab::setups::ShockShock1d::ShockShock1d(t_real i_heightLeft,
+                                                    t_real i_momentumLeft,
+                                                    t_real i_locationShock)
+    {
+        m_heightLeft = i_heightLeft;
+        m_momentumLeft = i_momentumLeft;
+        m_locationShock = i_locationShock;
+    }
+
+    t_real tsunami_lab::setups::ShockShock1d::getHeight(t_real ,
+                                                        t_real ) const
+    {
+        return m_heightLeft;
+    }
+
+    t_real tsunami_lab::setups::ShockShock1d::getMomentumX(t_real i_x,
+                                                           t_real ) const
+    {
+        if (i_x <= m_locationShock)
+        {
+            return m_momentumLeft;
+        }
+        else
+        {
+            return -m_momentumLeft;
+        }
+    }
+
+    t_real tsunami_lab::setups::ShockShock1d::getMomentumY(t_real,
+                                                           t_real) const
+    {
+        return 0;
+    }
+
+Implementation of rare-rare setup
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+"Rare-Rare Problem: We can setup rare-rare Riemann problems by two streams of water, which move away
+from each other at some position :math:`x_\text{dis}`. The scenario is defined as"[1]_:
+
+.. math::
+
+    \begin{split}\begin{cases}
+        Q_i = q_{r} \quad &\text{if } x_i \le x_\text{dis} \\
+        Q_i = q_{l} \quad &\text{if }   x_i > x_\text{dis}
+        \end{cases} \qquad q_l \in \mathbb{R}^+ \times \mathbb{R}^+, \; q_r \in \mathbb{R}^+ \times \mathbb{R}^-,\end{split}
+
+.. code-block:: cpp
+
+    tsunami_lab::setups::RareRare1d::RareRare1d(tsunami_lab::t_real i_heightLeft,
+                                                tsunami_lab::t_real i_momentumLeft, tsunami_lab::t_real i_locationRare) {
+        m_heightLeft = i_heightLeft;
+        m_momentumLeft = i_momentumLeft;
+        m_locationRare = i_locationRare;
+    }
+
+    tsunami_lab::t_real tsunami_lab::setups::RareRare1d::getHeight(tsunami_lab::t_real , tsunami_lab::t_real) const {
+        return m_heightLeft;
+    }
+
+    tsunami_lab::t_real tsunami_lab::setups::RareRare1d::getMomentumX(tsunami_lab::t_real i_x,
+                                                                      tsunami_lab::t_real) const {
+        if (i_x <= m_locationRare) {
+            return -m_momentumLeft;
+        } else {
+            return m_momentumLeft;
+        }
+    }
+
+    tsunami_lab::t_real tsunami_lab::setups::RareRare1d::getMomentumY(tsunami_lab::t_real,
+                                                                      tsunami_lab::t_real) const {
+        return 0;
+}
+
+.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_1.html#f-wave-solver (29.10.2023)
 
 Play around
 ^^^^^^^^^^^
@@ -17,7 +256,9 @@ Play around
 l_hl...height of left side :raw-html:`<br>`
 l_hr...height of right side :raw-html:`<br>`
 l_ml...momentum of left side :raw-html:`<br>`
-l_location...location
+l_location...location :raw-html:`<br>`
+:math:`\lambda_1`...wave speed one :raw-html:`<br>`
+:math:`\lambda_2`...wave speed two
 
 All results with 3 cells!
 
@@ -76,6 +317,14 @@ Shock-Shock
 2.2. Dam-Break
 --------------
 
+Play around
+^^^^^^^^^^^
+
+l_hl...height of left side :raw-html:`<br>`
+l_hr...height of right side :raw-html:`<br>`
+l_location...location :raw-html:`<br>`
+l_ur...particles velocity of the right side
+
 All results with 100 cells!
 
 +--------+--------+------------+--------+
@@ -103,18 +352,6 @@ velocity decreases.
 
 Compute evacuation time
 ^^^^^^^^^^^^^^^^^^^^^^^
-
-.. math::
-
-    q_l = [14, 0]^T\\
-    q_r = [3.5, 0.7]^T
-
-Distance: :math:`25,000\,m` :raw-html:`<br>`
-Wave speed: :math:`11.7120\,m/s`
-
-Time: :math:`\frac{25,000\,m}{11.7120\,m/s} = 35,5760\,s \approx \text{35:34 min}`
-
-**New (hand-calculated)**
 
 .. math::
 
