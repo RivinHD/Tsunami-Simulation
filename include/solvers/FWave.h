@@ -34,8 +34,8 @@ private:
      * @param o_eigenvalue2 output: Roe eigenvalue two.
      **/
     static void computeEigenvalues(t_real i_hL,
-                                   t_real i_uL,
                                    t_real i_hR,
+                                   t_real i_uL,
                                    t_real i_uR,
                                    t_real & o_eigenvalue1,
                                    t_real & o_eigenvalue2);
