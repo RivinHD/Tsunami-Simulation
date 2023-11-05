@@ -3,8 +3,8 @@
 .. role:: raw-html(raw)
     :format: html
 
-Building the Simulation
-=======================
+Building the Project
+====================
 
 
 Requirements
@@ -92,8 +92,8 @@ Building
 
     .. code-block:: bash
 
-        1. git submodule init
-        2. git submodule update
+        git submodule init
+        git submodule update
 
 4. Now create a new folder called ``build`` with
 
@@ -125,7 +125,7 @@ Building
 
     .. code-block:: bash
 
-        cmake --build . --config Release --target build
+        cmake --build . --config Release --target simulation
 
     Which build the project with the Optimization turned on.
 
@@ -133,48 +133,50 @@ Building
 
     Where **Release** enable the Optimization flags and **Debug** disable the Optimization flags.
 
-    Options for ``--target`` are **build**, **sanitize** and **test**
+    Options for ``--target`` are **simulation**, **sanitize**, **test**, **sanitize_test** and **test_middle_states**.
 
-    +----------------+-----------------------------------------------------------+
-    | Option         |  Description                                              |
-    +================+===========================================================+
-    | build          | Is the Option to build the project with default flags     |
-    +----------------+-----------------------------------------------------------+
-    | sanitize       | Enables code sanitization                                 |
-    +----------------+-----------------------------------------------------------+
-    | test           | Builds the unit test executable                           |
-    +----------------+-----------------------------------------------------------+
-    | sanitize_test  | Builds the unit test executable with sanitizer            |
-    +----------------+-----------------------------------------------------------+
+    +--------------------+--------------------------------------------------------------------------------------------------------------------+
+    | Option             |  Description                                                                                                       |
+    +====================+====================================================================================================================+
+    | simulation         | Is the Option to build the project with default flags                                                              |
+    +--------------------+--------------------------------------------------------------------------------------------------------------------+
+    | sanitize           | Same as Option *simulation* but with sanitizers                                                                    |
+    +--------------------+--------------------------------------------------------------------------------------------------------------------+
+    | test               | Builds the unit test executable                                                                                    |
+    +--------------------+--------------------------------------------------------------------------------------------------------------------+
+    | sanitize_test      | Builds the unit test executable with sanitizer                                                                     |
+    +--------------------+--------------------------------------------------------------------------------------------------------------------+
+    | test_middle_states | Build the test against the middle_states.csv. :raw-html:`<br>`                                                     |
+    |                    | Configuration can be edited at the top of the test_middle_states.cpp                                               |
+    +--------------------+--------------------------------------------------------------------------------------------------------------------+
 
-Running the Executables
------------------------
+Running the Simulation & Tests
+------------------------------
 
 The executables have been build in to the ``../Tsunami-Simulation/build`` directory with their corresponding name.
 E.g. If ``test`` is built than the executable name is ``test`` (or ``test.exe`` on Windows),
-for ``build`` the executable name would be ``build`` (or ``build.exe`` on Windows), etc.
+for ``simulation`` the executable name would be ``simulation`` (or ``simulation.exe`` on Windows), etc.
 
 All the executables can be found in ``../Tsunami-Simulation/build``.
-The available executables are ``build``, ``sanitize``, ``test`` and ``sanitize_test``.
+The available executables are ``simulation``, ``sanitize``, ``test``, ``sanitize_test`` and ``test_middle_states``.
 
 .. note::
     They are only available when build with their respective ``--target``
 
-E.g. the ``build`` executable can be run with the following command:
+E.g. the ``simulation`` executable can be run with the following command:
 
 .. code-block::
 
-    ./build
+    ./simulation
 
 Or on Windows with
 
 .. code-block::
 
-    ./build.exe
+    ./simulation.exe
 
+Simulation Output
+-----------------
 
-    
-
-
-
-
+The output of the simulation consists of several CSV files named ``solution_<number>.csv``.
+The CSV files are stored in a separate ``solutions`` folder, which is located in the working directory of the executable.

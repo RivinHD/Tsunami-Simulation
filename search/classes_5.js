@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['wavepropagation_29',['WavePropagation',['../classtsunami__lab_1_1patches_1_1WavePropagation.html',1,'tsunami_lab::patches']]],
-  ['wavepropagation1d_30',['WavePropagation1d',['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html',1,'tsunami_lab::patches']]]
+  ['setup_38',['Setup',['../classtsunami__lab_1_1setups_1_1Setup.html',1,'tsunami_lab::setups']]],
+  ['shockshock1d_39',['ShockShock1d',['../classtsunami__lab_1_1setups_1_1ShockShock1d.html',1,'tsunami_lab::setups']]]
 ];

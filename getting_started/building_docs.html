@@ -24,7 +24,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="1. Riemann Solver" href="../submissions/riemann_solver.html" />
-    <link rel="prev" title="Building the Simulation" href="building_simulation.html" />
+    <link rel="prev" title="Building the Project" href="building_project.html" />
     <link href="../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -50,7 +50,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">GETTING STARTED</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="building_simulation.html">Building the Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_project.html">Building the Project</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Building the Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#building">Building</a></li>
@@ -60,6 +60,7 @@
 <p class="caption" role="heading"><span class="caption-text">SUBMISSIONS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../submissions/riemann_solver.html">1. Riemann Solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../submissions/finite_volume_discretization.html">2. Finite Volume Discretization</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -134,6 +135,12 @@ Your path should look like <code class="docutils literal notranslate"><span clas
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>html
 </pre></div>
 </div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>You may need to edit the <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> or <code class="docutils literal notranslate"><span class="pre">make.bat</span></code> to switch to your installed Python. The default is <code class="docutils literal notranslate"><span class="pre">python</span></code> and the Makefile tries to find <code class="docutils literal notranslate"><span class="pre">python3</span></code>. <span class="raw-html"><br></span>
+E.g. If your python is called by <code class="docutils literal notranslate"><span class="pre">python3</span></code>.
+In the Makefile you have to change the line <code class="docutils literal notranslate"><span class="pre">PYTHON</span> <span class="pre">?=</span> <span class="pre">python</span></code> to <code class="docutils literal notranslate"><span class="pre">PYTHON</span> <span class="pre">?=</span> <span class="pre">python3</span></code> and in the make.bat <code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">PYTHON=python</span></code> becomes <code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">PYTHON=python3</span></code>.</p>
+</div>
 <p>This builds sphinx with doxygen as an HTML page that can be viewed in your browser.
 The desired HTML can be found in <code class="docutils literal notranslate"><span class="pre">_build/html/index.html</span></code> e.g. full path would be <code class="docutils literal notranslate"><span class="pre">../Tsunami-Simulation/docs_sphinx/_build/html/index.html</span></code>.
 This can be open in your browser and should exactly like this documentation.</p>
@@ -148,7 +155,7 @@ This can be open in your browser and should exactly like this documentation.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="building_simulation.html" class="btn btn-neutral float-left" title="Building the Simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="building_project.html" class="btn btn-neutral float-left" title="Building the Project" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../submissions/riemann_solver.html" class="btn btn-neutral float-right" title="1. Riemann Solver" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
