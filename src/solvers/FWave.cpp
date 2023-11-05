@@ -27,8 +27,6 @@ void tsunami_lab::solvers::FWave::computeEigenvalues(t_real   i_hL,
     t_real l_ghSqrtRoe = m_gSqrt * std::sqrt( l_h );
     o_eigenvalue1 = l_u - l_ghSqrtRoe;
     o_eigenvalue2 = l_u + l_ghSqrtRoe;
-
-    std::cout << o_eigenvalue1 << std::endl;
 }
 
 void tsunami_lab::solvers::FWave::computeDeltaFlux(t_real i_hL,
