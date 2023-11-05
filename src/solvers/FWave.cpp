@@ -6,7 +6,6 @@
  **/
 #include "../../include/solvers/FWave.h"
 #include <cmath>
-#include <iostream>
 
 void tsunami_lab::solvers::FWave::computeEigenvalues(t_real   i_hL,
                                                t_real   i_hR,

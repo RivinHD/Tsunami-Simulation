@@ -21,6 +21,6 @@ def search_directory(directory):
 
 if __name__ == "__main__":
     print("Started Remove Tag")
-    directory = "_build\\html\\api"
+    directory = os.path.join("_build", "html", "api")
     search_directory(directory)
     print("Finished Removing Tag")
