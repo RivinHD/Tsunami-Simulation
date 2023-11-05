@@ -178,5 +178,5 @@ Or on Windows with
 Simulation Output
 -----------------
 
-The output of the simulation consists of several CSV files named ``Solution_<number>.csv``.
-The CSV files are stored in a separate ``Solutions`` folder, which is located in the working directory of the executable.
+The output of the simulation consists of several CSV files named ``solution_<number>.csv``.
+The CSV files are stored in a separate ``solutions`` folder, which is located in the working directory of the executable.

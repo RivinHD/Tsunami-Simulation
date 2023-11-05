@@ -51,12 +51,12 @@ jobs:
         run: |
           cmake --build build --config Debug --target test
           valgrind build/test
-          cmake --build build --config Debug --target build
-          valgrind build/build 25
+          cmake --build build --config Debug --target simulation
+          valgrind build/simulation 25
 
       - name: Release
         run: |
           cmake --build build --config Release --target test
           ./build/test
-          cmake --build build --config Release --target build
-          ./build/build 500
+          cmake --build build --config Release --target simulation
+          ./build/simulation 500
