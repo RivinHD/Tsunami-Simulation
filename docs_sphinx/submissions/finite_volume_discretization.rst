@@ -167,11 +167,11 @@ Using the new Csv function to parse the file lines and check if the file can be 
         tsunami_lab::t_real hLeft, hRight, huLeft, huRight, hStar;
         while( evaluatedTests < numberOfTests
             && tsunami_lab::io::Csv::next_middle_states( middle_states,
-                                                            hLeft,
-                                                            hRight,
-                                                            huLeft,
-                                                            huRight,
-                                                            hStar ) )
+                                                         hLeft,
+                                                         hRight,
+                                                         huLeft,
+                                                         huRight,
+                                                         hStar ) )
         {
         ...
 
@@ -302,26 +302,26 @@ The Catch2 test throws an error if the accuracy is to low.
 
                     // get initial values of the setup
                     tsunami_lab::t_real l_h = l_setup->getHeight( l_x,
-                                                                l_y );
+                                                                  l_y );
                     l_hMax = std::max( l_h, l_hMax );
 
                     tsunami_lab::t_real l_hu = l_setup->getMomentumX( l_x,
-                                                                    l_y );
+                                                                      l_y );
                     tsunami_lab::t_real l_hv = l_setup->getMomentumY( l_x,
-                                                                    l_y );
+                                                                      l_y );
 
                     // set initial values in wave propagation solver
                     l_waveProp->setHeight( l_cx,
-                                        l_cy,
-                                        l_h );
+                                           l_cy,
+                                           l_h );
 
                     l_waveProp->setMomentumX( l_cx,
-                                            l_cy,
-                                            l_hu );
+                                              l_cy,
+                                              l_hu );
 
                     l_waveProp->setMomentumY( l_cx,
-                                            l_cy,
-                                            l_hv );
+                                              l_cy,
+                                              l_hv );
 
                 }
             }
@@ -379,9 +379,9 @@ The Catch2 test throws an error if the accuracy is to low.
 Continues Integration
 ---------------------
 
-The continues integration is done by a GitHub action which was provided and modified to fit the current requirements.
+The continues integration is done by a `GitHub Action <https://docs.github.com/en/actions>`_ which was provided and modified to fit the current requirements.
 E.g. switching to cmake to build the project and the implemented targets.
-The action runs when a commit is done to the main branch or a pull_request is opened targeting the main branch and the action runs every night to ensure continuity.
+The action runs when a commit is done to the main branch or a pull request is opened targeting the main branch and the action runs every night to ensure continuity.
 
 .. code-block:: yaml
 
@@ -446,8 +446,116 @@ The action runs when a commit is done to the main branch or a pull_request is op
 2.1. Shock and Rarefaction Waves
 --------------------------------
 
-.. Error::
-    IMPLEMENTATION OF Shock-Shock and Rare-Rare is MISSING
+Implementation of shock-shock setup
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+"**Shock-Shock Problem**: Let’s use our solver to solve shock-shock Riemann problems. Imagine two streams
+of water which move in opposite directions and smash into each other at some position :math:`x_\text{dis}`.
+The scenario is given by the following setup"[1]_:
+
+.. math::
+
+    \begin{split}\begin{cases}
+        Q_i = q_{l} \quad &\text{if } x_i \le x_\text{dis} \\
+        Q_i = q_{r} \quad &\text{if }   x_i > x_\text{dis}
+    \end{cases} \qquad q_l \in \mathbb{R}^+ \times \mathbb{R}^+, \; q_r \in \mathbb{R}^+ \times \mathbb{R}^-,\end{split}
+
+with initial conditions:
+
+:raw-html:`<center>(2.1.1)</center>`
+
+.. math::
+
+    \begin{split}q_l=
+        \begin{bmatrix}
+          h_l \\ (hu)_l
+        \end{bmatrix}, \quad
+      q_r =
+        \begin{bmatrix}
+          h_r \\ (hu)_r
+        \end{bmatrix} =
+        \begin{bmatrix}
+          h_l \\ -(hu)_l
+        \end{bmatrix}.
+    \end{split}
+
+.. code-block:: cpp
+
+    tsunami_lab::setups::ShockShock1d::ShockShock1d(t_real i_heightLeft,
+                                                    t_real i_momentumLeft,
+                                                    t_real i_locationShock)
+    {
+        m_heightLeft = i_heightLeft;
+        m_momentumLeft = i_momentumLeft;
+        m_locationShock = i_locationShock;
+    }
+
+    t_real tsunami_lab::setups::ShockShock1d::getHeight(t_real ,
+                                                        t_real ) const
+    {
+        return m_heightLeft;
+    }
+
+    t_real tsunami_lab::setups::ShockShock1d::getMomentumX(t_real i_x,
+                                                           t_real ) const
+    {
+        if (i_x <= m_locationShock)
+        {
+            return m_momentumLeft;
+        }
+        else
+        {
+            return -m_momentumLeft;
+        }
+    }
+
+    t_real tsunami_lab::setups::ShockShock1d::getMomentumY(t_real,
+                                                           t_real) const
+    {
+        return 0;
+    }
+
+Implementation of rare-rare setup
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+"Rare-Rare Problem: We can setup rare-rare Riemann problems by two streams of water, which move away
+from each other at some position :math:`x_\text{dis}`. The scenario is defined as"[1]_:
+
+.. math::
+
+    \begin{split}\begin{cases}
+        Q_i = q_{r} \quad &\text{if } x_i \le x_\text{dis} \\
+        Q_i = q_{l} \quad &\text{if }   x_i > x_\text{dis}
+        \end{cases} \qquad q_l \in \mathbb{R}^+ \times \mathbb{R}^+, \; q_r \in \mathbb{R}^+ \times \mathbb{R}^-,\end{split}
+
+.. code-block:: cpp
+
+    tsunami_lab::setups::RareRare1d::RareRare1d(tsunami_lab::t_real i_heightLeft,
+                                                tsunami_lab::t_real i_momentumLeft, tsunami_lab::t_real i_locationRare) {
+        m_heightLeft = i_heightLeft;
+        m_momentumLeft = i_momentumLeft;
+        m_locationRare = i_locationRare;
+    }
+
+    tsunami_lab::t_real tsunami_lab::setups::RareRare1d::getHeight(tsunami_lab::t_real , tsunami_lab::t_real) const {
+        return m_heightLeft;
+    }
+
+    tsunami_lab::t_real tsunami_lab::setups::RareRare1d::getMomentumX(tsunami_lab::t_real i_x,
+                                                                      tsunami_lab::t_real) const {
+        if (i_x <= m_locationRare) {
+            return -m_momentumLeft;
+        } else {
+            return m_momentumLeft;
+        }
+    }
+
+    tsunami_lab::t_real tsunami_lab::setups::RareRare1d::getMomentumY(tsunami_lab::t_real,
+                                                                      tsunami_lab::t_real) const {
+        return 0;
+}
+
+.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_1.html#f-wave-solver (29.10.2023)
 
 Play around
 ^^^^^^^^^^^
@@ -455,7 +563,9 @@ Play around
 l_hl...height of left side :raw-html:`<br>`
 l_hr...height of right side :raw-html:`<br>`
 l_ml...momentum of left side :raw-html:`<br>`
-l_location...location
+l_location...location :raw-html:`<br>`
+:math:`\lambda_1`...wave speed one :raw-html:`<br>`
+:math:`\lambda_2`...wave speed two
 
 All results with 3 cells!
 
@@ -514,6 +624,14 @@ Shock-Shock
 2.2. Dam-Break
 --------------
 
+Play around
+^^^^^^^^^^^
+
+l_hl...height of left side :raw-html:`<br>`
+l_hr...height of right side :raw-html:`<br>`
+l_location...location :raw-html:`<br>`
+l_ur...particles velocity of the right side
+
 All results with 100 cells!
 
 +--------+--------+------------+--------+
@@ -541,18 +659,6 @@ velocity decreases.
 
 Compute evacuation time
 ^^^^^^^^^^^^^^^^^^^^^^^
-
-.. math::
-
-    q_l = [14, 0]^T\\
-    q_r = [3.5, 0.7]^T
-
-Distance: :math:`25,000\,m` :raw-html:`<br>`
-Wave speed: :math:`11.7120\,m/s`
-
-Time: :math:`\frac{25,000\,m}{11.7120\,m/s} = 35,5760\,s \approx \text{35:34 min}`
-
-**New (hand-calculated)**
 
 .. math::
 
