@@ -167,11 +167,11 @@ Using the new Csv function to parse the file lines and check if the file can be 
         tsunami_lab::t_real hLeft, hRight, huLeft, huRight, hStar;
         while( evaluatedTests < numberOfTests
             && tsunami_lab::io::Csv::next_middle_states( middle_states,
-                                                            hLeft,
-                                                            hRight,
-                                                            huLeft,
-                                                            huRight,
-                                                            hStar ) )
+                                                         hLeft,
+                                                         hRight,
+                                                         huLeft,
+                                                         huRight,
+                                                         hStar ) )
         {
         ...
 
@@ -302,26 +302,26 @@ The Catch2 test throws an error if the accuracy is to low.
 
                     // get initial values of the setup
                     tsunami_lab::t_real l_h = l_setup->getHeight( l_x,
-                                                                l_y );
+                                                                  l_y );
                     l_hMax = std::max( l_h, l_hMax );
 
                     tsunami_lab::t_real l_hu = l_setup->getMomentumX( l_x,
-                                                                    l_y );
+                                                                      l_y );
                     tsunami_lab::t_real l_hv = l_setup->getMomentumY( l_x,
-                                                                    l_y );
+                                                                      l_y );
 
                     // set initial values in wave propagation solver
                     l_waveProp->setHeight( l_cx,
-                                        l_cy,
-                                        l_h );
+                                           l_cy,
+                                           l_h );
 
                     l_waveProp->setMomentumX( l_cx,
-                                            l_cy,
-                                            l_hu );
+                                              l_cy,
+                                              l_hu );
 
                     l_waveProp->setMomentumY( l_cx,
-                                            l_cy,
-                                            l_hv );
+                                              l_cy,
+                                              l_hv );
 
                 }
             }
@@ -379,9 +379,9 @@ The Catch2 test throws an error if the accuracy is to low.
 Continues Integration
 ---------------------
 
-The continues integration is done by a GitHub action which was provided and modified to fit the current requirements.
+The continues integration is done by a `GitHub Action <https://docs.github.com/en/actions>`_ which was provided and modified to fit the current requirements.
 E.g. switching to cmake to build the project and the implemented targets.
-The action runs when a commit is done to the main branch or a pull_request is opened targeting the main branch and the action runs every night to ensure continuity.
+The action runs when a commit is done to the main branch or a pull request is opened targeting the main branch and the action runs every night to ensure continuity.
 
 .. code-block:: yaml
 
