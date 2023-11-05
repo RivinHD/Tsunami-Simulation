@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['setghostoutflow_38',['setGhostOutflow',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#a02af1c6f56a9cc310efc8f997957faec',1,'tsunami_lab::patches::WavePropagation::setGhostOutflow()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#a3f78574d12eb29fa6076e23004de2d22',1,'tsunami_lab::patches::WavePropagation1d::setGhostOutflow()']]],
-  ['setheight_39',['setHeight',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#a46c844b7970b7cb96a62d13bc9f470f6',1,'tsunami_lab::patches::WavePropagation::setHeight()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#adf9a1009d96ea10d8944f1b83daf5644',1,'tsunami_lab::patches::WavePropagation1d::setHeight()']]],
-  ['setmomentumx_40',['setMomentumX',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#aed5a498ff7ca0dbefae90f21244e2671',1,'tsunami_lab::patches::WavePropagation::setMomentumX()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#a0344a1bc28432b38bcce02fd0604b3f1',1,'tsunami_lab::patches::WavePropagation1d::setMomentumX()']]],
-  ['setmomentumy_41',['setMomentumY',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#aa17fc8f451e46cf248b4cffd1604ef43',1,'tsunami_lab::patches::WavePropagation::setMomentumY()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#ab1387901f780a042d2f1b21b1f95f2bb',1,'tsunami_lab::patches::WavePropagation1d::setMomentumY()']]]
+  ['netupdates_49',['netUpdates',['../classtsunami__lab_1_1solvers_1_1FWave.html#a6d19c9109a94599c4688e89d5cf0e6e4',1,'tsunami_lab::solvers::FWave::netUpdates()'],['../classtsunami__lab_1_1solvers_1_1Roe.html#afd6790dc03b4a684728ccdea0661c0eb',1,'tsunami_lab::solvers::Roe::netUpdates()']]],
+  ['next_5fmiddle_5fstates_50',['next_middle_states',['../classtsunami__lab_1_1io_1_1Csv.html#a15b9dc2d2a6e318edac63aa937827357',1,'tsunami_lab::io::Csv']]]
 ];

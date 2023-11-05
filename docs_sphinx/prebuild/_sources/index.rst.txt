@@ -1,20 +1,21 @@
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: GETTING STARTED
    :glob:
 
-   getting_started/building_simulation.rst
+   getting_started/building_project.rst
    getting_started/building_docs.rst
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: SUBMISSIONS
    :glob:
 
-   submissions/*
+   submissions/riemann_solver.rst
+   submissions/finite_volume_discretization.rst
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: API
    :glob:
 

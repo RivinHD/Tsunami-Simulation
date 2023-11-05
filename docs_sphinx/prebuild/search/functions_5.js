@@ -1,5 +1,9 @@
 var searchData=
 [
-  ['wavepropagation1d_43',['WavePropagation1d',['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#a888e18ad0bdf59dd05c05f2dc0f90efb',1,'tsunami_lab::patches::WavePropagation1d']]],
-  ['write_44',['write',['../classtsunami__lab_1_1io_1_1Csv.html#ac4d89e623fb31db39b1dfbe5fe9edcfe',1,'tsunami_lab::io::Csv']]]
+  ['setghostoutflow_52',['setGhostOutflow',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#a02af1c6f56a9cc310efc8f997957faec',1,'tsunami_lab::patches::WavePropagation::setGhostOutflow()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#a3f78574d12eb29fa6076e23004de2d22',1,'tsunami_lab::patches::WavePropagation1d::setGhostOutflow()']]],
+  ['setheight_53',['setHeight',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#a46c844b7970b7cb96a62d13bc9f470f6',1,'tsunami_lab::patches::WavePropagation::setHeight()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#adf9a1009d96ea10d8944f1b83daf5644',1,'tsunami_lab::patches::WavePropagation1d::setHeight()']]],
+  ['setmomentumx_54',['setMomentumX',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#aed5a498ff7ca0dbefae90f21244e2671',1,'tsunami_lab::patches::WavePropagation::setMomentumX()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#a0344a1bc28432b38bcce02fd0604b3f1',1,'tsunami_lab::patches::WavePropagation1d::setMomentumX()']]],
+  ['setmomentumy_55',['setMomentumY',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#aa17fc8f451e46cf248b4cffd1604ef43',1,'tsunami_lab::patches::WavePropagation::setMomentumY()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#ab1387901f780a042d2f1b21b1f95f2bb',1,'tsunami_lab::patches::WavePropagation1d::setMomentumY()']]],
+  ['setsolver_56',['setSolver',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#a0b73e4fd6fc6c879f8432b810d2f2025',1,'tsunami_lab::patches::WavePropagation::setSolver()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#abf92d8c9f2ea40325cfe647280e2aa62',1,'tsunami_lab::patches::WavePropagation1d::setSolver()']]],
+  ['shockshock1d_57',['ShockShock1d',['../classtsunami__lab_1_1setups_1_1ShockShock1d.html#a666e149d96368b492776a778933cc631',1,'tsunami_lab::setups::ShockShock1d']]]
 ];

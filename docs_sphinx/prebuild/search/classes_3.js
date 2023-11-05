@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['roe_27',['Roe',['../classtsunami__lab_1_1solvers_1_1Roe.html',1,'tsunami_lab::solvers']]]
+  ['middlestates1d_35',['MiddleStates1d',['../classtsunami__lab_1_1setups_1_1MiddleStates1d.html',1,'tsunami_lab::setups']]]
 ];
