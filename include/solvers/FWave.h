@@ -24,7 +24,7 @@ private:
     static t_real constexpr m_g = 9.80665;
 
     /**
-     * Computes the eigenvalues for the left and right wave
+     * Computes the eigenvalues for the left and right wave.
      *
      * @param i_hL height of the left side.
      * @param i_hR height of the right side.
@@ -34,14 +34,14 @@ private:
      * @param o_eigenvalue2 output: Roe eigenvalue two.
      **/
     static void computeEigenvalues(t_real i_hL,
-                             t_real i_hR,
-                             t_real i_uL,
-                             t_real i_uR,
-                             t_real & o_eigenvalue1,
-                             t_real & o_eigenvalue2);
+                                   t_real i_hR,
+                                   t_real i_uL,
+                                   t_real i_uR,
+                                   t_real & o_eigenvalue1,
+                                   t_real & o_eigenvalue2);
 
     /**
-     * Computes delta flux of left i_qL (i_hL, i_uL) and right i_qR (i_hR, i_uR)
+     * Computes difference of the flux function after inserting the left and right quantities.
      *
      * @param i_hL height of the left side.
      * @param i_hR height of the right side.
@@ -50,13 +50,13 @@ private:
      * @param o_deltaFlux output: difference of left and right quantities
      */
      static void computeDeltaFlux(t_real i_hL,
-                             t_real i_hR,
-                             t_real i_uL,
-                             t_real i_uR,
-                             t_real o_deltaFlux[2]);
+                                  t_real i_hR,
+                                  t_real i_uL,
+                                  t_real i_uR,
+                                  t_real o_deltaFlux[2]);
 
     /**
-     * Compute the eigencoefficients for left and right wave
+     * Compute the eigencoefficients for left and right wave.
      * 
      * @param i_eigenvalue1 Roe eigenvalue one.
      * @param i_eigenvalue2 Roe eigenvalue two.

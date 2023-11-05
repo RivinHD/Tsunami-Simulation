@@ -29,12 +29,28 @@ set(PROJECT_INCLUDE_DIR "include")
 set(SRC_FILES
     solvers/FWave
     solvers/Roe
+    setups/MiddleStates1d
     setups/DamBreak1d
+    setups/ShockShock1d
+    setups/RareRare1d
     patches/WavePropagation1d
     io/Csv
 )
+set(SRC_FILES_NO_TEST
+
+)
+set(SRC_FILES_HEADER_ONLY
+
+)
 set(TEST_FILES ${PROJECT_SOURCE_DIR}/tests.cpp)
 set(MAIN_FILE ${PROJECT_SOURCE_DIR}/main.cpp)
+set(MIDDLE_STATE_FILE ${PROJECT_SOURCE_DIR}/test_middle_states.cpp)
+
+# Add the Resources. Added resources can be accessed relatively as if they were in the project directory.
+set(PROJECT_RESOURCE_DIR "resources")
+set(RESOURCE_FILES
+    middle_states.csv
+)
 
 # Create SOURCE_FILES
 foreach(file ${SRC_FILES})
@@ -45,6 +61,22 @@ foreach(file ${SRC_FILES})
     list(APPEND TEST_FILES
         ${PROJECT_SOURCE_DIR}/${file}.test.cpp
     )
+endforeach()
+foreach(file ${SRC_FILES_NO_TEST})
+    list(APPEND SOURCE_FILES
+        ${PROJECT_SOURCE_DIR}/${file}.cpp
+        ${PROJECT_INCLUDE_DIR}/${file}.h
+    )
+endforeach()
+foreach(file ${SRC_FILES_HEADER_ONLY})
+    list(APPEND SOURCE_FILES
+        ${PROJECT_INCLUDE_DIR}/${file}.h
+    )
+endforeach()
+
+# Copy the RESOURCE_FILES
+foreach(file ${RESOURCE_FILES})
+    configure_file(${PROJECT_RESOURCE_DIR}/${file} ${PROJECT_RESOURCE_DIR}/${file} COPYONLY)
 endforeach()
 
 
@@ -64,9 +96,15 @@ add_executable(sanitize_test ${SOURCE_FILES})
 target_link_libraries(sanitize_test PRIVATE Catch2::Catch2)
 target_sources(sanitize_test PRIVATE ${TEST_FILES})
 
-add_executable(build ${SOURCE_FILES})
-target_sources(build PRIVATE ${MAIN_FILE})
+# Setup Testing for middle states
+add_executable(test_middle_states ${SOURCE_FILES})
+target_sources(test_middle_states PRIVATE ${MIDDLE_STATE_FILE})
 
+# Setup Build
+add_executable(simulation ${SOURCE_FILES})
+target_sources(simulation PRIVATE ${MAIN_FILE})
+
+# Setup Build + Sanitizer
 add_executable(sanitize ${SOURCE_FILES})
 target_sources(sanitize PRIVATE ${MAIN_FILE})
 

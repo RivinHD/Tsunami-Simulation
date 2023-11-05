@@ -10,6 +10,9 @@ if "%SPHINXBUILD%" == "" (
 set SOURCEDIR=.
 set BUILDDIR=_build
 
+set PYTHON=python
+set REMOVE_TAG_FILE=remove_tag.py
+
 %SPHINXBUILD% >NUL 2>NUL
 if errorlevel 9009 (
 	echo.
@@ -26,6 +29,9 @@ if errorlevel 9009 (
 if "%1" == "" goto help
 
 %SPHINXBUILD% -M %1 %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
+
+if NOT "%1" == "html" goto end
+%PYTHON% %REMOVE_TAG_FILE%
 goto end
 
 :help

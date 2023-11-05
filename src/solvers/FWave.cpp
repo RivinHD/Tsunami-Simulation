@@ -6,7 +6,6 @@
  **/
 #include "../../include/solvers/FWave.h"
 #include <cmath>
-#include <iostream>
 
 void tsunami_lab::solvers::FWave::computeEigenvalues(t_real   i_hL,
                                                t_real   i_hR,
@@ -19,7 +18,7 @@ void tsunami_lab::solvers::FWave::computeEigenvalues(t_real   i_hL,
     t_real l_hSqrtR = std::sqrt( i_hR );
 
     // compute averages
-    t_real l_h = 0.5f * ( i_hL + i_hR );
+    t_real l_h = t_real(0.5) * ( i_hL + i_hR );
     t_real l_u = l_hSqrtL * i_uL + l_hSqrtR * i_uR;
     l_u /= l_hSqrtL + l_hSqrtR;
 
@@ -48,10 +47,10 @@ void tsunami_lab::solvers::FWave::computeEigencoefficients(t_real i_eigenvalue1,
                                                            t_real &o_eigencoefficient1,
                                                            t_real &o_eigencoefficient2) {
     // compute inverse matrix
-    t_real denominator = i_eigenvalue2 - i_eigenvalue1;
+    t_real denominator = 1 / (i_eigenvalue2 - i_eigenvalue1);
     t_real invertedMatrix[2][2] = {
-            {i_eigenvalue2 / denominator, -1 / denominator},
-            {-i_eigenvalue1 / denominator, 1 / denominator}
+            {i_eigenvalue2 * denominator, -1 * denominator},
+            {-i_eigenvalue1 * denominator, 1 * denominator}
     };
 
     // compute eigencoefficients
@@ -63,8 +62,8 @@ void tsunami_lab::solvers::FWave::netUpdates(t_real i_hL,
                                              t_real i_hR,
                                              t_real i_huL,
                                              t_real i_huR,
-                                             t_real *o_netUpdateL,
-                                             t_real *o_netUpdateR) {
+                                             t_real o_netUpdateL[2],
+                                             t_real o_netUpdateR[2] ) {
 
     // compute particle velocities
     t_real l_uL = i_huL / i_hL;

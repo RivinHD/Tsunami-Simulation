@@ -10,6 +10,9 @@
 #include "../constants.h"
 #include <cstring>
 #include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
 
 namespace tsunami_lab {
   namespace io {
@@ -19,6 +22,7 @@ namespace tsunami_lab {
 
 class tsunami_lab::io::Csv {
   public:
+
     /**
      * Writes the data as CSV to the given stream.
      *
@@ -39,6 +43,25 @@ class tsunami_lab::io::Csv {
                        t_real       const * i_hu,
                        t_real       const * i_hv,
                        std::ostream       & io_stream );
+
+    /**
+     * get's the next parsed value pair from the middle_state.csv file stream
+     * 
+     * @param stream file stream of middle_state.csv
+     * @param o_hLeft ouput the height left
+     * @param o_hRight ouput the height right
+     * @param o_huLeft output the momentum left
+     * @param o_huRight output the momentum right
+     * @param o_hStar output the computed height 
+     * @return true 
+     * @return false 
+     */
+    static bool next_middle_states ( std::ifstream & stream,
+                                     t_real & o_hLeft,
+                                     t_real & o_hRight,
+                                     t_real & o_huLeft,
+                                     t_real & o_huRight,
+                                     t_real & o_hStar );
 };
 
 #endif
