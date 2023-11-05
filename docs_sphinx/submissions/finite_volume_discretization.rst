@@ -379,6 +379,20 @@ The Catch2 test throws an error if the accuracy is to low.
 	    REQUIRE( successfulTests / static_cast<double>( evaluatedTests ) >= testAccuracy );
     }
 
+Output
+^^^^^^
+
+Output of test_middle_states with 100 cells and a margin of 2%.
+
+.. code-block:: console
+
+    FAILED: Deviation to high from Test 999969 (relativ deviation:0.284146)
+    FAILED: Deviation to high from Test 999990 (relativ deviation:0.199954)
+
+    992814 Tests were successful of 1000000 with 17 Nan evaluations
+    Accuracy of 0.992814 with Margin of 0.02 and 100 Cells
+    ===============================================================================
+    All tests passed (1 assertion in 1 test case)
 
 Continues Integration
 ---------------------

@@ -60,7 +60,7 @@ Then we only need to run the following command.
     make html
 
 .. important::
-    You may need to edit the ``Makefile`` or ``make.bat`` to switch to your installed Python. The default is ``python``. :raw-html:`<br>`
+    You may need to edit the ``Makefile`` or ``make.bat`` to switch to your installed Python. The default is ``python`` and the Makefile tries to find ``python3``. :raw-html:`<br>`
     E.g. If your python is called by ``python3``.
     In the Makefile you have to change the line ``PYTHON ?= python`` to ``PYTHON ?= python3`` and in the make.bat ``set PYTHON=python`` becomes ``set PYTHON=python3``.
 

@@ -8,7 +8,11 @@ SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
 
-PYTHON ?= python
+ifeq ($(shell which python3),)
+  PYTHON = python
+else
+  PYTHON = python3
+endif
 REMOVE_TAG_FILE ?= remove_tag.py
 
 # Put it first so that "make" without argument is like "make help".
