@@ -16,7 +16,7 @@ Implementation file: ``.../Tsunami-Simulation/src/solvers/FWave.cpp``
 
 Test file: ``.../Tsunami-Simulation/src/solvers/FWave.test.cpp``
 
-The f-wave solver approximately solves the following Initial Value Problem (IVP) for the shallow water equations over time:
+"The f-wave solver approximately solves the following Initial Value Problem (IVP) for the shallow water equations over time"[1]_ :
 
 .. _submission_1_eq_131:
 
@@ -29,13 +29,13 @@ The f-wave solver approximately solves the following Initial Value Problem (IVP)
         q_{r} \quad &\text{if }   x > 0
       \end{cases} \qquad q_l, q_r \in \mathbb{R}^+ \times \mathbb{R}.\end{split}
 
-Theory shows that the solution, arising from the discontinuity at :math:`x=0`,
+"Theory shows that the solution, arising from the discontinuity at :math:`x=0`,
 consist of two waves. Each wave is either a shock or a rarefaction wave.
-The f-wave solver uses two shock waves to approximate the true solution.
+The f-wave solver uses two shock waves to approximate the true solution."[1]_
 
-First, we use the Roe eigenvalues :math:`\lambda^{\text{Roe}}_{1/2}` in terms
+"First, we use the Roe eigenvalues :math:`\lambda^{\text{Roe}}_{1/2}` in terms
 of the left and right quantities :math:`q_l` and :math:`q_r` with respect to
-position :math:`x=0` to approximate the true wave speeds:
+position :math:`x=0` to approximate the true wave speeds:"[1]_
 
 .. _submission_1_eq_132:
 
@@ -47,8 +47,8 @@ position :math:`x=0` to approximate the true wave speeds:
       \lambda^{\text{Roe}}_{2}(q_l, q_r) &= u^{\text{Roe}}(q_l, q_r) + \sqrt{gh^{\text{Roe}}(q_l, q_r)},
     \end{aligned}\end{split}
 
-where the height :math:`h^{\text{Roe}}` and particle velocity :math:`u^{\text{Roe}}`
-are given as:
+"where the height :math:`h^{\text{Roe}}` and particle velocity :math:`u^{\text{Roe}}`
+are given as:"[1]_
 
 .. math::
     \begin{split}\begin{aligned}
@@ -102,9 +102,9 @@ Compute flux function:
                         -(i_hL * i_uL * i_uL + 0.5f * m_g * i_hL * i_hL);
     }
 
-The eigencoefficients :math:`\alpha_p` in Equation are obtained by
+"The eigencoefficients :math:`\alpha_p` in Equation are obtained by
 multiplying the inverse of the matrix of right eigenvectors :math:`R=[r_1^\text{Roe}, r_2^\text{Roe}]`
-with the jump in fluxes:
+with the jump in fluxes:"[1]_
 
 .. _submission_1_eq_eigencoefficients:
 
@@ -139,7 +139,7 @@ with the jump in fluxes:
 
 .. _submission_1_eq_eigenvectors:
 
-Using the eigenvalues we can define corresponding eigenvectors :math:`r_{1/2}^{\text{Roe}}`
+"Using the eigenvalues we can define corresponding eigenvectors :math:`r_{1/2}^{\text{Roe}}`"[1]_
 
 .. math::
     \begin{split}\begin{aligned}
@@ -163,8 +163,8 @@ the waves :math:`Z_{1/2}`
 .. math::
     \Delta f = \sum_{p=1}^2 \alpha_p r_p \equiv  \sum_{p=1}^2 Z_p, \qquad \alpha_p \in \mathbb{R}.
 
-This leads to the definition of net updates which summarize the
-net effect of the waves to the left and right “cell”:
+"This leads to the definition of net updates which summarize the
+net effect of the waves to the left and right “cell”:"[1]_
 
 .. _submission_1_eq_effect_on_waves:
 .. math::
@@ -232,6 +232,9 @@ net effect of the waves to the left and right “cell”:
             }
         }
     }
+
+.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_1.html#f-wave-solver (29.10.2023)
+
 
 F-wave Solver Unit Testing
 --------------------------
