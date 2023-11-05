@@ -1,5 +1,5 @@
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: GETTING STARTED
    :glob:
 
@@ -7,7 +7,7 @@
    getting_started/building_docs.rst
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: SUBMISSIONS
    :glob:
 
@@ -15,7 +15,7 @@
    submissions/finite_volume_discretization.rst
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: API
    :glob:
 

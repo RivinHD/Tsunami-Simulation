@@ -5,7 +5,6 @@
  * Implementation of the One-dimensional middle-states problem.
  **/
 #include "../../include/setups/MiddleStates1d.h"
-#include "../../include/constants.h"
 
 tsunami_lab::setups::MiddleStates1d::MiddleStates1d( t_real i_heightLeft, t_real i_heightRight, t_real i_momentumLeft, t_real i_momentumRight, t_real i_location )
 {

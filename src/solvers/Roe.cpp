@@ -6,7 +6,6 @@
  **/
 #include "../../include/solvers/Roe.h"
 #include <cmath>
-#include <iostream>
 
 void tsunami_lab::solvers::Roe::waveSpeeds( t_real   i_hL,
                                             t_real   i_hR,
