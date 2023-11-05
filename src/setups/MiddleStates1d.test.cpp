@@ -10,10 +10,10 @@
 TEST_CASE( "Test the one-dimensional MiddleStates setup.", "[MiddleStates1d]" )
 {
 	tsunami_lab::setups::MiddleStates1d l_location( 25,
-														12,
-														35,
-														123,
-														3 );
+													12,
+													35,
+													123,
+													3 );
 
 	// left side
 	REQUIRE( l_location.getHeight( 2, 0 ) == 25 );
