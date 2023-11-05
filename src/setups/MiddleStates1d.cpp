@@ -1,3 +1,9 @@
+/**
+ * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
+ *
+ * @section DESCRIPTION
+ * Implementation of the One-dimensional middle-states problem.
+ **/
 #include "../../include/setups/MiddleStates1d.h"
 #include "../../include/constants.h"
 

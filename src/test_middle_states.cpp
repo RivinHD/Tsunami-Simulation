@@ -34,15 +34,15 @@ int main( int i_argc, char* i_argv[] )
 	return ( l_result < 0xff ? l_result : 0xff );
 }
 
-TEST_CASE( "Test against the middle_states.csv with DamBreak", "[MiddleStates]" )
+TEST_CASE( "Test against the middle_states.csv", "[MiddleStates]" )
 {
 	// Read the middle_states.csv
 	std::ifstream middle_states( "resources/middle_states.csv" );
 
-	unsigned int successfullTests = 0;
+	unsigned int successfulTests = 0;
 	unsigned int evaluatedTests = 0;
 
-	// parese each line of the middle_states.csv and test against the simulation
+	// parse each line of the middle_states.csv and test against the simulation
 	tsunami_lab::t_real hLeft, hRight, huLeft, huRight, hStar;
 	while( evaluatedTests < numberOfTests
 		   && tsunami_lab::io::Csv::next_middle_states( middle_states,
@@ -52,12 +52,11 @@ TEST_CASE( "Test against the middle_states.csv with DamBreak", "[MiddleStates]" 
 														huRight,
 														hStar ) )
 	{
-		// choose default solver: fwave
 		tsunami_lab::t_real l_dxy = 10.0 / numberOfCells;
-		tsunami_lab::t_real l_middle = 0.5;
+		tsunami_lab::t_real l_location = 5.0;
 
 		// construct setup
-		tsunami_lab::setups::Setup* l_setup = new tsunami_lab::setups::MiddleStates1d( hLeft, hRight, huLeft, huRight, l_middle );
+		tsunami_lab::setups::Setup* l_setup = new tsunami_lab::setups::MiddleStates1d( hLeft, hRight, huLeft, huRight, l_location );
 
 		// construct solver
 		tsunami_lab::patches::WavePropagation* l_waveProp;
@@ -128,13 +127,13 @@ TEST_CASE( "Test against the middle_states.csv with DamBreak", "[MiddleStates]" 
 			l_simTime += l_dt;
 		}
 
-		// test hStar against readed value from middle_states.csv
+		// test hStar against read value from middle_states.csv
 		tsunami_lab::t_idx l_iy = 1;
 		tsunami_lab::t_idx i_stride = 1;
-		tsunami_lab::t_idx l_id = l_iy * i_stride + static_cast<tsunami_lab::t_real>( numberOfCells * l_middle );
+		tsunami_lab::t_idx l_id = l_iy * i_stride + static_cast<tsunami_lab::t_real>( l_location * l_dxy );
 		const tsunami_lab::t_real* heights = l_waveProp->getHeight();
 		bool isSameHeight = ( hStar == Approx( heights[l_id] ).margin( accuracyMargin ) );
-		successfullTests += isSameHeight;
+		successfulTests += isSameHeight;
 		if( !isSameHeight )
 		{
 			std::cout << "FAILED: Deviation to high from Test " << evaluatedTests << " (Deviation:" << hStar - heights[l_id] << ")" << std::endl;
@@ -148,7 +147,7 @@ TEST_CASE( "Test against the middle_states.csv with DamBreak", "[MiddleStates]" 
 
 	// close the file and print the results
 	middle_states.close();
-	std::cout << successfullTests << " Tests were succesfull of " << evaluatedTests << std::endl
-		<< "Accuracy of " << successfullTests / static_cast<double>( evaluatedTests ) << " with Margin of " << accuracyMargin << " and " << numberOfCells << " Cells" << std::endl;
-	REQUIRE( successfullTests / static_cast<double>( evaluatedTests ) >= testAccuracy );
+	std::cout << successfulTests << " Tests were successful of " << evaluatedTests << std::endl
+		<< "Accuracy of " << successfulTests / static_cast<double>( evaluatedTests ) << " with Margin of " << accuracyMargin << " and " << numberOfCells << " Cells" << std::endl;
+	REQUIRE( successfulTests / static_cast<double>( evaluatedTests ) >= testAccuracy );
 }

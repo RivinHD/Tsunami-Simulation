@@ -6,135 +6,442 @@
 2. Finite Volume Discretization
 ===============================
 
-Switch Solver
+
+F-Wave Integration
+------------------
+
+Setting up the switching between the solvers using an enum which will always be include if a class is derived from ``tsunami_lab::patches::WavePropagation``.
+Therefore the enum is put in the header file of ``WavePropagation``.
+
+.. code-block:: cpp
+    :emphasize-lines: 9-13, 27
+
+    /// File: WavePropagation.h
+    namespace tsunami_lab {
+        namespace patches {
+            class WavePropagation;
+
+            /**
+            * solver options for wave propagation.
+            */
+            enum Solver
+            {
+                FWave,
+                Roe
+            };
+        }
+    }
+
+    class tsunami_lab::patches::WavePropagation {
+
+    public:
+        ...
+
+        /**
+        * Set the solver for the netUpdate
+        * 
+        * @param solver used solver
+        */
+        virtual void setSolver(Solver solver) = 0;
+    };
+
+
+Implementation for setting the solvers with default values using the FWave solver. :raw-html:`<br>`
+Switching between the solvers using a function pointer of netUpdates, e.g. to avoid having to call an if statement in the for loop for a more efficient calculation. 
+
+.. code-block:: cpp
+    :emphasize-lines: 6, 16-19, 26-30
+
+    /// File: WavePropagation1d.h
+    class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
+    private:
+        ...
+        //! the solver used for the netUpdates
+        Solver solver = Solver::FWave;
+
+    public:
+        ...      
+        /**
+        * Set the solver for the netUpdate
+        * Default: FWave
+        * 
+        * @param solver used solver
+        */
+        void setSolver(Solver solver)
+        {
+            WavePropagation1d::solver = solver;
+        }
+    };
+
+    /// File: WavePropagation1d.cpp
+    void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
+        ...
+        // uses a function pointer to choose between the solvers
+        void (*netUpdates)(t_real, t_real, t_real, t_real, t_real*, t_real*) = solvers::FWave::netUpdates;
+        if (solver == Solver::Roe)
+        {
+            netUpdates = solvers::Roe::netUpdates;
+        }
+        ...
+    }
+
+
+Middle States
 -------------
 
-The default solver used in ``WavePropagation1d.h``, ``WavePropagation1d.cpp`` and
-``WavePropagation1d.test.cpp`` is the f-wave solver. To change the solver, use the ``-s``
-flag and choose between ``roe`` and ``fwave`` as argument to specify the solver used.
-Internally, a function pointer is used to select between the solvers.
-
-Logic is in the ``main.cpp`` file:
+Setting up constants to control the middle states tests.
 
 .. code-block:: cpp
 
-    // error: wrong number of arguments.
-    if( i_argc < 2 || i_argc == 3 || i_argc > 4) {
-        std::cerr << "invalid number of arguments, usage:" << std::endl
-                  << "  ./build/simulation N_CELLS_X [-s <fwave|roe>]" << std::endl
-                  << "where N_CELLS_X is the number of cells in x-direction." << std::endl
-                  << "optional flag: '-s' set used solvers requires 'fwave' or 'roe' as inputs" << std::endl;
-        return EXIT_FAILURE;
-    }
-    // flag: set solver.
-    else if ( i_argc == 4)
+    /// File: test_middle_states.cpp
+    const tsunami_lab::t_idx numberOfCells = 10;
+    const unsigned int numberOfTests = 1000000;
+    const double testAccuracy = 0.99;
+    const double accuracyMargin = 0.0001;
+    const tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWave;
+
+
+Reading the middleStates.csv by implementing a new function to ``tsunami_lab::io::Csv``.
+The function is using a file stream to middleStates.csv and parses a new line when called.
+
+.. code-block:: cpp
+
+    /// File: Csv.cpp
+    bool tsunami_lab::io::Csv::next_middle_states ( std::ifstream & stream,
+                                                    t_real & o_hLeft,
+                                                    t_real & o_hRight,
+                                                    t_real & o_huLeft,
+                                                    t_real & o_huRight,
+                                                    t_real & o_hStar )
     {
-        // unknown flag.
-        if ( ARG_SOLVER != std::string(i_argv[2]))
+        std::string line; 
+
+        // read next complete line
+        while (std::getline(stream, line))
         {
-          std::cerr << "unknown flag: " << i_argv[2] << std::endl;
-          return EXIT_FAILURE;
+            // skip commented lines
+            if (line[0] == '#')
+            {
+            continue;
+            }
+
+            // parse lines divided by ',' to single values
+            std::istringstream lineStream(line);
+            std::string hLeft;
+            std::getline(lineStream, hLeft, ',');
+            o_hLeft = atof(hLeft.c_str());
+            std::string hRight;
+            std::getline(lineStream, hRight, ',');
+            o_hRight = atof(hRight.c_str());
+            std::string huLeft;
+            std::getline(lineStream, huLeft, ',');
+            o_huLeft = atof(huLeft.c_str());
+            std::string huRight;
+            std::getline(lineStream, huRight, ',');
+            o_huRight = atof(huRight.c_str());
+            std::string hStar;
+            std::getline(lineStream, hStar);
+            o_hStar = atof(hStar.c_str());
+            return true;
         }
-        // set solver: roe
-        if ( "roe" == std::string(i_argv[3]))
+        // no lines left to read
+        return false;
+    }
+
+
+Creating a new test case to run with a Catch2 session. :raw-html:`<br>`
+Using the new Csv function to parse the file lines and check if the file can be read in a while loop.
+
+.. code-block:: cpp
+
+    /// File: test_middle_states.cpp
+    TEST_CASE( "Test against the middle_states.csv", "[MiddleStates]" )
+    {
+        // Read the middle_states.csv
+        std::ifstream middle_states( "resources/middle_states.csv" );
+
+        unsigned int successfullTests = 0;
+        unsigned int evaluatedTests = 0;
+
+        // parese each line of the middle_states.csv and test against the simulation
+        tsunami_lab::t_real hLeft, hRight, huLeft, huRight, hStar;
+        while( evaluatedTests < numberOfTests
+            && tsunami_lab::io::Csv::next_middle_states( middle_states,
+                                                            hLeft,
+                                                            hRight,
+                                                            huLeft,
+                                                            huRight,
+                                                            hStar ) )
         {
-          std::cout << "Set Solver: Roe" << std::endl;
-          solver = tsunami_lab::patches::Solver::Roe;
-        }
-        // set solver: fwave
-        else if ( "fwave" == std::string(i_argv[3]))
+        ...
+
+
+Implementing a new setup for the middle states to return the matching height and momentum for the corresponding x-coordinate.
+
+.. code-block:: cpp
+
+    /// File: MiddleStates1d.cpp
+    #include "../../include/setups/MiddleStates1d.h"
+    #include "../../include/constants.h"
+
+    tsunami_lab::setups::MiddleStates1d::MiddleStates1d( t_real i_heightLeft, t_real i_heightRight, t_real i_momentumLeft, t_real i_momentumRight, t_real i_location )
+    {
+        m_heightLeft = i_heightLeft;
+        m_heightRight = i_heightRight;
+        m_momentumLeft = i_momentumLeft;
+        m_momentumRight = i_momentumRight;
+        m_location = i_location;
+    }
+
+    tsunami_lab::t_real tsunami_lab::setups::MiddleStates1d::getHeight( t_real i_x, t_real ) const
+    {
+        if( i_x <= m_location )
         {
-          std::cout << "Set Solver: FWave" << std::endl;
+            return m_heightLeft;
         }
         else
         {
-          std::cerr << "unknown argument for flag -s" << std::endl
-                    << "valid arguments are 'fwave', 'roe'" << std::endl;
-          return EXIT_FAILURE;
+            return m_heightRight;
         }
     }
 
-    // number of arguments == 2
-    l_nx = atoi( i_argv[1] );
-    if( l_nx < 1 ) {
-      std::cerr << "invalid number of cells" << std::endl;
-      return EXIT_FAILURE;
+    tsunami_lab::t_real tsunami_lab::setups::MiddleStates1d::getMomentumX( t_real i_x, t_real ) const
+    {
+        if( i_x <= m_location )
+        {
+            return m_momentumLeft;
+        }
+        else
+        {
+            return m_momentumRight;
+        }
     }
-    // choose default solver: fwave
 
-Sanity Check
-------------
+    tsunami_lab::t_real tsunami_lab::setups::MiddleStates1d::getMomentumY( t_real, t_real ) const
+    {
+        return 0;
+    }
 
-Use these middle states as a sanity check.
 
-Continuous Integration
-----------------------
+Adding the new setup to the Catch2 unit tests.
 
-**Using GitHub Actions** file: ``.github/workflows/main.yml``
+.. code-block:: cpp
 
-.. code-block:: bash
+    /// File: MiddleStates1d.test.cpp
+    #include <catch2/catch.hpp>
+    #include "../../include/setups/MiddleStates1d.h"
 
-    ##
-    # @author Alexander Breuer (alex.breuer AT uni-jena.de)
-    # @section DESCRIPTION
-    # Continuous integration using GitHub Actions.
-    ##
+    TEST_CASE( "Test the one-dimensional MiddleStates setup.", "[MiddleStates1d]" )
+    {
+        tsunami_lab::setups::MiddleStates1d l_middleStates( 25,
+                                                            12,
+                                                            35,
+                                                            123,
+                                                            3 );
+
+        // left side
+        REQUIRE( l_middleStates.getHeight( 2, 0 ) == 25 );
+
+        REQUIRE( l_middleStates.getMomentumX( 2, 0 ) == 35 );
+
+        REQUIRE( l_middleStates.getMomentumY( 2, 0 ) == 0 );
+
+        REQUIRE( l_middleStates.getHeight( 2, 5 ) == 25 );
+
+        REQUIRE( l_middleStates.getMomentumX( 2, 5 ) == 35 );
+
+        REQUIRE( l_middleStates.getMomentumY( 2, 2 ) == 0 );
+
+        // right side
+        REQUIRE( l_middleStates.getHeight( 4, 0 ) == 12 );
+
+        REQUIRE( l_middleStates.getMomentumX( 4, 0 ) == 123 );
+
+        REQUIRE( l_middleStates.getMomentumY( 4, 0 ) == 0 );
+
+        REQUIRE( l_middleStates.getHeight( 4, 5 ) == 12 );
+
+        REQUIRE( l_middleStates.getMomentumX( 4, 5 ) == 123 );
+
+        REQUIRE( l_middleStates.getMomentumY( 4, 2 ) == 0 );
+    }
+
+Setting up the testing with the new setup ``MiddleStates1d`` and calculating the hStar by calculating over multiple time steps.
+Printing an Error message if the deviation of the calculated hStar and the read hStar is to high.
+After going through all test the number of successful tests, accuracy and cell settings are printed.
+The Catch2 test throws an error if the accuracy is to low.
+
+.. code-block:: cpp
+
+        /// File: test_middle_states.cpp
+        ...
+            tsunami_lab::t_real l_dxy = 10.0 / numberOfCells;
+            tsunami_lab::t_real l_location = 0.5;
+
+            // construct setup
+            tsunami_lab::setups::Setup* l_setup = new tsunami_lab::setups::MiddleStates1d( hLeft, hRight, huLeft, huRight, l_location );
+
+            // construct solver
+            tsunami_lab::patches::WavePropagation* l_waveProp;
+            l_waveProp = new tsunami_lab::patches::WavePropagation1d( numberOfCells );
+
+            // set the solver to use
+            l_waveProp->setSolver( solver );
+
+            // maximum observed height in the setup
+            tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
+
+            // set up solver
+            for( tsunami_lab::t_idx l_cy = 0; l_cy < numberOfCells; l_cy++ )
+            {
+                tsunami_lab::t_real l_y = l_cy * l_dxy;
+
+                for( tsunami_lab::t_idx l_cx = 0; l_cx < numberOfCells; l_cx++ )
+                {
+                    tsunami_lab::t_real l_x = l_cx * l_dxy;
+
+                    // get initial values of the setup
+                    tsunami_lab::t_real l_h = l_setup->getHeight( l_x,
+                                                                l_y );
+                    l_hMax = std::max( l_h, l_hMax );
+
+                    tsunami_lab::t_real l_hu = l_setup->getMomentumX( l_x,
+                                                                    l_y );
+                    tsunami_lab::t_real l_hv = l_setup->getMomentumY( l_x,
+                                                                    l_y );
+
+                    // set initial values in wave propagation solver
+                    l_waveProp->setHeight( l_cx,
+                                        l_cy,
+                                        l_h );
+
+                    l_waveProp->setMomentumX( l_cx,
+                                            l_cy,
+                                            l_hu );
+
+                    l_waveProp->setMomentumY( l_cx,
+                                            l_cy,
+                                            l_hv );
+
+                }
+            }
+
+            // derive maximum wave speed in setup; the momentum is ignored
+            tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
+
+            // derive constant time step; changes at simulation time are ignored
+            tsunami_lab::t_real l_dt = 0.5 * l_dxy / l_speedMax;
+
+            // derive scaling for a time step
+            tsunami_lab::t_real l_scaling = l_dt / l_dxy;
+
+            // set up time and print control
+            tsunami_lab::t_idx  l_timeStep = 0;
+            tsunami_lab::t_real l_endTime = 1.25;
+            tsunami_lab::t_real l_simTime = 0;
+
+            // iterate over time
+            while( l_simTime < l_endTime )
+            {
+                l_waveProp->setGhostOutflow();
+                l_waveProp->timeStep( l_scaling );
+
+                l_timeStep++;
+                l_simTime += l_dt;
+            }
+
+            // test hStar against read value from middle_states.csv
+            tsunami_lab::t_idx l_iy = 1;
+            tsunami_lab::t_idx i_stride = 1;
+            tsunami_lab::t_idx l_id = l_iy * i_stride + static_cast<tsunami_lab::t_real>( numberOfCells * l_location );
+            const tsunami_lab::t_real* heights = l_waveProp->getHeight();
+            bool isSameHeight = ( hStar == Approx( heights[l_id] ).margin( accuracyMargin ) );
+            successfulTests += isSameHeight;
+            if( !isSameHeight )
+            {
+                std::cout << "FAILED: Deviation to high from Test " << evaluatedTests << " (Deviation:" << hStar - heights[l_id] << ")" << std::endl;
+            }
+
+            // free memory
+            delete l_setup;
+            delete l_waveProp;
+            ++evaluatedTests;
+        }
+
+        // close the file and print the results
+        middle_states.close();
+        std::cout << successfulTests << " Tests were successful of " << evaluatedTests << std::endl
+            << "Accuracy of " << successfulTests / static_cast<double>( evaluatedTests ) << " with Margin of " << accuracyMargin << " and " << numberOfCells << " Cells" << std::endl;
+        REQUIRE( successfulTests / static_cast<double>( evaluatedTests ) >= testAccuracy );
+    }
+
+
+Continues Integration
+---------------------
+
+The continues integration is done by a GitHub action which was provided and modified to fit the current requirements.
+E.g. switching to cmake to build the project and the implemented targets.
+The action runs when a commit is done to the main branch or a pull_request is opened targeting the main branch and the action runs every night to ensure continuity.
+
+.. code-block:: yaml
+
     name: Tsunami Lab
 
     on:
-      push:
+    push:
         branches: [ main ]
-      pull_request:
+    pull_request:
         branches: [ main ]
-      schedule:
+    schedule:
         - cron: 0 0 * * *
 
     jobs:
-      CI:
+    CI:
         runs-on: ubuntu-latest
 
         steps:
-          - uses: actions/checkout@v4
+        - uses: actions/checkout@v4
 
-          - name: Dependencies
+        - name: Dependencies
             run: |
-              sudo apt-get update
-              sudo apt-get install cmake
-              sudo apt-get install valgrind
-              sudo apt-get install cppcheck
-              git submodule init
-              git submodule update
-          - name: Configure the project
+            sudo apt-get update
+            sudo apt-get install cmake
+            sudo apt-get install valgrind
+            sudo apt-get install cppcheck
+            git submodule init
+            git submodule update
+
+        - name: Configure the project
             uses: threeal/cmake-action@v1.3.0
 
-          - name: Static Code Analysis
+        - name: Static Code Analysis
             run:
-              cppcheck src/ --template=gcc --force --error-exitcode=1
+            cppcheck src/ --template=gcc --force --error-exitcode=1
 
-          - name: Sanitize
+        - name: Sanitize
             run: |
-              cmake --build build --config Debug --target sanitize
-              ./build/sanitize 25
-              cmake --build build --config Debug --target sanitize_test
-              ./build/sanitize_test 25
-              cmake --build build --config Release --target sanitize
-              ./build/sanitize 500
-              cmake --build build --config Release --target sanitize_test
-              ./build/sanitize_test 500
-          - name: Valgrind
-            run: |
-              cmake --build build --config Debug --target test
-              valgrind build/test
-              cmake --build build --config Debug --target build
-              valgrind build/build 25
-          - name: Release
-            run: |
-              cmake --build build --config Release --target test
-              ./build/test
-              cmake --build build --config Release --target build
-              ./build/build 500
+            cmake --build build --config Debug --target sanitize
+            ./build/sanitize 25
+            cmake --build build --config Debug --target sanitize_test
+            ./build/sanitize_test 25
+            cmake --build build --config Release --target sanitize
+            ./build/sanitize 500
+            cmake --build build --config Release --target sanitize_test
+            ./build/sanitize_test 500
 
-???? Ensure to run at least the **solver’s** unit tests after every commit to your git repository. ????
+        - name: Valgrind
+            run: |
+            cmake --build build --config Debug --target test
+            valgrind build/test
+            cmake --build build --config Debug --target build
+            valgrind build/build 25
+
+        - name: Release
+            run: |
+            cmake --build build --config Release --target test
+            ./build/test
+            cmake --build build --config Release --target build
+            ./build/build 500
 
 2.1. Shock and Rarefaction Waves
 --------------------------------
