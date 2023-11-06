@@ -18,8 +18,8 @@ namespace tsunami_lab {
      */
     enum Solver
     {
-      FWave,
-      Roe
+      FWAVE,
+      ROE
     };
   }
 }

@@ -23,7 +23,7 @@ const tsunami_lab::t_idx numberOfCells = 10;
 const unsigned int numberOfTests = 1000000;
 const double testAccuracy = 0.99;
 const double accuracyMargin = 0.03;
-const tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWave;
+const tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWAVE;
 
 int main( int i_argc, char* i_argv[] )
 {

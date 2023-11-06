@@ -77,9 +77,8 @@ int main( int   i_argc,
   std::cout << "### https://rivinhd.github.io/Tsunami-Simulation/ ###" << std::endl;
   std::cout << "#####################################################" << std::endl;
 
-#pragma region Parse the Arguments
   // default arguments values
-  tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWave;
+  tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWAVE;
   bool useBathemetry = false;
 
   // error: wrong number of arguments.
@@ -122,7 +121,7 @@ int main( int   i_argc,
                   if( "roe" == stringParamter )
                   {
                       std::cout << "Set Solver: Roe" << std::endl;
-                      solver = tsunami_lab::patches::Solver::Roe;
+                      solver = tsunami_lab::patches::Solver::ROE;
                   }
                   else if( "fwave" == stringParamter )
                   {
@@ -150,13 +149,10 @@ int main( int   i_argc,
       }
   }
 
-#pragma endregion
-
-
-  // TODO delete me
-  if( useBathemetry )
+  if( useBathemetry && solver == tsunami_lab::patches::Solver::ROE)
   {
-      std::cout << "adff" << std::endl;
+      std::cerr << "ERROR: Roe solver does not have options for bathemetry" << std::endl;
+      return EXIT_FAILURE;
   }
 
   l_dxy = 10.0 / l_nx;
@@ -172,7 +168,7 @@ int main( int   i_argc,
   tsunami_lab::t_real l_hl = 14;
   tsunami_lab::t_real l_hr = 3.5;
   // tsunami_lab::t_real l_ml = 2000;
-  tsunami_lab::t_real l_location = 5;
+  tsunami_lab::t_real l_location = 5.0;
 
   l_setup = new tsunami_lab::setups::DamBreak1d(l_hl, l_hr, l_location);
   // l_setup = new tsunami_lab::setups::RareRare1d(l_hl, l_ml, l_location);
@@ -238,15 +234,13 @@ int main( int   i_argc,
   tsunami_lab::t_real l_endTime = 1.25;
   tsunami_lab::t_real l_simTime = 0;
 
+
   // create solution folder
-  if (!fs::is_directory(SOLUTION_FOLDER)) 
+  if (fs::exists(SOLUTION_FOLDER)) 
   {
-    if (fs::exists(SOLUTION_FOLDER))
-    {
-      fs::rename(SOLUTION_FOLDER.c_str(), (SOLUTION_FOLDER + ".file").c_str());
-    }
-    fs::create_directory(SOLUTION_FOLDER); 
+    fs::remove_all( SOLUTION_FOLDER );
   }
+  fs::create_directory( SOLUTION_FOLDER );
 
   std::cout << "entering time loop" << std::endl;
 

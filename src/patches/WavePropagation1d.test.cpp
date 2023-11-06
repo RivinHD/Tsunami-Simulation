@@ -28,7 +28,7 @@ TEST_CASE( "Test the 1d wave propagation solver.", "[WaveProp1d]" )
 
 	 // construct solver and setup a dambreak problem
 	tsunami_lab::patches::WavePropagation1d m_waveProp_FWave( 100 );
-	m_waveProp_FWave.setSolver( tsunami_lab::patches::Solver::FWave );
+	m_waveProp_FWave.setSolver( tsunami_lab::patches::Solver::FWAVE );
 
 	for( std::size_t l_ce = 0; l_ce < 50; l_ce++ )
 	{
@@ -95,7 +95,7 @@ TEST_CASE( "Test the 1d wave propagation solver.", "[WaveProp1d]" )
 
    // construct solver and setup a dambreak problem
 	tsunami_lab::patches::WavePropagation1d m_waveProp_Roe( 100 );
-	m_waveProp_Roe.setSolver( tsunami_lab::patches::Solver::Roe );
+	m_waveProp_Roe.setSolver( tsunami_lab::patches::Solver::ROE );
 
 	for( std::size_t l_ce = 0; l_ce < 50; l_ce++ )
 	{

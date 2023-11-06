@@ -30,7 +30,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     t_real * m_hu[2] = { nullptr, nullptr };
 
     //! the solver used for the netUpdates
-    Solver solver = Solver::FWave;
+    Solver solver = Solver::FWAVE;
 
   public:
     /**

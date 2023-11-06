@@ -50,7 +50,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
 
   // uses a function pointer to choose between the solvers
   void (*netUpdates)(t_real, t_real, t_real, t_real, t_real*, t_real*) = solvers::FWave::netUpdates;
-  if (solver == Solver::Roe)
+  if (solver == Solver::ROE)
   {
     netUpdates = solvers::Roe::netUpdates;
   }
