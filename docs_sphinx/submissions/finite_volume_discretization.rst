@@ -394,10 +394,10 @@ Output of test_middle_states with 100 cells and a margin of 2%.
     ===============================================================================
     All tests passed (1 assertion in 1 test case)
 
-Continues Integration
----------------------
+Continuous Integration
+----------------------
 
-The continues integration is done by a `GitHub Action <https://docs.github.com/en/actions>`_ which was provided and modified to fit the current requirements.
+The continuous integration is done by a `GitHub Action <https://docs.github.com/en/actions>`_ which was provided and modified to fit the current requirements.
 E.g. switching to cmake to build the project and the implemented targets.
 The action runs when a commit is done to the main branch or a pull request is opened targeting the main branch and the action runs every night to ensure continuity.
 
