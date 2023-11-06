@@ -15,13 +15,51 @@
 #include <fstream>
 #include <limits>
 #include <string>
+#include <vector>
 #include <filesystem> // requieres C++17 and up
-
-#define ARG_SOLVER "-s"
 
 namespace fs = std::filesystem;
 
 const std::string SOLUTION_FOLDER = "solutions";
+
+enum Arguments
+{
+    SOLVER = 's',
+    USE_BATHEMETRY = 'B'
+};
+struct ArgSetup
+{
+    Arguments flag;
+    short numberOfOptions;
+
+    ArgSetup( const Arguments& flag, short numberOfOptions )
+        : flag( flag ), numberOfOptions( numberOfOptions )
+    {
+    }
+};
+const int requieredArguments = 1;
+const std::vector<ArgSetup> optionalArguments = {
+    ArgSetup(Arguments::SOLVER, 1),
+    ArgSetup(Arguments::USE_BATHEMETRY, 0)
+};
+int getOptionalArgLength()
+{
+    int count = 0;
+    for( size_t i = 0; i < optionalArguments.size(); i++ )
+    {
+        count += optionalArguments[i].numberOfOptions + 1;
+    }
+    return count;
+}
+
+void printHelp()
+{
+    std::cerr << "./build/simulation N_CELLS_X [-s <fwave|roe>] [-B]" << std::endl
+        << "where N_CELLS_X is the number of cells in x-direction." << std::endl
+        << "optional flags: " << std::endl
+        << "\t'-s' set used solvers requires 'fwave' or 'roe' as inputs" << std::endl
+        << "\t'-B' enables the input for bathemetry" << std::endl;
+}
 
 int main( int   i_argc,
           char *i_argv[] ) {
@@ -32,8 +70,6 @@ int main( int   i_argc,
   // set cell size
   tsunami_lab::t_real l_dxy = 1;
 
-  tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWave;
-
   std::cout << "#####################################################" << std::endl;
   std::cout << "###                  Tsunami Lab                  ###" << std::endl;
   std::cout << "###                                               ###" << std::endl;
@@ -41,49 +77,88 @@ int main( int   i_argc,
   std::cout << "### https://rivinhd.github.io/Tsunami-Simulation/ ###" << std::endl;
   std::cout << "#####################################################" << std::endl;
 
+#pragma region Parse the Arguments
+  // default arguments values
+  tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWave;
+  bool useBathemetry = false;
+
   // error: wrong number of arguments.
-  if( i_argc < 2 || i_argc == 3 || i_argc > 4) {
-    std::cerr << "invalid number of arguments, usage:" << std::endl
-              << "  ./build/simulation N_CELLS_X [-s <fwave|roe>]" << std::endl
-              << "where N_CELLS_X is the number of cells in x-direction." << std::endl
-              << "optional flag: '-s' set used solvers requires 'fwave' or 'roe' as inputs" << std::endl;
-    return EXIT_FAILURE;
-  }
-  // flag: set solver.
-  else if ( i_argc == 4)
+  int minArgLength = 1 + requieredArguments;
+  int maxArgLength = minArgLength + getOptionalArgLength();
+  if( i_argc < minArgLength || i_argc > maxArgLength )
   {
-    // unknown flag.
-    if ( ARG_SOLVER != std::string(i_argv[2]))
-    {
-      std::cerr << "unknown flag: " << i_argv[2] << std::endl; 
+      std::cerr << "invalid number of arguments, usage:" << std::endl;
+      printHelp();
       return EXIT_FAILURE;
-    }
-    // set solver: roe
-    if ( "roe" == std::string(i_argv[3]))
-    {
-      std::cout << "Set Solver: Roe" << std::endl;
-      solver = tsunami_lab::patches::Solver::Roe;
-    }
-    // set solver: fwave
-    else if ( "fwave" == std::string(i_argv[3]))
-    {
-      std::cout << "Set Solver: FWave" << std::endl;
-    }
-    else
-    {
-      std::cerr << "unknown argument for flag -s" << std::endl
-                << "valid arguments are 'fwave', 'roe'" << std::endl;
-      return EXIT_FAILURE;
-    }
   }
 
-  // number of arguments == 2
+  // parse requiered Argumentes
+  // Argument 1: N_CELLS_X
   l_nx = atoi( i_argv[1] );
-  if( l_nx < 1 ) {
+  if( l_nx < 1 )
+  {
       std::cerr << "invalid number of cells" << std::endl;
       return EXIT_FAILURE;
   }
-  // choose default solver: fwave
+
+  // parse optional Argumentes
+  for(int i = minArgLength; i < i_argc; i++ )
+  {
+      char* arg = i_argv[i];
+      if( arg[0] == '\0' || ( arg[0] == '-' && arg[1] == '\0' ) )
+      {
+          printHelp();
+          return EXIT_FAILURE;
+      }
+
+      unsigned int argi = 0;
+      std::string stringParamter;
+      while( arg[++argi] != '\0' )  // startes with argi = 1
+      {
+          switch( arg[argi] )
+          {
+              case Arguments::SOLVER:
+                  stringParamter = std::string(i_argv[++i]);
+                  if( "roe" == stringParamter )
+                  {
+                      std::cout << "Set Solver: Roe" << std::endl;
+                      solver = tsunami_lab::patches::Solver::Roe;
+                  }
+                  else if( "fwave" == stringParamter )
+                  {
+                      std::cout << "Set Solver: FWave" << std::endl;
+                  }
+                  else
+                  {
+                      std::cerr << "unknown argument for flag -s" << std::endl
+                          << "valid arguments are 'fwave', 'roe'" << std::endl;
+                      return EXIT_FAILURE;
+                  }
+                  break;
+
+              case Arguments::USE_BATHEMETRY:
+                  useBathemetry = true;
+                  std::cout << "Activated Bathemetry" << std::endl;
+                  break;
+
+              default:
+                  std::cerr << "unknown flag: " << arg[argi] << std::endl;
+                  printHelp();
+                  return EXIT_FAILURE;
+                  break;
+          }
+      }
+  }
+
+#pragma endregion
+
+
+  // TODO delete me
+  if( useBathemetry )
+  {
+      std::cout << "adff" << std::endl;
+  }
+
   l_dxy = 10.0 / l_nx;
 
   std::cout << "runtime configuration" << std::endl;

@@ -19,7 +19,7 @@ namespace tsunami_lab
 }
 
 /**
- * 1d rare-rare setup.
+ * 1d middl-states setup.
  */
 class tsunami_lab::setups::MiddleStates1d : public Setup
 {
