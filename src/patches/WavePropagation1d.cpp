@@ -72,13 +72,29 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
 
 			// compute net-updates
 			t_real l_netUpdates[2][2];
+			t_real heightLeft;
+			t_real heightRight;
+			t_real momentumLeft;
+			t_real momentumRight;
+			t_real bathymetryLeft;
+			t_real bathymetryRight;
 
-			tsunami_lab::solvers::FWave::netUpdates( l_hOld[l_ceL],
-													 l_hOld[l_ceR],
-													 l_huOld[l_ceL],
-													 l_huOld[l_ceR],
-													 m_bathymetry[l_ceL],
-													 m_bathymetry[l_ceR],
+			calulateReflection( l_hOld,
+								l_huOld,
+								l_ceL,
+								heightLeft,
+								heightRight,
+								momentumLeft,
+								momentumRight,
+								bathymetryLeft,
+								bathymetryRight );
+
+			tsunami_lab::solvers::FWave::netUpdates( heightLeft,
+													 heightRight,
+													 momentumLeft,
+													 momentumRight,
+													 bathymetryRight,
+													 bathymetryLeft,
 													 l_netUpdates[0],
 													 l_netUpdates[1] );
 
@@ -108,10 +124,26 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
 			// compute net-updates
 			t_real l_netUpdates[2][2];
 
-			netUpdates( l_hOld[l_ceL],
-						l_hOld[l_ceR],
-						l_huOld[l_ceL],
-						l_huOld[l_ceR],
+			t_real heightLeft;
+			t_real heightRight;
+			t_real momentumLeft;
+			t_real momentumRight;
+			t_real _;
+
+			calulateReflection( l_hOld,
+								l_huOld,
+								l_ceL,
+								heightLeft,
+								heightRight,
+								momentumLeft,
+								momentumRight,
+								_,
+								_ );
+
+			netUpdates( heightLeft,
+						heightRight,
+						momentumLeft,
+						momentumRight,
 						l_netUpdates[0],
 						l_netUpdates[1] );
 
@@ -132,12 +164,12 @@ void tsunami_lab::patches::WavePropagation1d::setGhostOutflow()
 
 	// set left boundary
 	l_h[0] = l_h[1];
-	l_hu[0] = l_hu[1];
+	l_hu[0] = l_hu[1] * ( 2 * !hasReflection[Side::LEFT] - 1 );
 	m_bathymetry[0] = m_bathymetry[1];
+
 
 	// set right boundary
 	l_h[m_nCells + 1] = l_h[m_nCells];
-	l_hu[m_nCells + 1] = l_hu[m_nCells];
+	l_hu[m_nCells + 1] = l_hu[m_nCells] * ( 2 * !hasReflection[Side::RIGHT] - 1 );
 	m_bathymetry[m_nCells + 1] = m_bathymetry[m_nCells];
-
 }

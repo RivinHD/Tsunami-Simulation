@@ -8,6 +8,7 @@
 #define TSUNAMI_LAB_PATCHES_WAVE_PROPAGATION_1D
 
 #include "WavePropagation.h"
+#include <cmath>
 
 namespace tsunami_lab
 {
@@ -43,6 +44,30 @@ private:
 
 	//! total height of water height + bathymetry
 	t_real* m_totalHeight;
+
+	bool hasReflection[2] = { false, false };
+	// TODO docu
+	inline void calulateReflection( t_real* i_h,
+									t_real* i_hu,
+									t_idx i_ceL,
+									t_real& o_heightLeft,
+									t_real& o_heightRight,
+									t_real& o_momentumLeft,
+									t_real& o_momentumRight,
+									t_real& o_bathymetryLeft,
+									t_real& o_bathymetryRight )
+	{
+		t_idx l_ceR = i_ceL + 1;
+		bool leftReflection = i_h[l_ceR] == 0;
+		o_heightRight = leftReflection ? i_h[i_ceL] : i_h[l_ceR];
+		o_momentumRight = leftReflection ? -i_hu[i_ceL] : i_hu[l_ceR];
+		o_bathymetryRight = leftReflection ? m_bathymetry[i_ceL] : m_bathymetry[l_ceR];
+
+		bool rightReflection = i_h[i_ceL] == 0;
+		o_heightLeft = rightReflection ? i_h[l_ceR] : i_h[i_ceL];
+		o_momentumLeft = rightReflection ? -i_hu[l_ceR] : i_hu[i_ceL];
+		o_bathymetryLeft = rightReflection ? m_bathymetry[l_ceR] : m_bathymetry[i_ceL];
+	}
 
 public:
 	/**
@@ -198,6 +223,11 @@ public:
 		{
 			m_h[m_step][i] += m_bathymetry[i];
 		}
+	}
+
+	void setReflection( Side side, bool enable )
+	{
+		hasReflection[side] = enable;
 	}
 };
 

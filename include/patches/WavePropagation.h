@@ -31,6 +31,12 @@ class tsunami_lab::patches::WavePropagation
 
 
 public:
+
+	enum Side
+	{
+		LEFT = 0,
+		RIGHT = 1
+	};
 	/**
 	 * Virtual destructor for base class.
 	 **/
@@ -146,6 +152,8 @@ public:
 	virtual void enableBathymetry( bool enable ) = 0;
 
 	virtual void updateWaterHeight() = 0;
+
+	virtual void setReflection( Side side, bool enable ) = 0;
 };
 
 #endif

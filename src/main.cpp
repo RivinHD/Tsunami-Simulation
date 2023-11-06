@@ -20,14 +20,16 @@
 
 namespace fs = std::filesystem;
 
-#define SKIP_ARGUMENTS
+//#define SKIP_ARGUMENTS
 
 const std::string SOLUTION_FOLDER = "solutions";
 
 enum Arguments
 {
 	SOLVER = 's',
-	USE_BATHEMETRY = 'B'
+	USE_BATHEMETRY = 'B',
+	USE_REFLECT_LEFT = 'l',
+	USE_REFLECT_RIGHT = 'r'
 };
 struct ArgSetup
 {
@@ -83,6 +85,8 @@ int main( int   i_argc,
 	// default arguments values
 	tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWAVE;
 	bool useBathemetry = false;
+	bool reflectLeft = false;
+	bool reflectRight = false;
 
 #ifndef SKIP_ARGUMENTS
 	// error: wrong number of arguments.
@@ -144,6 +148,16 @@ int main( int   i_argc,
 					std::cout << "Activated Bathemetry" << std::endl;
 					break;
 
+				case Arguments::USE_REFLECT_LEFT:
+					refelectLeft = true;
+					std::cout << "Activated Reflect on Left side" << std::endl;
+					break;
+
+				case Arguments::USE_REFLECT_RIGHT:
+					refelectRight = true;
+					std::cout << "Activated Reflect on Right side" << std::endl;
+					break;
+
 				default:
 					std::cerr << "unknown flag: " << arg[argi] << std::endl;
 					printHelp();
@@ -194,6 +208,10 @@ int main( int   i_argc,
 
 	// set if bathymetry exists
 	l_waveProp->enableBathymetry( useBathemetry );
+
+	// set Reflection
+	l_waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::LEFT, reflectLeft );
+	l_waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::RIGHT, reflectRight );
 
 	// maximum observed height in the setup
 	tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
