@@ -26,285 +26,290 @@ const std::string SOLUTION_FOLDER = "solutions";
 
 enum Arguments
 {
-    SOLVER = 's',
-    USE_BATHEMETRY = 'B'
+	SOLVER = 's',
+	USE_BATHEMETRY = 'B'
 };
 struct ArgSetup
 {
-    Arguments flag;
-    short numberOfOptions;
+	Arguments flag;
+	short numberOfOptions;
 
-    ArgSetup( const Arguments& flag, short numberOfOptions )
-        : flag( flag ), numberOfOptions( numberOfOptions )
-    {
-    }
+	ArgSetup( const Arguments& flag, short numberOfOptions )
+		: flag( flag ), numberOfOptions( numberOfOptions )
+	{
+	}
 };
 const int requieredArguments = 1;
 const std::vector<ArgSetup> optionalArguments = {
-    ArgSetup(Arguments::SOLVER, 1),
-    ArgSetup(Arguments::USE_BATHEMETRY, 0)
+	ArgSetup( Arguments::SOLVER, 1 ),
+	ArgSetup( Arguments::USE_BATHEMETRY, 0 )
 };
 int getOptionalArgLength()
 {
-    int count = 0;
-    for( size_t i = 0; i < optionalArguments.size(); i++ )
-    {
-        count += optionalArguments[i].numberOfOptions + 1;
-    }
-    return count;
+	int count = 0;
+	for( size_t i = 0; i < optionalArguments.size(); i++ )
+	{
+		count += optionalArguments[i].numberOfOptions + 1;
+	}
+	return count;
 }
 
 void printHelp()
 {
-    std::cerr << "./build/simulation N_CELLS_X [-s <fwave|roe>] [-B]" << std::endl
-        << "where N_CELLS_X is the number of cells in x-direction." << std::endl
-        << "optional flags: " << std::endl
-        << "\t'-s' set used solvers requires 'fwave' or 'roe' as inputs" << std::endl
-        << "\t'-B' enables the input for bathemetry" << std::endl;
+	std::cerr << "./build/simulation N_CELLS_X [-s <fwave|roe>] [-B]" << std::endl
+		<< "where N_CELLS_X is the number of cells in x-direction." << std::endl
+		<< "optional flags: " << std::endl
+		<< "\t'-s' set used solvers requires 'fwave' or 'roe' as inputs" << std::endl
+		<< "\t'-B' enables the input for bathemetry" << std::endl;
 }
 
 int main( int   i_argc,
-          char *i_argv[] ) {
-  // number of cells in x- and y-direction
-  tsunami_lab::t_idx l_nx = 0;
-  tsunami_lab::t_idx l_ny = 1;
+		  char* i_argv[] )
+{
+	// number of cells in x- and y-direction
+	tsunami_lab::t_idx l_nx = 0;
+	tsunami_lab::t_idx l_ny = 1;
 
-  // set cell size
-  tsunami_lab::t_real l_dxy = 1;
+	// set cell size
+	tsunami_lab::t_real l_dxy = 1;
 
-  std::cout << "#####################################################" << std::endl;
-  std::cout << "###                  Tsunami Lab                  ###" << std::endl;
-  std::cout << "###                                               ###" << std::endl;
-  std::cout << "### https://scalable.uni-jena.de                  ###" << std::endl;
-  std::cout << "### https://rivinhd.github.io/Tsunami-Simulation/ ###" << std::endl;
-  std::cout << "#####################################################" << std::endl;
+	std::cout << "#####################################################" << std::endl;
+	std::cout << "###                  Tsunami Lab                  ###" << std::endl;
+	std::cout << "###                                               ###" << std::endl;
+	std::cout << "### https://scalable.uni-jena.de                  ###" << std::endl;
+	std::cout << "### https://rivinhd.github.io/Tsunami-Simulation/ ###" << std::endl;
+	std::cout << "#####################################################" << std::endl;
 
-  // default arguments values
-  tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWAVE;
-  bool useBathemetry = false;
+	// default arguments values
+	tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWAVE;
+	bool useBathemetry = false;
 
 #ifndef SKIP_ARGUMENTS
-  // error: wrong number of arguments.
-  int minArgLength = 1 + requieredArguments;
-  int maxArgLength = minArgLength + getOptionalArgLength();
-  if( i_argc < minArgLength || i_argc > maxArgLength )
-  {
-      std::cerr << "invalid number of arguments, usage:" << std::endl;
-      printHelp();
-      return EXIT_FAILURE;
-  }
+	// error: wrong number of arguments.
+	int minArgLength = 1 + requieredArguments;
+	int maxArgLength = minArgLength + getOptionalArgLength();
+	if( i_argc < minArgLength || i_argc > maxArgLength )
+	{
+		std::cerr << "invalid number of arguments, usage:" << std::endl;
+		printHelp();
+		return EXIT_FAILURE;
+	}
 
-  // parse requiered Argumentes
-  // Argument 1: N_CELLS_X
-  l_nx = atoi( i_argv[1] );
-  if( l_nx < 1 )
-  {
-      std::cerr << "invalid number of cells" << std::endl;
-      return EXIT_FAILURE;
-  }
+	// parse requiered Argumentes
+	// Argument 1: N_CELLS_X
+	l_nx = atoi( i_argv[1] );
+	if( l_nx < 1 )
+	{
+		std::cerr << "invalid number of cells" << std::endl;
+		return EXIT_FAILURE;
+	}
 
-  // parse optional Argumentes
-  for(int i = minArgLength; i < i_argc; i++ )
-  {
-      char* arg = i_argv[i];
-      if( arg[0] == '\0' || ( arg[0] == '-' && arg[1] == '\0' ) )
-      {
-          printHelp();
-          return EXIT_FAILURE;
-      }
+	// parse optional Argumentes
+	for( int i = minArgLength; i < i_argc; i++ )
+	{
+		char* arg = i_argv[i];
+		if( arg[0] == '\0' || ( arg[0] == '-' && arg[1] == '\0' ) )
+		{
+			printHelp();
+			return EXIT_FAILURE;
+		}
 
-      unsigned int argi = 0;
-      std::string stringParamter;
-      while( arg[++argi] != '\0' )  // startes with argi = 1
-      {
-          switch( arg[argi] )
-          {
-              case Arguments::SOLVER:
-                  stringParamter = std::string(i_argv[++i]);
-                  if( "roe" == stringParamter )
-                  {
-                      std::cout << "Set Solver: Roe" << std::endl;
-                      solver = tsunami_lab::patches::Solver::ROE;
-                  }
-                  else if( "fwave" == stringParamter )
-                  {
-                      std::cout << "Set Solver: FWave" << std::endl;
-                  }
-                  else
-                  {
-                      std::cerr << "unknown argument for flag -s" << std::endl
-                          << "valid arguments are 'fwave', 'roe'" << std::endl;
-                      return EXIT_FAILURE;
-                  }
-                  break;
+		unsigned int argi = 0;
+		std::string stringParamter;
+		while( arg[++argi] != '\0' )  // startes with argi = 1
+		{
+			switch( arg[argi] )
+			{
+				case Arguments::SOLVER:
+					stringParamter = std::string( i_argv[++i] );
+					if( "roe" == stringParamter )
+					{
+						std::cout << "Set Solver: Roe" << std::endl;
+						solver = tsunami_lab::patches::Solver::ROE;
+					}
+					else if( "fwave" == stringParamter )
+					{
+						std::cout << "Set Solver: FWave" << std::endl;
+					}
+					else
+					{
+						std::cerr << "unknown argument for flag -s" << std::endl
+							<< "valid arguments are 'fwave', 'roe'" << std::endl;
+						return EXIT_FAILURE;
+					}
+					break;
 
-              case Arguments::USE_BATHEMETRY:
-                  useBathemetry = true;
-                  std::cout << "Activated Bathemetry" << std::endl;
-                  break;
+				case Arguments::USE_BATHEMETRY:
+					useBathemetry = true;
+					std::cout << "Activated Bathemetry" << std::endl;
+					break;
 
-              default:
-                  std::cerr << "unknown flag: " << arg[argi] << std::endl;
-                  printHelp();
-                  return EXIT_FAILURE;
-                  break;
-          }
-      }
-  }
+				default:
+					std::cerr << "unknown flag: " << arg[argi] << std::endl;
+					printHelp();
+					return EXIT_FAILURE;
+					break;
+			}
+		}
+	}
 #endif // SKIP_ARGUMENTS
 #ifdef SKIP_ARGUMENTS
-    l_nx = 1000;
-    useBathemetry = true;
-    std::cout << i_argv[i_argc - 1] << std::endl;
+	l_nx = 1000;
+	useBathemetry = true;
+	std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
 
-  if( useBathemetry && solver == tsunami_lab::patches::Solver::ROE)
-  {
-      std::cerr << "ERROR: Roe solver does not have options for bathemetry" << std::endl;
-      return EXIT_FAILURE;
-  }
+	if( useBathemetry && solver == tsunami_lab::patches::Solver::ROE )
+	{
+		std::cerr << "ERROR: Roe solver does not have options for bathemetry" << std::endl;
+		return EXIT_FAILURE;
+	}
 
-  l_dxy = 10.0 / l_nx;
+	l_dxy = 10.0 / l_nx;
 
-  std::cout << "runtime configuration" << std::endl;
-  std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
-  std::cout << "  number of cells in y-direction: " << l_ny << std::endl;
-  std::cout << "  cell size:                      " << l_dxy << std::endl;
+	std::cout << "runtime configuration" << std::endl;
+	std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
+	std::cout << "  number of cells in y-direction: " << l_ny << std::endl;
+	std::cout << "  cell size:                      " << l_dxy << std::endl;
 
-  // construct setup
-  tsunami_lab::setups::Setup *l_setup;
+	// construct setup
+	tsunami_lab::setups::Setup* l_setup;
 
-  tsunami_lab::t_real l_hl = 12;
-  tsunami_lab::t_real l_hr = 8;
-  // tsunami_lab::t_real l_ml = 2000;
-  tsunami_lab::t_real l_location = 3;
+	tsunami_lab::t_real l_hl = 12;
+	tsunami_lab::t_real l_hr = 8;
+	// tsunami_lab::t_real l_ml = 2000;
+	tsunami_lab::t_real l_location = 3;
 
-  l_setup = new tsunami_lab::setups::DamBreak1d(l_hl, l_hr, l_location);
-  // l_setup = new tsunami_lab::setups::RareRare1d(l_hl, l_ml, l_location);
-  // l_setup = new tsunami_lab::setups::ShockShock1d(l_hl, l_ml, l_location);
-
-
-  // construct solver
-  tsunami_lab::patches::WavePropagation *l_waveProp;
-  l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx );
-  
-  // set the solver to use
-  l_waveProp->setSolver(solver);
-
-  // set if bathymetry exists
-  l_waveProp->enableBathymetry(useBathemetry);
-
-  // maximum observed height in the setup
-  tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
-
-  // set up solver
-  for( tsunami_lab::t_idx l_cy = 0; l_cy < l_ny; l_cy++ ) {
-    tsunami_lab::t_real l_y = l_cy * l_dxy; 
-
-    for( tsunami_lab::t_idx l_cx = 0; l_cx < l_nx; l_cx++ ) {
-      tsunami_lab::t_real l_x = l_cx * l_dxy; 
-
-      // get initial values of the setup
-      tsunami_lab::t_real l_h = l_setup->getHeight( l_x,
-                                                    l_y );
-      l_hMax = std::max( l_h, l_hMax );
-
-      tsunami_lab::t_real l_hu = l_setup->getMomentumX( l_x,
-                                                        l_y );
-      tsunami_lab::t_real l_hv = l_setup->getMomentumY( l_x,
-                                                        l_y );
-
-      // set initial values in wave propagation solver
-      l_waveProp->setHeight( l_cx,
-                             l_cy,
-                             l_h );
-
-      l_waveProp->setMomentumX( l_cx,
-                                l_cy,
-                                l_hu );
-
-      l_waveProp->setMomentumY( l_cx,
-                                l_cy,
-                                l_hv );
-
-    }
-  }
-
-  // TODO remove test bathymetry DUNE
-   l_waveProp->setBathymetry(700, 0, -1);
-   l_waveProp->setBathymetry(701, 0, -1.3);
-   l_waveProp->setBathymetry(702, 0, -1.5);
-   l_waveProp->setBathymetry(703, 0, -1.2);
-   l_waveProp->setBathymetry(704, 0, -1.1);
+	l_setup = new tsunami_lab::setups::DamBreak1d( l_hl, l_hr, l_location );
+	// l_setup = new tsunami_lab::setups::RareRare1d(l_hl, l_ml, l_location);
+	// l_setup = new tsunami_lab::setups::ShockShock1d(l_hl, l_ml, l_location);
 
 
-  l_waveProp->updateWaterHeight();
+	// construct solver
+	tsunami_lab::patches::WavePropagation* l_waveProp;
+	l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx );
+
+	// set the solver to use
+	l_waveProp->setSolver( solver );
+
+	// set if bathymetry exists
+	l_waveProp->enableBathymetry( useBathemetry );
+
+	// maximum observed height in the setup
+	tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
+
+	// set up solver
+	for( tsunami_lab::t_idx l_cy = 0; l_cy < l_ny; l_cy++ )
+	{
+		tsunami_lab::t_real l_y = l_cy * l_dxy;
+
+		for( tsunami_lab::t_idx l_cx = 0; l_cx < l_nx; l_cx++ )
+		{
+			tsunami_lab::t_real l_x = l_cx * l_dxy;
+
+			// get initial values of the setup
+			tsunami_lab::t_real l_h = l_setup->getHeight( l_x,
+														  l_y );
+			l_hMax = std::max( l_h, l_hMax );
+
+			tsunami_lab::t_real l_hu = l_setup->getMomentumX( l_x,
+															  l_y );
+			tsunami_lab::t_real l_hv = l_setup->getMomentumY( l_x,
+															  l_y );
+
+			// set initial values in wave propagation solver
+			l_waveProp->setHeight( l_cx,
+								   l_cy,
+								   l_h );
+
+			l_waveProp->setMomentumX( l_cx,
+									  l_cy,
+									  l_hu );
+
+			l_waveProp->setMomentumY( l_cx,
+									  l_cy,
+									  l_hv );
+
+		}
+	}
+
+	// TODO remove test bathymetry DUNE
+	l_waveProp->setBathymetry( 700, 0, -1 );
+	l_waveProp->setBathymetry( 701, 0, -1.3 );
+	l_waveProp->setBathymetry( 702, 0, -1.5 );
+	l_waveProp->setBathymetry( 703, 0, -1.2 );
+	l_waveProp->setBathymetry( 704, 0, -1.1 );
 
 
-  // derive maximum wave speed in setup; the momentum is ignored
-  tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
-  std::cout << "Max speed" << l_speedMax << std::endl;
-
-  // derive constant time step; changes at simulation time are ignored
-  tsunami_lab::t_real l_dt = 0.5 * l_dxy / l_speedMax;
-
-  // derive scaling for a time step
-  tsunami_lab::t_real l_scaling = l_dt / l_dxy;
-
-  // set up time and print control
-  tsunami_lab::t_idx  l_timeStep = 0;
-  tsunami_lab::t_idx  l_nOut = 0;
-  tsunami_lab::t_real l_endTime = 1.25;
-  tsunami_lab::t_real l_simTime = 0;
+	l_waveProp->updateWaterHeight();
 
 
-  // create solution folder
-  if (fs::exists(SOLUTION_FOLDER)) 
-  {
-    fs::remove_all( SOLUTION_FOLDER );
-  }
-  fs::create_directory( SOLUTION_FOLDER );
+	// derive maximum wave speed in setup; the momentum is ignored
+	tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
+	std::cout << "Max speed" << l_speedMax << std::endl;
 
-  std::cout << "entering time loop" << std::endl;
+	// derive constant time step; changes at simulation time are ignored
+	tsunami_lab::t_real l_dt = 0.5 * l_dxy / l_speedMax;
 
-  // iterate over time
-  while( l_simTime < l_endTime ){
-    if( l_timeStep % 25 == 0 ) {
-      std::cout << "  simulation time / #time steps: "
-                << l_simTime << " / " << l_timeStep << std::endl;
+	// derive scaling for a time step
+	tsunami_lab::t_real l_scaling = l_dt / l_dxy;
 
-      std::string l_path = SOLUTION_FOLDER + "/solution_" + std::to_string(l_nOut) + ".csv";
-      std::cout << "  writing wave field to " << l_path << std::endl;
+	// set up time and print control
+	tsunami_lab::t_idx  l_timeStep = 0;
+	tsunami_lab::t_idx  l_nOut = 0;
+	tsunami_lab::t_real l_endTime = 1.25;
+	tsunami_lab::t_real l_simTime = 0;
 
-      std::ofstream l_file;
-      l_file.open( l_path  );
 
-      tsunami_lab::io::Csv::write( l_dxy,
-                                   l_nx,
-                                   1,
-                                   1,
-                                   l_waveProp->getHeight(),
-                                   l_waveProp->getBathymetry(),
-                                   l_waveProp->getTotalHeight(),
-                                   l_file );
-      l_file.close();
-      l_nOut++;
-    }
+	// create solution folder
+	if( fs::exists( SOLUTION_FOLDER ) )
+	{
+		fs::remove_all( SOLUTION_FOLDER );
+	}
+	fs::create_directory( SOLUTION_FOLDER );
 
-    l_waveProp->setGhostOutflow();
-    l_waveProp->timeStep( l_scaling );
+	std::cout << "entering time loop" << std::endl;
 
-    l_timeStep++;
-    l_simTime += l_dt;
-  }
+	// iterate over time
+	while( l_simTime < l_endTime )
+	{
+		if( l_timeStep % 25 == 0 )
+		{
+			std::cout << "  simulation time / #time steps: "
+				<< l_simTime << " / " << l_timeStep << std::endl;
 
-  std::cout << "finished time loop" << std::endl;
+			std::string l_path = SOLUTION_FOLDER + "/solution_" + std::to_string( l_nOut ) + ".csv";
+			std::cout << "  writing wave field to " << l_path << std::endl;
 
-  // free memory
-  std::cout << "freeing memory" << std::endl;
-  delete l_setup;
-  delete l_waveProp;
+			std::ofstream l_file;
+			l_file.open( l_path );
 
-  std::cout << "finished, exiting" << std::endl;
-  return EXIT_SUCCESS;
+			tsunami_lab::io::Csv::write( l_dxy,
+										 l_nx,
+										 1,
+										 1,
+										 l_waveProp->getHeight(),
+										 l_waveProp->getBathymetry(),
+										 l_waveProp->getTotalHeight(),
+										 l_file );
+			l_file.close();
+			l_nOut++;
+		}
+
+		l_waveProp->setGhostOutflow();
+		l_waveProp->timeStep( l_scaling );
+
+		l_timeStep++;
+		l_simTime += l_dt;
+	}
+
+	std::cout << "finished time loop" << std::endl;
+
+	// free memory
+	std::cout << "freeing memory" << std::endl;
+	delete l_setup;
+	delete l_waveProp;
+
+	std::cout << "finished, exiting" << std::endl;
+	return EXIT_SUCCESS;
 }
