@@ -139,6 +139,8 @@ class tsunami_lab::patches::WavePropagation {
                                 t_real i_b ) = 0;
 
     virtual void enableBathymetry(bool enable) = 0;
+
+    virtual void updateWaterHeight() = 0;
 };
 
 #endif

@@ -154,11 +154,15 @@ void tsunami_lab::solvers::FWave::netUpdates(t_real i_hL,
     //compute bathymetry
     t_real bathymetry[2];
     computeBathymetryEffects(i_hL, i_hR, i_bL, i_bR, bathymetry);
+    t_real bathymetryDeltaFlux[2] = {
+        deltaFlux[0] + bathymetry[0],
+        deltaFlux[1] + bathymetry[1]
+    };
 
     // compute eigencoefficients
     t_real eigencoefficient1 = 0;
     t_real eigencoefficient2 = 0;
-    computeEigencoefficients(eigenvalue1, eigenvalue2, deltaFlux, eigencoefficient1, eigencoefficient2);
+    computeEigencoefficients(eigenvalue1, eigenvalue2, bathymetryDeltaFlux, eigencoefficient1, eigencoefficient2);
 
     // compute waves / net updates
     for( unsigned short l_qt = 0; l_qt < 2; l_qt++ )
@@ -170,23 +174,22 @@ void tsunami_lab::solvers::FWave::netUpdates(t_real i_hL,
         // 1st wave
         if( eigenvalue1 < 0 )
         {
-            o_netUpdateL[l_qt] += eigencoefficient1 * eigenvector1[l_qt] ;
+            o_netUpdateL[l_qt] += eigencoefficient1 * eigenvector1[l_qt];
         }
         else
         {
-            o_netUpdateR[l_qt] += eigencoefficient1 * eigenvector1[l_qt] ;
+            o_netUpdateR[l_qt] += eigencoefficient1 * eigenvector1[l_qt];
         }
 
         // 2nd wave
         if( eigenvalue2 < 0 )
         {
-            o_netUpdateL[l_qt] += eigencoefficient2 * eigenvector2[l_qt] ;
+            o_netUpdateL[l_qt] += eigencoefficient2 * eigenvector2[l_qt];
         }
         else
         {
-            o_netUpdateR[l_qt] += eigencoefficient2 * eigenvector2[l_qt] ;
+            o_netUpdateR[l_qt] += eigencoefficient2 * eigenvector2[l_qt];
         }
     }
-    o_netUpdateR[1] += bathymetry[1];
 }
 

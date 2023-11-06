@@ -20,6 +20,8 @@
 
 namespace fs = std::filesystem;
 
+#define SKIP_ARGUMENTS
+
 const std::string SOLUTION_FOLDER = "solutions";
 
 enum Arguments
@@ -81,6 +83,7 @@ int main( int   i_argc,
   tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWAVE;
   bool useBathemetry = false;
 
+#ifndef SKIP_ARGUMENTS
   // error: wrong number of arguments.
   int minArgLength = 1 + requieredArguments;
   int maxArgLength = minArgLength + getOptionalArgLength();
@@ -148,6 +151,12 @@ int main( int   i_argc,
           }
       }
   }
+#endif // SKIP_ARGUMENTS
+#ifdef SKIP_ARGUMENTS
+    l_nx = 1000;
+    useBathemetry = true;
+    std::cout << i_argv[i_argc - 1] << std::endl;
+#endif // SKIP_ARGUMENTS
 
   if( useBathemetry && solver == tsunami_lab::patches::Solver::ROE)
   {
@@ -229,6 +238,8 @@ int main( int   i_argc,
    l_waveProp->setBathymetry(704, 0, -1.1);
 
 
+  l_waveProp->updateWaterHeight();
+
 
   // derive maximum wave speed in setup; the momentum is ignored
   tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
@@ -272,9 +283,9 @@ int main( int   i_argc,
                                    l_nx,
                                    1,
                                    1,
+                                   l_waveProp->getHeight(),
+                                   l_waveProp->getBathymetry(),
                                    l_waveProp->getTotalHeight(),
-                                   l_waveProp->getMomentumX(),
-                                   nullptr,
                                    l_file );
       l_file.close();
       l_nOut++;

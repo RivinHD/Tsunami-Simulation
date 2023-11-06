@@ -33,7 +33,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     Solver solver = Solver::FWAVE;
 
     //! bathymetry for the current an next time step for all cells
-    t_real * m_bathymetry[2] = { nullptr, nullptr };
+    t_real * m_bathymetry;
 
     //! check if bathymetry exists
     bool hasBathymetry;
@@ -86,9 +86,9 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
 
     t_real const * getTotalHeight()
     {
-        for(t_idx i = 0; i < m_nCells; i++)
+        for(t_idx i = 1; i < m_nCells + 1; i++)
         {
-            m_totalHeight[i] = (m_h[m_step]+1)[i] - (m_bathymetry[m_step]+1)[i];
+            m_totalHeight[i] = (m_h[m_step]+1)[i] - m_bathymetry[i + 1];
         }
         return m_totalHeight;
     }
@@ -115,7 +115,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      * @return
      */
     t_real const * getBathymetry(){
-        return m_bathymetry[m_step]+1;
+        return m_bathymetry;
     }
 
     /**
@@ -168,7 +168,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     void setBathymetry( t_idx i_ix,
                         t_idx,
                         t_real i_bathymetry){
-        m_bathymetry[m_step][i_ix+1] = i_bathymetry;
+        m_bathymetry[i_ix+1] = i_bathymetry;
     }
 
     /**
@@ -176,6 +176,13 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      */
     void enableBathymetry(bool enable){
         hasBathymetry = enable;
+    }
+
+    void updateWaterHeight(){
+        for (t_idx i = 1; i < m_nCells + 1; i++)
+        {
+            m_h[m_step][i] += m_bathymetry[i];
+        }
     }
 };
 
