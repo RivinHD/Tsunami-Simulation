@@ -77,7 +77,6 @@ int main( int   i_argc,
   std::cout << "### https://rivinhd.github.io/Tsunami-Simulation/ ###" << std::endl;
   std::cout << "#####################################################" << std::endl;
 
-#pragma region Parse the Arguments
   // default arguments values
   tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWave;
   bool useBathemetry = false;
@@ -150,15 +149,6 @@ int main( int   i_argc,
       }
   }
 
-#pragma endregion
-
-
-  // TODO delete me
-  if( useBathemetry )
-  {
-      std::cout << "adff" << std::endl;
-  }
-
   l_dxy = 10.0 / l_nx;
 
   std::cout << "runtime configuration" << std::endl;
@@ -169,10 +159,10 @@ int main( int   i_argc,
   // construct setup
   tsunami_lab::setups::Setup *l_setup;
 
-  tsunami_lab::t_real l_hl = 14;
-  tsunami_lab::t_real l_hr = 3.5;
+  tsunami_lab::t_real l_hl = 12;
+  tsunami_lab::t_real l_hr = 8;
   // tsunami_lab::t_real l_ml = 2000;
-  tsunami_lab::t_real l_location = 5;
+  tsunami_lab::t_real l_location = 3;
 
   l_setup = new tsunami_lab::setups::DamBreak1d(l_hl, l_hr, l_location);
   // l_setup = new tsunami_lab::setups::RareRare1d(l_hl, l_ml, l_location);
@@ -185,6 +175,9 @@ int main( int   i_argc,
   
   // set the solver to use
   l_waveProp->setSolver(solver);
+
+  // set if bathymetry exists
+  l_waveProp->enableBathymetry(useBathemetry);
 
   // maximum observed height in the setup
   tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
@@ -221,6 +214,15 @@ int main( int   i_argc,
 
     }
   }
+
+  // TODO remove test bathymetry DUNE
+   l_waveProp->setBathymetry(700, 0, -1);
+   l_waveProp->setBathymetry(701, 0, -1.3);
+   l_waveProp->setBathymetry(702, 0, -1.5);
+   l_waveProp->setBathymetry(703, 0, -1.2);
+   l_waveProp->setBathymetry(704, 0, -1.1);
+
+
 
   // derive maximum wave speed in setup; the momentum is ignored
   tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
@@ -266,7 +268,7 @@ int main( int   i_argc,
                                    l_nx,
                                    1,
                                    1,
-                                   l_waveProp->getHeight(),
+                                   l_waveProp->getTotalHeight(),
                                    l_waveProp->getMomentumX(),
                                    nullptr,
                                    l_file );

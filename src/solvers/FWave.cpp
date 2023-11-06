@@ -170,22 +170,23 @@ void tsunami_lab::solvers::FWave::netUpdates(t_real i_hL,
         // 1st wave
         if( eigenvalue1 < 0 )
         {
-            o_netUpdateL[l_qt] += eigencoefficient1 * eigenvector1[l_qt] - bathymetry[l_qt];
+            o_netUpdateL[l_qt] += eigencoefficient1 * eigenvector1[l_qt] ;
         }
         else
         {
-            o_netUpdateR[l_qt] += eigencoefficient1 * eigenvector1[l_qt] - bathymetry[l_qt];
+            o_netUpdateR[l_qt] += eigencoefficient1 * eigenvector1[l_qt] ;
         }
 
         // 2nd wave
         if( eigenvalue2 < 0 )
         {
-            o_netUpdateL[l_qt] += eigencoefficient2 * eigenvector2[l_qt] - bathymetry[l_qt];
+            o_netUpdateL[l_qt] += eigencoefficient2 * eigenvector2[l_qt] ;
         }
         else
         {
-            o_netUpdateR[l_qt] += eigencoefficient2 * eigenvector2[l_qt] - bathymetry[l_qt];
+            o_netUpdateR[l_qt] += eigencoefficient2 * eigenvector2[l_qt] ;
         }
     }
+    o_netUpdateR[1] += bathymetry[1];
 }
 
