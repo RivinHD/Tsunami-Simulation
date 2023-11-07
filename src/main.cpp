@@ -9,59 +9,27 @@
 #include "../include/setups/RareRare1d.h"
 #include "../include/setups/ShockShock1d.h"
 #include "../include/io/Csv.h"
+#include "../include/io/ArgSetup.h"
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
 #include <fstream>
 #include <limits>
 #include <string>
-#include <vector>
 #include <filesystem> // requieres C++17 and up
 
 namespace fs = std::filesystem;
 
-//define SKIP_ARGUMENTS
+#define SKIP_ARGUMENTS
 
 const std::string SOLUTION_FOLDER = "solutions";
 
-#define START_ARG_CHAR '!'
-#define END_ARG_CHAR '~'
-const int LENGTH_ARG_CHAR = END_ARG_CHAR - START_ARG_CHAR + 1;
 enum Arguments
 {
 	SOLVER = 's',
 	USE_BATHYMETRY = 'B',
 	USE_REFLECT_LEFT = 'L',
 	USE_REFLECT_RIGHT = 'R'
-};
-class ArgSetup
-{
-public:
-	Arguments flag;
-	short numberOfOptions;
-
-	ArgSetup( const Arguments& flag, short numberOfOptions )
-		: flag( flag ), numberOfOptions( numberOfOptions )
-	{
-	}
-
-	static int getOptionalArgLength( const std::vector<ArgSetup>& argList )
-	{
-		int count = 0;
-		for( std::vector<ArgSetup>::const_iterator it = argList.begin(); it != argList.end(); it++ )
-		{
-			count += it->numberOfOptions + 1;
-		}
-		return count;
-	}
-
-	static void generateCountMap( const std::vector<ArgSetup>& argList, int outMap[LENGTH_ARG_CHAR] )
-	{
-		for( std::vector<ArgSetup>::const_iterator it = argList.begin(); it != argList.end(); it++ )
-		{
-			outMap[it->flag] = it->numberOfOptions;
-		}
-	}
 };
 const int requieredArguments = 1;
 const std::vector<ArgSetup> optionalArguments = {
@@ -73,13 +41,15 @@ const std::vector<ArgSetup> optionalArguments = {
 
 void printHelp()
 {
-	std::cerr << "./build/simulation N_CELLS_X [-s <fwave|roe>] [-B]" << std::endl
-		<< "where N_CELLS_X is the number of cells in x-direction." << std::endl
-		<< "optional flags: " << std::endl
-		<< "\t'-s' set used solvers requires 'fwave' or 'roe' as inputs" << std::endl
-		<< "\t'-B' enables the input for bathymetry" << std::endl
-		<< "\t'-L' enables the reflection on the left side of the simulation" << std::endl
-		<< "\t'-R' enables the reflectoin on the right side of the simulation" << std::endl;
+	std::cerr << "./build/simulation N_CELLS_X [-s <fwave|roe>] [-B] [-L] [-R]" << std::endl << std::endl
+		<< "REQUIERED INPUT:" << std::endl
+		<< "\tN_CELLS_X is the number of cells in x-direction." << std::endl << std::endl
+		<< "NOTE: optional flags has be put after the requiered input" << std::endl
+		<< "OPTIONAL FLAGS:" << std::endl
+		<< "\t-s set used solvers requires 'fwave' or 'roe' as inputs" << std::endl
+		<< "\t-B enables the input for bathymetry" << std::endl
+		<< "\t-L enables the reflection on the left side of the simulation" << std::endl
+		<< "\t-R enables the reflectoin on the right side of the simulation" << std::endl;
 }
 
 int main( int   i_argc,
@@ -125,7 +95,7 @@ int main( int   i_argc,
 		return EXIT_FAILURE;
 	}
 
-	int argMapParamterCount[LENGTH_ARG_CHAR] = { 0 };
+	int argMapParamterCount[ArgSetup::LENGTH_ARG_CHAR] = { 0 };
 	ArgSetup::generateCountMap( optionalArguments, argMapParamterCount );
 	// parse optional Argumentes
 	for( int i = minArgLength; i < i_argc; i++ )
@@ -197,7 +167,8 @@ int main( int   i_argc,
 	}
 #endif // SKIP_ARGUMENTS
 #ifdef SKIP_ARGUMENTS
-	l_nx = 100;
+	l_nx = 1000;
+	reflectRight = true;
 	useBathymetry = true;
 	std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
@@ -281,11 +252,14 @@ int main( int   i_argc,
 	}
 
 	// TODO remove test bathymetry DUNE
-	l_waveProp->setBathymetry( 70, 0, 1 );
-	l_waveProp->setBathymetry( 71, 0, 1.3 );
-	l_waveProp->setBathymetry( 72, 0, 1.5 );
-	l_waveProp->setBathymetry( 73, 0, 1.2 );
-	l_waveProp->setBathymetry( 74, 0, 1.1 );
+	l_waveProp->setBathymetry( 700, 0, 1 );
+	l_waveProp->setBathymetry( 701, 0, 1.3 );
+	l_waveProp->setBathymetry( 702, 0, 1.5 );
+	l_waveProp->setBathymetry( 703, 0, 1.2 );
+	l_waveProp->setBathymetry( 704, 0, 1.1 );
+
+	// TODO remove test reflection
+	l_waveProp->setBathymetry( 100, 0, 13 );
 
 	// recacluate the water with bathmetry
 	l_waveProp->updateWaterHeight();
@@ -351,7 +325,6 @@ int main( int   i_argc,
 		l_timeStep++;
 		l_simTime += l_dt;
 	}
-
 	std::cout << "finished time loop" << std::endl;
 
 	// free memory

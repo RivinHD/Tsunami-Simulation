@@ -45,9 +45,27 @@ private:
 	//! total height of water height + bathymetry
 	t_real* m_totalHeight;
 
-	bool hasReflection[2] = { false, false };
 	// TODO docu
-	inline void calculateReflection( t_real* i_h,
+	bool hasReflection[2] = { false, false };
+
+	// TODO docu
+	enum Reflection
+	{
+		NONE = 0,
+		LEFT,
+		RIGHT
+	};
+
+	// TODO docu
+	Reflection calculateReflection( t_real* i_h,
+									t_real* i_hu,
+									t_idx i_ceL,
+									t_real& o_heightLeft,
+									t_real& o_heightRight,
+									t_real& o_momentumLeft,
+									t_real& o_momentumRight );
+	// TODO docu
+	Reflection calculateReflection( t_real* i_h,
 									t_real* i_hu,
 									t_idx i_ceL,
 									t_real& o_heightLeft,
@@ -55,19 +73,7 @@ private:
 									t_real& o_momentumLeft,
 									t_real& o_momentumRight,
 									t_real& o_bathymetryLeft,
-									t_real& o_bathymetryRight )
-	{
-		t_idx l_ceR = i_ceL + 1;
-		bool leftReflection = i_h[l_ceR] == 0;
-		o_heightRight = leftReflection ? i_h[i_ceL] : i_h[l_ceR];
-		o_momentumRight = leftReflection ? -i_hu[i_ceL] : i_hu[l_ceR];
-		o_bathymetryRight = leftReflection ? m_bathymetry[i_ceL] : m_bathymetry[l_ceR];
-
-		bool rightReflection = i_h[i_ceL] == 0;
-		o_heightLeft = rightReflection ? i_h[l_ceR] : i_h[i_ceL];
-		o_momentumLeft = rightReflection ? -i_hu[l_ceR] : i_hu[i_ceL];
-		o_bathymetryLeft = rightReflection ? m_bathymetry[l_ceR] : m_bathymetry[i_ceL];
-	}
+									t_real& o_bathymetryRight );
 
 public:
 	/**
@@ -116,11 +122,11 @@ public:
 
 	t_real const* getTotalHeight()
 	{
-		for( t_idx i = 0; i < m_nCells + 1; i++ )
+		for( t_idx i = 1; i < m_nCells + 1; i++ )
 		{
-			m_totalHeight[i] = ( m_h[m_step] + 1 )[i] + m_bathymetry[i + 1];
+			m_totalHeight[i] = m_h[m_step][i] + m_bathymetry[i];
 		}
-		return m_totalHeight;
+		return m_totalHeight + 1;
 	}
 
 	/**
@@ -148,7 +154,7 @@ public:
 	 */
 	t_real const* getBathymetry()
 	{
-		return m_bathymetry;
+		return m_bathymetry + 1;
 	}
 
 	/**
@@ -206,7 +212,7 @@ public:
 						t_idx,
 						t_real i_bathymetry )
 	{
-		m_bathymetry[i_ix + 1] = i_bathymetry;
+		m_bathymetry[i_ix] = i_bathymetry;
 	}
 
 	/**

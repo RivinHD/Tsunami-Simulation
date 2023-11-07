@@ -40,7 +40,7 @@ set(SRC_FILES_NO_TEST
 
 )
 set(SRC_FILES_HEADER_ONLY
-
+    io/ArgSetup
 )
 set(TEST_FILES ${PROJECT_SOURCE_DIR}/tests.cpp)
 set(MAIN_FILE ${PROJECT_SOURCE_DIR}/main.cpp)

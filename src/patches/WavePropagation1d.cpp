@@ -24,7 +24,7 @@ tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells )
 	// init to zero
 	for( unsigned short l_st = 0; l_st < 2; l_st++ )
 	{
-		for( t_idx l_ce = 0; l_ce < m_nCells; l_ce++ )
+		for( t_idx l_ce = 0; l_ce < m_nCells + 2; l_ce++ )
 		{
 			m_h[l_st][l_ce] = 0;
 			m_hu[l_st][l_ce] = 0;
@@ -79,15 +79,15 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
 			t_real bathymetryLeft;
 			t_real bathymetryRight;
 
-			calculateReflection( l_hOld,
-								l_huOld,
-								l_ceL,
-								heightLeft,
-								heightRight,
-								momentumLeft,
-								momentumRight,
-								bathymetryLeft,
-								bathymetryRight );
+			Reflection reflection = calculateReflection( l_hOld,
+														 l_huOld,
+														 l_ceL,
+														 heightLeft,
+														 heightRight,
+														 momentumLeft,
+														 momentumRight,
+														 bathymetryLeft,
+														 bathymetryRight );
 
 			tsunami_lab::solvers::FWave::netUpdates( heightLeft,
 													 heightRight,
@@ -99,11 +99,11 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
 													 l_netUpdates[1] );
 
 			// update the cells' quantities
-			l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0];
-			l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1];
+			l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
+			l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
 
-			l_hNew[l_ceR] -= i_scaling * l_netUpdates[1][0];
-			l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1];
+			l_hNew[l_ceR] -= i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
+			l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
 		}
 	}
 	else
@@ -128,17 +128,14 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
 			t_real heightRight;
 			t_real momentumLeft;
 			t_real momentumRight;
-			t_real _;
 
-			calculateReflection( l_hOld,
-								l_huOld,
-								l_ceL,
-								heightLeft,
-								heightRight,
-								momentumLeft,
-								momentumRight,
-								_,
-								_ );
+			Reflection reflection = calculateReflection( l_hOld,
+														 l_huOld,
+														 l_ceL,
+														 heightLeft,
+														 heightRight,
+														 momentumLeft,
+														 momentumRight );
 
 			netUpdates( heightLeft,
 						heightRight,
@@ -148,11 +145,11 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
 						l_netUpdates[1] );
 
 			// update the cells' quantities
-			l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0];
-			l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1];
+			l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
+			l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
 
-			l_hNew[l_ceR] -= i_scaling * l_netUpdates[1][0];
-			l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1];
+			l_hNew[l_ceR] -= i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
+			l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
 		}
 	}
 }
@@ -163,13 +160,56 @@ void tsunami_lab::patches::WavePropagation1d::setGhostOutflow()
 	t_real* l_hu = m_hu[m_step];
 
 	// set left boundary
-	l_h[0] = l_h[1];
-	l_hu[0] = l_hu[1] * ( 2 * !hasReflection[Side::LEFT] - 1 );
+	l_h[0] = l_h[1] * !hasReflection[Side::LEFT];
+	l_hu[0] = l_hu[1];
 	m_bathymetry[0] = m_bathymetry[1];
 
-
 	// set right boundary
-	l_h[m_nCells + 1] = l_h[m_nCells];
-	l_hu[m_nCells + 1] = l_hu[m_nCells] * ( 2 * !hasReflection[Side::RIGHT] - 1 );
+	l_h[m_nCells + 1] = l_h[m_nCells] * !hasReflection[Side::RIGHT];
+	l_hu[m_nCells + 1] = l_hu[m_nCells];
 	m_bathymetry[m_nCells + 1] = m_bathymetry[m_nCells];
+}
+
+tsunami_lab::patches::WavePropagation1d::Reflection tsunami_lab::patches::WavePropagation1d::calculateReflection( t_real* i_h,
+																												  t_real* i_hu,
+																												  t_idx i_ceL,
+																												  t_real& o_heightLeft,
+																												  t_real& o_heightRight,
+																												  t_real& o_momentumLeft,
+																												  t_real& o_momentumRight )
+{
+	t_idx l_ceR = i_ceL + 1;
+	bool leftReflection = i_h[l_ceR] == t_real( 0.0 );
+	o_heightRight = leftReflection ? i_h[i_ceL] : i_h[l_ceR];
+	o_momentumRight = leftReflection ? -i_hu[i_ceL] : i_hu[l_ceR];
+
+	bool rightReflection = i_h[i_ceL] == t_real( 0.0 );
+	o_heightLeft = rightReflection ? i_h[l_ceR] : i_h[i_ceL];
+	o_momentumLeft = rightReflection ? -i_hu[l_ceR] : i_hu[i_ceL];
+
+	return leftReflection ? Reflection::LEFT : ( rightReflection ? Reflection::RIGHT : Reflection::NONE );
+}
+
+tsunami_lab::patches::WavePropagation1d::Reflection tsunami_lab::patches::WavePropagation1d::calculateReflection( t_real* i_h,
+																												  t_real* i_hu,
+																												  t_idx i_ceL,
+																												  t_real& o_heightLeft,
+																												  t_real& o_heightRight,
+																												  t_real& o_momentumLeft,
+																												  t_real& o_momentumRight,
+																												  t_real& o_bathymetryLeft,
+																												  t_real& o_bathymetryRight )
+{
+	t_idx l_ceR = i_ceL + 1;
+	bool leftReflection = ( i_h[l_ceR] == t_real( 0.0 ) );
+	o_heightRight = leftReflection ? i_h[i_ceL] : i_h[l_ceR];
+	o_momentumRight = leftReflection ? -i_hu[i_ceL] : i_hu[l_ceR];
+	o_bathymetryRight = leftReflection ? m_bathymetry[i_ceL] : m_bathymetry[l_ceR];
+
+	bool rightReflection = ( i_h[i_ceL] == t_real( 0.0 ) );
+	o_heightLeft = rightReflection ? i_h[l_ceR] : i_h[i_ceL];
+	o_momentumLeft = rightReflection ? -i_hu[l_ceR] : i_hu[i_ceL];
+	o_bathymetryLeft = rightReflection ? m_bathymetry[l_ceR] : m_bathymetry[i_ceL];
+
+	return leftReflection ? Reflection::LEFT : ( rightReflection ? Reflection::RIGHT : Reflection::NONE );
 }
