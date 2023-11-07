@@ -79,7 +79,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
 			t_real bathymetryLeft;
 			t_real bathymetryRight;
 
-			calulateReflection( l_hOld,
+			calculateReflection( l_hOld,
 								l_huOld,
 								l_ceL,
 								heightLeft,
@@ -130,7 +130,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
 			t_real momentumRight;
 			t_real _;
 
-			calulateReflection( l_hOld,
+			calculateReflection( l_hOld,
 								l_huOld,
 								l_ceL,
 								heightLeft,

@@ -20,19 +20,23 @@
 
 namespace fs = std::filesystem;
 
-//#define SKIP_ARGUMENTS
+//define SKIP_ARGUMENTS
 
 const std::string SOLUTION_FOLDER = "solutions";
 
+#define START_ARG_CHAR '!'
+#define END_ARG_CHAR '~'
+const int LENGTH_ARG_CHAR = END_ARG_CHAR - START_ARG_CHAR + 1;
 enum Arguments
 {
 	SOLVER = 's',
-	USE_BATHEMETRY = 'B',
-	USE_REFLECT_LEFT = 'l',
-	USE_REFLECT_RIGHT = 'r'
+	USE_BATHYMETRY = 'B',
+	USE_REFLECT_LEFT = 'L',
+	USE_REFLECT_RIGHT = 'R'
 };
-struct ArgSetup
+class ArgSetup
 {
+public:
 	Arguments flag;
 	short numberOfOptions;
 
@@ -40,21 +44,32 @@ struct ArgSetup
 		: flag( flag ), numberOfOptions( numberOfOptions )
 	{
 	}
+
+	static int getOptionalArgLength( const std::vector<ArgSetup>& argList )
+	{
+		int count = 0;
+		for( std::vector<ArgSetup>::const_iterator it = argList.begin(); it != argList.end(); it++ )
+		{
+			count += it->numberOfOptions + 1;
+		}
+		return count;
+	}
+
+	static void generateCountMap( const std::vector<ArgSetup>& argList, int outMap[LENGTH_ARG_CHAR] )
+	{
+		for( std::vector<ArgSetup>::const_iterator it = argList.begin(); it != argList.end(); it++ )
+		{
+			outMap[it->flag] = it->numberOfOptions;
+		}
+	}
 };
 const int requieredArguments = 1;
 const std::vector<ArgSetup> optionalArguments = {
 	ArgSetup( Arguments::SOLVER, 1 ),
-	ArgSetup( Arguments::USE_BATHEMETRY, 0 )
+	ArgSetup( Arguments::USE_BATHYMETRY, 0 ),
+	ArgSetup( Arguments::USE_REFLECT_LEFT, 0 ),
+	ArgSetup( Arguments::USE_REFLECT_RIGHT, 1 )
 };
-int getOptionalArgLength()
-{
-	int count = 0;
-	for( size_t i = 0; i < optionalArguments.size(); i++ )
-	{
-		count += optionalArguments[i].numberOfOptions + 1;
-	}
-	return count;
-}
 
 void printHelp()
 {
@@ -62,7 +77,9 @@ void printHelp()
 		<< "where N_CELLS_X is the number of cells in x-direction." << std::endl
 		<< "optional flags: " << std::endl
 		<< "\t'-s' set used solvers requires 'fwave' or 'roe' as inputs" << std::endl
-		<< "\t'-B' enables the input for bathemetry" << std::endl;
+		<< "\t'-B' enables the input for bathymetry" << std::endl
+		<< "\t'-L' enables the reflection on the left side of the simulation" << std::endl
+		<< "\t'-R' enables the reflectoin on the right side of the simulation" << std::endl;
 }
 
 int main( int   i_argc,
@@ -84,14 +101,14 @@ int main( int   i_argc,
 
 	// default arguments values
 	tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWAVE;
-	bool useBathemetry = false;
+	bool useBathymetry = false;
 	bool reflectLeft = false;
 	bool reflectRight = false;
 
 #ifndef SKIP_ARGUMENTS
 	// error: wrong number of arguments.
 	int minArgLength = 1 + requieredArguments;
-	int maxArgLength = minArgLength + getOptionalArgLength();
+	int maxArgLength = minArgLength + ArgSetup::getOptionalArgLength( optionalArguments );
 	if( i_argc < minArgLength || i_argc > maxArgLength )
 	{
 		std::cerr << "invalid number of arguments, usage:" << std::endl;
@@ -108,6 +125,8 @@ int main( int   i_argc,
 		return EXIT_FAILURE;
 	}
 
+	int argMapParamterCount[LENGTH_ARG_CHAR] = { 0 };
+	ArgSetup::generateCountMap( optionalArguments, argMapParamterCount );
 	// parse optional Argumentes
 	for( int i = minArgLength; i < i_argc; i++ )
 	{
@@ -122,6 +141,16 @@ int main( int   i_argc,
 		std::string stringParamter;
 		while( arg[++argi] != '\0' )  // startes with argi = 1
 		{
+			if( arg[argi] < START_ARG_CHAR || arg[argi] > END_ARG_CHAR )
+			{
+				std::cerr << "The Flag: " << arg[argi] << " is not a valid flag (Out of Bounds)" << std::endl;
+				return EXIT_FAILURE;
+			}
+			if( i + argMapParamterCount[arg[argi] - START_ARG_CHAR] >= i_argc )
+			{
+				std::cerr << "The Flag: " << arg[argi] << " has not enough Inputs" << std::endl;
+				return EXIT_FAILURE;
+			}
 			switch( arg[argi] )
 			{
 				case Arguments::SOLVER:
@@ -143,18 +172,18 @@ int main( int   i_argc,
 					}
 					break;
 
-				case Arguments::USE_BATHEMETRY:
-					useBathemetry = true;
-					std::cout << "Activated Bathemetry" << std::endl;
+				case Arguments::USE_BATHYMETRY:
+					useBathymetry = true;
+					std::cout << "Activated Bathymetry" << std::endl;
 					break;
 
 				case Arguments::USE_REFLECT_LEFT:
-					refelectLeft = true;
+					reflectLeft = true;
 					std::cout << "Activated Reflect on Left side" << std::endl;
 					break;
 
 				case Arguments::USE_REFLECT_RIGHT:
-					refelectRight = true;
+					reflectRight = true;
 					std::cout << "Activated Reflect on Right side" << std::endl;
 					break;
 
@@ -168,14 +197,14 @@ int main( int   i_argc,
 	}
 #endif // SKIP_ARGUMENTS
 #ifdef SKIP_ARGUMENTS
-	l_nx = 1000;
-	useBathemetry = true;
+	l_nx = 100;
+	useBathymetry = true;
 	std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
 
-	if( useBathemetry && solver == tsunami_lab::patches::Solver::ROE )
+	if( useBathymetry && solver == tsunami_lab::patches::Solver::ROE )
 	{
-		std::cerr << "ERROR: Roe solver does not have options for bathemetry" << std::endl;
+		std::cerr << "ERROR: Roe solver does not have options for bathymetry" << std::endl;
 		return EXIT_FAILURE;
 	}
 
@@ -207,7 +236,7 @@ int main( int   i_argc,
 	l_waveProp->setSolver( solver );
 
 	// set if bathymetry exists
-	l_waveProp->enableBathymetry( useBathemetry );
+	l_waveProp->enableBathymetry( useBathymetry );
 
 	// set Reflection
 	l_waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::LEFT, reflectLeft );
@@ -252,13 +281,13 @@ int main( int   i_argc,
 	}
 
 	// TODO remove test bathymetry DUNE
-	l_waveProp->setBathymetry( 700, 0, -1 );
-	l_waveProp->setBathymetry( 701, 0, -1.3 );
-	l_waveProp->setBathymetry( 702, 0, -1.5 );
-	l_waveProp->setBathymetry( 703, 0, -1.2 );
-	l_waveProp->setBathymetry( 704, 0, -1.1 );
+	l_waveProp->setBathymetry( 70, 0, 1 );
+	l_waveProp->setBathymetry( 71, 0, 1.3 );
+	l_waveProp->setBathymetry( 72, 0, 1.5 );
+	l_waveProp->setBathymetry( 73, 0, 1.2 );
+	l_waveProp->setBathymetry( 74, 0, 1.1 );
 
-
+	// recacluate the water with bathmetry
 	l_waveProp->updateWaterHeight();
 
 
@@ -307,6 +336,8 @@ int main( int   i_argc,
 										 1,
 										 1,
 										 l_waveProp->getHeight(),
+										 l_waveProp->getMomentumX(),
+										 nullptr,
 										 l_waveProp->getBathymetry(),
 										 l_waveProp->getTotalHeight(),
 										 l_file );

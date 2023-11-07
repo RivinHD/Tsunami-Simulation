@@ -45,6 +45,8 @@ public:
 					   t_real const* i_h,
 					   t_real const* i_hu,
 					   t_real const* i_hv,
+					   t_real const* i_b,
+					   t_real const* i_hTotal,
 					   std::ostream& io_stream );
 
 	/**

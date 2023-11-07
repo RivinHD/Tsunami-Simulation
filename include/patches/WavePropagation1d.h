@@ -47,7 +47,7 @@ private:
 
 	bool hasReflection[2] = { false, false };
 	// TODO docu
-	inline void calulateReflection( t_real* i_h,
+	inline void calculateReflection( t_real* i_h,
 									t_real* i_hu,
 									t_idx i_ceL,
 									t_real& o_heightLeft,
@@ -116,9 +116,9 @@ public:
 
 	t_real const* getTotalHeight()
 	{
-		for( t_idx i = 1; i < m_nCells + 1; i++ )
+		for( t_idx i = 0; i < m_nCells + 1; i++ )
 		{
-			m_totalHeight[i] = ( m_h[m_step] + 1 )[i] - m_bathymetry[i + 1];
+			m_totalHeight[i] = ( m_h[m_step] + 1 )[i] + m_bathymetry[i + 1];
 		}
 		return m_totalHeight;
 	}
@@ -221,7 +221,8 @@ public:
 	{
 		for( t_idx i = 1; i < m_nCells + 1; i++ )
 		{
-			m_h[m_step][i] += m_bathymetry[i];
+			m_h[m_step][i] -= m_bathymetry[i];
+			m_h[m_step][i] *= ( m_h[m_step][i] > 0 );  // sets water with bathymetry higher than water to zero
 		}
 	}
 
