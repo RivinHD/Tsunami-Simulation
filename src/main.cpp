@@ -260,6 +260,9 @@ int main( int   i_argc,
 
 	// TODO remove test reflection
 	l_waveProp->setBathymetry( 100, 0, 13 );
+	l_waveProp->setBathymetry( 101, 0, 13 );
+	l_waveProp->setBathymetry( 102, 0, 13 );
+	l_waveProp->setBathymetry( 103, 0, 13 );
 
 	// recacluate the water with bathmetry
 	l_waveProp->updateWaterHeight();

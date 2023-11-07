@@ -70,8 +70,13 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
 			t_idx l_ceL = l_ed;
 			t_idx l_ceR = l_ed + 1;
 
-			// compute net-updates
-			t_real l_netUpdates[2][2];
+			// noting to compute both shore cells
+			if( l_hOld[l_ceL] == 0 && l_hOld[l_ceR] == 0 )
+			{
+				continue;
+			}
+
+			// compute reflection
 			t_real heightLeft;
 			t_real heightRight;
 			t_real momentumLeft;
@@ -88,6 +93,9 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
 														 momentumRight,
 														 bathymetryLeft,
 														 bathymetryRight );
+
+			// compute net-updates
+			t_real l_netUpdates[2][2];
 
 			tsunami_lab::solvers::FWave::netUpdates( heightLeft,
 													 heightRight,
@@ -121,9 +129,13 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
 			t_idx l_ceL = l_ed;
 			t_idx l_ceR = l_ed + 1;
 
-			// compute net-updates
-			t_real l_netUpdates[2][2];
+			// noting to compute both shore cells
+			if( l_hOld[l_ceL] == 0 && l_hOld[l_ceR] == 0 )
+			{
+				continue;
+			}
 
+			// compute reflection
 			t_real heightLeft;
 			t_real heightRight;
 			t_real momentumLeft;
@@ -136,6 +148,9 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
 														 heightRight,
 														 momentumLeft,
 														 momentumRight );
+
+			// compute net-updates
+			t_real l_netUpdates[2][2];
 
 			netUpdates( heightLeft,
 						heightRight,
@@ -187,6 +202,7 @@ tsunami_lab::patches::WavePropagation1d::Reflection tsunami_lab::patches::WavePr
 	o_heightLeft = rightReflection ? i_h[l_ceR] : i_h[i_ceL];
 	o_momentumLeft = rightReflection ? -i_hu[l_ceR] : i_hu[i_ceL];
 
+	// if both are active is does not matter because height is zero
 	return leftReflection ? Reflection::LEFT : ( rightReflection ? Reflection::RIGHT : Reflection::NONE );
 }
 
