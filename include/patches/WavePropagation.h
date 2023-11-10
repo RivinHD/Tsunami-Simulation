@@ -26,17 +26,23 @@ namespace tsunami_lab
 	}
 }
 
+/**
+ * Base class of the wave propagation patches.
+*/
 class tsunami_lab::patches::WavePropagation
 {
 
 
 public:
-
+	/**
+	 * Choose a side to which a value is to be applied
+	*/
 	enum Side
 	{
 		LEFT = 0,
 		RIGHT = 1
 	};
+
 	/**
 	 * Virtual destructor for base class.
 	 **/
@@ -143,16 +149,31 @@ public:
 	 *
 	 * @param i_ix id of the cell in x-direction.
 	 * @param i_iy id of the cell in y-direction.
-	 * @param i_b bathymetry
+	 * @param i_b bathymetry data to set
 	 */
 	virtual void setBathymetry( t_idx  i_ix,
 								t_idx  i_iy,
 								t_real i_b ) = 0;
 
+	/**
+	 * enables or disable the bathymetry
+	 *
+	 * @param enable true=enabled, false=disabled
+	*/
 	virtual void enableBathymetry( bool enable ) = 0;
 
+	/**
+	 * If the bathymetry is higher than the water height than the water is set to zero.
+	 * updates the water height with respect to the bathymetry.
+	*/
 	virtual void updateWaterHeight() = 0;
 
+	/**
+	 * enables or disable the reflection of one side
+	 *
+	 * @param side Side to enable {LEFT, RIGHT}
+	 * @param enable true=enabled, false=disabled
+	*/
 	virtual void setReflection( Side side, bool enable ) = 0;
 };
 

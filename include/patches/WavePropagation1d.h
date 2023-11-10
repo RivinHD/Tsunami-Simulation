@@ -18,6 +18,9 @@ namespace tsunami_lab
 	}
 }
 
+/**
+* One-dimensional wave propagation patch.
+*/
 class tsunami_lab::patches::WavePropagation1d : public WavePropagation
 {
 private:
@@ -237,7 +240,8 @@ public:
 	/**
 	 * Set the bathymetry of the cell to the given value.
 	 *
-	 * @param t_bathymetry bathymetry.
+	 * @param i_ix id of the cell in x-direction.
+	 * @param i_bathymetry bathymetry data to set
 	 */
 	void setBathymetry( t_idx i_ix,
 						t_idx,

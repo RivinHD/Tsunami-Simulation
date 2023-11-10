@@ -17,6 +17,9 @@ namespace tsunami_lab
 	}
 }
 
+/**
+ * The f-wave solver for solving the Initial Value Problem (IVP) for the shallow water equations.
+*/
 class tsunami_lab::solvers::FWave
 {
 private:

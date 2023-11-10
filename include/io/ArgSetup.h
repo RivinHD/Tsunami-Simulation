@@ -14,16 +14,19 @@
 #define START_ARG_CHAR '!'
 #define END_ARG_CHAR '~'
 
- // TODO unit tests
-
-/**
+ /**
  * Setup for better handling of arguments.
-*/
+ */
 class ArgSetup
 {
 public:
+	//! Length of the possilbe flag array/map
 	const static int LENGTH_ARG_CHAR = END_ARG_CHAR - START_ARG_CHAR + 1;
+
+	//! the charecter to use for the flag
 	unsigned char flag;
+
+	//! the number of options E.g. is 2 when -f Option1 Option2
 	short numberOfOptions;
 
 	/**

@@ -17,6 +17,9 @@ namespace tsunami_lab
 	}
 }
 
+/**
+ * Roe Riemann solver for the one-dimensional shallow water equations.
+*/
 class tsunami_lab::solvers::Roe
 {
 private:
