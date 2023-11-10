@@ -58,8 +58,7 @@ public:
 	 * @param o_huLeft output the momentum left
 	 * @param o_huRight output the momentum right
 	 * @param o_hStar output the computed height
-	 * @return true
-	 * @return false
+	 * @return success
 	 */
 	static bool next_middle_states( std::ifstream& stream,
 									t_real& o_hLeft,

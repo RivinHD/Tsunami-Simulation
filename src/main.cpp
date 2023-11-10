@@ -20,8 +20,6 @@
 
 namespace fs = std::filesystem;
 
-#define SKIP_ARGUMENTS
-
 const std::string SOLUTION_FOLDER = "solutions";
 
 enum Arguments
@@ -31,7 +29,7 @@ enum Arguments
 	USE_REFLECT_LEFT = 'L',
 	USE_REFLECT_RIGHT = 'R'
 };
-const int requieredArguments = 1;
+const int requiredArguments = 1;
 const std::vector<ArgSetup> optionalArguments = {
 	ArgSetup( Arguments::SOLVER, 1 ),
 	ArgSetup( Arguments::USE_BATHYMETRY, 0 ),
@@ -44,12 +42,12 @@ void printHelp()
 	std::cerr << "./build/simulation N_CELLS_X [-s <fwave|roe>] [-B] [-L] [-R]" << std::endl << std::endl
 		<< "REQUIERED INPUT:" << std::endl
 		<< "\tN_CELLS_X is the number of cells in x-direction." << std::endl << std::endl
-		<< "NOTE: optional flags has be put after the requiered input" << std::endl
+		<< "NOTE: optional flags has be put after the required input" << std::endl
 		<< "OPTIONAL FLAGS:" << std::endl
 		<< "\t-s set used solvers requires 'fwave' or 'roe' as inputs" << std::endl
 		<< "\t-B enables the input for bathymetry" << std::endl
 		<< "\t-L enables the reflection on the left side of the simulation" << std::endl
-		<< "\t-R enables the reflectoin on the right side of the simulation" << std::endl;
+		<< "\t-R enables the reflection on the right side of the simulation" << std::endl;
 }
 
 int main( int   i_argc,
@@ -77,8 +75,8 @@ int main( int   i_argc,
 
 #ifndef SKIP_ARGUMENTS
 	// error: wrong number of arguments.
-	int minArgLength = 1 + requieredArguments;
-	int maxArgLength = minArgLength + ArgSetup::getOptionalArgLength( optionalArguments );
+	int minArgLength = 1 + requiredArguments;
+	int maxArgLength = minArgLength + ArgSetup::getArgumentsLength( optionalArguments );
 	if( i_argc < minArgLength || i_argc > maxArgLength )
 	{
 		std::cerr << "invalid number of arguments, usage:" << std::endl;
@@ -86,7 +84,7 @@ int main( int   i_argc,
 		return EXIT_FAILURE;
 	}
 
-	// parse requiered Argumentes
+	// parse required Argumentes
 	// Argument 1: N_CELLS_X
 	l_nx = atoi( i_argv[1] );
 	if( l_nx < 1 )
@@ -95,9 +93,9 @@ int main( int   i_argc,
 		return EXIT_FAILURE;
 	}
 
-	int argMapParamterCount[ArgSetup::LENGTH_ARG_CHAR] = { 0 };
-	ArgSetup::generateCountMap( optionalArguments, argMapParamterCount );
 	// parse optional Argumentes
+	int argMapParameterCount[ArgSetup::LENGTH_ARG_CHAR] = { 0 };
+	ArgSetup::generateCountMap( optionalArguments, argMapParameterCount );
 	for( int i = minArgLength; i < i_argc; i++ )
 	{
 		char* arg = i_argv[i];
@@ -107,32 +105,31 @@ int main( int   i_argc,
 			return EXIT_FAILURE;
 		}
 
-		unsigned int argi = 0;
-		std::string stringParamter;
-		while( arg[++argi] != '\0' )  // startes with argi = 1
+		unsigned int argI = 0;
+		std::string stringParameter;
+		while( arg[++argI] != '\0' )  // starts with argI = 1
 		{
-			if( arg[argi] < START_ARG_CHAR || arg[argi] > END_ARG_CHAR )
+			if( arg[argI] < START_ARG_CHAR || arg[argI] > END_ARG_CHAR )
 			{
-				std::cerr << "The Flag: " << arg[argi] << " is not a valid flag (Out of Bounds)" << std::endl;
+				std::cerr << "The Flag: " << arg[argI] << " is not a valid flag (Out of Bounds)" << std::endl;
 				return EXIT_FAILURE;
 			}
-			if( i + argMapParamterCount[arg[argi] - START_ARG_CHAR] >= i_argc )
+			if( i + argMapParameterCount[arg[argI] - START_ARG_CHAR] >= i_argc )
 			{
-				std::cerr << "The Flag: " << arg[argi] << " has not enough Inputs" << std::endl;
+				std::cerr << "The Flag: " << arg[argI] << " has not enough Inputs" << std::endl;
 				return EXIT_FAILURE;
 			}
-			switch( arg[argi] )
+			switch( arg[argI] )
 			{
 				case Arguments::SOLVER:
-					stringParamter = std::string( i_argv[++i] );
-					if( "roe" == stringParamter )
+					stringParameter = std::string( i_argv[++i] );
+					if( "roe" == stringParameter )
 					{
-						std::cout << "Set Solver: Roe" << std::endl;
 						solver = tsunami_lab::patches::Solver::ROE;
 					}
-					else if( "fwave" == stringParamter )
+					else if( "fwave" == stringParameter )
 					{
-						std::cout << "Set Solver: FWave" << std::endl;
+						solver = tsunami_lab::patches::Solver::FWAVE;
 					}
 					else
 					{
@@ -158,7 +155,7 @@ int main( int   i_argc,
 					break;
 
 				default:
-					std::cerr << "unknown flag: " << arg[argi] << std::endl;
+					std::cerr << "unknown flag: " << arg[argI] << std::endl;
 					printHelp();
 					return EXIT_FAILURE;
 					break;
@@ -169,9 +166,20 @@ int main( int   i_argc,
 #ifdef SKIP_ARGUMENTS
 	l_nx = 1000;
 	reflectRight = true;
+	reflectRight = true;
 	useBathymetry = true;
 	std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
+
+	std::cout << "Set Solver: ";
+	if( solver == tsunami_lab::patches::Solver::ROE )
+	{
+		std::cout << "Roe" << std::endl;
+	}
+	else
+	{
+		std::cout << "FWave" << std::endl;
+	}
 
 	if( useBathymetry && solver == tsunami_lab::patches::Solver::ROE )
 	{
@@ -191,12 +199,9 @@ int main( int   i_argc,
 
 	tsunami_lab::t_real l_hl = 12;
 	tsunami_lab::t_real l_hr = 8;
-	// tsunami_lab::t_real l_ml = 2000;
 	tsunami_lab::t_real l_location = 3;
 
 	l_setup = new tsunami_lab::setups::DamBreak1d( l_hl, l_hr, l_location );
-	// l_setup = new tsunami_lab::setups::RareRare1d(l_hl, l_ml, l_location);
-	// l_setup = new tsunami_lab::setups::ShockShock1d(l_hl, l_ml, l_location);
 
 
 	// construct solver
@@ -264,13 +269,13 @@ int main( int   i_argc,
 	l_waveProp->setBathymetry( 102, 0, 13 );
 	l_waveProp->setBathymetry( 103, 0, 13 );
 
-	// recacluate the water with bathmetry
+	// recalculate the water with bathymetry
 	l_waveProp->updateWaterHeight();
 
 
 	// derive maximum wave speed in setup; the momentum is ignored
 	tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
-	std::cout << "Max speed" << l_speedMax << std::endl;
+	std::cout << "Max speed " << l_speedMax << std::endl;
 
 	// derive constant time step; changes at simulation time are ignored
 	tsunami_lab::t_real l_dt = 0.5 * l_dxy / l_speedMax;
@@ -281,7 +286,7 @@ int main( int   i_argc,
 	// set up time and print control
 	tsunami_lab::t_idx  l_timeStep = 0;
 	tsunami_lab::t_idx  l_nOut = 0;
-	tsunami_lab::t_real l_endTime = 1.25;
+	tsunami_lab::t_real l_endTime = 2;
 	tsunami_lab::t_real l_simTime = 0;
 
 

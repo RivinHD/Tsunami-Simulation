@@ -28,7 +28,7 @@ private:
 	 *
 	 * @param i_hL height of the left side.
 	 * @param i_hR height of the right side.
-	 * @param i_uL particle velocity of the leftside.
+	 * @param i_uL particle velocity of the left side.
 	 * @param i_uR particles velocity of the right side.
 	 * @param o_waveSpeedL will be set to the speed of the wave propagating to the left.
 	 * @param o_waveSpeedR will be set to the speed of the wave propagating to the right.

@@ -147,7 +147,7 @@ TEST_CASE( "Test the derivation of the F-Wave net-updates.", "[FWaveUpdate]" )
 	 *   Rinv = |                |
 	 *          | 0.5 -0.0532217 |
 	 *
-	 * Multiplicaton with the jump in quantities gives the eigencoefficient:
+	 * Multiplication with the jump in quantities gives the eigencoefficient:
 	 *
 	 *        | 8 - 10 |   | -1 |   | a1 |
 	 * Rinv * |        | = |    | = |    |

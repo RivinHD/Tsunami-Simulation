@@ -32,7 +32,7 @@ private:
 	t_real m_locationShock = 0;
 public:
 	/**
-	 * @brief Construct a new shock-shock 1d object.
+	 * Construct a new shock-shock 1d object.
 	 *
 	 * @param i_heightLeft water height on the left side of the shock location.
 	 * @param i_momentumLeft momentum of the water of the left side.

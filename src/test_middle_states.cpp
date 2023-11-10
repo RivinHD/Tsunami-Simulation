@@ -1,4 +1,4 @@
-/**numberOfTests
+/**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
  * @section DESCRIPTION
@@ -19,7 +19,7 @@
 #undef CATCH_CONFIG_RUNNER
 
  // Setup the Configuration Variables for the Test against middle_states.csv
-const tsunami_lab::t_idx numberOfCells = 10;
+const tsunami_lab::t_idx numberOfCells = 100;
 const unsigned int numberOfTests = 1000000;
 const double testAccuracy = 0.99;
 const double accuracyMargin = 0.03;
@@ -140,7 +140,7 @@ TEST_CASE( "Test against the middle_states.csv", "[MiddleStates]" )
 		nanProblems += std::isnan( delta );
 		if( !isSameHeight )
 		{
-			std::cout << "FAILED: Deviation to high from Test " << evaluatedTests << " (relativ deviation:" << relativDeviation << ")" << std::endl;
+			std::cout << "FAILED: Deviation too high from Test " << evaluatedTests << " (relativ deviation:" << relativDeviation << ")" << std::endl;
 		}
 
 		// free memory

@@ -23,8 +23,8 @@ void tsunami_lab::io::Csv::write( t_real i_dxy,
 	if( i_h != nullptr ) io_stream << ",height";
 	if( i_hu != nullptr ) io_stream << ",momentum_x";
 	if( i_hv != nullptr ) io_stream << ",momentum_y";
-	if( i_hu != nullptr ) io_stream << ",Bathymetry";
-	if( i_hu != nullptr ) io_stream << ",totalHeight";
+	if( i_b != nullptr ) io_stream << ",Bathymetry";
+	if( i_hTotal != nullptr ) io_stream << ",totalHeight";
 	io_stream << "\n";
 
 	// iterate over all cells

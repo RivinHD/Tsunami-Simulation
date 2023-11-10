@@ -202,8 +202,7 @@ tsunami_lab::patches::WavePropagation1d::Reflection tsunami_lab::patches::WavePr
 	o_heightLeft = rightReflection ? i_h[l_ceR] : i_h[i_ceL];
 	o_momentumLeft = rightReflection ? -i_hu[l_ceR] : i_hu[i_ceL];
 
-	// if both are active is does not matter because height is zero
-	return leftReflection ? Reflection::LEFT : ( rightReflection ? Reflection::RIGHT : Reflection::NONE );
+	return static_cast<Reflection>( leftReflection * Reflection::LEFT + rightReflection * Reflection::RIGHT );
 }
 
 tsunami_lab::patches::WavePropagation1d::Reflection tsunami_lab::patches::WavePropagation1d::calculateReflection( t_real* i_h,
@@ -227,5 +226,5 @@ tsunami_lab::patches::WavePropagation1d::Reflection tsunami_lab::patches::WavePr
 	o_momentumLeft = rightReflection ? -i_hu[l_ceR] : i_hu[i_ceL];
 	o_bathymetryLeft = rightReflection ? m_bathymetry[l_ceR] : m_bathymetry[i_ceL];
 
-	return leftReflection ? Reflection::LEFT : ( rightReflection ? Reflection::RIGHT : Reflection::NONE );
+	return static_cast<Reflection>( leftReflection * Reflection::LEFT + rightReflection * Reflection::RIGHT );
 }

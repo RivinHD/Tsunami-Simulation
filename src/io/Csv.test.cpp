@@ -1,5 +1,5 @@
 /**
- * @author Alexander Breuer (alex.breuer AT uni-jena.de)
+ * @author Alexander Breuer, Fabian Hofer, Vincent Gerlach (alex.breuer AT uni-jena.de)
  *
  * @section DESCRIPTION
  * Unit tests for the CSV-interface.
@@ -78,4 +78,49 @@ TEST_CASE( "Test the CSV-writer for 2D settings.", "[CsvWrite2d]" )
 
 	REQUIRE( l_stream1.str().size() == l_ref1.size() );
 	REQUIRE( l_stream1.str() == l_ref1 );
+}
+
+TEST_CASE( "Test the CSV-reader for middle states", "[CsvRead]" )
+{
+	std::ifstream middle_states( "resources/middle_states.csv" );
+	tsunami_lab::t_real hLeft, hRight, huLeft, huRight, hStar;
+	bool success;
+	unsigned int linesCount = 0;
+
+	// first successful line of middle states
+	success = tsunami_lab::io::Csv::next_middle_states( middle_states,
+														hLeft,
+														hRight,
+														huLeft,
+														huRight,
+														hStar );
+	linesCount += success;
+
+	REQUIRE( success );
+	REQUIRE( hLeft == 8899.326826472694f );
+	REQUIRE( hRight == 8899.326826472694f );
+	REQUIRE( huLeft == 122.0337839252433f );
+	REQUIRE( huRight == -122.0337839252433f );
+	REQUIRE( hStar == 8899.739847378269f );
+
+	while( success = tsunami_lab::io::Csv::next_middle_states( middle_states,
+															   hLeft,
+															   hRight,
+															   huLeft,
+															   huRight,
+															   hStar ) )
+	{
+		linesCount += success;
+		if( linesCount == 500001 )
+		{
+			REQUIRE( success );
+			REQUIRE( hLeft == 7974.350705934805f );
+			REQUIRE( hRight == 8378.341124205988f );
+			REQUIRE( huLeft == -185.7324996463998f );
+			REQUIRE( huRight == -322.8256083091958f );
+			REQUIRE( hStar == 8175.312258280472f );
+		}
+	}
+
+	REQUIRE( linesCount == 1000000 );
 }

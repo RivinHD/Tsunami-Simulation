@@ -19,7 +19,7 @@ namespace tsunami_lab
 }
 
 /**
- * 1d middl-states setup.
+ * 1d meddle-states setup.
  */
 class tsunami_lab::setups::MiddleStates1d : public Setup
 {
@@ -36,7 +36,7 @@ private:
 	t_real m_location = 0;
 public:
 	/**
-	 * @brief Construct a new middleStates 1d object.
+	 * Construct a new middleStates 1d object.
 	 *
 	 * @param i_heightLeft water height of left side of the rare location.
 	 * @param i_heightRight momentum of the water of the right side.
@@ -58,7 +58,7 @@ public:
 	};
 
 	/**
-	 * @brief Get the ware height at a given point.
+	 * Get the ware height at a given point.
 	 *
 	 * @param i_x x-coordinate of the queried point.
 	 * @return height at the given point.

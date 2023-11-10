@@ -60,7 +60,7 @@ TEST_CASE( "Test the derivation of the Roe wave speeds.", "[RoeStrengths]" )
 	 *        | 0.50409248025606771  0.051802159398648326 |
 	 *
 	 *
-	 * Multiplicaton with the jump in quantities gives the wave strengths:
+	 * Multiplication with the jump in quantities gives the wave strengths:
 	 *
 	 * wolframalpha.com query: {{0.49590751974393229, -0.051802159398648326}, {0.50409248025606771, 0.051802159398648326}} * {9-10, 27--30}
 	 *
@@ -142,7 +142,7 @@ TEST_CASE( "Test the derivation of the Roe net-updates.", "[RoeUpdates]" )
 	 *   Rinv = |                |
 	 *          | 0.5 -0.0532217 |
 	 *
-	 * Multiplicaton with the jump in quantities gives the wave strengths:
+	 * Multiplication with the jump in quantities gives the wave strengths:
 	 *
 	 *        | 8 - 10 |   | -1 |   | a1 |
 	 * Rinv * |        | = |    | = |    |

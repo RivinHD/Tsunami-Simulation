@@ -42,6 +42,9 @@ set(SRC_FILES_NO_TEST
 set(SRC_FILES_HEADER_ONLY
     io/ArgSetup
 )
+set(SRC_FILES_HEADER_ONLY_NO_TEST
+
+)
 set(TEST_FILES ${PROJECT_SOURCE_DIR}/tests.cpp)
 set(MAIN_FILE ${PROJECT_SOURCE_DIR}/main.cpp)
 set(MIDDLE_STATE_FILE ${PROJECT_SOURCE_DIR}/test_middle_states.cpp)
@@ -69,6 +72,14 @@ foreach(file ${SRC_FILES_NO_TEST})
     )
 endforeach()
 foreach(file ${SRC_FILES_HEADER_ONLY})
+    list(APPEND SOURCE_FILES
+        ${PROJECT_INCLUDE_DIR}/${file}.h
+    )
+    list(APPEND TEST_FILES
+        ${PROJECT_INCLUDE_DIR}/${file}.test.h
+    )
+endforeach()
+foreach(file ${SRC_FILES_HEADER_ONLY_NO_TEST})
     list(APPEND SOURCE_FILES
         ${PROJECT_INCLUDE_DIR}/${file}.h
     )

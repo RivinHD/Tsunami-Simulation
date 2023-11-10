@@ -1,5 +1,4 @@
 #include "../../include/setups/ShockShock1d.h"
-#define t_real tsunami_lab::t_real
 
 tsunami_lab::setups::ShockShock1d::ShockShock1d( t_real i_heightLeft,
 												 t_real i_momentumLeft,
@@ -10,14 +9,14 @@ tsunami_lab::setups::ShockShock1d::ShockShock1d( t_real i_heightLeft,
 	m_locationShock = i_locationShock;
 }
 
-t_real tsunami_lab::setups::ShockShock1d::getHeight( t_real,
-													 t_real ) const
+tsunami_lab::t_real tsunami_lab::setups::ShockShock1d::getHeight( t_real,
+																  t_real ) const
 {
 	return m_heightLeft;
 }
 
-t_real tsunami_lab::setups::ShockShock1d::getMomentumX( t_real i_x,
-														t_real ) const
+tsunami_lab::t_real tsunami_lab::setups::ShockShock1d::getMomentumX( t_real i_x,
+																	 t_real ) const
 {
 	if( i_x <= m_locationShock )
 	{
@@ -29,8 +28,8 @@ t_real tsunami_lab::setups::ShockShock1d::getMomentumX( t_real i_x,
 	}
 }
 
-t_real tsunami_lab::setups::ShockShock1d::getMomentumY( t_real,
-														t_real ) const
+tsunami_lab::t_real tsunami_lab::setups::ShockShock1d::getMomentumY( t_real,
+																	 t_real ) const
 {
 	return 0;
 }

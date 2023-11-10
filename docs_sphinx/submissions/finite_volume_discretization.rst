@@ -10,8 +10,8 @@
 F-Wave Integration
 ------------------
 
-Setting up the switching between the solvers using an enum which will always be include if a class is derived from ``tsunami_lab::patches::WavePropagation``.
-Therefore the enum is put in the header file of ``WavePropagation``.
+Switching between the solvers is done by an enum, which is always included when a class is derived from ``tsunami_lab::patches::WavePropagation``.
+To achieve this, the enumeration is included in the header file of ``WavePropagation``.
 
 .. code-block:: cpp
     :emphasize-lines: 9-13, 27
@@ -46,8 +46,8 @@ Therefore the enum is put in the header file of ``WavePropagation``.
     };
 
 
-Implementation for setting the solvers with default values using the FWave solver. :raw-html:`<br>`
-Switching between the solvers using a function pointer of netUpdates, e.g. to avoid having to call an if statement in the for loop for a more efficient calculation. 
+The implementation for setting the solver is done via a simple set function and the solver is set to the FWave solver by default. :raw-html:`<br>`
+Switching between the solvers is done via a function pointer of netUpdates to avoid calling an if statement in the for loop and to enable a more efficient calculation. 
 
 .. code-block:: cpp
     :emphasize-lines: 6, 16-19, 26-30
@@ -150,7 +150,7 @@ The function is using a file stream to middleStates.csv and parses a new line wh
 
 
 Creating a new test case to run with a Catch2 session. :raw-html:`<br>`
-Using the new Csv function to parse the file lines and check if the file can be read in a while loop.
+Using the new CSV function to parse the file lines and check if the file can be read in a while loop.
 
 .. code-block:: cpp
 
@@ -267,9 +267,9 @@ Adding the new setup to the Catch2 unit tests.
     }
 
 Setting up the testing with the new setup ``MiddleStates1d`` and calculating the hStar by calculating over multiple time steps.
-Printing an Error message if the deviation of the calculated hStar and the read hStar is to high.
+Printing an Error message if the deviation of the calculated hStar and the read hStar is too high.
 After going through all test the number of successful tests, accuracy and cell settings are printed.
-The Catch2 test throws an error if the accuracy is to low.
+At the end Catch2 test throws an error if the accuracy is too low.
 
 .. code-block:: cpp
 
@@ -363,7 +363,7 @@ The Catch2 test throws an error if the accuracy is to low.
 		    nanProblems += std::isnan( delta );
 		    if( !isSameHeight )
 		    {
-			    std::cout << "FAILED: Deviation to high from Test " << evaluatedTests << " (relativ deviation:" << relativDeviation << ")" << std::endl;
+			    std::cout << "FAILED: Deviation too high from Test " << evaluatedTests << " (relativ deviation:" << relativDeviation << ")" << std::endl;
 		    }
 
 		    // free memory
@@ -386,8 +386,8 @@ Output of test_middle_states with 100 cells and a margin of 2%.
 
 .. code-block:: console
 
-    FAILED: Deviation to high from Test 999969 (relativ deviation:0.284146)
-    FAILED: Deviation to high from Test 999990 (relativ deviation:0.199954)
+    FAILED: Deviation too high from Test 999969 (relativ deviation:0.284146)
+    FAILED: Deviation too high from Test 999990 (relativ deviation:0.199954)
 
     992814 Tests were successful of 1000000 with 17 Nan evaluations
     Accuracy of 0.992814 with Margin of 0.02 and 100 Cells
@@ -678,6 +678,22 @@ velocity decreases.
 
 Compute evacuation time
 ^^^^^^^^^^^^^^^^^^^^^^^
+
+**Calculated with Simulation**
+
+.. math::
+
+    q_l = [14, 0]^T\\
+    q_r = [3.5, 0.7]^T
+
+Distance: :math:`25,000\,m` :raw-html:`<br>`
+Wave speed: :math:`11.7120\,m/s`
+
+Time: :math:`\frac{25,000\,m}{11.7120\,m/s} = 35,5760\,s \approx \text{35:34 min}`
+
+
+
+**Calculated by hand**
 
 .. math::
 

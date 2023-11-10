@@ -29,7 +29,7 @@ private:
 	 *
 	 * @param i_hL height of the left side.
 	 * @param i_hR height of the right side.
-	 * @param i_uL particle velocity of the leftside.
+	 * @param i_uL particle velocity of the left side.
 	 * @param i_uR particles velocity of the right side.
 	 * @param o_eigenvalue1 output: Roe eigenvalue one.
 	 * @param o_eigenvalue2 output: Roe eigenvalue two.
@@ -46,7 +46,7 @@ private:
 	 *
 	 * @param i_hL height of the left side.
 	 * @param i_hR height of the right side.
-	 * @param i_uL particle velocity of the leftside.
+	 * @param i_uL particle velocity of the left side.
 	 * @param i_uR particles velocity of the right side.
 	 * @param o_deltaFlux output: difference of left and right quantities
 	 */

@@ -32,7 +32,7 @@ private:
 	t_real m_locationRare = 0;
 public:
 	/**
-	 * @brief Construct a new rare-rare 1d object.
+	 * Construct a new rare-rare 1d object.
 	 *
 	 * @param i_heightLeft water height of left side of the rare location.
 	 * @param i_momentumLeft momentum of the water of the left side.
