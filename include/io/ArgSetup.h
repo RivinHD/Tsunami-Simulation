@@ -20,10 +20,10 @@
 class ArgSetup
 {
 public:
-	//! Length of the possilbe flag array/map
+	//! Length of the possible flag array/map
 	const static int LENGTH_ARG_CHAR = END_ARG_CHAR - START_ARG_CHAR + 1;
 
-	//! the charecter to use for the flag
+	//! the character to use for the flag
 	unsigned char flag;
 
 	//! the number of options E.g. is 2 when -f Option1 Option2
