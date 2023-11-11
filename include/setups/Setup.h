@@ -67,10 +67,7 @@ public:
 	 * @return bathymetry at a given point.
 	 **/
 	virtual t_real getBathymetry( t_real i_x,
-								  t_real i_y ) const
-	{
-		return 0;
-	}
+								  t_real i_y ) const = 0;
 
 };
 

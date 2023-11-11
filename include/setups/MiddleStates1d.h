@@ -79,6 +79,14 @@ public:
 	 * @return momentum in y-direction at a given point.
 	 */
 	t_real getMomentumY( t_real, t_real ) const;
+
+	/**
+	 * Gets the bathymetry at a given point.
+	 *
+	 * @return bathymetry at a given point.
+	 **/
+	t_real getBathymetry( t_real,
+						  t_real ) const;
 };
 
 #endif // MIDDKESTATES1D_H

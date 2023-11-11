@@ -33,6 +33,8 @@ set(SRC_FILES
     setups/DamBreak1d
     setups/ShockShock1d
     setups/RareRare1d
+    setups/SubcriticalFlow1d
+    setups/SupercriticalFlow1d
     patches/WavePropagation1d
     io/Csv
 )
