@@ -93,35 +93,35 @@ bool tsunami_lab::io::Csv::next_middle_states( std::ifstream& stream,
 }
 
 bool tsunami_lab::io::Csv::readBathymetry( std::ifstream& stream,
-                                               t_real& o_hBathy)
+										   t_real& o_hBathy )
 {
-    std::string line;
+	std::string line;
 
-    // read next complete line
-    while( std::getline( stream, line ) )
-    {
-        // skip commented lines
-        if( line[0] == '#' )
-        {
-            continue;
-        }
+	// read next complete line
+	while( std::getline( stream, line ) )
+	{
+		// skip commented lines
+		if( line[0] == '#' )
+		{
+			continue;
+		}
 
-        // parse lines divided by ',' to single values
-        std::istringstream lineStream( line );
-        std::string longitude;
-        std::getline( lineStream, longitude, ',' );
-        // o_longitude = atof( longitude.c_str() );
-        std::string latitude;
-        std::getline( lineStream, latitude, ',' );
-        // o_latitude = atof( latitude.c_str() );
-        std::string location;
-        std::getline( lineStream, location, ',' );
-        // o_location = atof( location.c_str() );
-        std::string h_bathy;
-        std::getline( lineStream, h_bathy, ',' );
-        o_hBathy = atof( h_bathy.c_str() );
-        return true;
-    }
-    // no lines left to read
-    return false;
+		// parse lines divided by ',' to single values
+		std::istringstream lineStream( line );
+		std::string longitude;
+		std::getline( lineStream, longitude, ',' );
+		// o_longitude = atof( longitude.c_str() );
+		std::string latitude;
+		std::getline( lineStream, latitude, ',' );
+		// o_latitude = atof( latitude.c_str() );
+		std::string location;
+		std::getline( lineStream, location, ',' );
+		// o_location = atof( location.c_str() );
+		std::string h_bathy;
+		std::getline( lineStream, h_bathy, ',' );
+		o_hBathy = atof( h_bathy.c_str() );
+		return true;
+	}
+	// no lines left to read
+	return false;
 }

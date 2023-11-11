@@ -72,15 +72,15 @@ public:
 									t_real& o_huRight,
 									t_real& o_hStar );
 
-/**
-	 * gets the next parsed value pair from the bathy_profile.csv file stream
-	 *
-	 * @param stream file stream of bathy_profile.csv
-	 * @param o_hBathy output of the bathymetry height
-	 * @return success
-	 */
-    static bool readBathymetry( std::ifstream& stream,
-                                t_real& o_hBathy );
+	/**
+		 * gets the next parsed value pair from the bathy_profile.csv file stream
+		 *
+		 * @param stream file stream of bathy_profile.csv
+		 * @param o_hBathy output of the bathymetry height
+		 * @return success
+		 */
+	static bool readBathymetry( std::ifstream& stream,
+								t_real& o_hBathy );
 };
 
 #endif
