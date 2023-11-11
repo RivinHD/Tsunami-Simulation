@@ -22,15 +22,12 @@ tsunami_lab::setups::TsunamiEvent1d::TsunamiEvent1d( std::string filePath,
 		m_bathy.push_back( o_hBathy );
 	}
 	m_csvDataPoint = m_bathy.size() - 1;
-
-
-
-
 }
 
 tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getHeight( tsunami_lab::t_real i_x,
 																	tsunami_lab::t_real ) const
 {
+    // linear interpolation between two bathymetries
 	t_real l_x = ( i_x / m_scale ) * m_csvDataPoint;
 	t_idx indexL = std::floor( l_x );
 	t_idx indexR = std::ceil( l_x );
@@ -60,6 +57,7 @@ tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getMomentumY( tsunami_l
 tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getBathymetry( tsunami_lab::t_real i_x,
 																		tsunami_lab::t_real ) const
 {
+    // linear interpolation between two bathymetries
 	t_real l_x = ( i_x / m_scale ) * m_csvDataPoint;
 	t_idx indexL = std::floor( l_x );
 	t_idx indexR = std::ceil( l_x );

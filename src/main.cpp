@@ -295,7 +295,7 @@ int main( int   i_argc,
 	// set up time and print control
 	tsunami_lab::t_idx  l_timeStep = 0;
 	tsunami_lab::t_idx  l_nOut = 0;
-	tsunami_lab::t_real l_endTime = 200;
+	tsunami_lab::t_real l_endTime = 20;
 	tsunami_lab::t_real l_simTime = 0;
 
 

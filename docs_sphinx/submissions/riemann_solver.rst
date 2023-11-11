@@ -1,4 +1,3 @@
-
 .. _submissions_riemann_solver:
 
 .. role:: raw-html(raw)

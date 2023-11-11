@@ -131,6 +131,209 @@ Therefore, the maximum Froude number of the supercritical flow is **12.646782**.
 3.4. 1D Tsunami Simulation
 --------------------------
 
+1. Extracting bathymetry data for the 1D domain
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+1. Download `GEBCO_2021 <https://www.gebco.net/data_and_products/historical_data_sets/>`_ grid.
+
+2. Reduce grid size with :raw-html:`</br>`
+   :code:`gmt grdcut -R138/147/35/39 path/to/GEBCO_2021.nc -Gpath/to/GEBCO_2021_cut.nc`
+
+3. Create datapoints with :raw-html:`</br>`
+   :code:`gmt grdtrack -Gdpath/to/GEBCO_2021_cut.nc -E141.024949/37.316569/146/37.316569+i250e+d -Ar > bathy_profile.out`
+
+4. Add commas to create comma-separated values file with :raw-html:`</br>`
+   :code:`cat bathy_profile.out | tr -s '[:blank:]' ',' > bathy_profile.csv`
+
+The ``bathy_profile.csv`` is located in: ``.../Tsunami-Simulation/resources/bathy_profile.csv``.
+
+
+2. Extend **tsunami_lab::io::Csv** to read bathy_profile.csv
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+    :emphasize-lines: 29-32, 35
+
+    /// File:   Csv.cpp
+    /// Header: Csv.h
+    /// Test:   Csv.test.cpp
+    bool tsunami_lab::io::Csv::readBathymetry( std::ifstream& stream,
+                                               t_real& o_hBathy)
+    {
+        std::string line;
+
+        // read next complete line
+        while( std::getline( stream, line ) )
+        {
+            // skip commented lines
+            if( line[0] == '#' )
+            {
+                continue;
+            }
+
+            // parse lines divided by ',' to single values
+            std::istringstream lineStream( line );
+            std::string longitude;
+            std::getline( lineStream, longitude, ',' );
+            // o_longitude = atof( longitude.c_str() );
+            std::string latitude;
+            std::getline( lineStream, latitude, ',' );
+            // o_latitude = atof( latitude.c_str() );
+            std::string location;
+            std::getline( lineStream, location, ',' );
+            // o_location = atof( location.c_str() );
+            std::string h_bathy;
+            std::getline( lineStream, h_bathy, ',' );
+            o_hBathy = atof( h_bathy.c_str() );
+            return true;
+        }
+        // no lines left to read
+        return false;
+    }
+
+This implementation offers scope for reading further data from the file in the future.
+
+
+3. New setup ``setups::TsunamiEvent1d``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In the first highlighted block we initialize a vector with the bathymetry height entries of the bathy_profile.csv.
+In total, we then have the values of :code:`m_bathy.size()` many data points and a maximum index of ``m_csvDataPoint``.
+
+If the x-coordinate of the queried point is not exactly at the same position as a bathymetry value, a more suitable
+bathymetry is calculated for this x-coordinate by linear interpolation. This is done in the second and third highlighted
+code-block.
+
+The mathematical formulas
+
+.. math::
+
+    \begin{split}\begin{split}
+        h  &= \begin{cases}
+                \max( -b_\text{in}, \delta), &\text{if } b_\text{in} < 0 \\
+                0, &\text{else}
+              \end{cases}\\
+        hu &= 0\\
+        b  &= \begin{cases}
+                \min(b_\text{in}, -\delta) + d, & \text{ if } b_\text{in} < 0\\
+                \max(b_\text{in}, \delta) + d, & \text{ else}.
+              \end{cases}
+    \end{split}\end{split}
+
+can be easily transferred to code.
+
+:math:`b_\text{in}(x) \in \mathbb{R}` is the bathymetry axtracted from the DEM and :math:`d(x) \in \mathbb{R}` is the
+vertical displacement. The constant :math:`\delta \in \mathbb{R}^+` avoids running into numerical issues due to missing
+support for wetting and drying in our solver.
+
+.. code-block:: cpp
+    :emphasize-lines: 13-17, 24-29, 54-59
+
+    /// File:   TsunamiEvent1d.cpp
+    /// Header: TsunamiEvent1d.h
+    /// Test:   TsunamiEvent1d.test.cpp
+    tsunami_lab::setups::TsunamiEvent1d::TsunamiEvent1d( std::string filePath,
+                                                         tsunami_lab::t_real i_delta,
+                                                         tsunami_lab::t_real i_scale )
+    {
+        m_delta = i_delta;
+        m_scale = i_scale;
+
+        t_real o_hBathy = 0;
+        std::ifstream bathy_profile( filePath );
+        while( tsunami_lab::io::Csv::readBathymetry( bathy_profile, o_hBathy ) )
+        {
+            m_bathy.push_back( o_hBathy );
+        }
+        m_csvDataPoint = m_bathy.size() - 1;
+    }
+
+    tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getHeight( tsunami_lab::t_real i_x,
+                                                                        tsunami_lab::t_real ) const
+    {
+        // linear interpolation between two bathymetries
+        t_real l_x = ( i_x / m_scale ) * m_csvDataPoint;
+        t_idx indexL = std::floor( l_x );
+        t_idx indexR = std::ceil( l_x );
+        t_real l_bathyL = m_bathy[indexL];
+        t_real l_bathyR = m_bathy[indexR];
+        t_real l_bathy = ( l_bathyR - l_bathyL ) * ( l_x - indexL ) + l_bathyL;
+
+        if( l_bathy < 0 )
+        {
+            return -l_bathy < m_delta ? m_delta : -l_bathy;
+        }
+        return 0;
+    }
+
+    tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getMomentumX( tsunami_lab::t_real,
+                                                                           tsunami_lab::t_real ) const
+    {
+        return m_momentum;
+    }
+
+    tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getMomentumY( tsunami_lab::t_real,
+                                                                           tsunami_lab::t_real ) const
+    {
+        return 0;
+    }
+
+    tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getBathymetry( tsunami_lab::t_real i_x,
+                                                                            tsunami_lab::t_real ) const
+    {
+    // linear interpolation between two bathymetries
+        t_real l_x = ( i_x / m_scale ) * m_csvDataPoint;
+        t_idx indexL = std::floor( l_x );
+        t_idx indexR = std::ceil( l_x );
+        t_real l_bathyL = m_bathy[indexL];
+        t_real l_bathyR = m_bathy[indexR];
+        t_real l_bathy = ( l_bathyR - l_bathyL ) * ( l_x - indexL ) + l_bathyL;
+        t_real verticalDisplacement = getVerticalDisplacement( i_x, 0 );
+
+        if( l_bathy < 0 )
+        {
+            return l_bathy < -m_delta ? l_bathy + verticalDisplacement : -m_delta + verticalDisplacement;
+        }
+        return l_bathy < m_delta ? m_delta + verticalDisplacement : l_bathy + verticalDisplacement;
+    }
+
+    tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getVerticalDisplacement( tsunami_lab::t_real i_x,
+                                                                                      tsunami_lab::t_real ) const
+    {
+        if( 175000 < i_x && i_x < 250000 )
+        {
+            return 1000 * std::sin( ( ( i_x - 175000 ) / 37500 * M_PI ) + M_PI );
+        }
+        return 0;
+    }
+
+
+4. Visualization of the TsunamiEvent1d setup
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+l_endTime...time to simulate = 2000 :raw-html:`</br>`
+l_scale...length of the x-axis on which the simulation runs = 440000
+
+Result with 10000 cells. To achieve a better visualisation, the vertical displacement is scaled with 1000 instead of 10.
+
+.. math::
+
+    \begin{split}d(x) = \begin{cases}
+         1000\cdot\sin(\frac{x-175000}{37500} \pi + \pi), & \text{ if } 175000 < x < 250000 \\
+         0, &\text{else}.
+       \end{cases}\end{split}
+
+
+.. raw:: html
+
+    <center>
+        <video width="700" controls>
+            <source src="../_static/videos/task_3_4_4.mp4" type="video/mp4">
+        </video>
+    </center>
+
+
+
 Contribution
 ------------
 
