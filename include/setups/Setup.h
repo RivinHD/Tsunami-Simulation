@@ -66,8 +66,8 @@ public:
 	 * @param i_y y-coordinate of the queried point.
 	 * @return bathymetry at a given point.
 	 **/
-	virtual t_real getBathymetry( t_real i_x,
-								  t_real i_y ) const
+	virtual t_real getBathymetry( t_real ,
+								  t_real  ) const
 	{
 		return 0;
 	}

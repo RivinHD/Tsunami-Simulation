@@ -8,6 +8,7 @@
 #include "../include/setups/DamBreak1d.h"
 #include "../include/setups/RareRare1d.h"
 #include "../include/setups/ShockShock1d.h"
+#include "../include/setups/TsunamiEvent1d.h"
 #include "../include/io/Csv.h"
 #include "../include/io/ArgSetup.h"
 #include <cstdlib>
@@ -187,7 +188,8 @@ int main( int   i_argc,
 		return EXIT_FAILURE;
 	}
 
-	l_dxy = 10.0 / l_nx;
+    tsunami_lab::t_real l_scale = 440000;
+	l_dxy = l_scale / l_nx;
 
 	std::cout << "runtime configuration" << std::endl;
 	std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
@@ -196,12 +198,7 @@ int main( int   i_argc,
 
 	// construct setup
 	tsunami_lab::setups::Setup* l_setup;
-
-	tsunami_lab::t_real l_hl = 12;
-	tsunami_lab::t_real l_hr = 8;
-	tsunami_lab::t_real l_location = 3;
-
-	l_setup = new tsunami_lab::setups::DamBreak1d( l_hl, l_hr, l_location );
+	l_setup = new tsunami_lab::setups::TsunamiEvent1d("resources/bathy_profile.csv", 20, l_scale);
 
 
 	// construct solver
@@ -240,6 +237,9 @@ int main( int   i_argc,
 			tsunami_lab::t_real l_hv = l_setup->getMomentumY( l_x,
 															  l_y );
 
+            tsunami_lab::t_real l_b = l_setup->getBathymetry(l_x,
+                                                             l_y);
+
 			// set initial values in wave propagation solver
 			l_waveProp->setHeight( l_cx,
 								   l_cy,
@@ -253,9 +253,14 @@ int main( int   i_argc,
 									  l_cy,
 									  l_hv );
 
+            l_waveProp->setBathymetry(l_cx,
+                                      l_cy,
+                                      l_b);
+
 		}
 	}
 
+    /*
 	// TODO remove test bathymetry DUNE
 	l_waveProp->setBathymetry( 700, 0, 1 );
 	l_waveProp->setBathymetry( 701, 0, 1.3 );
@@ -268,9 +273,10 @@ int main( int   i_argc,
 	l_waveProp->setBathymetry( 101, 0, 13 );
 	l_waveProp->setBathymetry( 102, 0, 13 );
 	l_waveProp->setBathymetry( 103, 0, 13 );
+    */
 
 	// recalculate the water with bathymetry
-	l_waveProp->updateWaterHeight();
+	//l_waveProp->updateWaterHeight();
 
 
 	// derive maximum wave speed in setup; the momentum is ignored
@@ -286,7 +292,7 @@ int main( int   i_argc,
 	// set up time and print control
 	tsunami_lab::t_idx  l_timeStep = 0;
 	tsunami_lab::t_idx  l_nOut = 0;
-	tsunami_lab::t_real l_endTime = 2;
+	tsunami_lab::t_real l_endTime = 2000;
 	tsunami_lab::t_real l_simTime = 0;
 
 

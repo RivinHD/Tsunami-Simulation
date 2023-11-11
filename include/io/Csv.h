@@ -55,11 +55,11 @@ public:
 					   std::ostream& io_stream );
 
 	/**
-	 * get's the next parsed value pair from the middle_state.csv file stream
+	 * gets the next parsed value pair from the middle_state.csv file stream
 	 *
 	 * @param stream file stream of middle_state.csv
-	 * @param o_hLeft ouput the height left
-	 * @param o_hRight ouput the height right
+	 * @param o_hLeft output the height left
+	 * @param o_hRight output the height right
 	 * @param o_huLeft output the momentum left
 	 * @param o_huRight output the momentum right
 	 * @param o_hStar output the computed height
@@ -71,6 +71,16 @@ public:
 									t_real& o_huLeft,
 									t_real& o_huRight,
 									t_real& o_hStar );
+
+/**
+	 * gets the next parsed value pair from the bathy_profile.csv file stream
+	 *
+	 * @param stream file stream of bathy_profile.csv
+	 * @param o_hBathy output of the bathymetry height
+	 * @return success
+	 */
+    static bool readBathymetry( std::ifstream& stream,
+                                t_real& o_hBathy );
 };
 
 #endif

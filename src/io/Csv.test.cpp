@@ -124,3 +124,31 @@ TEST_CASE( "Test the CSV-reader for middle states", "[CsvRead]" )
 
 	REQUIRE( linesCount == 1000000 );
 }
+
+TEST_CASE( "Test the Bathymetry-reader for bathy_profile.csv", "[CsvRead]" )
+{
+    std::ifstream bathy_profile( "resources/bathy_profile.csv" );
+    tsunami_lab::t_real hBathy;
+    bool success;
+    unsigned int linesCount = 0;
+
+    // first successful line of middle states
+    success = tsunami_lab::io::Csv::readBathymetry( bathy_profile, hBathy );
+    linesCount += success;
+
+    REQUIRE( success );
+    REQUIRE( hBathy == 14.7254650696f );
+
+    while( success = tsunami_lab::io::Csv::readBathymetry( bathy_profile, hBathy ) )
+    {
+        linesCount += success;
+        if( linesCount == 900 )
+        {
+            REQUIRE( success );
+            REQUIRE( hBathy == -7260.18122445f );
+
+        }
+    }
+
+    REQUIRE( linesCount == 1763 );
+}
