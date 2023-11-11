@@ -10,6 +10,7 @@
 #include "../include/setups/ShockShock1d.h"
 #include "../include/setups/SubcriticalFlow1d.h"
 #include "../include/setups/SupercriticalFlow1d.h"
+#include "../include/setups/TsunamiEvent1d.h"
 #include "../include/io/Csv.h"
 #include "../include/io/ArgSetup.h"
 #include <cstdlib>
@@ -191,7 +192,8 @@ int main( int   i_argc,
 		return EXIT_FAILURE;
 	}
 
-	l_dxy = 25.0 / l_nx;
+    tsunami_lab::t_real l_scale = 440000;
+	l_dxy = l_scale / l_nx;
 
 	std::cout << "runtime configuration" << std::endl;
 	std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
@@ -200,7 +202,7 @@ int main( int   i_argc,
 
 	// construct setup
 	tsunami_lab::setups::Setup* l_setup;
-	l_setup = new tsunami_lab::setups::SupercriticalFlow1d();
+	l_setup = new tsunami_lab::setups::TsunamiEvent1d("resources/bathy_profile.csv", 20, l_scale);
 
 
 	// construct solver
@@ -240,6 +242,9 @@ int main( int   i_argc,
 															  l_y );
 			tsunami_lab::t_real l_b = l_setup->getBathymetry( l_x,
 															  l_y );
+
+            tsunami_lab::t_real l_b = l_setup->getBathymetry(l_x,
+                                                             l_y);
 
 			// set initial values in wave propagation solver
 			l_waveProp->setHeight( l_cx,

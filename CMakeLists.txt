@@ -35,6 +35,7 @@ set(SRC_FILES
     setups/RareRare1d
     setups/SubcriticalFlow1d
     setups/SupercriticalFlow1d
+    setups/TsunamiEvent1d
     patches/WavePropagation1d
     io/Csv
 )
@@ -55,6 +56,7 @@ set(MIDDLE_STATE_FILE ${PROJECT_SOURCE_DIR}/test_middle_states.cpp)
 set(PROJECT_RESOURCE_DIR "resources")
 set(RESOURCE_FILES
     middle_states.csv
+    bathy_profile.csv
 )
 
 # Create SOURCE_FILES
