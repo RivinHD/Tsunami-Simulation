@@ -59,7 +59,7 @@ TEST_CASE( "Test the computation of the delta flux.", "[FWaveDeltaFlux]" )
     REQUIRE( l_deltaFlux[1] == Approx( -102.163175 ) );
 }
 
-TEST_CASE( "Test the computation of the effect of the bathymetry.", "[FWaveBathymetry")
+TEST_CASE( "Test the computation of the effect of the bathymetry.", "[FWaveBathymetry" )
 {
     /*
      * Test case:
@@ -72,13 +72,13 @@ TEST_CASE( "Test the computation of the effect of the bathymetry.", "[FWaveBathy
      *                       = -490.3325
      */
     t_real l_bathymetryEffect[2] = { 0 };
-    tsunami_lab::solvers::FWave::computeBathymetryEffects(10,
-                                                          10,
-                                                          5,
-                                                          10,
-                                                          l_bathymetryEffect);
+    tsunami_lab::solvers::FWave::computeBathymetryEffects( 10,
+                                                           10,
+                                                           5,
+                                                           10,
+                                                           l_bathymetryEffect );
     REQUIRE( l_bathymetryEffect[0] == 0 );
-    REQUIRE( l_bathymetryEffect[1] == Approx( -490.3325 ))
+    REQUIRE( l_bathymetryEffect[1] == Approx( -490.3325 ) );
 }
 
 TEST_CASE( "Test the computation of the eigencoefficients.", "[FWaveEigencoefficients]" )
