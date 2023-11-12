@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rarerare1d_51',['RareRare1d',['../classtsunami__lab_1_1setups_1_1RareRare1d.html#aca9d8887080f8ef5ebfcd6b319b1cd7d',1,'tsunami_lab::setups::RareRare1d']]]
+  ['middlestates1d_79',['MiddleStates1d',['../classtsunami__lab_1_1setups_1_1MiddleStates1d.html#ab15340b1070ee2a0f080643212350558',1,'tsunami_lab::setups::MiddleStates1d']]]
 ];

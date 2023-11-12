@@ -56,6 +56,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="submissions/riemann_solver.html">1. Riemann Solver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="submissions/finite_volume_discretization.html">2. Finite Volume Discretization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html">3. Bathymetry &amp; Boundary Conditions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -94,6 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="getting_started/building_project.html#building">Building</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/building_project.html#running-the-simulation-tests">Running the Simulation &amp; Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/building_project.html#simulation-output">Simulation Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/building_project.html#extracting-bathymetry-data-for-the-1d-domain">Extracting bathymetry data for the 1D domain</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started/building_docs.html">Building the Documentation</a><ul>
@@ -137,6 +139,33 @@
 <li class="toctree-l2"><a class="reference internal" href="submissions/finite_volume_discretization.html#contribution">Contribution</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html">3. Bathymetry &amp; Boundary Conditions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#non-zero-source-term">3.1. Non-zero Source Term</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#extended-f-wave-solver">1. Extended f-wave solver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#illustration-of-the-effect-of-bathymetry">2. Illustration of the effect of bathymetry</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#reflecting-boundary-conditions">3.2 Reflecting Boundary Conditions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#implementation">1. Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#visualization-of-right-boundary-reflection">2. Visualization of right Boundary Reflection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#hydraulic-jumps">3.3. Hydraulic Jumps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#maximum-froude-number">1. Maximum Froude number</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#implementation-into-setups">2. Implementation into Setups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#hydraulic-jump">3. Hydraulic Jump</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#d-tsunami-simulation">3.4. 1D Tsunami Simulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#extracting-bathymetry-data-for-the-1d-domain">1. Extracting bathymetry data for the 1D domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#extend-tsunami-lab-io-csv-to-read-bathymetry-profile-csv">2. Extend <strong>tsunami_lab::io::Csv</strong> to read bathymetry_profile.csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#new-setup-setups-tsunamievent1d">3. New setup <strong>setups::TsunamiEvent1d</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#visualization-of-the-tsunamievent1d-setup">4. Visualization of the TsunamiEvent1d setup</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html#contribution">Contribution</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -147,30 +176,38 @@
 <li class="toctree-l2"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6t_realE"><code class="docutils literal notranslate"><span class="pre">t_real</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/tsunami_lab.html#io">io</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io3CsvE"><code class="docutils literal notranslate"><span class="pre">Csv</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io3Csv5writeE6t_real5t_idx5t_idx5t_idxPK6t_realPK6t_realPK6t_realRNSt7ostreamE"><code class="docutils literal notranslate"><span class="pre">Csv::write()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io3Csv5writeE6t_real5t_idx5t_idx5t_idxPK6t_realPK6t_realPK6t_realPK6t_realPK6t_realRNSt7ostreamE"><code class="docutils literal notranslate"><span class="pre">Csv::write()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io3Csv18next_middle_statesERNSt8ifstreamER6t_realR6t_realR6t_realR6t_realR6t_real"><code class="docutils literal notranslate"><span class="pre">Csv::next_middle_states()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io3Csv14readBathymetryERNSt8ifstreamER6t_real"><code class="docutils literal notranslate"><span class="pre">Csv::readBathymetry()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api/tsunami_lab.html#patches">patches</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches6SolverE"><code class="docutils literal notranslate"><span class="pre">Solver</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches6Solver5FWaveE"><code class="docutils literal notranslate"><span class="pre">Solver::FWave</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches6Solver3RoeE"><code class="docutils literal notranslate"><span class="pre">Solver::Roe</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches6Solver5FWAVEE"><code class="docutils literal notranslate"><span class="pre">Solver::FWAVE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches6Solver3ROEE"><code class="docutils literal notranslate"><span class="pre">Solver::ROE</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagationE"><code class="docutils literal notranslate"><span class="pre">WavePropagation</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation4SideE"><code class="docutils literal notranslate"><span class="pre">WavePropagation::Side</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagationD0Ev"><code class="docutils literal notranslate"><span class="pre">WavePropagation::~WavePropagation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation8timeStepE6t_real"><code class="docutils literal notranslate"><span class="pre">WavePropagation::timeStep()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation15setGhostOutflowEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation::setGhostOutflow()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation9getStrideEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation::getStride()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation9getHeightEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation::getHeight()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation12getMomentumXEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation::getMomentumX()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation14getTotalHeightEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation::getTotalHeight()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation12getMomentumYEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation::getMomentumY()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation13getBathymetryEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation::getBathymetry()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation9setHeightE5t_idx5t_idx6t_real"><code class="docutils literal notranslate"><span class="pre">WavePropagation::setHeight()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation12setMomentumXE5t_idx5t_idx6t_real"><code class="docutils literal notranslate"><span class="pre">WavePropagation::setMomentumX()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation12setMomentumYE5t_idx5t_idx6t_real"><code class="docutils literal notranslate"><span class="pre">WavePropagation::setMomentumY()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation9setSolverE6Solver"><code class="docutils literal notranslate"><span class="pre">WavePropagation::setSolver()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation13setBathymetryE5t_idx5t_idx6t_real"><code class="docutils literal notranslate"><span class="pre">WavePropagation::setBathymetry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation16enableBathymetryEb"><code class="docutils literal notranslate"><span class="pre">WavePropagation::enableBathymetry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation17updateWaterHeightEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation::updateWaterHeight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation13setReflectionE4Sideb"><code class="docutils literal notranslate"><span class="pre">WavePropagation::setReflection()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1dE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d</span></code></a><ul>
@@ -180,17 +217,30 @@
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d15setGhostOutflowEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::setGhostOutflow()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d9getStrideEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::getStride()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d9getHeightEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::getHeight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d14getTotalHeightEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::getTotalHeight()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d12getMomentumXEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::getMomentumX()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d12getMomentumYEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::getMomentumY()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13getBathymetryEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::getBathymetry()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d9setHeightE5t_idx5t_idx6t_real"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::setHeight()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d12setMomentumXE5t_idx5t_idx6t_real"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::setMomentumX()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d12setMomentumYE5t_idx5t_idx6t_real"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::setMomentumY()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d9setSolverE6Solver"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::setSolver()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13setBathymetryE5t_idx5t_idx6t_real"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::setBathymetry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d16enableBathymetryEb"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::enableBathymetry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d17updateWaterHeightEv"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::updateWaterHeight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13setReflectionE4Sideb"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::setReflection()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d10ReflectionE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::Reflection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d19calculateReflectionEP6t_realP6t_real5t_idxR6t_realR6t_realR6t_realR6t_real"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::calculateReflection()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d19calculateReflectionEP6t_realP6t_real5t_idxR6t_realR6t_realR6t_realR6t_realR6t_realR6t_real"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::calculateReflection()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d6m_stepE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::m_step</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d8m_nCellsE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::m_nCells</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d3m_hE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::m_h</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d4m_huE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::m_hu</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d6solverE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::solver</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d12m_bathymetryE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::m_bathymetry</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13hasBathymetryE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::hasBathymetry</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13m_totalHeightE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::m_totalHeight</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13hasReflectionE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::hasReflection</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -201,6 +251,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10DamBreak1d9getHeightE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">DamBreak1d::getHeight()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10DamBreak1d12getMomentumXE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">DamBreak1d::getMomentumX()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10DamBreak1d12getMomentumYE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">DamBreak1d::getMomentumY()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10DamBreak1d13getBathymetryE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">DamBreak1d::getBathymetry()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10DamBreak1d12m_heightLeftE"><code class="docutils literal notranslate"><span class="pre">DamBreak1d::m_heightLeft</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10DamBreak1d13m_heightRightE"><code class="docutils literal notranslate"><span class="pre">DamBreak1d::m_heightRight</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10DamBreak1d13m_locationDamE"><code class="docutils literal notranslate"><span class="pre">DamBreak1d::m_locationDam</span></code></a></li>
@@ -212,6 +263,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14MiddleStates1d9getHeightE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">MiddleStates1d::getHeight()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14MiddleStates1d12getMomentumXE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">MiddleStates1d::getMomentumX()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14MiddleStates1d12getMomentumYE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">MiddleStates1d::getMomentumY()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14MiddleStates1d13getBathymetryE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">MiddleStates1d::getBathymetry()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14MiddleStates1d12m_heightLeftE"><code class="docutils literal notranslate"><span class="pre">MiddleStates1d::m_heightLeft</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14MiddleStates1d13m_heightRightE"><code class="docutils literal notranslate"><span class="pre">MiddleStates1d::m_heightRight</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14MiddleStates1d14m_momentumLeftE"><code class="docutils literal notranslate"><span class="pre">MiddleStates1d::m_momentumLeft</span></code></a></li>
@@ -225,6 +277,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10RareRare1d9getHeightE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">RareRare1d::getHeight()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10RareRare1d12getMomentumXE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">RareRare1d::getMomentumX()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10RareRare1d12getMomentumYE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">RareRare1d::getMomentumY()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10RareRare1d13getBathymetryE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">RareRare1d::getBathymetry()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10RareRare1d12m_heightLeftE"><code class="docutils literal notranslate"><span class="pre">RareRare1d::m_heightLeft</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10RareRare1d14m_momentumLeftE"><code class="docutils literal notranslate"><span class="pre">RareRare1d::m_momentumLeft</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10RareRare1d14m_locationRareE"><code class="docutils literal notranslate"><span class="pre">RareRare1d::m_locationRare</span></code></a></li>
@@ -235,6 +288,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups5Setup9getHeightE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">Setup::getHeight()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups5Setup12getMomentumXE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">Setup::getMomentumX()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups5Setup12getMomentumYE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">Setup::getMomentumY()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups5Setup13getBathymetryE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">Setup::getBathymetry()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups12ShockShock1dE"><code class="docutils literal notranslate"><span class="pre">ShockShock1d</span></code></a><ul>
@@ -243,9 +297,52 @@
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups12ShockShock1d9getHeightE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">ShockShock1d::getHeight()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups12ShockShock1d12getMomentumXE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">ShockShock1d::getMomentumX()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups12ShockShock1d12getMomentumYE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">ShockShock1d::getMomentumY()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups12ShockShock1d13getBathymetryE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">ShockShock1d::getBathymetry()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups12ShockShock1d12m_heightLeftE"><code class="docutils literal notranslate"><span class="pre">ShockShock1d::m_heightLeft</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups12ShockShock1d14m_momentumLeftE"><code class="docutils literal notranslate"><span class="pre">ShockShock1d::m_momentumLeft</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups12ShockShock1d15m_locationShockE"><code class="docutils literal notranslate"><span class="pre">ShockShock1d::m_locationShock</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups17SubcriticalFlow1dE"><code class="docutils literal notranslate"><span class="pre">SubcriticalFlow1d</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups17SubcriticalFlow1d17SubcriticalFlow1dEv"><code class="docutils literal notranslate"><span class="pre">SubcriticalFlow1d::SubcriticalFlow1d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups17SubcriticalFlow1d17SubcriticalFlow1dE6t_realAL2E_6t_real6t_realPF6t_real6t_realE"><code class="docutils literal notranslate"><span class="pre">SubcriticalFlow1d::SubcriticalFlow1d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups17SubcriticalFlow1dD0Ev"><code class="docutils literal notranslate"><span class="pre">SubcriticalFlow1d::~SubcriticalFlow1d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups17SubcriticalFlow1d9getHeightE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">SubcriticalFlow1d::getHeight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups17SubcriticalFlow1d12getMomentumXE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">SubcriticalFlow1d::getMomentumX()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups17SubcriticalFlow1d12getMomentumYE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">SubcriticalFlow1d::getMomentumY()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups17SubcriticalFlow1d13getBathymetryE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">SubcriticalFlow1d::getBathymetry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups17SubcriticalFlow1d8momentumE"><code class="docutils literal notranslate"><span class="pre">SubcriticalFlow1d::momentum</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups17SubcriticalFlow1d5rangeE"><code class="docutils literal notranslate"><span class="pre">SubcriticalFlow1d::range</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups17SubcriticalFlow1d18bathymetryOutRangeE"><code class="docutils literal notranslate"><span class="pre">SubcriticalFlow1d::bathymetryOutRange</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups17SubcriticalFlow1d17bathymetryInRangeE"><code class="docutils literal notranslate"><span class="pre">SubcriticalFlow1d::bathymetryInRange</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19SupercriticalFlow1dE"><code class="docutils literal notranslate"><span class="pre">SupercriticalFlow1d</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19SupercriticalFlow1d19SupercriticalFlow1dEv"><code class="docutils literal notranslate"><span class="pre">SupercriticalFlow1d::SupercriticalFlow1d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19SupercriticalFlow1d19SupercriticalFlow1dE6t_realAL2E_6t_real6t_realPF6t_real6t_realE"><code class="docutils literal notranslate"><span class="pre">SupercriticalFlow1d::SupercriticalFlow1d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19SupercriticalFlow1dD0Ev"><code class="docutils literal notranslate"><span class="pre">SupercriticalFlow1d::~SupercriticalFlow1d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19SupercriticalFlow1d9getHeightE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">SupercriticalFlow1d::getHeight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19SupercriticalFlow1d12getMomentumXE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">SupercriticalFlow1d::getMomentumX()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19SupercriticalFlow1d12getMomentumYE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">SupercriticalFlow1d::getMomentumY()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19SupercriticalFlow1d13getBathymetryE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">SupercriticalFlow1d::getBathymetry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19SupercriticalFlow1d8momentumE"><code class="docutils literal notranslate"><span class="pre">SupercriticalFlow1d::momentum</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19SupercriticalFlow1d5rangeE"><code class="docutils literal notranslate"><span class="pre">SupercriticalFlow1d::range</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19SupercriticalFlow1d18bathymetryOutRangeE"><code class="docutils literal notranslate"><span class="pre">SupercriticalFlow1d::bathymetryOutRange</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19SupercriticalFlow1d17bathymetryInRangeE"><code class="docutils literal notranslate"><span class="pre">SupercriticalFlow1d::bathymetryInRange</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1dE"><code class="docutils literal notranslate"><span class="pre">TsunamiEvent1d</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d14TsunamiEvent1dENSt6stringE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">TsunamiEvent1d::TsunamiEvent1d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d9getHeightE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">TsunamiEvent1d::getHeight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d12getMomentumXE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">TsunamiEvent1d::getMomentumX()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d12getMomentumYE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">TsunamiEvent1d::getMomentumY()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d13getBathymetryE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">TsunamiEvent1d::getBathymetry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d23getVerticalDisplacementE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">TsunamiEvent1d::getVerticalDisplacement()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d14m_csvDataPointE"><code class="docutils literal notranslate"><span class="pre">TsunamiEvent1d::m_csvDataPoint</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d10m_momentumE"><code class="docutils literal notranslate"><span class="pre">TsunamiEvent1d::m_momentum</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d12m_bathymetryE"><code class="docutils literal notranslate"><span class="pre">TsunamiEvent1d::m_bathymetry</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d7m_deltaE"><code class="docutils literal notranslate"><span class="pre">TsunamiEvent1d::m_delta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d7m_scaleE"><code class="docutils literal notranslate"><span class="pre">TsunamiEvent1d::m_scale</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -253,9 +350,11 @@
 <li class="toctree-l2"><a class="reference internal" href="api/tsunami_lab.html#solvers">solvers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWaveE"><code class="docutils literal notranslate"><span class="pre">FWave</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave10netUpdatesE6t_real6t_real6t_real6t_realAL2E_6t_realAL2E_6t_real"><code class="docutils literal notranslate"><span class="pre">FWave::netUpdates()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave10netUpdatesE6t_real6t_real6t_real6t_real6t_real6t_realAL2E_6t_realAL2E_6t_real"><code class="docutils literal notranslate"><span class="pre">FWave::netUpdates()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave18computeEigenvaluesE6t_real6t_real6t_real6t_realR6t_realR6t_real"><code class="docutils literal notranslate"><span class="pre">FWave::computeEigenvalues()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave16computeDeltaFluxE6t_real6t_real6t_real6t_realAL2E_6t_real"><code class="docutils literal notranslate"><span class="pre">FWave::computeDeltaFlux()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave24computeEigencoefficientsE6t_real6t_realAL2E_6t_realR6t_realR6t_real"><code class="docutils literal notranslate"><span class="pre">FWave::computeEigencoefficients()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave24computeBathymetryEffectsE6t_real6t_real6t_real6t_realAL2E_6t_real"><code class="docutils literal notranslate"><span class="pre">FWave::computeBathymetryEffects()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave7m_gSqrtE"><code class="docutils literal notranslate"><span class="pre">FWave::m_gSqrt</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave3m_gE"><code class="docutils literal notranslate"><span class="pre">FWave::m_g</span></code></a></li>
 </ul>

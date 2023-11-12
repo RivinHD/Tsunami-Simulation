@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['csv_0',['Csv',['../classtsunami__lab_1_1io_1_1Csv.html',1,'tsunami_lab::io']]]
+  ['argsetup_0',['ArgSetup',['../classArgSetup.html',1,'ArgSetup'],['../classArgSetup.html#a455f002e0f8eefff98f3ac6e29440582',1,'ArgSetup::ArgSetup()']]]
 ];
