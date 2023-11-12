@@ -6,6 +6,9 @@
 3. Bathymetry & Boundary Conditions
 ===================================
 
+3.1. Non-zero Source Term
+-------------------------
+
 1. Extended f-wave solver
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -251,8 +254,6 @@ And set our ghost cells :math:`b_0 := b_1` and :math:`b_n+1 := b_n`.
         </video>
     </center>
 
-3.1. Non-zero Source Term
--------------------------
 
 3.2 Reflecting Boundary Conditions
 ----------------------------------
@@ -373,8 +374,8 @@ Therefore, the maximum Froude number of the subcritical flow is **135.73393**.
 
 Therefore, the maximum Froude number of the supercritical flow is **12.646782**.
 
-3.4. 1D Tsunami Simulation
---------------------------
+4. 1D Tsunami Simulation
+------------------------
 
 1. Extracting bathymetry data for the 1D domain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -439,7 +440,7 @@ The ``bathy_profile.csv`` is located in: ``.../Tsunami-Simulation/resources/bath
 This implementation offers scope for reading further data from the file in the future.
 
 
-3. New setup ``setups::TsunamiEvent1d``
+3. New setup **setups::TsunamiEvent1d**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In the first highlighted block we initialize a vector with the bathymetry height entries of the bathy_profile.csv.
