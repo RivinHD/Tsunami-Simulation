@@ -55,6 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#building">Building</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-the-simulation-tests">Running the Simulation &amp; Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#simulation-output">Simulation Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extracting-bathymetry-data-for-the-1d-domain">Extracting bathymetry data for the 1D domain</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="building_docs.html">Building the Documentation</a></li>
@@ -63,6 +64,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../submissions/riemann_solver.html">1. Riemann Solver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../submissions/finite_volume_discretization.html">2. Finite Volume Discretization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../submissions/bathymetry_boundary_conditions.html">3. Bathymetry &amp; Boundary Conditions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -248,11 +250,28 @@ The available executables are <code class="docutils literal notranslate"><span c
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="p">.</span><span class="o">/</span><span class="n">simulation</span><span class="p">.</span><span class="n">exe</span>
 </pre></div>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Running the <code class="docutils literal notranslate"><span class="pre">simulation</span></code> executable without arguments will give you the help text on how to use it.</p>
+</div>
 </section>
 <section id="simulation-output">
 <h2>Simulation Output<a class="headerlink" href="#simulation-output" title="Link to this heading"></a></h2>
 <p>The output of the simulation consists of several CSV files named <code class="docutils literal notranslate"><span class="pre">solution_&lt;number&gt;.csv</span></code>.
 The CSV files are stored in a separate <code class="docutils literal notranslate"><span class="pre">solutions</span></code> folder, which is located in the working directory of the executable.</p>
+</section>
+<section id="extracting-bathymetry-data-for-the-1d-domain">
+<h2>Extracting bathymetry data for the 1D domain<a class="headerlink" href="#extracting-bathymetry-data-for-the-1d-domain" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Download <a class="reference external" href="https://www.gebco.net/data_and_products/historical_data_sets/">GEBCO_2021</a> grid.</p></li>
+<li><p>Reduce grid size with <span class="raw-html"></br></span>
+<code class="code docutils literal notranslate"><span class="pre">gmt</span> <span class="pre">grdcut</span> <span class="pre">-R138/147/35/39</span> <span class="pre">path/to/GEBCO_2021.nc</span> <span class="pre">-Gpath/to/GEBCO_2021_cut.nc</span></code></p></li>
+<li><p>Create datapoints with <span class="raw-html"></br></span>
+<code class="code docutils literal notranslate"><span class="pre">gmt</span> <span class="pre">grdtrack</span> <span class="pre">-Gdpath/to/GEBCO_2021_cut.nc</span> <span class="pre">-E141.024949/37.316569/146/37.316569+i250e+d</span> <span class="pre">-Ar</span> <span class="pre">&gt;</span> <span class="pre">bathy_profile.out</span></code></p></li>
+<li><p>Add commas to create comma-separated values file with <span class="raw-html"></br></span>
+<code class="code docutils literal notranslate"><span class="pre">cat</span> <span class="pre">bathy_profile.out</span> <span class="pre">|</span> <span class="pre">tr</span> <span class="pre">-s</span> <span class="pre">'[:blank:]'</span> <span class="pre">','</span> <span class="pre">&gt;</span> <span class="pre">bathy_profile.csv</span></code></p></li>
+</ol>
+<p>The <code class="docutils literal notranslate"><span class="pre">bathy_profile.csv</span></code> is located in: <code class="docutils literal notranslate"><span class="pre">.../Tsunami-Simulation/resources/bathy_profile.csv</span></code>.</p>
 </section>
 </section>
 

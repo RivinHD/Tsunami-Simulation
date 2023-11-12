@@ -13,6 +13,7 @@
 
    submissions/riemann_solver.rst
    submissions/finite_volume_discretization.rst
+   submissions/bathymetry_boundary_conditions.rst
 
 .. toctree::
    :maxdepth: 4

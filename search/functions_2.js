@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['middlestates1d_48',['MiddleStates1d',['../classtsunami__lab_1_1setups_1_1MiddleStates1d.html#ab15340b1070ee2a0f080643212350558',1,'tsunami_lab::setups::MiddleStates1d']]]
+  ['enablebathymetry_69',['enableBathymetry',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#a57339ee0e9b96e497be5fed7f08739ac',1,'tsunami_lab::patches::WavePropagation::enableBathymetry()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#a4ce63e4beb16058d00e59cebabd349bb',1,'tsunami_lab::patches::WavePropagation1d::enableBathymetry()']]]
 ];

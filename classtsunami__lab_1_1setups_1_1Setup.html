@@ -80,10 +80,13 @@ Inheritance diagram for tsunami_lab::setups::Setup:</div>
  <div class="center">
   <img src="classtsunami__lab_1_1setups_1_1Setup.png" usemap="#tsunami_5Flab::setups::Setup_map" alt=""/>
   <map id="tsunami_5Flab::setups::Setup_map" name="tsunami_5Flab::setups::Setup_map">
-<area href="classtsunami__lab_1_1setups_1_1DamBreak1d.html" alt="tsunami_lab::setups::DamBreak1d" shape="rect" coords="0,56,212,80"/>
-<area href="classtsunami__lab_1_1setups_1_1MiddleStates1d.html" alt="tsunami_lab::setups::MiddleStates1d" shape="rect" coords="222,56,434,80"/>
-<area href="classtsunami__lab_1_1setups_1_1RareRare1d.html" alt="tsunami_lab::setups::RareRare1d" shape="rect" coords="444,56,656,80"/>
-<area href="classtsunami__lab_1_1setups_1_1ShockShock1d.html" alt="tsunami_lab::setups::ShockShock1d" shape="rect" coords="666,56,878,80"/>
+<area href="classtsunami__lab_1_1setups_1_1DamBreak1d.html" alt="tsunami_lab::setups::DamBreak1d" shape="rect" coords="0,56,239,80"/>
+<area href="classtsunami__lab_1_1setups_1_1MiddleStates1d.html" alt="tsunami_lab::setups::MiddleStates1d" shape="rect" coords="249,56,488,80"/>
+<area href="classtsunami__lab_1_1setups_1_1RareRare1d.html" alt="tsunami_lab::setups::RareRare1d" shape="rect" coords="498,56,737,80"/>
+<area href="classtsunami__lab_1_1setups_1_1ShockShock1d.html" alt="tsunami_lab::setups::ShockShock1d" shape="rect" coords="747,56,986,80"/>
+<area href="classtsunami__lab_1_1setups_1_1SubcriticalFlow1d.html" alt="tsunami_lab::setups::SubcriticalFlow1d" shape="rect" coords="996,56,1235,80"/>
+<area href="classtsunami__lab_1_1setups_1_1SupercriticalFlow1d.html" alt="tsunami_lab::setups::SupercriticalFlow1d" shape="rect" coords="1245,56,1484,80"/>
+<area href="classtsunami__lab_1_1setups_1_1TsunamiEvent1d.html" alt="tsunami_lab::setups::TsunamiEvent1d" shape="rect" coords="1494,56,1733,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -97,6 +100,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7e9e033b4954247a7fc0a9d808a53296"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30f2396047c8658922c617a2be739f09"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtsunami__lab_1_1setups_1_1Setup.html#a30f2396047c8658922c617a2be739f09">getMomentumY</a> (<a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_x, <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_y) const =0</td></tr>
 <tr class="separator:a30f2396047c8658922c617a2be739f09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34bb17c0e61de7e61cc07184a0dca1de"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtsunami__lab_1_1setups_1_1Setup.html#a34bb17c0e61de7e61cc07184a0dca1de">getBathymetry</a> (<a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_x, <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_y) const =0</td></tr>
+<tr class="separator:a34bb17c0e61de7e61cc07184a0dca1de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base setup. </p>
@@ -128,6 +133,53 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a34bb17c0e61de7e61cc07184a0dca1de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34bb17c0e61de7e61cc07184a0dca1de">&#9670;&nbsp;</a></span>getBathymetry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> tsunami_lab::setups::Setup::getBathymetry </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a>&#160;</td>
+          <td class="paramname"><em>i_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a>&#160;</td>
+          <td class="paramname"><em>i_y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Gets the bathymetry at a given point.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i_x</td><td>x-coordinate of the queried point. </td></tr>
+    <tr><td class="paramname">i_y</td><td>y-coordinate of the queried point. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>bathymetry at a given point. </dd></dl>
+
+<p>Implemented in <a class="el" href="classtsunami__lab_1_1setups_1_1ShockShock1d.html#ab2f74b6e83e9436e0ddc31e5974b0bdf">tsunami_lab::setups::ShockShock1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1RareRare1d.html#a2adcbd81470cb35bae231d97aaefa169">tsunami_lab::setups::RareRare1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1MiddleStates1d.html#a8ae4c5242684b7c0a61d2c7d5f16b084">tsunami_lab::setups::MiddleStates1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1DamBreak1d.html#aa912357c14555f298e40e6b8d6935695">tsunami_lab::setups::DamBreak1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1SupercriticalFlow1d.html#ab1b26a757899d6a262412163b29ffcbd">tsunami_lab::setups::SupercriticalFlow1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1SubcriticalFlow1d.html#a4d0f71329ac25d4194f5773fe2344302">tsunami_lab::setups::SubcriticalFlow1d</a>, and <a class="el" href="classtsunami__lab_1_1setups_1_1TsunamiEvent1d.html#ade6f68796a18a73d545375fc98f123e3">tsunami_lab::setups::TsunamiEvent1d</a>.</p>
+
+</div>
+</div>
 <a id="aa7e72a3e93aad13342423ec4f06e4f87"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa7e72a3e93aad13342423ec4f06e4f87">&#9670;&nbsp;</a></span>getHeight()</h2>
 
@@ -171,7 +223,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>water height at the given point. </dd></dl>
 
-<p>Implemented in <a class="el" href="classtsunami__lab_1_1setups_1_1ShockShock1d.html#a2ff3a315dcac4e4552adffe039f95a45">tsunami_lab::setups::ShockShock1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1RareRare1d.html#a270357b3e82a3f5a49bba6b764f1ef49">tsunami_lab::setups::RareRare1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1MiddleStates1d.html#a5766c512670e17652c9aec63c4630139">tsunami_lab::setups::MiddleStates1d</a>, and <a class="el" href="classtsunami__lab_1_1setups_1_1DamBreak1d.html#aed58c0eaffb7845c79dc91d3304b54ce">tsunami_lab::setups::DamBreak1d</a>.</p>
+<p>Implemented in <a class="el" href="classtsunami__lab_1_1setups_1_1ShockShock1d.html#a2ff3a315dcac4e4552adffe039f95a45">tsunami_lab::setups::ShockShock1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1RareRare1d.html#a270357b3e82a3f5a49bba6b764f1ef49">tsunami_lab::setups::RareRare1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1SupercriticalFlow1d.html#a82bbeab754e99dbfda6925ede7c219fb">tsunami_lab::setups::SupercriticalFlow1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1SubcriticalFlow1d.html#a5cb50a8633ccd2ed8fb4ef6d83223f91">tsunami_lab::setups::SubcriticalFlow1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1TsunamiEvent1d.html#a0cec3ac35df4fa24200855e7c40fb334">tsunami_lab::setups::TsunamiEvent1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1MiddleStates1d.html#a5766c512670e17652c9aec63c4630139">tsunami_lab::setups::MiddleStates1d</a>, and <a class="el" href="classtsunami__lab_1_1setups_1_1DamBreak1d.html#aed58c0eaffb7845c79dc91d3304b54ce">tsunami_lab::setups::DamBreak1d</a>.</p>
 
 </div>
 </div>
@@ -218,7 +270,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>momentum in x-direction. </dd></dl>
 
-<p>Implemented in <a class="el" href="classtsunami__lab_1_1setups_1_1DamBreak1d.html#aa66e3b6f09be26dd12a5231339235fac">tsunami_lab::setups::DamBreak1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1ShockShock1d.html#a4da04a7ff2612233419fa670f4e937c2">tsunami_lab::setups::ShockShock1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1RareRare1d.html#a20f9aea0e6089c90d734209b38216a77">tsunami_lab::setups::RareRare1d</a>, and <a class="el" href="classtsunami__lab_1_1setups_1_1MiddleStates1d.html#a38b2f70f4999a256a2ee54e453b0ea75">tsunami_lab::setups::MiddleStates1d</a>.</p>
+<p>Implemented in <a class="el" href="classtsunami__lab_1_1setups_1_1SupercriticalFlow1d.html#a695677a4d4758feb7dd27b47a922e3e0">tsunami_lab::setups::SupercriticalFlow1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1SubcriticalFlow1d.html#ab5f994b3ff477df6a119dfc2190f22c7">tsunami_lab::setups::SubcriticalFlow1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1TsunamiEvent1d.html#a2c4292579e50b8a53cc89700fa3e5dff">tsunami_lab::setups::TsunamiEvent1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1DamBreak1d.html#aa66e3b6f09be26dd12a5231339235fac">tsunami_lab::setups::DamBreak1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1ShockShock1d.html#a4da04a7ff2612233419fa670f4e937c2">tsunami_lab::setups::ShockShock1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1RareRare1d.html#a20f9aea0e6089c90d734209b38216a77">tsunami_lab::setups::RareRare1d</a>, and <a class="el" href="classtsunami__lab_1_1setups_1_1MiddleStates1d.html#a38b2f70f4999a256a2ee54e453b0ea75">tsunami_lab::setups::MiddleStates1d</a>.</p>
 
 </div>
 </div>
@@ -265,7 +317,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>momentum in y-direction. </dd></dl>
 
-<p>Implemented in <a class="el" href="classtsunami__lab_1_1setups_1_1ShockShock1d.html#a7ff78aa86e46f77aba8bd309e4783824">tsunami_lab::setups::ShockShock1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1RareRare1d.html#ae74833aa523c85ab8046d6f76d92a653">tsunami_lab::setups::RareRare1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1MiddleStates1d.html#a3db28d047f1ef686d2edee2f79fe19b4">tsunami_lab::setups::MiddleStates1d</a>, and <a class="el" href="classtsunami__lab_1_1setups_1_1DamBreak1d.html#a50e49386c11b01d3ff45c79fb413657c">tsunami_lab::setups::DamBreak1d</a>.</p>
+<p>Implemented in <a class="el" href="classtsunami__lab_1_1setups_1_1SupercriticalFlow1d.html#a6674e1d63eb7ff25451de08cd0ca1d3a">tsunami_lab::setups::SupercriticalFlow1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1SubcriticalFlow1d.html#acff0f994d5b18025574ec6d64407e8a4">tsunami_lab::setups::SubcriticalFlow1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1TsunamiEvent1d.html#afeba1632d74c225bd09d759eef81e6c6">tsunami_lab::setups::TsunamiEvent1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1ShockShock1d.html#a7ff78aa86e46f77aba8bd309e4783824">tsunami_lab::setups::ShockShock1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1RareRare1d.html#ae74833aa523c85ab8046d6f76d92a653">tsunami_lab::setups::RareRare1d</a>, <a class="el" href="classtsunami__lab_1_1setups_1_1MiddleStates1d.html#a3db28d047f1ef686d2edee2f79fe19b4">tsunami_lab::setups::MiddleStates1d</a>, and <a class="el" href="classtsunami__lab_1_1setups_1_1DamBreak1d.html#a50e49386c11b01d3ff45c79fb413657c">tsunami_lab::setups::DamBreak1d</a>.</p>
 
 </div>
 </div>

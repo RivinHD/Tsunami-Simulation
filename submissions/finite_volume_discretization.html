@@ -24,7 +24,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tsunami_lab" href="../api/tsunami_lab.html" />
+    <link rel="next" title="3. Bathymetry &amp; Boundary Conditions" href="bathymetry_boundary_conditions.html" />
     <link rel="prev" title="1. Riemann Solver" href="riemann_solver.html" />
     <link href="../_static/style.css" rel="stylesheet" type="text/css">
 
@@ -80,6 +80,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#contribution">Contribution</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="bathymetry_boundary_conditions.html">3. Bathymetry &amp; Boundary Conditions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -114,8 +115,8 @@
 <span id="submissions-finite-volume-discretization"></span><h1>2. Finite Volume Discretization<a class="headerlink" href="#finite-volume-discretization" title="Link to this heading"></a></h1>
 <section id="f-wave-integration">
 <h2>F-Wave Integration<a class="headerlink" href="#f-wave-integration" title="Link to this heading"></a></h2>
-<p>Setting up the switching between the solvers using an enum which will always be include if a class is derived from <code class="docutils literal notranslate"><span class="pre">tsunami_lab::patches::WavePropagation</span></code>.
-Therefore the enum is put in the header file of <code class="docutils literal notranslate"><span class="pre">WavePropagation</span></code>.</p>
+<p>Switching between the solvers is done by an enum, which is always included when a class is derived from <code class="docutils literal notranslate"><span class="pre">tsunami_lab::patches::WavePropagation</span></code>.
+To achieve this, the enumeration is included in the header file of <code class="docutils literal notranslate"><span class="pre">WavePropagation</span></code>.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">/// File: WavePropagation.h</span>
 <span class="k">namespace</span><span class="w"> </span><span class="nn">tsunami_lab</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">namespace</span><span class="w"> </span><span class="nn">patches</span><span class="w"> </span><span class="p">{</span>
@@ -135,7 +136,7 @@ Therefore the enum is put in the header file of <code class="docutils literal no
 <span class="k">class</span><span class="w"> </span><span class="nc">tsunami_lab</span><span class="o">::</span><span class="n">patches</span><span class="o">::</span><span class="n">WavePropagation</span><span class="w"> </span><span class="p">{</span>
 
 <span class="k">public</span><span class="o">:</span>
-<span class="w">    </span><span class="p">...</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">]</span>
 
 <span class="w">    </span><span class="cm">/**</span>
 <span class="cm">    * Set the solver for the netUpdate</span>
@@ -146,17 +147,17 @@ Therefore the enum is put in the header file of <code class="docutils literal no
 </span><span class="p">};</span>
 </pre></div>
 </div>
-<p>Implementation for setting the solvers with default values using the FWave solver. <span class="raw-html"><br></span>
-Switching between the solvers using a function pointer of netUpdates, e.g. to avoid having to call an if statement in the for loop for a more efficient calculation.</p>
+<p>The implementation for setting the solver is done via a simple set function and the solver is set to the FWave solver by default. <span class="raw-html"><br></span>
+Switching between the solvers is done via a function pointer of netUpdates to avoid calling an if statement in the for loop and to enable a more efficient calculation.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">/// File: WavePropagation1d.h</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">tsunami_lab</span><span class="o">::</span><span class="n">patches</span><span class="o">::</span><span class="n">WavePropagation1d</span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">WavePropagation</span><span class="w"> </span><span class="p">{</span>
 <span class="k">private</span><span class="o">:</span>
-<span class="w">    </span><span class="p">...</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">]</span>
 <span class="w">    </span><span class="c1">//! the solver used for the netUpdates</span>
 <span class="hll"><span class="w">    </span><span class="n">Solver</span><span class="w"> </span><span class="n">solver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Solver</span><span class="o">::</span><span class="n">FWave</span><span class="p">;</span>
 </span>
 <span class="k">public</span><span class="o">:</span>
-<span class="w">    </span><span class="p">...</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">]</span>
 <span class="w">    </span><span class="cm">/**</span>
 <span class="cm">    * Set the solver for the netUpdate</span>
 <span class="cm">    * Default: FWave</span>
@@ -171,14 +172,14 @@ Switching between the solvers using a function pointer of netUpdates, e.g. to av
 
 <span class="c1">/// File: WavePropagation1d.cpp</span>
 <span class="kt">void</span><span class="w"> </span><span class="nf">tsunami_lab::patches::WavePropagation1d::timeStep</span><span class="p">(</span><span class="w"> </span><span class="n">t_real</span><span class="w"> </span><span class="n">i_scaling</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="p">...</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">]</span>
 <span class="w">    </span><span class="c1">// uses a function pointer to choose between the solvers</span>
 <span class="hll"><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">netUpdates</span><span class="p">)(</span><span class="n">t_real</span><span class="p">,</span><span class="w"> </span><span class="n">t_real</span><span class="p">,</span><span class="w"> </span><span class="n">t_real</span><span class="p">,</span><span class="w"> </span><span class="n">t_real</span><span class="p">,</span><span class="w"> </span><span class="n">t_real</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">t_real</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solvers</span><span class="o">::</span><span class="n">FWave</span><span class="o">::</span><span class="n">netUpdates</span><span class="p">;</span>
 </span><span class="hll"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">solver</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Solver</span><span class="o">::</span><span class="n">Roe</span><span class="p">)</span>
 </span><span class="hll"><span class="w">    </span><span class="p">{</span>
 </span><span class="hll"><span class="w">        </span><span class="n">netUpdates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solvers</span><span class="o">::</span><span class="n">Roe</span><span class="o">::</span><span class="n">netUpdates</span><span class="p">;</span>
 </span><span class="hll"><span class="w">    </span><span class="p">}</span>
-</span><span class="w">    </span><span class="p">...</span>
+</span><span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -240,7 +241,7 @@ The function is using a file stream to middleStates.csv and parses a new line wh
 </pre></div>
 </div>
 <p>Creating a new test case to run with a Catch2 session. <span class="raw-html"><br></span>
-Using the new Csv function to parse the file lines and check if the file can be read in a while loop.</p>
+Using the new CSV function to parse the file lines and check if the file can be read in a while loop.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">/// File: test_middle_states.cpp</span>
 <span class="n">TEST_CASE</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Test against the middle_states.csv&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;[MiddleStates]&quot;</span><span class="w"> </span><span class="p">)</span>
 <span class="p">{</span>
@@ -260,7 +261,7 @@ Using the new Csv function to parse the file lines and check if the file can be 
 <span class="w">                                                     </span><span class="n">huRight</span><span class="p">,</span>
 <span class="w">                                                     </span><span class="n">hStar</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">    </span><span class="p">...</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Implementing a new setup for the middle states to return the matching height and momentum for the corresponding x-coordinate.</p>
@@ -349,11 +350,11 @@ Using the new Csv function to parse the file lines and check if the file can be 
 </pre></div>
 </div>
 <p>Setting up the testing with the new setup <code class="docutils literal notranslate"><span class="pre">MiddleStates1d</span></code> and calculating the hStar by calculating over multiple time steps.
-Printing an Error message if the deviation of the calculated hStar and the read hStar is to high.
+Printing an Error message if the deviation of the calculated hStar and the read hStar is too high.
 After going through all test the number of successful tests, accuracy and cell settings are printed.
-The Catch2 test throws an error if the accuracy is to low.</p>
+At the end Catch2 test throws an error if the accuracy is too low.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">/// File: test_middle_states.cpp</span>
-<span class="w">    </span><span class="p">...</span>
+<span class="w">    </span><span class="p">[</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">]</span>
 <span class="w">        </span><span class="n">tsunami_lab</span><span class="o">::</span><span class="n">t_real</span><span class="w"> </span><span class="n">l_dxy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">numberOfCells</span><span class="p">;</span>
 <span class="w">        </span><span class="n">tsunami_lab</span><span class="o">::</span><span class="n">t_real</span><span class="w"> </span><span class="n">l_location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">5.0</span><span class="p">;</span>
 <span class="w">        </span><span class="n">tsunami_lab</span><span class="o">::</span><span class="n">t_real</span><span class="w"> </span><span class="n">startHeightDifference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="w"> </span><span class="n">hLeft</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">hRight</span><span class="w"> </span><span class="p">);</span>
@@ -442,7 +443,7 @@ The Catch2 test throws an error if the accuracy is to low.</p>
 <span class="w">        </span><span class="n">nanProblems</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">isnan</span><span class="p">(</span><span class="w"> </span><span class="n">delta</span><span class="w"> </span><span class="p">);</span>
 <span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">isSameHeight</span><span class="w"> </span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;FAILED: Deviation to high from Test &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">evaluatedTests</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; (relativ deviation:&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">relativDeviation</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;FAILED: Deviation too high from Test &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">evaluatedTests</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; (relativ deviation:&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">relativDeviation</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="c1">// free memory</span>
@@ -462,8 +463,8 @@ The Catch2 test throws an error if the accuracy is to low.</p>
 <section id="output">
 <h3>Output<a class="headerlink" href="#output" title="Link to this heading"></a></h3>
 <p>Output of test_middle_states with 100 cells and a margin of 2%.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">FAILED: Deviation to high from Test 999969 (relativ deviation:0.284146)</span>
-<span class="go">FAILED: Deviation to high from Test 999990 (relativ deviation:0.199954)</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">FAILED: Deviation too high from Test 999969 (relativ deviation:0.284146)</span>
+<span class="go">FAILED: Deviation too high from Test 999990 (relativ deviation:0.199954)</span>
 
 <span class="go">992814 Tests were successful of 1000000 with 17 Nan evaluations</span>
 <span class="go">Accuracy of 0.992814 with Margin of 0.02 and 100 Cells</span>
@@ -866,6 +867,14 @@ velocity decreases.</p>
 </section>
 <section id="compute-evacuation-time">
 <h3>Compute evacuation time<a class="headerlink" href="#compute-evacuation-time" title="Link to this heading"></a></h3>
+<p><strong>Calculated with Simulation</strong></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}q_l = [14, 0]^T\\
+q_r = [3.5, 0.7]^T\end{split}\]</div>
+<p>Distance: <span class="math notranslate nohighlight">\(25,000\,m\)</span> <span class="raw-html"><br></span>
+Wave speed: <span class="math notranslate nohighlight">\(11.7120\,m/s\)</span></p>
+<p>Time: <span class="math notranslate nohighlight">\(\frac{25,000\,m}{11.7120\,m/s} = 35,5760\,s \approx \text{35:34 min}\)</span></p>
+<p><strong>Calculated by hand</strong></p>
 <div class="math notranslate nohighlight">
 \[\begin{split}q_l = [14, 0]^T, u_l = \frac{0}{14} =0\\
 q_r = [3.5, 0.7]^T, u_l = \frac{0.7}{3.5} = 0.2\\
@@ -890,7 +899,7 @@ Wave speed: <span class="math notranslate nohighlight">\(9.329937553\,m/s\)</spa
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="riemann_solver.html" class="btn btn-neutral float-left" title="1. Riemann Solver" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../api/tsunami_lab.html" class="btn btn-neutral float-right" title="tsunami_lab" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="bathymetry_boundary_conditions.html" class="btn btn-neutral float-right" title="3. Bathymetry &amp; Boundary Conditions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
