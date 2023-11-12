@@ -64,8 +64,8 @@ private:
     };
 
     /**
-     * Calculates the right height, momentum, bathymetry with respect to a reflection e.i. one cell is a shore and the other is a water cell
-     * A shore cell is the cell with water 0 e.i. the height is zero
+     * Calculates the right height, momentum, bathymetry with respect to a reflection i.e. one cell is a shore and the other is a water cell
+     * A shore cell is the cell with water 0 i.e. the height is zero
      *
      * @param i_h the height array
      * @param i_hu the momentum array
@@ -85,8 +85,8 @@ private:
                                     t_real& o_momentumRight );
 
     /**
-     * Calculates the right height, momentum, bathymetry with respect to a reflection e.i. one cell is a shore and the other is a water cell
-     * A shore cell is the cell with water 0 e.i. the height is zero
+     * Calculates the right height, momentum, bathymetry with respect to a reflection i.e. one cell is a shore and the other is a water cell
+     * A shore cell is the cell with water 0 i.e. the height is zero
      *
      * @param i_h the height array
      * @param i_hu the momentum array

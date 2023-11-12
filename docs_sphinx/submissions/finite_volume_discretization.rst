@@ -35,7 +35,7 @@ To achieve this, the enumeration is included in the header file of ``WavePropaga
     class tsunami_lab::patches::WavePropagation {
 
     public:
-        ...
+        [ ... ]
 
         /**
         * Set the solver for the netUpdate
@@ -55,12 +55,12 @@ Switching between the solvers is done via a function pointer of netUpdates to av
     /// File: WavePropagation1d.h
     class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     private:
-        ...
+        [ ... ]
         //! the solver used for the netUpdates
         Solver solver = Solver::FWave;
 
     public:
-        ...      
+        [ ... ]      
         /**
         * Set the solver for the netUpdate
         * Default: FWave
@@ -75,14 +75,14 @@ Switching between the solvers is done via a function pointer of netUpdates to av
 
     /// File: WavePropagation1d.cpp
     void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
-        ...
+        [ ... ]
         // uses a function pointer to choose between the solvers
         void (*netUpdates)(t_real, t_real, t_real, t_real, t_real*, t_real*) = solvers::FWave::netUpdates;
         if (solver == Solver::Roe)
         {
             netUpdates = solvers::Roe::netUpdates;
         }
-        ...
+        [ ... ]
     }
 
 
@@ -173,7 +173,7 @@ Using the new CSV function to parse the file lines and check if the file can be 
                                                          huRight,
                                                          hStar ) )
         {
-        ...
+        [ ... ]
 
 
 Implementing a new setup for the middle states to return the matching height and momentum for the corresponding x-coordinate.
@@ -274,7 +274,7 @@ At the end Catch2 test throws an error if the accuracy is too low.
 .. code-block:: cpp
 
         /// File: test_middle_states.cpp
-        ...
+        [ ... ]
 		    tsunami_lab::t_real l_dxy = 10.0 / numberOfCells;
 		    tsunami_lab::t_real l_location = 5.0;
 		    tsunami_lab::t_real startHeightDifference = abs( hLeft - hRight );

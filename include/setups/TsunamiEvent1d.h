@@ -49,7 +49,7 @@ public:
      *
      * @param i_filePath string to the bathy_profile.csv
      * @param i_delta avoids running into numerical issues due to missing support for wetting and drying in our solver
-     * @parem i_scale width of grid
+     * @param i_scale width of grid
      **/
     TsunamiEvent1d( std::string i_filePath,
                     t_real i_delta = 20,
@@ -81,9 +81,23 @@ public:
     t_real getMomentumY( t_real,
                          t_real ) const;
 
+
+    /**
+     * Gets the bathymetry at a given point.
+     *
+     * @param i_x x-coordinate of the queried point.
+     * @return bathymetry at a given point.
+     **/
     t_real getBathymetry( t_real i_x,
                           t_real ) const;
 
+
+    /**
+     * Gets the vertical displacement at a given point
+     *
+     * @param i_x x-coordinate of the queried point.
+     * @return vertical displacement at a given point.
+     **/
     t_real getVerticalDisplacement( t_real i_x,
                                     t_real ) const;
 };

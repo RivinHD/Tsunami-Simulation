@@ -18,6 +18,9 @@ namespace tsunami_lab
     }
 }
 
+/**
+ * setup for supercritical flow
+*/
 class tsunami_lab::setups::SupercriticalFlow1d : public Setup
 {
 private:
@@ -60,6 +63,7 @@ public:
     /**
      * Gets the water height at a given point.
      *
+     * @param i_x x-coordinate of the queried point.
      * @return water height at the given point.
      **/
     t_real getHeight( t_real i_x, t_real ) const override;
@@ -68,7 +72,6 @@ public:
     /**
      * Gets the momentum in x-direction.
      *
-     * @param i_x x-coordinate of the queried point.
      * @return momentum in x-direction.
      **/
     t_real getMomentumX( t_real, t_real ) const override;
