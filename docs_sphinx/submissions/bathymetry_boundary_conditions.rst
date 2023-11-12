@@ -258,6 +258,99 @@ And set our ghost cells :math:`b_0 := b_1` and :math:`b_n+1 := b_n`.
 3.2 Reflecting Boundary Conditions
 ----------------------------------
 
+1. Implementation
+^^^^^^^^^^^^^^^^^
+
+The reflecting boundary condition is given for a wet cell :math:`\mathcal{C}_{i-1}` and dry cell :math:`\mathcal{C}_i` as:
+
+.. math::
+
+    h_{i} &:= h_{i-1} \\
+    (hu)_{i} &:= -(hu)_{i-1} \\
+    b_{i} &:= b_{i-1}
+
+For the implementation, the case that :math:`\mathcal{C}_{i-1}` is dry and :math:`\mathcal{C}_i` is wet should also be taken into account.
+Therefore the following implementation is provided.
+For simulations without bathymetry, a similar implementation without bathymetry reflection is provided.
+
+.. code-block::
+    :emphasize-lines: 16-19, 21-24
+
+    /// File:   WavePropagation1d.cpp
+    /// Header: WavePropagation1d.h
+    /// Test:   WavePropagation1d.test.cpp
+
+    tsunami_lab::patches::WavePropagation1d::Reflection tsunami_lab::patches::WavePropagation1d::calculateReflection( t_real* i_h,
+                                                                                                                      t_real* i_hu,
+                                                                                                                      t_idx i_ceL,
+                                                                                                                      t_real& o_heightLeft,
+                                                                                                                      t_real& o_heightRight,
+                                                                                                                      t_real& o_momentumLeft,
+                                                                                                                      t_real& o_momentumRight,
+                                                                                                                      t_real& o_bathymetryLeft,
+                                                                                                                      t_real& o_bathymetryRight )
+    {
+        t_idx l_ceR = i_ceL + 1;
+        bool leftReflection = ( i_h[l_ceR] == t_real( 0.0 ) );
+        o_heightRight = leftReflection ? i_h[i_ceL] : i_h[l_ceR];
+        o_momentumRight = leftReflection ? -i_hu[i_ceL] : i_hu[l_ceR];
+        o_bathymetryRight = leftReflection ? m_bathymetry[i_ceL] : m_bathymetry[l_ceR];
+    
+        bool rightReflection = ( i_h[i_ceL] == t_real( 0.0 ) );
+        o_heightLeft = rightReflection ? i_h[l_ceR] : i_h[i_ceL];
+        o_momentumLeft = rightReflection ? -i_hu[l_ceR] : i_hu[i_ceL];
+        o_bathymetryLeft = rightReflection ? m_bathymetry[l_ceR] : m_bathymetry[i_ceL];
+    
+        return static_cast<Reflection>( leftReflection * Reflection::LEFT + rightReflection * Reflection::RIGHT );
+    }
+
+The return of the reflection is provided by an enumeration where ``LEFT`` and ``RIGHT`` can be summed to return ``BOTH``.
+If both cells are dry, the reflection and netUpdates do not need to be computed, i.e. there is no water to simulate with.
+The implementation is private inside ``WavePropagation1d`` as the reflection is only used internally.
+
+.. code-block::
+
+    enum Reflection
+    {
+        NONE = 0,
+        LEFT = 1,
+        RIGHT = 2,
+        BOTH = 3
+    };
+
+
+If a reflection occurs on one side of a cell, the height and momentum of the dry cell do not change.
+Therefore, the netUpdates are multiplied by the corresponding reflection side to zero and subtracted if the cell is dry, i.e.
+
+.. code-block::
+
+    l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
+    l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
+
+    l_hNew[l_ceR] -= i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
+    l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
+
+The reflection value indicates where the reflection would occur on the cell.
+For example, the left cell is wet and the right cell is dry.
+Then the reflection occurs on the left side of the dry cell and the reflection is set to ``LEFT``.
+
+The reflection of the ghost cells is achieved by setting the water height to zero i.e. ``l_h[0] = l_h[1] * !hasReflection[Side::LEFT]``.
+
+2. Visualization of right Boundary Reflection
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The water is initialized to the same height and momentum in all cells, as can be seen at the beginning of the video. 
+When the video is played back, an increase of the water and a decrease in momentum can be seen on the right-hand side, as the water is reflected on the right-hand side of the boundary.
+The outgoing momentum and the incoming momentum cancel each other out so that the momentum becomes zero.
+
+.. raw:: html
+    
+    <center>
+        <video width="700" controls>
+            <source src="../_static/videos/task_3_2_2.mp4" type="video/mp4">
+        </video>
+    </center>
+
 3.3. Hydraulic Jumps
 --------------------
 
@@ -272,8 +365,8 @@ Hydraulic jumps behavior in shallow water theory can be characterized by the Fro
 
 .. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_3.html#hydraulic-jumps (10.11.2023)
 
-Maximum Froude number
-^^^^^^^^^^^^^^^^^^^^^
+1. Maximum Froude number
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Subcritical flow**
 
@@ -388,8 +481,8 @@ The Froude number outside the range (8, 12) is calculated by:
 
 Therefore, the maximum Froude number of the subcritical flow in both cases it 1.3798912.
 
-Implementation into Setups
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+2. Implementation into Setups
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The implementation in setups is done using a subclass of ``setup::Setup.h`` where the default constructor setups the initial **supercritical** and **subcritical** flow examples.
 
@@ -454,33 +547,33 @@ The Output of both are visualized below:
 
 At around 2 seconds at 2000 a small dent in the total height can be seen.
 
-    .. raw:: html
-        
-        <center>
-            <video width="700" controls>
-                <source src="../_static/videos/subcritical_flow.mp4" type="video/mp4">
-            </video>
-        </center>
+.. raw:: html
+    
+    <center>
+        <video width="700" controls>
+            <source src="../_static/videos/subcritical_flow.mp4" type="video/mp4">
+        </video>
+    </center>
 
 **Supercritical Flow**
 
-Between 1 and 5 seconds at around 2300 a large gap can be seen to form in the total height and the momentum begins to oscillate.
+Between 1 and 5 seconds at around 2350 a large gap can be seen to form in the total height and the momentum begins to oscillate.
 
-    .. raw:: html
-    
-        <center>
-            <video width="700" controls>
-                <source src="../_static/videos/supercritical_flow.mp4" type="video/mp4">
-            </video>
-        </center>
+.. raw:: html
+
+    <center>
+        <video width="700" controls>
+            <source src="../_static/videos/supercritical_flow.mp4" type="video/mp4">
+        </video>
+    </center>
 
 **Hydraulic Jump**
 
-The hydraulic jump can bee seen at position 2300 but the f-wave solver fails to converge to a constant momentum.
-Therefore a spike in the momentum can be seen at around 2300.
+The hydraulic jump can bee seen at around 2350 but the f-wave solver fails to converge to a constant momentum.
+Therefore a spike in the momentum can be seen at around 2350.
 
-4. 1D Tsunami Simulation
-------------------------
+3.4. 1D Tsunami Simulation
+--------------------------
 
 1. Extracting bathymetry data for the 1D domain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -660,7 +753,7 @@ support for wetting and drying in our solver.
 
 
 4. Visualization of the TsunamiEvent1d setup
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 l_endTime...time to simulate = 2000 :raw-html:`</br>`
 l_scale...length of the x-axis on which the simulation runs = 440000
