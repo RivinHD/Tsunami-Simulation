@@ -23,8 +23,6 @@
 
 namespace fs = std::filesystem;
 
-#define SKIP_ARGUMENTS
-
 const std::string SOLUTION_FOLDER = "solutions";
 
 enum Arguments
@@ -261,23 +259,6 @@ int main( int   i_argc,
                                        l_b );
         }
     }
-
-    // TODO remove test bathymetry DUNE
-    //l_waveProp->setBathymetry( 700, 0, 1 );
-    //l_waveProp->setBathymetry( 701, 0, 1.3 );
-    //l_waveProp->setBathymetry( 702, 0, 1.5 );
-    //l_waveProp->setBathymetry( 703, 0, 1.2 );
-    //l_waveProp->setBathymetry( 704, 0, 1.1 );
-
-    //// TODO remove test reflection
-    //l_waveProp->setBathymetry( 100, 0, 13 );
-    //l_waveProp->setBathymetry( 101, 0, 13 );
-    //l_waveProp->setBathymetry( 102, 0, 13 );
-    //l_waveProp->setBathymetry( 103, 0, 13 );
-
-    //// recalculate the water with bathymetry
-    //l_waveProp->updateWaterHeight();
-
 
     // derive maximum wave speed in setup; the momentum is ignored
     tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
