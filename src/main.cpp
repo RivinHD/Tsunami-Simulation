@@ -243,9 +243,6 @@ int main( int   i_argc,
             tsunami_lab::t_real l_b = l_setup->getBathymetry( l_x,
                                                               l_y );
 
-            tsunami_lab::t_real l_b = l_setup->getBathymetry( l_x,
-                                                              l_y );
-
             // set initial values in wave propagation solver
             l_waveProp->setHeight( l_cx,
                                    l_cy,
