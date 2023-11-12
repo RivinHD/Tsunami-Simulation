@@ -35,7 +35,7 @@ private:
     t_real m_momentum = 0;
 
     //! bathymetry height of the cell
-    std::vector<t_real> m_bathy;
+    std::vector<t_real> m_bathymetry;
 
     //! delta to avoid numerical issues
     t_real m_delta = 20;
@@ -47,7 +47,7 @@ public:
     /**
      * Constructor.
      *
-     * @param i_filePath string to the bathy_profile.csv
+     * @param i_filePath string to the bathymetry_profile.csv
      * @param i_delta avoids running into numerical issues due to missing support for wetting and drying in our solver
      * @param i_scale width of grid
      **/

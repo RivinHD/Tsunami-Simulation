@@ -15,29 +15,29 @@ tsunami_lab::setups::TsunamiEvent1d::TsunamiEvent1d( std::string filePath,
     m_delta = i_delta;
     m_scale = i_scale;
 
-	t_real o_hBathy = 0;
-	std::ifstream bathy_profile( filePath );
-	while( tsunami_lab::io::Csv::readBathymetry( bathy_profile, o_hBathy ) )
-	{
-		m_bathy.push_back( o_hBathy );
-	}
-	m_csvDataPoint = m_bathy.size() - 1;
+    t_real o_hBathymetry = 0;
+    std::ifstream bathymetry_profile( filePath );
+    while( tsunami_lab::io::Csv::readBathymetry( bathymetry_profile, o_hBathymetry ) )
+    {
+        m_bathymetry.push_back( o_hBathymetry );
+    }
+    m_csvDataPoint = m_bathymetry.size() - 1;
 }
 
 tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getHeight( tsunami_lab::t_real i_x,
                                                                     tsunami_lab::t_real ) const
 {
     // linear interpolation between two bathymetries
-	t_real l_x = ( i_x / m_scale ) * m_csvDataPoint;
-	t_idx indexL = std::floor( l_x );
-	t_idx indexR = std::ceil( l_x );
-	t_real l_bathyL = m_bathy[indexL];
-	t_real l_bathyR = m_bathy[indexR];
-	t_real l_bathy = ( l_bathyR - l_bathyL ) * ( l_x - indexL ) + l_bathyL;
+    t_real l_x = ( i_x / m_scale ) * m_csvDataPoint;
+    t_idx indexL = std::floor( l_x );
+    t_idx indexR = std::ceil( l_x );
+    t_real l_bathymetryL = m_bathymetry[indexL];
+    t_real l_bathymetryR = m_bathymetry[indexR];
+    t_real l_bathymetry = ( l_bathymetryR - l_bathymetryL ) * ( l_x - indexL ) + l_bathymetryL;
 
-    if( l_bathy < 0 )
+    if( l_bathymetry < 0 )
     {
-        return -l_bathy < m_delta ? m_delta : -l_bathy;
+        return -l_bathymetry < m_delta ? m_delta : -l_bathymetry;
     }
     return 0;
 }
@@ -58,19 +58,19 @@ tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getBathymetry( tsunami_
                                                                         tsunami_lab::t_real ) const
 {
     // linear interpolation between two bathymetries
-	t_real l_x = ( i_x / m_scale ) * m_csvDataPoint;
-	t_idx indexL = std::floor( l_x );
-	t_idx indexR = std::ceil( l_x );
-	t_real l_bathyL = m_bathy[indexL];
-	t_real l_bathyR = m_bathy[indexR];
-	t_real l_bathy = ( l_bathyR - l_bathyL ) * ( l_x - indexL ) + l_bathyL;
-	t_real verticalDisplacement = getVerticalDisplacement( i_x, 0 );
+    t_real l_x = ( i_x / m_scale ) * m_csvDataPoint;
+    t_idx indexL = std::floor( l_x );
+    t_idx indexR = std::ceil( l_x );
+    t_real l_bathymetryL = m_bathymetry[indexL];
+    t_real l_bathymetryR = m_bathymetry[indexR];
+    t_real l_bathymetry = ( l_bathymetryR - l_bathymetryL ) * ( l_x - indexL ) + l_bathymetryL;
+    t_real verticalDisplacement = getVerticalDisplacement( i_x, 0 );
 
-    if( l_bathy < 0 )
+    if( l_bathymetry < 0 )
     {
-        return l_bathy < -m_delta ? l_bathy + verticalDisplacement : -m_delta + verticalDisplacement;
+        return l_bathymetry < -m_delta ? l_bathymetry + verticalDisplacement : -m_delta + verticalDisplacement;
     }
-    return l_bathy < m_delta ? m_delta + verticalDisplacement : l_bathy + verticalDisplacement;
+    return l_bathymetry < m_delta ? m_delta + verticalDisplacement : l_bathymetry + verticalDisplacement;
 }
 
 tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getVerticalDisplacement( tsunami_lab::t_real i_x,

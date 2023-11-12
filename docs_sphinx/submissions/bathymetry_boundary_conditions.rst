@@ -76,14 +76,14 @@ To add bathymetry into the f-wave solver we need to take these into account in o
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 First we need to set the bathymetry to our ``WavePropagation1d``. Because bathymetry is only possible in the f-wave
-solver, we have an if-statement in WavePropagation which checks whether bathemetry is present.
+solver, we have an if-statement in ``WavePropagation1d`` which checks whether bathymetry is present.
 
 .. code-block::
     :emphasize-lines: 15, 32, 52-53, 62-63, 72-73
 
-    /// File: WavePropagation1d.cpp
+    /// File:   WavePropagation1d.cpp
     /// Header: WavePropagation1d.h
-    /// Test: WavePropagation1d.test.cpp
+    /// Test:   WavePropagation1d.test.cpp
     [ ... ]
     tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells )
     {
@@ -221,14 +221,14 @@ solver, we have an if-statement in WavePropagation which checks whether bathemet
     }
     [ ... ]
 
-And set our ghost cells :math:`b_0 := b_1` and :math:`b_n+1 := b_n`.
+And set our ghost cells :math:`b_0 := b_1` and :math:`b_{n+1} := b_n`.
 
 .. code-block:: cpp
     :emphasize-lines: 12, 17
 
-    /// File: WavePropagation1d.cpp
+    /// File:   WavePropagation1d.cpp
     /// Header: WavePropagation1d.h
-    /// Test: WavePropagation1d.test.cpp
+    /// Test:   WavePropagation1d.test.cpp
     void tsunami_lab::patches::WavePropagation1d::setGhostOutflow()
     {
         t_real* l_h = m_h[m_step];
@@ -271,7 +271,7 @@ The reflecting boundary condition is given for a wet cell :math:`\mathcal{C}_{i-
 
 For the implementation, the case that :math:`\mathcal{C}_{i-1}` is dry and :math:`\mathcal{C}_i` is wet should also be taken into account.
 Therefore the following implementation is provided.
-For simulations without bathymetry, a similar implementation without bathymetry reflection is provided.
+For simulations without bathymetry, a similar implementation is provided that does not take bathymetry into account.
 
 .. code-block::
     :emphasize-lines: 16-19, 21-24
@@ -319,8 +319,7 @@ The implementation is private inside ``WavePropagation1d`` as the reflection is 
     };
 
 
-If a reflection occurs on one side of a cell, the height and momentum of the dry cell do not change.
-Therefore, the netUpdates are multiplied by the corresponding reflection side to zero and subtracted if the cell is dry, i.e.
+If a reflection occurs on one side of a cell, the height and momentum of the dry cell do not change, i.e.
 
 .. code-block::
 
@@ -351,6 +350,7 @@ The outgoing momentum and the incoming momentum cancel each other out so that th
         </video>
     </center>
 
+
 3.3. Hydraulic Jumps
 --------------------
 
@@ -370,7 +370,7 @@ Hydraulic jumps behavior in shallow water theory can be characterized by the Fro
 
 **Subcritical flow**
 
-The velocity can be calculated with momentum and height as follows.
+The velocity can be calculated with the momentum and height as follows:
 
 .. math::
 
@@ -385,7 +385,7 @@ The velocity can be calculated with momentum and height as follows.
 
     \end{aligned}
 
-Using the conditional velocity the Froude number can be calculated in the range of (8, 12) and outside that range.
+Using the conditional velocity the Froude number can be calculated in the range of (8, 12) and outside that range:
 
 .. math::
 
@@ -397,7 +397,7 @@ Using the conditional velocity the Froude number can be calculated in the range 
 
     \end{aligned}
 
-The Froude number within the range (8, 12) becomes a quadratic equation with a positive gradient, so that the maximum can be found at the boundary i.e. :math:`x_1 = 8` and :math:`x = 12`.
+The Froude number within the range (8, 12) becomes a quadratic equation with a positive gradient, so that the maximum can be found at the boundary i.e. :math:`x_1 = 8` and :math:`x = 12`:
 
 .. math::
 
@@ -427,7 +427,7 @@ Therefore, the maximum Froude number of the subcritical flow in both cases it 0.
 
 **Supercritical flow**
 
-The velocity can again be calculated with momentum and height as follows.
+The velocity can again be calculated with momentum and height as follows:
 
 .. math::
 
@@ -442,7 +442,7 @@ The velocity can again be calculated with momentum and height as follows.
 
     \end{aligned}
 
-Using the conditional velocity the Froude number can be calculated in the range of (8, 12) and outside that range.
+Using the conditional velocity the Froude number can be calculated in the range of (8, 12) and outside that range:
 
 .. math::
 
@@ -454,7 +454,7 @@ Using the conditional velocity the Froude number can be calculated in the range 
 
     \end{aligned}
 
-Again the Froude number within the range (8, 12) becomes a quadratic equation with a positive gradient, so that the maximum can be found at the boundary i.e. :math:`x_1 = 8` and :math:`x = 12`.
+Again the Froude number within the range (8, 12) becomes a quadratic equation with a positive gradient, so that the maximum can be found at the boundary i.e. :math:`x_1 = 8` and :math:`x = 12`:
 
 .. math::
 
@@ -523,7 +523,7 @@ To calculate the bathymetry as a function of the x-coordinate, a function pointe
     }
 
 Also an extra constructor is provided with four argument (``t_real momentum``, ``t_real range``, ``t_real bathymetryOutRange``, ``t_real( *bathymetryInRange )( t_real )``) to provide an interface for custom supercritical & subcritical flow setups.
-
+Therefore, the function pointer is needed to calculate the bathymetry and water height depending on the x-coordinate.
 
 The bathymetry is returned based on the range with its stored bathymetry i.e.
 
@@ -567,9 +567,10 @@ Between 1 and 5 seconds at about 2350, a large gap forms in the total height and
         </video>
     </center>
 
-**Hydraulic Jump**
+3. Hydraulic Jump
+^^^^^^^^^^^^^^^^^
 
-The hydraulic jump can be seen around 2350, but the f-wave solver fails to converge to a constant momentum.
+The hydraulic jump in the supercritical solution can be seen around 2350, but the f-wave solver fails to converge to a constant momentum.
 Therefore, a peak in momentum can be seen around 2350.
 
 3.4. 1D Tsunami Simulation
@@ -584,25 +585,25 @@ Therefore, a peak in momentum can be seen around 2350.
    :code:`gmt grdcut -R138/147/35/39 path/to/GEBCO_2021.nc -Gpath/to/GEBCO_2021_cut.nc`
 
 3. Create datapoints with :raw-html:`</br>`
-   :code:`gmt grdtrack -Gdpath/to/GEBCO_2021_cut.nc -E141.024949/37.316569/146/37.316569+i250e+d -Ar > bathy_profile.out`
+   :code:`gmt grdtrack -Gdpath/to/GEBCO_2021_cut.nc -E141.024949/37.316569/146/37.316569+i250e+d -Ar > bathymetry_profile.out`
 
 4. Add commas to create comma-separated values file with :raw-html:`</br>`
-   :code:`cat bathy_profile.out | tr -s '[:blank:]' ',' > bathy_profile.csv`
+   :code:`cat bathymetry_profile.out | tr -s '[:blank:]' ',' > bathymetry_profile.csv`
 
-The ``bathy_profile.csv`` is located in: ``.../Tsunami-Simulation/resources/bathy_profile.csv``.
+The ``bathymetry_profile.csv`` is located in: ``.../Tsunami-Simulation/resources/bathymetry_profile.csv``.
 
 
-2. Extend **tsunami_lab::io::Csv** to read bathy_profile.csv
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2. Extend **tsunami_lab::io::Csv** to read bathymetry_profile.csv
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: cpp
-    :emphasize-lines: 29-32, 35
+    :emphasize-lines: 26-29, 32
 
     /// File:   Csv.cpp
     /// Header: Csv.h
     /// Test:   Csv.test.cpp
     bool tsunami_lab::io::Csv::readBathymetry( std::ifstream& stream,
-                                               t_real& o_hBathy)
+                                               t_real& o_hBathymetry)
     {
         std::string line;
 
@@ -619,16 +620,13 @@ The ``bathy_profile.csv`` is located in: ``.../Tsunami-Simulation/resources/bath
             std::istringstream lineStream( line );
             std::string longitude;
             std::getline( lineStream, longitude, ',' );
-            // o_longitude = atof( longitude.c_str() );
             std::string latitude;
             std::getline( lineStream, latitude, ',' );
-            // o_latitude = atof( latitude.c_str() );
             std::string location;
             std::getline( lineStream, location, ',' );
-            // o_location = atof( location.c_str() );
-            std::string h_bathy;
-            std::getline( lineStream, h_bathy, ',' );
-            o_hBathy = atof( h_bathy.c_str() );
+            std::string h_bathymetry;
+            std::getline( lineStream, h_bathymetry, ',' );
+            o_hBathymetry = atof( h_bathymetry.c_str() );
             return true;
         }
         // no lines left to read
@@ -641,8 +639,8 @@ This implementation offers scope for reading further data from the file in the f
 3. New setup **setups::TsunamiEvent1d**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In the first highlighted block we initialize a vector with the bathymetry height entries of the bathy_profile.csv.
-In total, we then have the values of :code:`m_bathy.size()` many data points and a maximum index of ``m_csvDataPoint``.
+In the first highlighted block we initialize a vector with the bathymetry height entries of the bathymetry_profile.csv.
+In total, we then have the values of :code:`m_bathymetry.size()` many data points and a maximum index of ``m_csvDataPoint``.
 
 If the x-coordinate of the queried point is not exactly at the same position as a bathymetry value, a more suitable
 bathymetry is calculated for this x-coordinate by linear interpolation. This is done in the second and third highlighted
@@ -683,13 +681,13 @@ support for wetting and drying in our solver.
         m_delta = i_delta;
         m_scale = i_scale;
 
-        t_real o_hBathy = 0;
-        std::ifstream bathy_profile( filePath );
-        while( tsunami_lab::io::Csv::readBathymetry( bathy_profile, o_hBathy ) )
+        t_real o_hBathymetry = 0;
+        std::ifstream bathymetry_profile( filePath );
+        while( tsunami_lab::io::Csv::readBathymetry( bathymetry_profile, o_hBathymetry ) )
         {
-            m_bathy.push_back( o_hBathy );
+            m_bathymetry.push_back( o_hBathymetry );
         }
-        m_csvDataPoint = m_bathy.size() - 1;
+        m_csvDataPoint = m_bathymetry.size() - 1;
     }
 
     tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getHeight( tsunami_lab::t_real i_x,
@@ -699,13 +697,13 @@ support for wetting and drying in our solver.
         t_real l_x = ( i_x / m_scale ) * m_csvDataPoint;
         t_idx indexL = std::floor( l_x );
         t_idx indexR = std::ceil( l_x );
-        t_real l_bathyL = m_bathy[indexL];
-        t_real l_bathyR = m_bathy[indexR];
-        t_real l_bathy = ( l_bathyR - l_bathyL ) * ( l_x - indexL ) + l_bathyL;
+        t_real l_bathymetryL = m_bathymetry[indexL];
+        t_real l_bathymetryR = m_bathymetry[indexR];
+        t_real l_bathymetry = ( l_bathymetryR - l_bathymetryL ) * ( l_x - indexL ) + l_bathymetryL;
 
-        if( l_bathy < 0 )
+        if( l_bathymetry < 0 )
         {
-            return -l_bathy < m_delta ? m_delta : -l_bathy;
+            return -l_bathymetry < m_delta ? m_delta : -l_bathymetry;
         }
         return 0;
     }
@@ -725,20 +723,20 @@ support for wetting and drying in our solver.
     tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getBathymetry( tsunami_lab::t_real i_x,
                                                                             tsunami_lab::t_real ) const
     {
-    // linear interpolation between two bathymetries
+        // linear interpolation between two bathymetries
         t_real l_x = ( i_x / m_scale ) * m_csvDataPoint;
         t_idx indexL = std::floor( l_x );
         t_idx indexR = std::ceil( l_x );
-        t_real l_bathyL = m_bathy[indexL];
-        t_real l_bathyR = m_bathy[indexR];
-        t_real l_bathy = ( l_bathyR - l_bathyL ) * ( l_x - indexL ) + l_bathyL;
+        t_real l_bathymetryL = m_bathymetry[indexL];
+        t_real l_bathymetryR = m_bathymetry[indexR];
+        t_real l_bathymetry = ( l_bathymetryR - l_bathymetryL ) * ( l_x - indexL ) + l_bathymetryL;
         t_real verticalDisplacement = getVerticalDisplacement( i_x, 0 );
 
-        if( l_bathy < 0 )
+        if( l_bathymetry < 0 )
         {
-            return l_bathy < -m_delta ? l_bathy + verticalDisplacement : -m_delta + verticalDisplacement;
+            return l_bathymetry < -m_delta ? l_bathymetry + verticalDisplacement : -m_delta + verticalDisplacement;
         }
-        return l_bathy < m_delta ? m_delta + verticalDisplacement : l_bathy + verticalDisplacement;
+        return l_bathymetry < m_delta ? m_delta + verticalDisplacement : l_bathymetry + verticalDisplacement;
     }
 
     tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getVerticalDisplacement( tsunami_lab::t_real i_x,
@@ -758,7 +756,7 @@ support for wetting and drying in our solver.
 l_endTime...time to simulate = 2000 :raw-html:`</br>`
 l_scale...length of the x-axis on which the simulation runs = 440000
 
-Result with 10000 cells. To achieve a better visualisation, the vertical displacement is scaled with 1000 instead of 10.
+Result with 10000 cells. To achieve a better visualization, the vertical displacement is scaled with 1000 instead of 10.
 
 .. math::
 
