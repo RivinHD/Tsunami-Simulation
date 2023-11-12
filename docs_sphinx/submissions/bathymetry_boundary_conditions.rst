@@ -6,6 +6,251 @@
 3. Bathymetry & Boundary Conditions
 ===================================
 
+1. Extended f-wave solver
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Bathymetry is the topography of the ocean. We use sea level as a reference which means the bathymetry of a dry cell
+(onshore) is zero or positive :math:`b_i \ge 0` and a wet cell (offshore) has a negative value :math:`b_j < 0`.
+
+The term :math:`\Delta x \Psi_{i-1/2}` stands for the effect of the bathymetry:
+
+.. math::
+
+    \begin{split}\Delta x \Psi_{i-1/2} := \begin{bmatrix}
+                                0 \\
+                                -g (b_r - b_l) \frac{h_l+h_r}{2}
+                              \end{bmatrix}.\end{split}
+
+.. code-block:: cpp
+
+    /// File:   FWave.cpp
+    /// Header: FWave.h
+    /// Test:   FWave.test.cpp
+    [ ... ]
+    void tsunami_lab::solvers::FWave::computeBathymetryEffects( t_real i_hL, t_real i_hR,
+                                                                t_real i_bL, t_real i_bR,
+                                                                t_real o_bathymetryEffect[2] )
+    {
+        o_bathymetryEffect[0] = 0;
+        o_bathymetryEffect[1] = -m_g * ( i_bR - i_bL ) * ( t_real( 0.5 ) * ( i_hL + i_hR ) );
+    }
+    [ ... ]
+
+To add bathymetry into the f-wave solver we need to take these into account in our flux function:
+
+.. math::
+
+    \Delta f - \Delta x \Psi_{i-1/2} =  \sum_{p=1}^2 Z_p.
+
+
+
+.. code-block:: cpp
+    :emphasize-lines: 10-15
+
+    /// File:   FWave.cpp
+    /// Header: FWave.h
+    /// Test:   FWave.test.cpp
+    [ ... ]
+    // compute delta flux
+    t_real deltaFlux[2];
+    computeDeltaFlux( i_hL, i_hR, l_uL, l_uR, deltaFlux );
+
+    //compute bathymetry
+    t_real bathymetry[2];
+    computeBathymetryEffects( i_hL, i_hR, i_bL, i_bR, bathymetry );
+    t_real bathymetryDeltaFlux[2] = {
+        deltaFlux[0] + bathymetry[0],
+        deltaFlux[1] + bathymetry[1]
+    };
+
+    // compute eigencoefficients
+    t_real eigencoefficient1 = 0;
+    t_real eigencoefficient2 = 0;
+    computeEigencoefficients( eigenvalue1, eigenvalue2, bathymetryDeltaFlux, eigencoefficient1, eigencoefficient2 );
+    [ ... ]
+
+2. Illustration of the effect of bathymetry
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+First we need to set the bathymetry to our ``WavePropagation1d``. Because bathymetry is only possible in the f-wave
+solver, we have an if-statement in WavePropagation which checks whether bathemetry is present.
+
+.. code-block::
+    :emphasize-lines: 15, 32, 52-53, 62-63, 72-73
+
+    /// File: WavePropagation1d.cpp
+    /// Header: WavePropagation1d.h
+    /// Test: WavePropagation1d.test.cpp
+    [ ... ]
+    tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells )
+    {
+        m_nCells = i_nCells;
+
+        // allocate memory including a single ghost cell on each side
+        for( unsigned short l_st = 0; l_st < 2; l_st++ )
+        {
+            m_h[l_st] = new t_real[m_nCells + 2];
+            m_hu[l_st] = new t_real[m_nCells + 2];
+        }
+        m_bathymetry = new t_real[m_nCells + 2]{ 0 };
+        m_totalHeight = new t_real[m_nCells + 2]{ 0 };
+
+        // init to zero
+        for( unsigned short l_st = 0; l_st < 2; l_st++ )
+        {
+            for( t_idx l_ce = 0; l_ce < m_nCells + 2; l_ce++ )
+            {
+                m_h[l_st][l_ce] = 0;
+                m_hu[l_st][l_ce] = 0;
+            }
+        }
+    }
+    [ ... ]
+    void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
+    {
+        [ ... ]
+        if( hasBathymetry )
+        {
+            // iterate over edges and update with Riemann solutions
+            for( t_idx l_ed = 0; l_ed < m_nCells + 1; l_ed++ )
+            {
+                // determine left and right cell-id
+                t_idx l_ceL = l_ed;
+                t_idx l_ceR = l_ed + 1;
+
+                // noting to compute both shore cells
+                if( l_hOld[l_ceL] == 0 && l_hOld[l_ceR] == 0 )
+                {
+                    continue;
+                }
+
+                // compute reflection
+                t_real heightLeft;
+                t_real heightRight;
+                t_real momentumLeft;
+                t_real momentumRight;
+                t_real bathymetryLeft;
+                t_real bathymetryRight;
+
+                Reflection reflection = calculateReflection( l_hOld,
+                                                             l_huOld,
+                                                             l_ceL,
+                                                             heightLeft,
+                                                             heightRight,
+                                                             momentumLeft,
+                                                             momentumRight,
+                                                             bathymetryLeft,
+                                                             bathymetryRight );
+
+                // compute net-updates
+                t_real l_netUpdates[2][2];
+
+                tsunami_lab::solvers::FWave::netUpdates( heightLeft,
+                                                         heightRight,
+                                                         momentumLeft,
+                                                         momentumRight,
+                                                         bathymetryRight,
+                                                         bathymetryLeft,
+                                                         l_netUpdates[0],
+                                                         l_netUpdates[1] );
+
+                // update the cells' quantities
+                l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
+                l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
+
+                l_hNew[l_ceR] -= i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
+                l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
+            }
+        }
+        else
+        {
+            // uses a function pointer to choose between the solvers
+            void ( *netUpdates )( t_real, t_real, t_real, t_real, t_real*, t_real* ) = solvers::FWave::netUpdates;
+            if( solver == Solver::ROE )
+            {
+                netUpdates = solvers::Roe::netUpdates;
+            }
+            // iterate over edges and update with Riemann solutions
+            for( t_idx l_ed = 0; l_ed < m_nCells + 1; l_ed++ )
+            {
+                // determine left and right cell-id
+                t_idx l_ceL = l_ed;
+                t_idx l_ceR = l_ed + 1;
+
+                // noting to compute both shore cells
+                if( l_hOld[l_ceL] == 0 && l_hOld[l_ceR] == 0 )
+                {
+                    continue;
+                }
+
+                // compute reflection
+                t_real heightLeft;
+                t_real heightRight;
+                t_real momentumLeft;
+                t_real momentumRight;
+
+                Reflection reflection = calculateReflection( l_hOld,
+                                                             l_huOld,
+                                                             l_ceL,
+                                                             heightLeft,
+                                                             heightRight,
+                                                             momentumLeft,
+                                                             momentumRight );
+
+                // compute net-updates
+                t_real l_netUpdates[2][2];
+
+                netUpdates( heightLeft,
+                            heightRight,
+                            momentumLeft,
+                            momentumRight,
+                            l_netUpdates[0],
+                            l_netUpdates[1] );
+
+                // update the cells' quantities
+                l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
+                l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
+
+                l_hNew[l_ceR] -= i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
+                l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
+            }
+        }
+    }
+    [ ... ]
+
+And set our ghost cells :math:`b_0 := b_1` and :math:`b_n+1 := b_n`.
+
+.. code-block:: cpp
+    :emphasize-lines: 12, 17
+
+    /// File: WavePropagation1d.cpp
+    /// Header: WavePropagation1d.h
+    /// Test: WavePropagation1d.test.cpp
+    void tsunami_lab::patches::WavePropagation1d::setGhostOutflow()
+    {
+        t_real* l_h = m_h[m_step];
+        t_real* l_hu = m_hu[m_step];
+
+        // set left boundary
+        l_h[0] = l_h[1] * !hasReflection[Side::LEFT];
+        l_hu[0] = l_hu[1];
+        m_bathymetry[0] = m_bathymetry[1];
+
+        // set right boundary
+        l_h[m_nCells + 1] = l_h[m_nCells] * !hasReflection[Side::RIGHT];
+        l_hu[m_nCells + 1] = l_hu[m_nCells];
+        m_bathymetry[m_nCells + 1] = m_bathymetry[m_nCells];
+    }
+    [ ... ]
+
+.. raw:: html
+
+    <center>
+        <video width="700" controls>
+            <source src="../_static/videos/task_3_1_2.mp4" type="video/mp4">
+        </video>
+    </center>
+
 3.1. Non-zero Source Term
 -------------------------
 
