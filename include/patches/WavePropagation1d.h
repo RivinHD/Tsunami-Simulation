@@ -8,15 +8,22 @@
 #define TSUNAMI_LAB_PATCHES_WAVE_PROPAGATION_1D
 
 #include "WavePropagation.h"
+#include <cmath>
 
-namespace tsunami_lab {
-  namespace patches {
-    class WavePropagation1d;
-  }
+namespace tsunami_lab
+{
+    namespace patches
+    {
+        class WavePropagation1d;
+    }
 }
 
-class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
-  private:
+/**
+* One-dimensional wave propagation patch.
+*/
+class tsunami_lab::patches::WavePropagation1d : public WavePropagation
+{
+private:
     //! current step which indicates the active values in the arrays below
     unsigned short m_step = 0;
 
@@ -24,15 +31,85 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     t_idx m_nCells = 0;
 
     //! water heights for the current and next time step for all cells
-    t_real * m_h[2] = { nullptr, nullptr };
+    t_real* m_h[2] = { nullptr, nullptr };
 
     //! momenta for the current and next time step for all cells
-    t_real * m_hu[2] = { nullptr, nullptr };
+    t_real* m_hu[2] = { nullptr, nullptr };
 
     //! the solver used for the netUpdates
-    Solver solver = Solver::FWave;
+    Solver solver = Solver::FWAVE;
 
-  public:
+    //! bathymetry for the current an next time step for all cells
+    t_real* m_bathymetry;
+
+    //! check if bathymetry exists
+    bool hasBathymetry;
+
+    //! total height of water height + bathymetry
+    t_real* m_totalHeight;
+
+    //! reflection for the left (index: 0) and right (index: 1)
+    bool hasReflection[2] = { false, false };
+
+    /*
+    * The Sides on which the reflection appears
+    * LEFT and RIGHT can be added to obtain BOTH
+    */
+    enum Reflection
+    {
+        NONE = 0,
+        LEFT = 1,
+        RIGHT = 2,
+        BOTH = 3
+    };
+
+    /**
+     * Calculates the right height, momentum, bathymetry with respect to a reflection i.e. one cell is a shore and the other is a water cell
+     * A shore cell is the cell with water 0 i.e. the height is zero
+     *
+     * @param i_h the height array
+     * @param i_hu the momentum array
+     * @param i_ceL the current index of the left cell
+     * @param o_heightLeft ouput of the height left that should be used for the calculations
+     * @param o_heightRight ouput of the height right that should be used for the calculations
+     * @param o_momentumLeft ouput of the momentum left that should be used for the calculations
+     * @param o_momentumRight ouput of the momentum right that should be used for the calculations
+     * @return the side where the reflection hits the shore cell e.g. the left cell is water and right is shore than the reflection hits the left side
+    */
+    Reflection calculateReflection( t_real* i_h,
+                                    t_real* i_hu,
+                                    t_idx i_ceL,
+                                    t_real& o_heightLeft,
+                                    t_real& o_heightRight,
+                                    t_real& o_momentumLeft,
+                                    t_real& o_momentumRight );
+
+    /**
+     * Calculates the right height, momentum, bathymetry with respect to a reflection i.e. one cell is a shore and the other is a water cell
+     * A shore cell is the cell with water 0 i.e. the height is zero
+     *
+     * @param i_h the height array
+     * @param i_hu the momentum array
+     * @param i_ceL the current index of the left cell
+     * @param o_heightLeft ouput of the height left that should be used for the calculations
+     * @param o_heightRight ouput of the height right that should be used for the calculations
+     * @param o_momentumLeft ouput of the momentum left that should be used for the calculations
+     * @param o_momentumRight ouput of the momentum right that should be used for the calculations
+     * @param o_bathymetryLeft ouput of the bathymetry left that should be used for the calculations
+     * @param o_bathymetryRight ouput of the bathymetry right that should be used for the calculations
+     * @return the side where the reflection hits the shore cell e.g. the left cell is water and right is shore than the reflection hits the left side
+    */
+    Reflection calculateReflection( t_real* i_h,
+                                    t_real* i_hu,
+                                    t_idx i_ceL,
+                                    t_real& o_heightLeft,
+                                    t_real& o_heightRight,
+                                    t_real& o_momentumLeft,
+                                    t_real& o_momentumRight,
+                                    t_real& o_bathymetryLeft,
+                                    t_real& o_bathymetryRight );
+
+public:
     /**
      * Constructs the 1d wave propagation solver.
      *
@@ -62,8 +139,9 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      *
      * @return stride in y-direction.
      **/
-    t_idx getStride(){
-      return m_nCells+2;
+    t_idx getStride()
+    {
+        return m_nCells + 2;
     }
 
     /**
@@ -71,8 +149,18 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      *
      * @return water heights.
      */
-    t_real const * getHeight(){
-      return m_h[m_step]+1;
+    t_real const* getHeight()
+    {
+        return m_h[m_step] + 1;
+    }
+
+    t_real const* getTotalHeight()
+    {
+        for( t_idx i = 1; i < m_nCells + 1; i++ )
+        {
+            m_totalHeight[i] = m_h[m_step][i] + m_bathymetry[i];
+        }
+        return m_totalHeight + 1;
     }
 
     /**
@@ -80,15 +168,27 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      *
      * @return momenta in x-direction.
      **/
-    t_real const * getMomentumX(){
-      return m_hu[m_step]+1;
+    t_real const* getMomentumX()
+    {
+        return m_hu[m_step] + 1;
     }
 
     /**
      * Dummy function which returns a nullptr.
      **/
-    t_real const * getMomentumY(){
-      return nullptr;
+    t_real const* getMomentumY()
+    {
+        return nullptr;
+    }
+
+    /**
+     * Gets the cells' bathymetry.
+     *
+     * @return
+     */
+    t_real const* getBathymetry()
+    {
+        return m_bathymetry + 1;
     }
 
     /**
@@ -99,8 +199,9 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      **/
     void setHeight( t_idx  i_ix,
                     t_idx,
-                    t_real i_h ) {
-      m_h[m_step][i_ix+1] = i_h;
+                    t_real i_h )
+    {
+        m_h[m_step][i_ix + 1] = i_h;
     }
 
     /**
@@ -111,8 +212,9 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      **/
     void setMomentumX( t_idx  i_ix,
                        t_idx,
-                       t_real i_hu ) {
-      m_hu[m_step][i_ix+1] = i_hu;
+                       t_real i_hu )
+    {
+        m_hu[m_step][i_ix + 1] = i_hu;
     }
 
     /**
@@ -120,17 +222,71 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      **/
     void setMomentumY( t_idx,
                        t_idx,
-                       t_real ) {};   
-                       
+                       t_real )
+    {
+    };
+
     /**
      * Set the solver for the netUpdate
      * Default: FWave
-     * 
+     *
      * @param solver used solver
      */
-    void setSolver(Solver solver)
+    void setSolver( Solver solver )
     {
-      WavePropagation1d::solver = solver;
+        WavePropagation1d::solver = solver;
+    }
+
+    /**
+     * Set the bathymetry of the cell to the given value.
+     *
+     * @param i_ix id of the cell in x-direction.
+     * @param i_bathymetry bathymetry data to set
+     */
+    void setBathymetry( t_idx i_ix,
+                        t_idx,
+                        t_real i_bathymetry )
+    {
+        m_bathymetry[i_ix + 1] = i_bathymetry;
+    }
+
+    /**
+     * enables or disable the bathymetry
+     *
+     * @param enable true=enabled, false=disabled
+    */
+    void enableBathymetry( bool enable )
+    {
+        hasBathymetry = enable;
+    }
+
+    /**
+     * updates the water height with respect to the bathymetry.
+     * If the bathymetry is higher than the water height than the water is set to zero.
+    */
+    void updateWaterHeight()
+    {
+        if( !hasBathymetry )
+        {
+            return;
+        }
+
+        for( t_idx i = 1; i < m_nCells + 1; i++ )
+        {
+            m_h[m_step][i] -= m_bathymetry[i];
+            m_h[m_step][i] *= ( m_h[m_step][i] > 0 );  // sets water with bathymetry higher than water to zero
+        }
+    }
+
+    /**
+     * enables or disable the reflection of one side
+     *
+     * @param side Side to enable {LEFT, RIGHT}
+     * @param enable true=enabled, false=disabled
+    */
+    void setReflection( Side side, bool enable )
+    {
+        hasReflection[side] = enable;
     }
 };
 

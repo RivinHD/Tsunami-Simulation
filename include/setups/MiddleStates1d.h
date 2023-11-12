@@ -19,7 +19,7 @@ namespace tsunami_lab
 }
 
 /**
- * 1d rare-rare setup.
+ * 1d meddle-states setup.
  */
 class tsunami_lab::setups::MiddleStates1d : public Setup
 {
@@ -36,8 +36,8 @@ private:
     t_real m_location = 0;
 public:
     /**
-     * @brief Construct a new middleStates 1d object.
-     * 
+     * Construct a new middleStates 1d object.
+     *
      * @param i_heightLeft water height of left side of the rare location.
      * @param i_heightRight momentum of the water of the right side.
      * @param i_momentumLeft momentum of the water of the left side.
@@ -45,10 +45,10 @@ public:
      * @param i_location location (x-coordinate) of the middle state.
     */
     MiddleStates1d( t_real i_heightLeft,
-                  t_real i_heightRight,
-                  t_real i_momentumLeft,
-                  t_real i_momentumRight,
-                  t_real i_location );
+                    t_real i_heightRight,
+                    t_real i_momentumLeft,
+                    t_real i_momentumRight,
+                    t_real i_location );
 
     /**
      * Destroy the middleStates 1d object.
@@ -58,8 +58,8 @@ public:
     };
 
     /**
-     * @brief Get the ware height at a given point.
-     * 
+     * Get the ware height at a given point.
+     *
      * @param i_x x-coordinate of the queried point.
      * @return height at the given point.
     */
@@ -75,10 +75,18 @@ public:
 
     /**
      * Get the momentum in y-direction at a given point.
-     * 
+     *
      * @return momentum in y-direction at a given point.
      */
-    t_real getMomentumY( t_real , t_real ) const;
+    t_real getMomentumY( t_real, t_real ) const;
+
+    /**
+     * Gets the bathymetry at a given point.
+     *
+     * @return bathymetry at a given point.
+     **/
+    t_real getBathymetry( t_real,
+                          t_real ) const;
 };
 
 #endif // MIDDKESTATES1D_H

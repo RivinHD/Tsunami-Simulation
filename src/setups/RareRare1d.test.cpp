@@ -7,7 +7,8 @@
 #include <catch2/catch.hpp>
 #include "../../include/setups/RareRare1d.h"
 
-TEST_CASE( "Test the one-dimensional rare-rare setup.", "[RareRare1d]" ) {
+TEST_CASE( "Test the one-dimensional rare-rare setup.", "[RareRare1d]" )
+{
     tsunami_lab::setups::RareRare1d l_rareRare( 25,
                                                 35,
                                                 3 );

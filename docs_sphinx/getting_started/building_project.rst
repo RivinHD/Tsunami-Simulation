@@ -175,8 +175,28 @@ Or on Windows with
 
     ./simulation.exe
 
+.. tip::
+
+    Running the ``simulation`` executable without arguments will give you the help text on how to use it.
+
 Simulation Output
 -----------------
 
 The output of the simulation consists of several CSV files named ``solution_<number>.csv``.
 The CSV files are stored in a separate ``solutions`` folder, which is located in the working directory of the executable.
+
+Extracting bathymetry data for the 1D domain
+--------------------------------------------
+
+1. Download `GEBCO_2021 <https://www.gebco.net/data_and_products/historical_data_sets/>`_ grid.
+
+2. Reduce grid size with :raw-html:`</br>`
+   :code:`gmt grdcut -R138/147/35/39 path/to/GEBCO_2021.nc -Gpath/to/GEBCO_2021_cut.nc`
+
+3. Create datapoints with :raw-html:`</br>`
+   :code:`gmt grdtrack -Gdpath/to/GEBCO_2021_cut.nc -E141.024949/37.316569/146/37.316569+i250e+d -Ar > bathy_profile.out`
+
+4. Add commas to create comma-separated values file with :raw-html:`</br>`
+   :code:`cat bathy_profile.out | tr -s '[:blank:]' ',' > bathy_profile.csv`
+
+The ``bathy_profile.csv`` is located in: ``.../Tsunami-Simulation/resources/bathy_profile.csv``.

@@ -9,29 +9,46 @@
 
 #include "../constants.h"
 
-namespace tsunami_lab {
-  namespace patches {
-    class WavePropagation;
-
-    /**
-     * solver options for wave propagation.
-     */
-    enum Solver
+namespace tsunami_lab
+{
+    namespace patches
     {
-      FWave,
-      Roe
-    };
-  }
+        class WavePropagation;
+
+        /**
+         * solver options for wave propagation.
+         */
+        enum Solver
+        {
+            FWAVE,
+            ROE
+        };
+    }
 }
 
-class tsunami_lab::patches::WavePropagation {
+/**
+ * Base class of the wave propagation patches.
+*/
+class tsunami_lab::patches::WavePropagation
+{
 
 
-  public:
+public:
+    /**
+     * Choose a side to which a value is to be applied
+    */
+    enum Side
+    {
+        LEFT = 0,
+        RIGHT = 1
+    };
+
     /**
      * Virtual destructor for base class.
      **/
-    virtual ~WavePropagation(){};
+    virtual ~WavePropagation()
+    {
+    };
 
     /**
      * Performs a time step.
@@ -57,21 +74,35 @@ class tsunami_lab::patches::WavePropagation {
      *
      * @return water heights.
      */
-    virtual t_real const * getHeight() = 0;
+    virtual t_real const* getHeight() = 0;
 
     /**
      * Gets the cells' momenta in x-direction.
      *
      * @return momenta in x-direction.
      **/
-    virtual t_real const * getMomentumX() = 0;
+    virtual t_real const* getMomentumX() = 0;
+
+    /**
+     * Gets the cells' total height of water height + bathymetry.
+     *
+     * @return total height.
+     */
+    virtual t_real const* getTotalHeight() = 0;
 
     /**
      * Gets the cells' momenta in y-direction.
      *
      * @return momenta in y-direction.
      **/
-    virtual t_real const * getMomentumY() = 0;
+    virtual t_real const* getMomentumY() = 0;
+
+    /**
+     * Gets the cells' bathymetry height
+     *
+     * @return bathymetry height
+     **/
+    virtual t_real const* getBathymetry() = 0;
 
     /**
      * Sets the height of the cell to the given value.
@@ -108,10 +139,42 @@ class tsunami_lab::patches::WavePropagation {
 
     /**
      * Set the solver for the netUpdate
-     * 
+     *
      * @param solver used solver
      */
-    virtual void setSolver(Solver solver) = 0;
+    virtual void setSolver( Solver solver ) = 0;
+
+    /**
+     * Set the bathymetry of the cell to the given value.
+     *
+     * @param i_ix id of the cell in x-direction.
+     * @param i_iy id of the cell in y-direction.
+     * @param i_b bathymetry data to set
+     */
+    virtual void setBathymetry( t_idx  i_ix,
+                                t_idx  i_iy,
+                                t_real i_b ) = 0;
+
+    /**
+     * enables or disable the bathymetry
+     *
+     * @param enable true=enabled, false=disabled
+    */
+    virtual void enableBathymetry( bool enable ) = 0;
+
+    /**
+     * If the bathymetry is higher than the water height than the water is set to zero.
+     * updates the water height with respect to the bathymetry.
+    */
+    virtual void updateWaterHeight() = 0;
+
+    /**
+     * enables or disable the reflection of one side
+     *
+     * @param side Side to enable {LEFT, RIGHT}
+     * @param enable true=enabled, false=disabled
+    */
+    virtual void setReflection( Side side, bool enable ) = 0;
 };
 
 #endif

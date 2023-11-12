@@ -9,14 +9,20 @@
 
 #include "../constants.h"
 
-namespace tsunami_lab {
-  namespace solvers {
-    class Roe;
-  }
+namespace tsunami_lab
+{
+    namespace solvers
+    {
+        class Roe;
+    }
 }
 
-class tsunami_lab::solvers::Roe {
-  private:
+/**
+ * Roe Riemann solver for the one-dimensional shallow water equations.
+*/
+class tsunami_lab::solvers::Roe
+{
+private:
     //! square root of gravity
     static t_real constexpr m_gSqrt = 3.131557121;
 
@@ -25,7 +31,7 @@ class tsunami_lab::solvers::Roe {
      *
      * @param i_hL height of the left side.
      * @param i_hR height of the right side.
-     * @param i_uL particle velocity of the leftside.
+     * @param i_uL particle velocity of the left side.
      * @param i_uR particles velocity of the right side.
      * @param o_waveSpeedL will be set to the speed of the wave propagating to the left.
      * @param o_waveSpeedR will be set to the speed of the wave propagating to the right.
@@ -34,8 +40,8 @@ class tsunami_lab::solvers::Roe {
                             t_real   i_hR,
                             t_real   i_uL,
                             t_real   i_uR,
-                            t_real & o_waveSpeedL,
-                            t_real & o_waveSpeedR );
+                            t_real& o_waveSpeedL,
+                            t_real& o_waveSpeedR );
 
     /**
      * Computes the wave strengths.
@@ -55,10 +61,10 @@ class tsunami_lab::solvers::Roe {
                                t_real   i_huR,
                                t_real   i_waveSpeedL,
                                t_real   i_waveSpeedR,
-                               t_real & o_strengthL,
-                               t_real & o_strengthR );
+                               t_real& o_strengthL,
+                               t_real& o_strengthR );
 
-  public:
+public:
     /**
      * Computes the net-updates.
      *

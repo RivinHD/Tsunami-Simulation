@@ -28,17 +28,17 @@ TEST_CASE( "Test the derivation of the F-Wave eigenvalues.", "[FWaveEigenvalue]"
     t_real l_eigenvalue1 = 0;
     t_real l_eigenvalue2 = 0;
     tsunami_lab::solvers::FWave::computeEigenvalues( 10,
-                                           9,
-                                           -3,
-                                           3,
-                                           l_eigenvalue1,
-                                           l_eigenvalue2 );
+                                                     9,
+                                                     -3,
+                                                     3,
+                                                     l_eigenvalue1,
+                                                     l_eigenvalue2 );
 
     REQUIRE( l_eigenvalue1 == Approx( -9.7311093998375095 ) );
-    REQUIRE( l_eigenvalue2 == Approx(  9.5731051658991654 ) );
+    REQUIRE( l_eigenvalue2 == Approx( 9.5731051658991654 ) );
 }
 
-TEST_CASE( "Test the computation of the delta flux.", "[FWaveDeltaFlux]")
+TEST_CASE( "Test the computation of the delta flux.", "[FWaveDeltaFlux]" )
 {
     /*
      * Test case:
@@ -49,17 +49,39 @@ TEST_CASE( "Test the computation of the delta flux.", "[FWaveDeltaFlux]")
      * delta f: {9 * 3, 9 * 3 * 3 + 0.5 * m_g * 9 * 9} - {10 * -3, 10 * -3 * -3 + 0.5 * m_g * 10 * 10}
      * delta f: {57, -102.163175}
      */
-    t_real l_deltaFlux[2] = {0};
-    tsunami_lab::solvers::FWave::computeDeltaFlux(10,
-                                                  9,
-                                                  -3,
-                                                  3,
-                                                  l_deltaFlux);
-    REQUIRE( l_deltaFlux[0] == Approx(57) );
-    REQUIRE( l_deltaFlux[1] == Approx(-102.163175) );
+    t_real l_deltaFlux[2] = { 0 };
+    tsunami_lab::solvers::FWave::computeDeltaFlux( 10,
+                                                   9,
+                                                   -3,
+                                                   3,
+                                                   l_deltaFlux );
+    REQUIRE( l_deltaFlux[0] == Approx( 57 ) );
+    REQUIRE( l_deltaFlux[1] == Approx( -102.163175 ) );
 }
 
-TEST_CASE( "Test the computation of the eigencoefficients.", "[FWaveEigencoefficients]")
+TEST_CASE( "Test the computation of the effect of the bathymetry.", "[FWaveBathymetry" )
+{
+    /*
+     * Test case:
+     * h: 10 | 10
+     * b:  5 | 10
+     *
+     * l_bathymetryEffect[0] = 0
+     * l_bathymetryEffect[1] = -m_g * (10 - 5) * (10 + 10) * 0.5
+     *                       = -m_g * 5 * 10 = -m_g * 50
+     *                       = -490.3325
+     */
+    t_real l_bathymetryEffect[2] = { 0 };
+    tsunami_lab::solvers::FWave::computeBathymetryEffects( 10,
+                                                           10,
+                                                           5,
+                                                           10,
+                                                           l_bathymetryEffect );
+    REQUIRE( l_bathymetryEffect[0] == 0 );
+    REQUIRE( l_bathymetryEffect[1] == Approx( -490.3325 ) );
+}
+
+TEST_CASE( "Test the computation of the eigencoefficients.", "[FWaveEigencoefficients]" )
 {
     /*
      * Test case:
@@ -79,14 +101,14 @@ TEST_CASE( "Test the computation of the eigencoefficients.", "[FWaveEigencoeffic
      */
     t_real l_eigencoefficient1 = 0;
     t_real l_eigencoefficient2 = 0;
-    t_real l_deltaFlux[2] = {10, 2};
-    tsunami_lab::solvers::FWave::computeEigencoefficients(4,
-                                                          5,
-                                                          l_deltaFlux,
-                                                          l_eigencoefficient1,
-                                                          l_eigencoefficient2);
-    REQUIRE( l_eigencoefficient1 == Approx(48) );
-    REQUIRE( l_eigencoefficient2 == Approx(-38) );
+    t_real l_deltaFlux[2] = { 10, 2 };
+    tsunami_lab::solvers::FWave::computeEigencoefficients( 4,
+                                                           5,
+                                                           l_deltaFlux,
+                                                           l_eigencoefficient1,
+                                                           l_eigencoefficient2 );
+    REQUIRE( l_eigencoefficient1 == Approx( 48 ) );
+    REQUIRE( l_eigencoefficient2 == Approx( -38 ) );
 }
 
 TEST_CASE( "Test the derivation of the F-Wave net-updates.", "[FWaveUpdate]" )
@@ -112,7 +134,7 @@ TEST_CASE( "Test the derivation of the F-Wave net-updates.", "[FWaveUpdate]" )
      *                      | s2 |   | 224.403141905910928927533 |
      */
     float l_netUpdatesL[2] = { -5, 3 };
-    float l_netUpdatesR[2] = {  4, 7 };
+    float l_netUpdatesR[2] = { 4, 7 };
 
     tsunami_lab::solvers::FWave::netUpdates( 10,
                                              9,
@@ -147,7 +169,7 @@ TEST_CASE( "Test the derivation of the F-Wave net-updates.", "[FWaveUpdate]" )
      *   Rinv = |                |
      *          | 0.5 -0.0532217 |
      *
-     * Multiplicaton with the jump in quantities gives the eigencoefficient:
+     * Multiplication with the jump in quantities gives the eigencoefficient:
      *
      *        | 8 - 10 |   | -1 |   | a1 |
      * Rinv * |        | = |    | = |    |
@@ -170,11 +192,11 @@ TEST_CASE( "Test the derivation of the F-Wave net-updates.", "[FWaveUpdate]" )
                                              l_netUpdatesL,
                                              l_netUpdatesR );
 
-    REQUIRE( l_netUpdatesL[0] ==  Approx(9.394671362) );
-    REQUIRE( l_netUpdatesL[1] == -Approx(88.25985)    );
+    REQUIRE( l_netUpdatesL[0] == Approx( 9.394671362 ) );
+    REQUIRE( l_netUpdatesL[1] == -Approx( 88.25985 ) );
 
-    REQUIRE( l_netUpdatesR[0] == -Approx(9.394671362) );
-    REQUIRE( l_netUpdatesR[1] == -Approx(88.25985)    );
+    REQUIRE( l_netUpdatesR[0] == -Approx( 9.394671362 ) );
+    REQUIRE( l_netUpdatesR[1] == -Approx( 88.25985 ) );
 
     /*
     * Test case (dam break):
@@ -211,11 +233,11 @@ TEST_CASE( "Test the derivation of the F-Wave net-updates.", "[FWaveUpdate]" )
                                              l_netUpdatesL,
                                              l_netUpdatesR );
 
-    REQUIRE( l_netUpdatesL[0] == Approx(100) );
-    REQUIRE( l_netUpdatesL[1] == Approx(-1485.4292) );
+    REQUIRE( l_netUpdatesL[0] == Approx( 100 ) );
+    REQUIRE( l_netUpdatesL[1] == Approx( -1485.4292 ) );
 
-    REQUIRE( l_netUpdatesR[0] == Approx(0) );
-    REQUIRE( l_netUpdatesR[1] == Approx(0) );
+    REQUIRE( l_netUpdatesR[0] == Approx( 0 ) );
+    REQUIRE( l_netUpdatesR[1] == Approx( 0 ) );
 
     /*
      * Test case (trivial steady state):
@@ -231,9 +253,9 @@ TEST_CASE( "Test the derivation of the F-Wave net-updates.", "[FWaveUpdate]" )
                                              l_netUpdatesL,
                                              l_netUpdatesR );
 
-    REQUIRE( l_netUpdatesL[0] == Approx(0) );
-    REQUIRE( l_netUpdatesL[1] == Approx(0) );
+    REQUIRE( l_netUpdatesL[0] == Approx( 0 ) );
+    REQUIRE( l_netUpdatesL[1] == Approx( 0 ) );
 
-    REQUIRE( l_netUpdatesR[0] == Approx(0) );
-    REQUIRE( l_netUpdatesR[1] == Approx(0) );
+    REQUIRE( l_netUpdatesR[0] == Approx( 0 ) );
+    REQUIRE( l_netUpdatesR[1] == Approx( 0 ) );
 }

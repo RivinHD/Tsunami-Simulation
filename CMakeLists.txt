@@ -33,6 +33,9 @@ set(SRC_FILES
     setups/DamBreak1d
     setups/ShockShock1d
     setups/RareRare1d
+    setups/SubcriticalFlow1d
+    setups/SupercriticalFlow1d
+    setups/TsunamiEvent1d
     patches/WavePropagation1d
     io/Csv
 )
@@ -40,6 +43,9 @@ set(SRC_FILES_NO_TEST
 
 )
 set(SRC_FILES_HEADER_ONLY
+    io/ArgSetup
+)
+set(SRC_FILES_HEADER_ONLY_NO_TEST
 
 )
 set(TEST_FILES ${PROJECT_SOURCE_DIR}/tests.cpp)
@@ -50,6 +56,7 @@ set(MIDDLE_STATE_FILE ${PROJECT_SOURCE_DIR}/test_middle_states.cpp)
 set(PROJECT_RESOURCE_DIR "resources")
 set(RESOURCE_FILES
     middle_states.csv
+    bathy_profile.csv
 )
 
 # Create SOURCE_FILES
@@ -69,6 +76,14 @@ foreach(file ${SRC_FILES_NO_TEST})
     )
 endforeach()
 foreach(file ${SRC_FILES_HEADER_ONLY})
+    list(APPEND SOURCE_FILES
+        ${PROJECT_INCLUDE_DIR}/${file}.h
+    )
+    list(APPEND TEST_FILES
+        ${PROJECT_INCLUDE_DIR}/${file}.test.h
+    )
+endforeach()
+foreach(file ${SRC_FILES_HEADER_ONLY_NO_TEST})
     list(APPEND SOURCE_FILES
         ${PROJECT_INCLUDE_DIR}/${file}.h
     )

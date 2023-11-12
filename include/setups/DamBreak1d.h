@@ -9,27 +9,30 @@
 
 #include "Setup.h"
 
-namespace tsunami_lab {
-  namespace setups {
-    class DamBreak1d;
-  }
+namespace tsunami_lab
+{
+    namespace setups
+    {
+        class DamBreak1d;
+    }
 }
 
 /**
  * 1d dam break setup.
  **/
-class tsunami_lab::setups::DamBreak1d: public Setup {
-  private:
+class tsunami_lab::setups::DamBreak1d : public Setup
+{
+private:
     //! height on the left side 
     t_real m_heightLeft = 0;
-    
+
     //! height on the right side
     t_real m_heightRight = 0;
 
     //! location of the dam
     t_real m_locationDam = 0;
 
-  public:
+public:
     /**
      * Constructor.
      *
@@ -48,7 +51,7 @@ class tsunami_lab::setups::DamBreak1d: public Setup {
      * @return height at the given point.
      **/
     t_real getHeight( t_real i_x,
-                      t_real      ) const;
+                      t_real ) const;
 
     /**
      * Gets the momentum in x-direction.
@@ -65,6 +68,13 @@ class tsunami_lab::setups::DamBreak1d: public Setup {
      **/
     t_real getMomentumY( t_real,
                          t_real ) const;
+    /**
+     * Gets the bathymetry at a given point.
+     *
+     * @return bathymetry at a given point.
+     **/
+    t_real getBathymetry( t_real,
+                          t_real ) const;
 
 };
 
