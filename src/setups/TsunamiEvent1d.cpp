@@ -15,28 +15,25 @@ tsunami_lab::setups::TsunamiEvent1d::TsunamiEvent1d( std::string filePath,
     m_delta = i_delta;
     m_scale = i_scale;
 
-    t_real o_hBathy = 0;
-    std::ifstream bathy_profile( filePath );
-    while( tsunami_lab::io::Csv::readBathymetry( bathy_profile, o_hBathy ) )
-    {
-        m_bathy.push_back( o_hBathy );
-    }
-    m_csvDataPoint = m_bathy.size() - 1;
-
-
-
-
+	t_real o_hBathy = 0;
+	std::ifstream bathy_profile( filePath );
+	while( tsunami_lab::io::Csv::readBathymetry( bathy_profile, o_hBathy ) )
+	{
+		m_bathy.push_back( o_hBathy );
+	}
+	m_csvDataPoint = m_bathy.size() - 1;
 }
 
 tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getHeight( tsunami_lab::t_real i_x,
                                                                     tsunami_lab::t_real ) const
 {
-    t_real l_x = ( i_x / m_scale ) * m_csvDataPoint;
-    t_idx indexL = std::floor( l_x );
-    t_idx indexR = std::ceil( l_x );
-    t_real l_bathyL = m_bathy[indexL];
-    t_real l_bathyR = m_bathy[indexR];
-    t_real l_bathy = ( l_bathyR - l_bathyL ) * ( l_x - indexL ) + l_bathyL;
+    // linear interpolation between two bathymetries
+	t_real l_x = ( i_x / m_scale ) * m_csvDataPoint;
+	t_idx indexL = std::floor( l_x );
+	t_idx indexR = std::ceil( l_x );
+	t_real l_bathyL = m_bathy[indexL];
+	t_real l_bathyR = m_bathy[indexR];
+	t_real l_bathy = ( l_bathyR - l_bathyL ) * ( l_x - indexL ) + l_bathyL;
 
     if( l_bathy < 0 )
     {
@@ -60,13 +57,14 @@ tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getMomentumY( tsunami_l
 tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getBathymetry( tsunami_lab::t_real i_x,
                                                                         tsunami_lab::t_real ) const
 {
-    t_real l_x = ( i_x / m_scale ) * m_csvDataPoint;
-    t_idx indexL = std::floor( l_x );
-    t_idx indexR = std::ceil( l_x );
-    t_real l_bathyL = m_bathy[indexL];
-    t_real l_bathyR = m_bathy[indexR];
-    t_real l_bathy = ( l_bathyR - l_bathyL ) * ( l_x - indexL ) + l_bathyL;
-    t_real verticalDisplacement = getVerticalDisplacement( i_x, 0 );
+    // linear interpolation between two bathymetries
+	t_real l_x = ( i_x / m_scale ) * m_csvDataPoint;
+	t_idx indexL = std::floor( l_x );
+	t_idx indexR = std::ceil( l_x );
+	t_real l_bathyL = m_bathy[indexL];
+	t_real l_bathyR = m_bathy[indexR];
+	t_real l_bathy = ( l_bathyR - l_bathyL ) * ( l_x - indexL ) + l_bathyL;
+	t_real verticalDisplacement = getVerticalDisplacement( i_x, 0 );
 
     if( l_bathy < 0 )
     {
