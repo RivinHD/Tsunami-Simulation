@@ -545,7 +545,7 @@ The Output of both are visualized below:
 
 **Subcritical Flow**
 
-At around 2 seconds at 2000 a small dent in the total height can be seen.
+At about 2 seconds at 2000 a small dent can be seen in the total height.
 
 .. raw:: html
     
@@ -557,7 +557,7 @@ At around 2 seconds at 2000 a small dent in the total height can be seen.
 
 **Supercritical Flow**
 
-Between 1 and 5 seconds at around 2350 a large gap can be seen to form in the total height and the momentum begins to oscillate.
+Between 1 and 5 seconds at about 2350, a large gap forms in the total height and the momentum begins to oscillate.
 
 .. raw:: html
 
@@ -569,8 +569,8 @@ Between 1 and 5 seconds at around 2350 a large gap can be seen to form in the to
 
 **Hydraulic Jump**
 
-The hydraulic jump can bee seen at around 2350 but the f-wave solver fails to converge to a constant momentum.
-Therefore a spike in the momentum can be seen at around 2350.
+The hydraulic jump can be seen around 2350, but the f-wave solver fails to converge to a constant momentum.
+Therefore, a peak in momentum can be seen around 2350.
 
 3.4. 1D Tsunami Simulation
 --------------------------
