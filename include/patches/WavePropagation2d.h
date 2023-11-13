@@ -82,6 +82,7 @@ private:
      * @param i_h the height array
      * @param i_hu the momentum array
      * @param i_ceL the current index of the left cell
+     * @param i_ceR the current index of the right cell
      * @param o_heightLeft ouput of the height left that should be used for the calculations
      * @param o_heightRight ouput of the height right that should be used for the calculations
      * @param o_momentumLeft ouput of the momentum left that should be used for the calculations
@@ -91,6 +92,7 @@ private:
     Reflection calculateReflection( t_real* i_h,
                                     t_real* i_hu,
                                     t_idx i_ceL,
+                                    t_idx i_ceR,
                                     t_real& o_heightLeft,
                                     t_real& o_heightRight,
                                     t_real& o_momentumLeft,
@@ -103,6 +105,7 @@ private:
      * @param i_h the height array
      * @param i_hu the momentum array
      * @param i_ceL the current index of the left cell
+     * @param i_ceR the current index of the right cell
      * @param o_heightLeft ouput of the height left that should be used for the calculations
      * @param o_heightRight ouput of the height right that should be used for the calculations
      * @param o_momentumLeft ouput of the momentum left that should be used for the calculations
@@ -114,6 +117,7 @@ private:
     Reflection calculateReflection( t_real* i_h,
                                     t_real* i_hu,
                                     t_idx i_ceL,
+                                    t_idx i_ceR,
                                     t_real& o_heightLeft,
                                     t_real& o_heightRight,
                                     t_real& o_momentumLeft,
@@ -154,7 +158,7 @@ public:
      */
     t_real const* getHeight()
     {
-        return m_h[m_step] + 1;
+        return m_h[m_step] + 1 + stride;
     }
 
     t_real const* getTotalHeight()
@@ -167,7 +171,7 @@ public:
                 m_totalHeight[k] = m_h[m_step][k] + m_bathymetry[k];
             }
         }
-        return m_totalHeight + 1;
+        return m_totalHeight + 1 + stride;
     }
 
     /**
@@ -177,7 +181,7 @@ public:
      **/
     t_real const* getMomentumX()
     {
-        return m_hu[m_step] + 1;
+        return m_hu[m_step] + 1 + stride;
     }
 
     /**
@@ -185,7 +189,7 @@ public:
      **/
     t_real const* getMomentumY()
     {
-        return m_hv[m_step] + 1;
+        return m_hv[m_step] + 1 + stride;
     }
 
     /**
@@ -195,7 +199,7 @@ public:
      */
     t_real const* getBathymetry()
     {
-        return m_bathymetry + 1;
+        return m_bathymetry + 1 + stride;
     }
 
     /**
@@ -219,7 +223,7 @@ public:
                     t_idx i_iy,
                     t_real i_h )
     {
-        m_h[m_step][stride * i_iy + i_ix + 1] = i_h;
+        m_h[m_step][stride * ( i_iy + 1 ) + i_ix + 1] = i_h;
     }
 
     /**
@@ -233,7 +237,7 @@ public:
                        t_idx i_iy,
                        t_real i_hu )
     {
-        m_hu[m_step][stride * i_iy + i_ix + 1] = i_hu;
+        m_hu[m_step][stride * ( i_iy + 1 ) + i_ix + 1] = i_hu;
     }
 
     /**
@@ -247,7 +251,7 @@ public:
                        t_idx i_iy,
                        t_real i_hv )
     {
-        m_hv[m_step][stride * i_iy + i_ix + 1] = i_hv;
+        m_hv[m_step][stride * ( i_iy + 1 ) + i_ix + 1] = i_hv;
     };
 
     /**
@@ -272,7 +276,7 @@ public:
                         t_idx i_iy,
                         t_real i_bathymetry )
     {
-        m_bathymetry[stride * i_iy + i_ix + 1] = i_bathymetry;
+        m_bathymetry[stride * ( i_iy + 1 ) + i_ix + 1] = i_bathymetry;
     }
 
     /**

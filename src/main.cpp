@@ -12,6 +12,7 @@
 #include "../include/setups/SubcriticalFlow1d.h"
 #include "../include/setups/SupercriticalFlow1d.h"
 #include "../include/setups/TsunamiEvent1d.h"
+#include "../include/setups/CircularDamBreak2d.h"
 #include "../include/io/Csv.h"
 #include "../include/io/ArgSetup.h"
 #include <cstdlib>
@@ -187,7 +188,7 @@ int main( int   i_argc,
     l_ny = 1000;
     reflectLeft = false;
     reflectRight = false;
-    useBathymetry = true;
+    useBathymetry = false;
     use2D = true;
     std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
@@ -219,8 +220,8 @@ int main( int   i_argc,
     }
     // End print
 
-    tsunami_lab::t_real l_scaleX = 440000;
-    tsunami_lab::t_real l_scaleY = 440000;
+    tsunami_lab::t_real l_scaleX = 100;
+    tsunami_lab::t_real l_scaleY = 100;
     l_dxy = std::min( l_scaleX / l_nx, l_scaleY / l_ny );
 
     std::cout << "runtime configuration" << std::endl;
@@ -230,7 +231,7 @@ int main( int   i_argc,
 
     // construct setup
     tsunami_lab::setups::Setup* l_setup;
-    l_setup = new tsunami_lab::setups::TsunamiEvent1d( "resources/bathy_profile.csv", 20, l_scaleX );
+    l_setup = new tsunami_lab::setups::CircularDamBreak2d();
 
 
     // construct solver
@@ -310,7 +311,7 @@ int main( int   i_argc,
     // set up time and print control
     tsunami_lab::t_idx  l_timeStep = 0;
     tsunami_lab::t_idx  l_nOut = 0;
-    tsunami_lab::t_real l_endTime = 2000;
+    tsunami_lab::t_real l_endTime = 20;
     tsunami_lab::t_real l_simTime = 0;
 
 
