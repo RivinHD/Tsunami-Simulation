@@ -5,6 +5,7 @@
  * Entry-point for simulations.
  **/
 #include "../include/patches/WavePropagation1d.h"
+#include "../include/patches/WavePropagation2d.h"
 #include "../include/setups/DamBreak1d.h"
 #include "../include/setups/RareRare1d.h"
 #include "../include/setups/ShockShock1d.h"
@@ -23,6 +24,8 @@
 
 namespace fs = std::filesystem;
 
+#define SKIP_ARGUMENTS
+
 const std::string SOLUTION_FOLDER = "solutions";
 
 enum Arguments
@@ -30,21 +33,22 @@ enum Arguments
     SOLVER = 's',
     USE_BATHYMETRY = 'B',
     USE_REFLECT_LEFT = 'L',
-    USE_REFLECT_RIGHT = 'R'
+    USE_REFLECT_RIGHT = 'R',
 };
 const int requiredArguments = 1;
 const std::vector<ArgSetup> optionalArguments = {
     ArgSetup( Arguments::SOLVER, 1 ),
     ArgSetup( Arguments::USE_BATHYMETRY, 0 ),
     ArgSetup( Arguments::USE_REFLECT_LEFT, 0 ),
-    ArgSetup( Arguments::USE_REFLECT_RIGHT, 1 )
+    ArgSetup( Arguments::USE_REFLECT_RIGHT, 1 ),
 };
 
 void printHelp()
 {
-    std::cerr << "./build/simulation N_CELLS_X [-s <fwave|roe>] [-B] [-L] [-R]" << std::endl << std::endl
+    std::cerr << "./build/simulation N_CELLS_X (N_CELLS_Y) [-s <fwave|roe>] [-B] [-L] [-R] [-1]" << std::endl << std::endl
         << "REQUIERED INPUT:" << std::endl
         << "\tN_CELLS_X is the number of cells in x-direction." << std::endl << std::endl
+        << "\tN_CELLS_Y is the number of cells in y-direction." << std::endl << std::endl
         << "NOTE: optional flags has be put after the required input" << std::endl
         << "OPTIONAL FLAGS:" << std::endl
         << "\t-s set used solvers requires 'fwave' or 'roe' as inputs" << std::endl
@@ -75,6 +79,7 @@ int main( int   i_argc,
     bool useBathymetry = false;
     bool reflectLeft = false;
     bool reflectRight = false;
+    bool use2D = false;
 
 #ifndef SKIP_ARGUMENTS
     // error: wrong number of arguments.
@@ -92,8 +97,19 @@ int main( int   i_argc,
     l_nx = atoi( i_argv[1] );
     if( l_nx < 1 )
     {
-        std::cerr << "invalid number of cells" << std::endl;
+        std::cerr << "N_CELLS_X: invalid number of cells" << std::endl;
         return EXIT_FAILURE;
+    }
+    // Argument 2 (optional): N_CELLS_Y
+    if( i_argv[2][0] != '-' )
+    {
+        use2D = true;
+        l_ny = atoi( i_argv[2] );
+        ++minArgLength;
+    }
+    if( use2D && l_ny < 1 )
+    {
+        std::cerr << "N_CELLS_Y: invalid number of cells" << std::endl;
     }
 
     // parse optional Argumentes
@@ -167,12 +183,24 @@ int main( int   i_argc,
     }
 #endif // SKIP_ARGUMENTS
 #ifdef SKIP_ARGUMENTS
-    l_nx = 10000;
+    l_nx = 1000;
+    l_ny = 1000;
     reflectLeft = false;
-    reflectRight = true;
+    reflectRight = false;
     useBathymetry = true;
+    use2D = true;
     std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
+
+    // Print activated Features
+    if( use2D )
+    {
+        std::cout << "Simulation is set to 2D" << std::endl;
+    }
+    else
+    {
+        std::cout << "Simulation is set to 1D" << std::endl;
+    }
 
     std::cout << "Set Solver: ";
     if( solver == tsunami_lab::patches::Solver::ROE )
@@ -184,14 +212,16 @@ int main( int   i_argc,
         std::cout << "FWave" << std::endl;
     }
 
-    if( useBathymetry && solver == tsunami_lab::patches::Solver::ROE )
+    if( ( useBathymetry ) && solver == tsunami_lab::patches::Solver::ROE )
     {
         std::cerr << "ERROR: Roe solver does not have options for bathymetry" << std::endl;
         return EXIT_FAILURE;
     }
+    // End print
 
-    tsunami_lab::t_real l_scale = 440000;
-    l_dxy = l_scale / l_nx;
+    tsunami_lab::t_real l_scaleX = 440000;
+    tsunami_lab::t_real l_scaleY = 440000;
+    l_dxy = std::min( l_scaleX / l_nx, l_scaleY / l_ny );
 
     std::cout << "runtime configuration" << std::endl;
     std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
@@ -200,12 +230,19 @@ int main( int   i_argc,
 
     // construct setup
     tsunami_lab::setups::Setup* l_setup;
-    l_setup = new tsunami_lab::setups::TsunamiEvent1d( "resources/bathy_profile.csv", 20, l_scale );
+    l_setup = new tsunami_lab::setups::TsunamiEvent1d( "resources/bathy_profile.csv", 20, l_scaleX );
 
 
     // construct solver
     tsunami_lab::patches::WavePropagation* l_waveProp;
-    l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx );
+    if( use2D )
+    {
+        l_waveProp = new tsunami_lab::patches::WavePropagation2d( l_nx, l_ny );
+    }
+    else
+    {
+        l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx );
+    }
 
     // set the solver to use
     l_waveProp->setSolver( solver );
@@ -273,7 +310,7 @@ int main( int   i_argc,
     // set up time and print control
     tsunami_lab::t_idx  l_timeStep = 0;
     tsunami_lab::t_idx  l_nOut = 0;
-    tsunami_lab::t_real l_endTime = 200;
+    tsunami_lab::t_real l_endTime = 2000;
     tsunami_lab::t_real l_simTime = 0;
 
 
@@ -302,11 +339,11 @@ int main( int   i_argc,
 
             tsunami_lab::io::Csv::write( l_dxy,
                                          l_nx,
-                                         1,
-                                         1,
+                                         l_ny,
+                                         l_waveProp->getStride(),
                                          l_waveProp->getHeight(),
                                          l_waveProp->getMomentumX(),
-                                         nullptr,
+                                         l_waveProp->getMomentumY(),
                                          l_waveProp->getBathymetry(),
                                          l_waveProp->getTotalHeight(),
                                          l_file );

@@ -8,4 +8,5 @@ cmake-build-test/
 .clang-tidy
 .idea/
 .vs/
+out/
 CMakeSettings.json

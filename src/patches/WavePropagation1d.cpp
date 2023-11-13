@@ -15,21 +15,11 @@ tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells )
     // allocate memory including a single ghost cell on each side
     for( unsigned short l_st = 0; l_st < 2; l_st++ )
     {
-        m_h[l_st] = new t_real[m_nCells + 2];
-        m_hu[l_st] = new t_real[m_nCells + 2];
+        m_h[l_st] = new t_real[m_nCells + 2]{ 0 };
+        m_hu[l_st] = new t_real[m_nCells + 2]{ 0 };
     }
     m_bathymetry = new t_real[m_nCells + 2]{ 0 };
     m_totalHeight = new t_real[m_nCells + 2]{ 0 };
-
-    // init to zero
-    for( unsigned short l_st = 0; l_st < 2; l_st++ )
-    {
-        for( t_idx l_ce = 0; l_ce < m_nCells + 2; l_ce++ )
-        {
-            m_h[l_st][l_ce] = 0;
-            m_hu[l_st][l_ce] = 0;
-        }
-    }
 }
 
 tsunami_lab::patches::WavePropagation1d::~WavePropagation1d()
@@ -54,7 +44,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
     t_real* l_huNew = m_hu[m_step];
 
     // init new cell quantities
-    for( t_idx l_ce = 1; l_ce < m_nCells + 1; l_ce++ )
+    for( t_idx l_ce = 0; l_ce < m_nCells + 1; l_ce++ )
     {
         l_hNew[l_ce] = l_hOld[l_ce];
         l_huNew[l_ce] = l_huOld[l_ce];

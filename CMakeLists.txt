@@ -37,6 +37,7 @@ set(SRC_FILES
     setups/SupercriticalFlow1d
     setups/TsunamiEvent1d
     patches/WavePropagation1d
+    patches/WavePropagation2d
     io/Csv
 )
 set(SRC_FILES_NO_TEST
