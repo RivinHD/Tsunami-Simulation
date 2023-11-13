@@ -4,8 +4,8 @@
  * @section DESCRIPTION
  * IO-routines for writing a snapshot as Comma Separated Values (CSV).
  **/
+
 #include "../../include/io/Csv.h"
-#include <iostream>
 
 void tsunami_lab::io::Csv::write( t_real i_dxy,
                                   t_idx i_nx,

@@ -40,6 +40,7 @@ set(SRC_FILES
     patches/WavePropagation1d
     patches/WavePropagation2d
     io/Csv
+    io/Stations
 )
 set(SRC_FILES_NO_TEST
 
@@ -59,6 +60,7 @@ set(PROJECT_RESOURCE_DIR "resources")
 set(RESOURCE_FILES
     middle_states.csv
     bathy_profile.csv
+    config.json
 )
 
 # Create SOURCE_FILES

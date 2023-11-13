@@ -15,6 +15,7 @@
 #include "../include/setups/CircularDamBreak2d.h"
 #include "../include/io/Csv.h"
 #include "../include/io/ArgSetup.h"
+#include "../include/io/Stations.h"
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
@@ -245,6 +246,14 @@ int main( int   i_argc,
         l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx );
     }
 
+    // initialize stations
+    tsunami_lab::io::Stations station = tsunami_lab::io::Stations(l_nx,
+                                                                  l_ny,
+                                                                  l_waveProp->getStride(),
+                                                                  l_scaleX,
+                                                                  l_scaleY);
+    station.write( l_waveProp->getTotalHeight() );
+
     // set the solver to use
     l_waveProp->setSolver( solver );
 
@@ -315,12 +324,16 @@ int main( int   i_argc,
     tsunami_lab::t_real l_simTime = 0;
 
 
-    // create solution folder
-    if( fs::exists( SOLUTION_FOLDER ) )
+    // create simulation folder inside solution folder
+    if( !fs::exists( SOLUTION_FOLDER ))
     {
-        fs::remove_all( SOLUTION_FOLDER );
+        fs::create_directory( SOLUTION_FOLDER );
     }
-    fs::create_directory( SOLUTION_FOLDER );
+    if( fs::exists( SOLUTION_FOLDER + "/simulation" ) )
+    {
+        fs::remove_all( SOLUTION_FOLDER + "/simulation" );
+    }
+    fs::create_directory(SOLUTION_FOLDER + "/simulation" );
 
     std::cout << "entering time loop" << std::endl;
 
@@ -332,7 +345,7 @@ int main( int   i_argc,
             std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
 
-            std::string l_path = SOLUTION_FOLDER + "/solution_" + std::to_string( l_nOut ) + ".csv";
+            std::string l_path = SOLUTION_FOLDER + "/simulation/solution_" + std::to_string( l_nOut ) + ".csv";
             std::cout << "  writing wave field to " << l_path << std::endl;
 
             std::ofstream l_file;
