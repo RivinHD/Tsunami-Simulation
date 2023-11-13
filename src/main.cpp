@@ -61,8 +61,6 @@ void printHelp()
 int main( int   i_argc,
           char* i_argv[] )
 {
-    tsunami_lab::io::Stations station = tsunami_lab::io::Stations();
-    station.write("f", 1, 1);
     // number of cells in x- and y-direction
     tsunami_lab::t_idx l_nx = 0;
     tsunami_lab::t_idx l_ny = 1;
@@ -246,6 +244,14 @@ int main( int   i_argc,
     {
         l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx );
     }
+
+    // initialize stations
+    tsunami_lab::io::Stations station = tsunami_lab::io::Stations(l_nx,
+                                                                  l_ny,
+                                                                  l_waveProp->getStride(),
+                                                                  l_scaleX,
+                                                                  l_scaleY);
+    station.write( l_waveProp->getTotalHeight() );
 
     // set the solver to use
     l_waveProp->setSolver( solver );

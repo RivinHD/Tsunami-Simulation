@@ -1,12 +1,13 @@
 /**
- * @author Alexander Breuer, Fabian Hofer, Vincent Gerlach (alex.breuer AT uni-jena.de)
+ * @author Alexander Breuer (alex.breuer AT uni-jena.de), Fabian Hofer, Vincent Gerlach
  *
  * @section DESCRIPTION
  * Unit tests for the CSV-interface.
  **/
 #include <catch2/catch.hpp>
 #include "../../include/constants.h"
-#include <sstream>
+#include <iostream>
+#include <../nlohmann/json.hpp>
 #define private public
 #include "../../include/io/Csv.h"
 #undef public

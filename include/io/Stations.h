@@ -74,7 +74,7 @@ private:
 public:
 
     /**
-     * constructor of user-defined stations
+     * Constructor of user-defined stations.
      *
      * @param i_nx number of cells in x dimension
      * @param i_ny number of cells in y dimension
@@ -84,7 +84,12 @@ public:
      */
     Stations(t_idx i_nx, t_idx i_ny, t_idx i_stride, t_real i_scaleX, t_real i_scaleY);
 
-    void write();
+    /**
+     * Write totalHeight of each station to its csv file.
+     *
+     * @param totalHeight pointer to array of all totalHeights
+     */
+    void write( const t_real * totalHeight );
 
 
 };
