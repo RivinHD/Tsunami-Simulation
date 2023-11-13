@@ -14,6 +14,7 @@
 #include "../include/setups/TsunamiEvent1d.h"
 #include "../include/io/Csv.h"
 #include "../include/io/ArgSetup.h"
+#include "../include/io/Stations.h"
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
@@ -60,6 +61,8 @@ void printHelp()
 int main( int   i_argc,
           char* i_argv[] )
 {
+    tsunami_lab::io::Stations station = tsunami_lab::io::Stations();
+    station.write("f", 1, 1);
     // number of cells in x- and y-direction
     tsunami_lab::t_idx l_nx = 0;
     tsunami_lab::t_idx l_ny = 1;
@@ -314,12 +317,16 @@ int main( int   i_argc,
     tsunami_lab::t_real l_simTime = 0;
 
 
-    // create solution folder
-    if( fs::exists( SOLUTION_FOLDER ) )
+    // create simulation folder inside solution folder
+    if( !fs::exists( SOLUTION_FOLDER ))
     {
-        fs::remove_all( SOLUTION_FOLDER );
+        fs::create_directory( SOLUTION_FOLDER );
     }
-    fs::create_directory( SOLUTION_FOLDER );
+    if( fs::exists( SOLUTION_FOLDER + "/simulation" ) )
+    {
+        fs::remove_all( SOLUTION_FOLDER + "/simulation" );
+    }
+    fs::create_directory(SOLUTION_FOLDER + "/simulation" );
 
     std::cout << "entering time loop" << std::endl;
 
@@ -331,7 +338,7 @@ int main( int   i_argc,
             std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
 
-            std::string l_path = SOLUTION_FOLDER + "/solution_" + std::to_string( l_nOut ) + ".csv";
+            std::string l_path = SOLUTION_FOLDER + "/simulation/solution_" + std::to_string( l_nOut ) + ".csv";
             std::cout << "  writing wave field to " << l_path << std::endl;
 
             std::ofstream l_file;
