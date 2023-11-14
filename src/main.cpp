@@ -315,9 +315,10 @@ int main( int   i_argc,
             tsunami_lab::t_real value = 0;
             for( size_t k = 0; k < 50; k++ )
             {
-                // Weierstraß-Funktion
+                // Weierstrass-Funktion
                 value += std::pow( 2, k ) * std::sin( std::pow( 2, k ) * ( i + j ) / ( l_nx + l_ny ) ) / std::pow( 3, k );
             }
+            value *= 2.5;
             value -= 2;
             value = std::min( value, 3.0f );
             l_waveProp->setBathymetry( i, j, value );

@@ -7,7 +7,7 @@
 #include <catch2/catch.hpp>
 #include "../../include/constants.h"
 #include <iostream>
-#include <../nlohmann/json.hpp>
+#include <nlohmann/json.hpp>
 #define private public
 #include "../../include/io/Csv.h"
 #undef public

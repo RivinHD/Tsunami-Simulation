@@ -105,6 +105,12 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 add_subdirectory(submodules/Catch2)
 include_directories(SYSTEM submodules/Catch2/single_include)
 
+# Linking the json libary
+add_subdirectory(submodules/json)
+include_directories(SYSTEM submodules/json/single_include)
+link_libraries(nlohmann_json::nlohmann_json)
+
+
 # Setup Testing
 add_executable(test ${SOURCE_FILES})
 target_link_libraries(test PRIVATE Catch2::Catch2)
