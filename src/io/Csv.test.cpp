@@ -7,7 +7,6 @@
 #include <catch2/catch.hpp>
 #include "../../include/constants.h"
 #include <iostream>
-#include <../nlohmann/json.hpp>
 #define private public
 #include "../../include/io/Csv.h"
 #undef public
@@ -150,6 +149,5 @@ TEST_CASE( "Test the Bathymetry-reader for bathy_profile.csv", "[CsvRead]" )
 
         }
     }
-
     REQUIRE( linesCount == 1763 );
 }

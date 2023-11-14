@@ -22,6 +22,8 @@
 #include <limits>
 #include <string>
 #include <filesystem> // requieres C++17 and up
+#include <chrono>
+#include <thread>
 
 namespace fs = std::filesystem;
 
@@ -56,6 +58,15 @@ void printHelp()
         << "\t-B enables the input for bathymetry" << std::endl
         << "\t-L enables the reflection on the left side of the simulation" << std::endl
         << "\t-R enables the reflection on the right side of the simulation" << std::endl;
+}
+
+void writeStations(tsunami_lab::io::Stations *stations, tsunami_lab::patches::WavePropagation *solver)
+{
+    while(true)
+    {
+        stations->write(solver->getTotalHeight());
+        std::this_thread::sleep_for(std::chrono::seconds ((int)stations->getOutputFrequency()));
+    }
 }
 
 int main( int   i_argc,
@@ -246,12 +257,13 @@ int main( int   i_argc,
     }
 
     // initialize stations
-    tsunami_lab::io::Stations station = tsunami_lab::io::Stations(l_nx,
-                                                                  l_ny,
-                                                                  l_waveProp->getStride(),
-                                                                  l_scaleX,
-                                                                  l_scaleY);
-    station.write( l_waveProp->getTotalHeight() );
+    tsunami_lab::io::Stations l_stations = tsunami_lab::io::Stations(l_nx,
+                                                                     l_ny,
+                                                                     l_waveProp->getStride(),
+                                                                     l_scaleX,
+                                                                     l_scaleY);
+    // create a thread that runs the stations write function
+    std::thread writeStationsThread( writeStations, &l_stations, l_waveProp );
 
     // set the solver to use
     l_waveProp->setSolver( solver );
@@ -371,6 +383,9 @@ int main( int   i_argc,
         l_simTime += l_dt;
     }
     std::cout << "finished time loop" << std::endl;
+
+    // close thread
+    writeStationsThread.join();
 
     // free memory
     std::cout << "freeing memory" << std::endl;

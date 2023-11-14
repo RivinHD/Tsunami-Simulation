@@ -50,9 +50,6 @@ private:
         std::string m_path;
     };
 
-    //! output frequency in seconds
-    t_real m_outputfrequency;
-
     //! list of all stations
     std::vector<Station> m_stations;
 
@@ -71,6 +68,12 @@ private:
     //! height of the grid
     t_real m_scaleY;
 
+    //! shared output frequency of stations
+    t_real m_outputFrequency;
+
+    //! shared current time of stations
+    t_real m_time;
+
 public:
 
     /**
@@ -85,11 +88,18 @@ public:
     Stations(t_idx i_nx, t_idx i_ny, t_idx i_stride, t_real i_scaleX, t_real i_scaleY);
 
     /**
-     * Write totalHeight of each station to its csv file.
+     * Write totalHeight of each station to its csv file with a shared time step.
      *
      * @param totalHeight pointer to array of all totalHeights
      */
     void write( const t_real * totalHeight );
+
+    /**
+     * Returns shared output frequency of stations.
+     *
+     * @return shared output frequency
+     */
+    t_real getOutputFrequency();
 
 
 };

@@ -25,6 +25,7 @@ tsunami_lab::io::Stations::Stations(t_idx i_nx,
     m_stride = i_stride;
     m_scaleX = i_scaleX;
     m_scaleY = i_scaleY;
+    m_time = 0;
 
     std::ifstream l_file("resources/config.json");
 
@@ -39,8 +40,20 @@ tsunami_lab::io::Stations::Stations(t_idx i_nx,
         exit(1);
     }
 
+    // create station folder inside solution folder
+    if( !fs::exists( SOLUTION_FOLDER ))
+    {
+        fs::create_directory( SOLUTION_FOLDER );
+    }
+    if( fs::exists( SOLUTION_FOLDER + "/station" ) )
+    {
+        fs::remove_all( SOLUTION_FOLDER + "/station" );
+    }
+    fs::create_directory(SOLUTION_FOLDER + "/station" );
+
+    // add stations
     if(config.contains("output_frequency"))
-        m_outputfrequency = config["output_frequency"];
+        m_outputFrequency = config["output_frequency"];
     if(config.contains("stations"))
     {
         for( size_t i = 0; i < config["stations"].size(); i++)
@@ -50,20 +63,9 @@ tsunami_lab::io::Stations::Stations(t_idx i_nx,
             t_real l_y = config["stations"][i]["y"];
             std::string l_path = SOLUTION_FOLDER + "/station/" + l_name;
 
-            // create station folder inside solution folder
-            if( !fs::exists( SOLUTION_FOLDER ))
-            {
-                fs::create_directory( SOLUTION_FOLDER );
-            }
-            if( fs::exists( SOLUTION_FOLDER + "/station" ) )
-            {
-                fs::remove_all( SOLUTION_FOLDER + "/station" );
-            }
-            fs::create_directory(SOLUTION_FOLDER + "/station" );
-
             std::ofstream l_fileStation;
-            l_fileStation.open( l_path );
-            l_fileStation << "totalHeight" << "\n";
+            l_fileStation.open( l_path, std::ios::app );
+            l_fileStation << "timestep,totalHeight" << "\n";
 
             // forward arguments and construct station directly in the vector
             m_stations.emplace_back( l_name, l_x, l_y, l_path );
@@ -83,8 +85,13 @@ void tsunami_lab::io::Stations::write( const t_real * i_totalHeight )
         std::ofstream l_file;
         l_file.open(station.m_path, std::ios::app);
 
-        l_file << i_totalHeight[l_cellIndex] << "\n";
-
+        l_file << m_time << "," << i_totalHeight[l_cellIndex] << "\n";
         l_file.close();
     }
+    m_time++;
+}
+
+tsunami_lab::t_real tsunami_lab::io::Stations::getOutputFrequency()
+{
+    return m_outputFrequency;
 }
