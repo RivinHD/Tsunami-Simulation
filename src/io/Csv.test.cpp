@@ -150,6 +150,5 @@ TEST_CASE( "Test the Bathymetry-reader for bathy_profile.csv", "[CsvRead]" )
 
         }
     }
-
     REQUIRE( linesCount == 1763 );
 }
