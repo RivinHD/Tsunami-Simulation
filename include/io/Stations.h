@@ -16,7 +16,7 @@
 #include <filesystem> // requieres C++17 and up
 
 
-// for convenience
+ // for convenience
 using json = nlohmann::json;
 
 namespace tsunami_lab
@@ -41,8 +41,10 @@ private:
      */
     struct Station
     {
-        Station(std::string i_name, t_real i_x, t_real i_y, std::string i_path)
-            : m_name(i_name), m_x(i_x), m_y(i_y), m_path(i_path){}
+        Station( std::string i_name, t_real i_x, t_real i_y, std::string i_path )
+            : m_name( i_name ), m_x( i_x ), m_y( i_y ), m_path( i_path )
+        {
+        }
 
         std::string m_name;
         t_real m_x;
@@ -85,14 +87,14 @@ public:
      * @param i_scaleX width of the grid
      * @param i_scaleY height of the grid
      */
-    Stations(t_idx i_nx, t_idx i_ny, t_idx i_stride, t_real i_scaleX, t_real i_scaleY);
+    Stations( t_idx i_nx, t_idx i_ny, t_idx i_stride, t_real i_scaleX, t_real i_scaleY );
 
     /**
      * Write totalHeight of each station to its csv file with a shared time step.
      *
      * @param totalHeight pointer to array of all totalHeights
      */
-    void write( const t_real * totalHeight );
+    void write( const t_real* totalHeight );
 
     /**
      * Returns shared output frequency of stations.

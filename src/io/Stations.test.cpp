@@ -30,23 +30,24 @@ TEST_CASE( "Test Stations json methods.", "[StationsJson]" )
     REQUIRE( config["stations"][2]["y"] == 7 );
 }
 
-TEST_CASE( "Test Stations getOutputFrequency method.", "[StationsOutputFrequency]" ){
-    tsunami_lab::io::Stations l_station = tsunami_lab::io::Stations(10,
-                                                                    10,
-                                                                    10,
-                                                                    10,
-                                                                    10);
-    tsunami_lab::t_real frequency =l_station.getOutputFrequency();
+TEST_CASE( "Test Stations getOutputFrequency method.", "[StationsOutputFrequency]" )
+{
+    tsunami_lab::io::Stations l_station = tsunami_lab::io::Stations( 10,
+                                                                     10,
+                                                                     10,
+                                                                     10,
+                                                                     10 );
+    tsunami_lab::t_real frequency = l_station.getOutputFrequency();
     REQUIRE( frequency == 1 );
 }
 
-TEST_CASE( "Test Stations write method.", "[StationsWrite]")
+TEST_CASE( "Test Stations write method.", "[StationsWrite]" )
 {
-    tsunami_lab::io::Stations l_station = tsunami_lab::io::Stations(10,
-                                                                    10,
-                                                                    10,
-                                                                    10,
-                                                                    10);
-    tsunami_lab::t_real totalHeight[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    l_station.write(totalHeight);
+    tsunami_lab::io::Stations l_station = tsunami_lab::io::Stations( 10,
+                                                                     10,
+                                                                     10,
+                                                                     10,
+                                                                     10 );
+    tsunami_lab::t_real totalHeight[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    l_station.write( totalHeight );
 }

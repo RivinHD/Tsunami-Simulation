@@ -28,6 +28,7 @@
 
 namespace fs = std::filesystem;
 
+#define SKIP_ARGUMENTS
 
 const std::string SOLUTION_FOLDER = "solutions";
 bool KILL_THREAD = false;
@@ -61,16 +62,16 @@ void printHelp()
         << "\t-R enables the reflection on the right side of the simulation" << std::endl;
 }
 
-void writeStations(tsunami_lab::io::Stations *stations, tsunami_lab::patches::WavePropagation *solver)
+void writeStations( tsunami_lab::io::Stations* stations, tsunami_lab::patches::WavePropagation* solver )
 {
-    while(true)
+    while( true )
     {
-        if ( KILL_THREAD )
+        if( KILL_THREAD )
         {
             break;
         }
         stations->write( solver->getTotalHeight() );
-        std::this_thread::sleep_for( std::chrono::milliseconds ((int)stations->getOutputFrequency() ) );
+        std::this_thread::sleep_for( std::chrono::milliseconds( (int)stations->getOutputFrequency() ) );
     }
 }
 
@@ -200,8 +201,8 @@ int main( int   i_argc,
     }
 #endif // SKIP_ARGUMENTS
 #ifdef SKIP_ARGUMENTS
-    l_nx = 100;
-    l_ny = 100;
+    l_nx = 500;
+    l_ny = 500;
     reflectLeft = false;
     reflectRight = false;
     useBathymetry = true;
@@ -262,11 +263,11 @@ int main( int   i_argc,
     }
 
     // initialize stations
-    tsunami_lab::io::Stations l_stations = tsunami_lab::io::Stations(l_nx,
-                                                                     l_ny,
-                                                                     l_waveProp->getStride(),
-                                                                     l_scaleX,
-                                                                     l_scaleY);
+    tsunami_lab::io::Stations l_stations = tsunami_lab::io::Stations( l_nx,
+                                                                      l_ny,
+                                                                      l_waveProp->getStride(),
+                                                                      l_scaleX,
+                                                                      l_scaleY );
     // create a thread that runs the stations write function
     std::thread writeStationsThread( writeStations, &l_stations, l_waveProp );
 
@@ -324,25 +325,17 @@ int main( int   i_argc,
     }
 
     //TODO REMOVE Bathymetry for testing
-    /*
-    for( size_t i = 0; i < l_ny; i++ )
+    /*for( size_t i = 0; i < l_ny; i++ )
     {
         for( size_t j = 0; j < l_nx; j++ )
         {
-            tsunami_lab::t_real value = 0;
-            for( size_t k = 0; k < 50; k++ )
-            {
-                // Weierstrass-Funktion
-                value += std::pow( 2, k ) * std::sin( std::pow( 2, k ) * ( i + j ) / ( l_nx + l_ny ) ) / std::pow( 3, k );
-            }
-            value *= 2.5;
-            value -= 2;
+            tsunami_lab::t_real value = std::sin( 2 * 3.14 * j / ( 1.0f * l_nx ) ) + 3 * std::cos( 2 * 3.14 * i / ( 1.0f * l_ny ) );
+            value -= 5;
             value = std::min( value, 3.0f );
             l_waveProp->setBathymetry( i, j, value );
         }
     }
-     l_waveProp->updateWaterHeight();
-     */
+    l_waveProp->updateWaterHeight();*/
 
     // derive maximum wave speed in setup; the momentum is ignored
     tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
@@ -357,7 +350,7 @@ int main( int   i_argc,
     // set up time and print control
     tsunami_lab::t_idx  l_timeStep = 0;
     tsunami_lab::t_idx  l_nOut = 0;
-    tsunami_lab::t_real l_endTime = 20;
+    tsunami_lab::t_real l_endTime = 25;
     tsunami_lab::t_real l_simTime = 0;
 
 
@@ -392,7 +385,7 @@ int main( int   i_argc,
                                          l_nx,
                                          l_ny,
                                          l_waveProp->getStride(),
-                                         l_waveProp->getHeight(),
+                                         l_waveProp->getTotalHeight(),
                                          l_waveProp->getMomentumX(),
                                          l_waveProp->getMomentumY(),
                                          l_waveProp->getBathymetry(),
