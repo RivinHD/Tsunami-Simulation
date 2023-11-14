@@ -12,6 +12,7 @@
 #include "../include/setups/SubcriticalFlow1d.h"
 #include "../include/setups/SupercriticalFlow1d.h"
 #include "../include/setups/TsunamiEvent1d.h"
+#include "../include/setups/CircularDamBreak2d.h"
 #include "../include/io/Csv.h"
 #include "../include/io/ArgSetup.h"
 #include "../include/io/Stations.h"
@@ -231,8 +232,8 @@ int main( int   i_argc,
     }
     // End print
 
-    tsunami_lab::t_real l_scaleX = 440000;
-    tsunami_lab::t_real l_scaleY = 440000;
+    tsunami_lab::t_real l_scaleX = 100;
+    tsunami_lab::t_real l_scaleY = 100;
     l_dxy = std::min( l_scaleX / l_nx, l_scaleY / l_ny );
 
     std::cout << "runtime configuration" << std::endl;
@@ -242,7 +243,7 @@ int main( int   i_argc,
 
     // construct setup
     tsunami_lab::setups::Setup* l_setup;
-    l_setup = new tsunami_lab::setups::TsunamiEvent1d( "resources/bathy_profile.csv", 20, l_scaleX );
+    l_setup = new tsunami_lab::setups::CircularDamBreak2d();
 
 
     // construct solver
@@ -318,6 +319,24 @@ int main( int   i_argc,
         }
     }
 
+    //TODO REMOVE Bathymetry for testing
+    for( size_t i = 0; i < l_ny; i++ )
+    {
+        for( size_t j = 0; j < l_nx; j++ )
+        {
+            tsunami_lab::t_real value = 0;
+            for( size_t k = 0; k < 50; k++ )
+            {
+                // Weierstraß-Funktion
+                value += std::pow( 2, k ) * std::sin( std::pow( 2, k ) * ( i + j ) / ( l_nx + l_ny ) ) / std::pow( 3, k );
+            }
+            value -= 2;
+            value = std::min( value, 3.0f );
+            l_waveProp->setBathymetry( i, j, value );
+        }
+    }
+    l_waveProp->updateWaterHeight();
+
     // derive maximum wave speed in setup; the momentum is ignored
     tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
     std::cout << "Max speed " << l_speedMax << std::endl;
@@ -331,12 +350,12 @@ int main( int   i_argc,
     // set up time and print control
     tsunami_lab::t_idx  l_timeStep = 0;
     tsunami_lab::t_idx  l_nOut = 0;
-    tsunami_lab::t_real l_endTime = 2000;
+    tsunami_lab::t_real l_endTime = 20;
     tsunami_lab::t_real l_simTime = 0;
 
 
     // create simulation folder inside solution folder
-    if( !fs::exists( SOLUTION_FOLDER ))
+    if( !fs::exists( SOLUTION_FOLDER ) )
     {
         fs::create_directory( SOLUTION_FOLDER );
     }
@@ -344,7 +363,7 @@ int main( int   i_argc,
     {
         fs::remove_all( SOLUTION_FOLDER + "/simulation" );
     }
-    fs::create_directory(SOLUTION_FOLDER + "/simulation" );
+    fs::create_directory( SOLUTION_FOLDER + "/simulation" );
 
     std::cout << "entering time loop" << std::endl;
 

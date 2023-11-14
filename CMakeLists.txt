@@ -36,6 +36,7 @@ set(SRC_FILES
     setups/SubcriticalFlow1d
     setups/SupercriticalFlow1d
     setups/TsunamiEvent1d
+    setups/CircularDamBreak2d
     patches/WavePropagation1d
     patches/WavePropagation2d
     io/Csv
