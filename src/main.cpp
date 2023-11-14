@@ -189,7 +189,7 @@ int main( int   i_argc,
     l_ny = 1000;
     reflectLeft = false;
     reflectRight = false;
-    useBathymetry = false;
+    useBathymetry = true;
     use2D = true;
     std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
@@ -247,11 +247,11 @@ int main( int   i_argc,
     }
 
     // initialize stations
-    tsunami_lab::io::Stations station = tsunami_lab::io::Stations(l_nx,
-                                                                  l_ny,
-                                                                  l_waveProp->getStride(),
-                                                                  l_scaleX,
-                                                                  l_scaleY);
+    tsunami_lab::io::Stations station = tsunami_lab::io::Stations( l_nx,
+                                                                   l_ny,
+                                                                   l_waveProp->getStride(),
+                                                                   l_scaleX,
+                                                                   l_scaleY );
     station.write( l_waveProp->getTotalHeight() );
 
     // set the solver to use
@@ -307,6 +307,24 @@ int main( int   i_argc,
         }
     }
 
+    //TODO REMOVE Bathymetry for testing
+    for( size_t i = 0; i < l_ny; i++ )
+    {
+        for( size_t j = 0; j < l_nx; j++ )
+        {
+            tsunami_lab::t_real value = 0;
+            for( size_t k = 0; k < 50; k++ )
+            {
+                // Weierstraß-Funktion
+                value += std::pow( 2, k ) * std::sin( std::pow( 2, k ) * ( l_nx + l_ny ) ) / std::pow( 3, k );
+            }
+            value -= 2;
+            value = std::min( value, 3.0f );
+            l_waveProp->setBathymetry( i, j, value );
+        }
+    }
+    l_waveProp->updateWaterHeight();
+
     // derive maximum wave speed in setup; the momentum is ignored
     tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
     std::cout << "Max speed " << l_speedMax << std::endl;
@@ -325,7 +343,7 @@ int main( int   i_argc,
 
 
     // create simulation folder inside solution folder
-    if( !fs::exists( SOLUTION_FOLDER ))
+    if( !fs::exists( SOLUTION_FOLDER ) )
     {
         fs::create_directory( SOLUTION_FOLDER );
     }
@@ -333,7 +351,7 @@ int main( int   i_argc,
     {
         fs::remove_all( SOLUTION_FOLDER + "/simulation" );
     }
-    fs::create_directory(SOLUTION_FOLDER + "/simulation" );
+    fs::create_directory( SOLUTION_FOLDER + "/simulation" );
 
     std::cout << "entering time loop" << std::endl;
 

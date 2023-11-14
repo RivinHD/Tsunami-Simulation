@@ -163,8 +163,8 @@ public:
     virtual void enableBathymetry( bool enable ) = 0;
 
     /**
+     * Updates the water height with respect to the bathymetry.
      * If the bathymetry is higher than the water height than the water is set to zero.
-     * updates the water height with respect to the bathymetry.
     */
     virtual void updateWaterHeight() = 0;
 
