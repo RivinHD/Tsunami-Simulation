@@ -316,7 +316,7 @@ int main( int   i_argc,
             for( size_t k = 0; k < 50; k++ )
             {
                 // Weierstraß-Funktion
-                value += std::pow( 2, k ) * std::sin( std::pow( 2, k ) * ( l_nx + l_ny ) ) / std::pow( 3, k );
+                value += std::pow( 2, k ) * std::sin( std::pow( 2, k ) * ( i + j ) / ( l_nx + l_ny ) ) / std::pow( 3, k );
             }
             value -= 2;
             value = std::min( value, 3.0f );
