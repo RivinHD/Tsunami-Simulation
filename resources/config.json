@@ -1,20 +1,30 @@
 {
-  "output_frequency":  1,
+  "output_frequency": 500,
   "stations": [
     {
       "name": "station01",
-      "x": 5,
-      "y": 5
+      "x": 10,
+      "y": 50
     },
     {
       "name": "station02",
-      "x": 15,
-      "y": 45
+      "x": 30,
+      "y": 50
     },
     {
       "name": "station03",
-      "x": 6,
-      "y": 7
+      "x": 50,
+      "y": 50
+    },
+    {
+      "name": "station04",
+      "x": 70,
+      "y": 50
+    },
+    {
+      "name": "station05",
+      "x": 90,
+      "y": 50
     }
   ]
 }

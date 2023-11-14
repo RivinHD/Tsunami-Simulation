@@ -10,6 +10,7 @@
 #include <nlohmann/json.hpp>
 #define private public
 #include "../../include/io/Csv.h"
+#include <sstream>
 #undef public
 
 TEST_CASE( "Test the CSV-writer for 1D settings.", "[CsvWrite1d]" )

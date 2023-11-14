@@ -28,9 +28,9 @@
 
 namespace fs = std::filesystem;
 
-#define SKIP_ARGUMENTS
 
 const std::string SOLUTION_FOLDER = "solutions";
+bool KILL_THREAD = false;
 
 enum Arguments
 {
@@ -65,8 +65,12 @@ void writeStations(tsunami_lab::io::Stations *stations, tsunami_lab::patches::Wa
 {
     while(true)
     {
-        stations->write(solver->getTotalHeight());
-        std::this_thread::sleep_for(std::chrono::seconds ((int)stations->getOutputFrequency()));
+        if ( KILL_THREAD )
+        {
+            break;
+        }
+        stations->write( solver->getTotalHeight() );
+        std::this_thread::sleep_for( std::chrono::milliseconds ((int)stations->getOutputFrequency() ) );
     }
 }
 
@@ -196,8 +200,8 @@ int main( int   i_argc,
     }
 #endif // SKIP_ARGUMENTS
 #ifdef SKIP_ARGUMENTS
-    l_nx = 1000;
-    l_ny = 1000;
+    l_nx = 100;
+    l_ny = 100;
     reflectLeft = false;
     reflectRight = false;
     useBathymetry = true;
@@ -320,6 +324,7 @@ int main( int   i_argc,
     }
 
     //TODO REMOVE Bathymetry for testing
+    /*
     for( size_t i = 0; i < l_ny; i++ )
     {
         for( size_t j = 0; j < l_nx; j++ )
@@ -336,7 +341,8 @@ int main( int   i_argc,
             l_waveProp->setBathymetry( i, j, value );
         }
     }
-    l_waveProp->updateWaterHeight();
+     l_waveProp->updateWaterHeight();
+     */
 
     // derive maximum wave speed in setup; the momentum is ignored
     tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
@@ -404,13 +410,15 @@ int main( int   i_argc,
     }
     std::cout << "finished time loop" << std::endl;
 
-    // close thread
-    writeStationsThread.join();
-
     // free memory
     std::cout << "freeing memory" << std::endl;
     delete l_setup;
     delete l_waveProp;
+
+    // kill thread
+    KILL_THREAD = true;
+    // wait for thread
+    writeStationsThread.join();
 
     std::cout << "finished, exiting" << std::endl;
     return EXIT_SUCCESS;

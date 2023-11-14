@@ -12,7 +12,6 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <sstream>
 
 namespace tsunami_lab
 {
