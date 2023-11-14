@@ -19,12 +19,12 @@ using json = nlohmann::json;
 
 TEST_CASE( "Test Stations json methods.", "[StationsJson]" )
 {
-    std::ifstream l_file( "resources/config.json" );
+    std::ifstream l_file( "resources/config.test.json" );
     json config;
     l_file >> config;
 
     REQUIRE( config["output_frequency"] == 1 );
-    REQUIRE( config["stations"].size() == 3 );
+    REQUIRE( config["stations"].size() == 5 );
     REQUIRE( config["stations"][0]["name"] == "station01" );
     REQUIRE( config["stations"][1]["x"] == 15 );
     REQUIRE( config["stations"][2]["y"] == 7 );

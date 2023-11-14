@@ -156,6 +156,7 @@ TEST_CASE( "Test the 2d wave propagation reflection", "[WaveProp2d]" )
 
     m_waveProp.setReflection( tsunami_lab::patches::WavePropagation2d::Side::LEFT, true );
     m_waveProp.setReflection( tsunami_lab::patches::WavePropagation2d::Side::RIGHT, false );
+    tsunami_lab::t_idx stride = m_waveProp.getStride();
 
     tsunami_lab::t_real l_h[5] = { 100, 0, 0, 200, 200 };
     tsunami_lab::t_real l_hu[5] = { 123, -234, 1, 423, 423 };
@@ -199,8 +200,7 @@ TEST_CASE( "Test the 2d wave propagation reflection", "[WaveProp2d]" )
     tsunami_lab::t_real momentumRight;
     tsunami_lab::patches::WavePropagation2d::Reflection reflection;
 
-    // TODO more tests
-    // 1. Cell (water) and 2. Cell (shore)
+    // First Row: 1. Cell (water) and 2. Cell (shore)
     reflection = m_waveProp.calculateReflection( l_h,
                                                  l_hu,
                                                  0,
@@ -216,7 +216,7 @@ TEST_CASE( "Test the 2d wave propagation reflection", "[WaveProp2d]" )
     REQUIRE( momentumRight == -l_hu[0] );
     REQUIRE( reflection == tsunami_lab::patches::WavePropagation2d::Reflection::LEFT );
 
-    // 2. Cell (shore) and 3. Cell (shore)
+    // First Row: 2. Cell (shore) and 3. Cell (shore)
     // !!! Output of height and momentum does not matter with 2 shore cells 
     reflection = m_waveProp.calculateReflection( l_h,
                                                  l_hu,
@@ -229,7 +229,7 @@ TEST_CASE( "Test the 2d wave propagation reflection", "[WaveProp2d]" )
 
     REQUIRE( reflection == tsunami_lab::patches::WavePropagation2d::Reflection::BOTH );
 
-    // 3. Cell (shore) and 4. Cell (water)
+    // First Row: 3. Cell (shore) and 4. Cell (water)
     reflection = m_waveProp.calculateReflection( l_h,
                                                  l_hu,
                                                  2,
@@ -245,7 +245,7 @@ TEST_CASE( "Test the 2d wave propagation reflection", "[WaveProp2d]" )
     REQUIRE( momentumRight == l_hu[3] );
     REQUIRE( reflection == tsunami_lab::patches::WavePropagation2d::Reflection::RIGHT );
 
-    // 4. Cell (water) and 5. Cell (water)
+    // First Row: 4. Cell (water) and 5. Cell (water)
     reflection = m_waveProp.calculateReflection( l_h,
                                                  l_hu,
                                                  3,
@@ -266,7 +266,6 @@ TEST_CASE( "Test the 2d wave propagation reflection", "[WaveProp2d]" )
     tsunami_lab::t_real bathymetryLeft;
     tsunami_lab::t_real bathymetryRight;
 
-    // TODO more tests
     m_waveProp.setBathymetry( 0, 0, 10 );
     m_waveProp.setBathymetry( 1, 0, 1239 );
     m_waveProp.setBathymetry( 2, 0, 134 );
@@ -288,12 +287,17 @@ TEST_CASE( "Test the 2d wave propagation reflection", "[WaveProp2d]" )
     const tsunami_lab::t_real* m_bathymetry = m_waveProp.getBathymetry();
     REQUIRE( m_bathymetry[-1] == tsunami_lab::t_real( 10 ) );
     REQUIRE( m_bathymetry[5] == tsunami_lab::t_real( 70 ) );
+    REQUIRE( m_bathymetry[4 + stride * 2] == tsunami_lab::t_real( 45 ) );
+    for( size_t i = 0; i < stride; i++ )
+    {
+        REQUIRE( m_waveProp.m_h[m_waveProp.m_step][i] == 0 );
+    }
 
     // 1. Cell (water) and 2. Cell (shore)
     reflection = m_waveProp.calculateReflection( m_waveProp.m_h[m_waveProp.m_step],
                                                  m_waveProp.m_hu[m_waveProp.m_step],
-                                                 1,
-                                                 2,
+                                                 stride + 1,
+                                                 stride + 2,
                                                  heightLeft,
                                                  heightRight,
                                                  momentumLeft,
@@ -313,8 +317,8 @@ TEST_CASE( "Test the 2d wave propagation reflection", "[WaveProp2d]" )
     // !!! Output of height and momentum does not matter with 2 shore cells 
     reflection = m_waveProp.calculateReflection( m_waveProp.m_h[m_waveProp.m_step],
                                                  m_waveProp.m_hu[m_waveProp.m_step],
-                                                 2,
-                                                 3,
+                                                 stride + 2,
+                                                 stride + 3,
                                                  heightLeft,
                                                  heightRight,
                                                  momentumLeft,
@@ -327,8 +331,8 @@ TEST_CASE( "Test the 2d wave propagation reflection", "[WaveProp2d]" )
     // 3. Cell (shore) and 4. Cell (water)
     reflection = m_waveProp.calculateReflection( m_waveProp.m_h[m_waveProp.m_step],
                                                  m_waveProp.m_hu[m_waveProp.m_step],
-                                                 3,
-                                                 4,
+                                                 stride + 3,
+                                                 stride + 4,
                                                  heightLeft,
                                                  heightRight,
                                                  momentumLeft,
@@ -347,8 +351,8 @@ TEST_CASE( "Test the 2d wave propagation reflection", "[WaveProp2d]" )
     // 4. Cell (water) and 5. Cell (water)
     reflection = m_waveProp.calculateReflection( m_waveProp.m_h[m_waveProp.m_step],
                                                  m_waveProp.m_hu[m_waveProp.m_step],
-                                                 4,
-                                                 5,
+                                                 stride + 4,
+                                                 stride + 5,
                                                  heightLeft,
                                                  heightRight,
                                                  momentumLeft,
@@ -364,4 +368,79 @@ TEST_CASE( "Test the 2d wave propagation reflection", "[WaveProp2d]" )
     REQUIRE( bathymetryRight == 70 );
     REQUIRE( reflection == tsunami_lab::patches::WavePropagation2d::Reflection::NONE );
 
+
+    // 1. Cell (water) and 2. Cell (shore)
+    reflection = m_waveProp.calculateReflection( m_waveProp.m_h[m_waveProp.m_step],
+                                                 m_waveProp.m_hu[m_waveProp.m_step],
+                                                 3 * stride + 1,
+                                                 3 * stride + 2,
+                                                 heightLeft,
+                                                 heightRight,
+                                                 momentumLeft,
+                                                 momentumRight,
+                                                 bathymetryLeft,
+                                                 bathymetryRight );
+
+    REQUIRE( heightLeft == l_h[0] );
+    REQUIRE( heightRight == l_h[0] );
+    REQUIRE( momentumLeft == l_hu[0] );
+    REQUIRE( momentumRight == -l_hu[0] );
+    REQUIRE( bathymetryLeft == 43 );
+    REQUIRE( bathymetryLeft == bathymetryRight );
+    REQUIRE( reflection == tsunami_lab::patches::WavePropagation2d::Reflection::LEFT );
+
+    // 2. Cell (shore) and 3. Cell (shore)
+    // !!! Output of height and momentum does not matter with 2 shore cells 
+    reflection = m_waveProp.calculateReflection( m_waveProp.m_h[m_waveProp.m_step],
+                                                 m_waveProp.m_hu[m_waveProp.m_step],
+                                                 3 * stride + 2,
+                                                 3 * stride + 3,
+                                                 heightLeft,
+                                                 heightRight,
+                                                 momentumLeft,
+                                                 momentumRight,
+                                                 bathymetryLeft,
+                                                 bathymetryRight );
+
+    REQUIRE( reflection == tsunami_lab::patches::WavePropagation2d::Reflection::BOTH );
+
+    // 3. Cell (shore) and 4. Cell (water)
+    reflection = m_waveProp.calculateReflection( m_waveProp.m_h[m_waveProp.m_step],
+                                                 m_waveProp.m_hu[m_waveProp.m_step],
+                                                 3 * stride + 3,
+                                                 3 * stride + 4,
+                                                 heightLeft,
+                                                 heightRight,
+                                                 momentumLeft,
+                                                 momentumRight,
+                                                 bathymetryLeft,
+                                                 bathymetryRight );
+
+    REQUIRE( heightLeft == l_h[3] );
+    REQUIRE( heightRight == l_h[3] );
+    REQUIRE( momentumLeft == -l_hu[3] );
+    REQUIRE( momentumRight == l_hu[3] );
+    REQUIRE( bathymetryLeft == bathymetryRight );
+    REQUIRE( bathymetryRight == 85 );
+    REQUIRE( reflection == tsunami_lab::patches::WavePropagation2d::Reflection::RIGHT );
+
+    // 4. Cell (water) and 5. Cell (water)
+    reflection = m_waveProp.calculateReflection( m_waveProp.m_h[m_waveProp.m_step],
+                                                 m_waveProp.m_hu[m_waveProp.m_step],
+                                                 3 * stride + 4,
+                                                 3 * stride + 5,
+                                                 heightLeft,
+                                                 heightRight,
+                                                 momentumLeft,
+                                                 momentumRight,
+                                                 bathymetryLeft,
+                                                 bathymetryRight );
+
+    REQUIRE( heightLeft == l_h[3] );
+    REQUIRE( heightRight == l_h[4] );
+    REQUIRE( momentumLeft == l_hu[3] );
+    REQUIRE( momentumRight == l_hu[4] );
+    REQUIRE( bathymetryLeft == 85 );
+    REQUIRE( bathymetryRight == 45 );
+    REQUIRE( reflection == tsunami_lab::patches::WavePropagation2d::Reflection::NONE );
 }

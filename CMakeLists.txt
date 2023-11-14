@@ -61,6 +61,7 @@ set(RESOURCE_FILES
     middle_states.csv
     bathy_profile.csv
     config.json
+    config.test.json
 )
 
 # Create SOURCE_FILES
@@ -115,11 +116,13 @@ link_libraries(nlohmann_json::nlohmann_json)
 add_executable(test ${SOURCE_FILES})
 target_link_libraries(test PRIVATE Catch2::Catch2)
 target_sources(test PRIVATE ${TEST_FILES})
+target_compile_definitions(test PRIVATE TEST)
 
 # Setup Testing + Sanitizer
 add_executable(sanitize_test ${SOURCE_FILES})
 target_link_libraries(sanitize_test PRIVATE Catch2::Catch2)
 target_sources(sanitize_test PRIVATE ${TEST_FILES})
+target_compile_definitions(sanitize_test PRIVATE TEST)
 
 # Setup Testing for middle states
 add_executable(test_middle_states ${SOURCE_FILES})

@@ -324,19 +324,6 @@ int main( int   i_argc,
         }
     }
 
-    //TODO REMOVE Bathymetry for testing
-    /*for( size_t i = 0; i < l_ny; i++ )
-    {
-        for( size_t j = 0; j < l_nx; j++ )
-        {
-            tsunami_lab::t_real value = std::sin( 2 * 3.14 * j / ( 1.0f * l_nx ) ) + 3 * std::cos( 2 * 3.14 * i / ( 1.0f * l_ny ) );
-            value -= 5;
-            value = std::min( value, 3.0f );
-            l_waveProp->setBathymetry( i, j, value );
-        }
-    }
-    l_waveProp->updateWaterHeight();*/
-
     // derive maximum wave speed in setup; the momentum is ignored
     tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
     std::cout << "Max speed " << l_speedMax << std::endl;
