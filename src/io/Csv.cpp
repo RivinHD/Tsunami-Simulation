@@ -7,6 +7,10 @@
 
 #include "../../include/io/Csv.h"
 #include <sstream>
+#include <cmath>
+
+const char* reset = "\033[0m";
+const char* yellow = "\033[33;49m";
 
 void tsunami_lab::io::Csv::write( t_real i_dxy,
                                   t_idx i_nx,
@@ -28,6 +32,8 @@ void tsunami_lab::io::Csv::write( t_real i_dxy,
     if( i_hTotal != nullptr ) io_stream << ",totalHeight";
     io_stream << "\n";
 
+    t_idx nanCount = 0;
+
     // iterate over all cells
     for( t_idx l_iy = 0; l_iy < i_ny; l_iy++ )
     {
@@ -41,15 +47,40 @@ void tsunami_lab::io::Csv::write( t_real i_dxy,
 
             // write data
             io_stream << l_posX << "," << l_posY;
-            if( i_h != nullptr ) io_stream << "," << i_h[l_id];
-            if( i_hu != nullptr ) io_stream << "," << i_hu[l_id];
-            if( i_hv != nullptr ) io_stream << "," << i_hv[l_id];
-            if( i_b != nullptr ) io_stream << "," << i_b[l_id];
-            if( i_hTotal != nullptr ) io_stream << "," << i_hTotal[l_id];
+            if( i_h != nullptr )
+            {
+                io_stream << "," << i_h[l_id];
+                nanCount += std::isnan( i_h[l_id] );
+            }
+            if( i_hu != nullptr )
+            {
+                io_stream << "," << i_hu[l_id];
+                nanCount += std::isnan( i_hu[l_id] );
+            }
+            if( i_hv != nullptr )
+            {
+                io_stream << "," << i_hv[l_id];
+                nanCount += std::isnan( i_hv[l_id] );
+            }
+            if( i_b != nullptr )
+            {
+                io_stream << "," << i_b[l_id];
+                nanCount += std::isnan( i_b[l_id] );
+            }
+            if( i_hTotal != nullptr )
+            {
+                io_stream << "," << i_hTotal[l_id];
+                nanCount += std::isnan( i_hTotal[l_id] );
+            }
             io_stream << "\n";
         }
     }
     io_stream << std::flush;
+
+    if( nanCount > 0 )
+    {
+        std::cout << yellow << "  WARNING: " << nanCount << " nan values were written to this file!" << reset << std::endl;
+    }
 }
 
 bool tsunami_lab::io::Csv::next_middle_states( std::ifstream& stream,
