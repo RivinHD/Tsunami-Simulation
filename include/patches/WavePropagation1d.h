@@ -154,6 +154,11 @@ public:
         return m_h[m_step] + 1;
     }
 
+    /**
+     * Gets the combined height of bathymetry and water height
+     *
+     * @return combined height
+    */
     t_real const* getTotalHeight()
     {
         for( t_idx i = 1; i < m_nCells + 1; i++ )
@@ -286,6 +291,11 @@ public:
     */
     void setReflection( Side side, bool enable )
     {
+        // Skip Side::TOP, Side::BOTTOM
+        if( side >= Side::RIGHT )
+        {
+            return;
+        }
         hasReflection[side] = enable;
     }
 };

@@ -27,28 +27,42 @@ namespace tsunami_lab
     }
 }
 
+/**
+ * Set a station that measure the height in a given frequency.
+ * The frequency is independent of the simulation time.
+*/
 class tsunami_lab::io::Stations
 {
 private:
 
     /**
      * struct to save attributes of single station
-     *
-     * @param m_name name of station
-     * @param m_x x coordinate of station
-     * @param m_y y coordinate of station
-     * @param
-     */
+    */
     struct Station
     {
+        /**
+         * struct to save attributes of single station
+         *
+         * @param i_name name of station
+         * @param i_x x-coordinate of station
+         * @param i_y y-coordinate of station
+         * @param i_path path to the station file to be written to
+        */
         Station( std::string i_name, t_real i_x, t_real i_y, std::string i_path )
             : m_name( i_name ), m_x( i_x ), m_y( i_y ), m_path( i_path )
         {
         }
 
+        //! name of station
         std::string m_name;
+
+        //! x-coordinate of station
         t_real m_x;
+
+        //! y-coordinate of station
         t_real m_y;
+
+        //! path to the station file to be written to
         std::string m_path;
     };
 

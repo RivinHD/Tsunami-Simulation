@@ -60,8 +60,11 @@ private:
     //! total height of water height + bathymetry
     t_real* m_totalHeight;
 
-    //! reflection for the left (index: 0) and right (index: 1)
-    bool hasReflection[2] = { false, false };
+    //! reflection for the left (index: 0), right (index: 1), top (index: 2) and bottom (index: 3)
+    bool hasReflection[4] = { false, false, false, false };
+
+    //! Iteration that should be performed to use the cache more efficiently e.g. 4 -> 4 * sizeof(t_real) = 4 * 32 bit = 128 bit Cacheline
+    static constexpr t_idx ITERATIONS_CACHE = 4;
 
     /*
     * The Sides on which the reflection appears
@@ -161,6 +164,11 @@ public:
         return m_h[m_step] + 1 + stride;
     }
 
+    /**
+     * Gets the combined height of bathymetry and water height
+     *
+     * @return combined height
+    */
     t_real const* getTotalHeight()
     {
         for( t_idx i = 1; i < m_yCells + 1; i++ )
@@ -245,7 +253,7 @@ public:
      *
      * @param i_ix id of the cell in x-direction.
      * @param i_iy id of the cell in y-direction.
-     * @param i_hu momentum in y-direction.
+     * @param i_hv momentum in y-direction.
      **/
     void setMomentumY( t_idx i_ix,
                        t_idx i_iy,

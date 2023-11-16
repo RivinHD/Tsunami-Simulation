@@ -1,7 +1,7 @@
-.. _submissions_riemann_solver:
-
 .. role:: raw-html(raw)
     :format: html
+
+.. _submissions_riemann_solver:
 
 1. Riemann Solver
 ====================

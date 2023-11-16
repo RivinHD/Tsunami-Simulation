@@ -1,7 +1,7 @@
-.. _submissions_finite_volume_discretization:
-
 .. role:: raw-html(raw)
     :format: html
+
+.. _submissions_finite_volume_discretization:
 
 2. Finite Volume Discretization
 ===============================

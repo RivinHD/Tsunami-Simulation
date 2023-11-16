@@ -1,7 +1,7 @@
-.. _submissions_bathymetry_boundary_conditions:
-
 .. role:: raw-html(raw)
     :format: html
+
+.. _submissions_bathymetry_boundary_conditions:
 
 3. Bathymetry & Boundary Conditions
 ===================================
@@ -78,7 +78,7 @@ To add bathymetry into the f-wave solver we need to take these into account in o
 First we need to set the bathymetry to our ``WavePropagation1d``. Because bathymetry is only possible in the f-wave
 solver, we have an if-statement in ``WavePropagation1d`` which checks whether bathymetry is present.
 
-.. code-block::
+.. code-block:: cpp
     :emphasize-lines: 15, 32, 52-53, 62-63, 72-73
 
     /// File:   WavePropagation1d.cpp
@@ -273,7 +273,7 @@ For the implementation, the case that :math:`\mathcal{C}_{i-1}` is dry and :math
 Therefore the following implementation is provided.
 For simulations without bathymetry, a similar implementation is provided that does not take bathymetry into account.
 
-.. code-block::
+.. code-block:: cpp
     :emphasize-lines: 16-19, 21-24
 
     /// File:   WavePropagation1d.cpp
@@ -308,7 +308,7 @@ The return of the reflection is provided by an enumeration where ``LEFT`` and ``
 If both cells are dry, the reflection and netUpdates do not need to be computed, i.e. there is no water to simulate with.
 The implementation is private inside ``WavePropagation1d`` as the reflection is only used internally.
 
-.. code-block::
+.. code-block:: cpp
 
     enum Reflection
     {
@@ -321,7 +321,7 @@ The implementation is private inside ``WavePropagation1d`` as the reflection is 
 
 If a reflection occurs on one side of a cell, the height and momentum of the dry cell do not change, i.e.
 
-.. code-block::
+.. code-block:: cpp
 
     l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
     l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
@@ -506,7 +506,7 @@ The implementation in setups is done using a subclass of ``setup::Setup.h`` wher
 The implementation is similar in both cases, for the subcritical flow the code is shown below.
 To calculate the bathymetry as a function of the x-coordinate, a function pointer is used to which a lambda is assigned.
 
-.. code-block::
+.. code-block:: cpp
     :emphasize-lines: 8-11
     
     /// File:   SubcriticalFlow1d.cpp
@@ -527,7 +527,7 @@ Therefore, the function pointer is needed to calculate the bathymetry and water 
 
 The bathymetry is returned based on the range with its stored bathymetry i.e.
 
-.. code-block::
+.. code-block:: cpp
     :emphasize-lines: 4-8
 
     tsunami_lab::t_real tsunami_lab::setups::SubcriticalFlow1d::getBathymetry( t_real i_x,

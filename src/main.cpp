@@ -33,33 +33,45 @@ namespace fs = std::filesystem;
 const std::string SOLUTION_FOLDER = "solutions";
 bool KILL_THREAD = false;
 
+const std::string reset = "\033[0m";
+const std::string cyan = "\033[36;49m";
+const std::string magenta = "\033[35;49m";
+const std::string green = "\033[32;49m";
+
 enum Arguments
 {
     SOLVER = 's',
     USE_BATHYMETRY = 'B',
-    USE_REFLECT_LEFT = 'L',
-    USE_REFLECT_RIGHT = 'R',
+    USE_REFLECTION = 'r',
 };
 const int requiredArguments = 1;
 const std::vector<ArgSetup> optionalArguments = {
     ArgSetup( Arguments::SOLVER, 1 ),
     ArgSetup( Arguments::USE_BATHYMETRY, 0 ),
-    ArgSetup( Arguments::USE_REFLECT_LEFT, 0 ),
-    ArgSetup( Arguments::USE_REFLECT_RIGHT, 1 ),
+    ArgSetup( Arguments::USE_REFLECTION, 1 ),
 };
 
 void printHelp()
 {
-    std::cerr << "./build/simulation N_CELLS_X (N_CELLS_Y) [-s <fwave|roe>] [-B] [-L] [-R] [-1]" << std::endl << std::endl
+    std::cerr << "./build/simulation " << magenta << "N_CELLS_X (N_CELLS_Y) " << reset << "["
+        << green << "-s " << cyan << "<fwave|roe>" << reset << "] ["
+        << green << "-B" << reset << "] ["
+        << green << "-r " << cyan << "<left|right|top|bottom|x|y|all>" << reset << "]"
+        << std::endl << std::endl
         << "REQUIERED INPUT:" << std::endl
-        << "\tN_CELLS_X is the number of cells in x-direction." << std::endl << std::endl
-        << "\tN_CELLS_Y is the number of cells in y-direction." << std::endl << std::endl
+        << magenta << "\tN_CELLS_X" << reset << " is the number of cells in x-direction." << std::endl
+        << std::endl
+        << "OPTIONAL INPUT:" << std::endl
+        << magenta << "\tN_CELLS_Y" << reset << " is the number of cells in y-direction." << std::endl
+        << std::endl
         << "NOTE: optional flags has be put after the required input" << std::endl
         << "OPTIONAL FLAGS:" << std::endl
-        << "\t-s set used solvers requires 'fwave' or 'roe' as inputs" << std::endl
-        << "\t-B enables the input for bathymetry" << std::endl
-        << "\t-L enables the reflection on the left side of the simulation" << std::endl
-        << "\t-R enables the reflection on the right side of the simulation" << std::endl;
+        << green << "\t-s" << reset << " set used solvers requires " << cyan << "'fwave'" << reset << " or " << cyan << "'roe'" << reset << " as inputs" << std::endl
+        << green << "\t-B" << reset << " enables the input for bathymetry" << std::endl
+        << green << "\t-r" << reset << " enables the reflection on the given side of the simulation" << std::endl
+        << "\t   where " << cyan << "left | right | top | bottom'" << reset << " enables their respective sides" << std::endl
+        << "\t   where " << cyan << "x | y" << reset << " enables the left & right | top & bottom side" << std::endl
+        << "\t   where " << cyan << "all" << reset << " enables all sides" << std::endl;
 }
 
 void writeStations( tsunami_lab::io::Stations* stations, tsunami_lab::patches::WavePropagation* solver )
@@ -97,6 +109,8 @@ int main( int   i_argc,
     bool useBathymetry = false;
     bool reflectLeft = false;
     bool reflectRight = false;
+    bool reflectTop = false;
+    bool reflectBottom = false;
     bool use2D = false;
 
 #ifndef SKIP_ARGUMENTS
@@ -181,14 +195,46 @@ int main( int   i_argc,
                     std::cout << "Activated Bathymetry" << std::endl;
                     break;
 
-                case Arguments::USE_REFLECT_LEFT:
+                case Arguments::USE_REFLECTION:
+                    //TODO finish
+                    stringParameter = std::string( i_argv[++i] );
+                    if( stringParameter == "left" )
+                    {
+                        reflectLeft = true;
+                    }
+                    else if( stringParameter == "right" )
+                    {
+                        reflectRight = true;
+                    }
+                    else if( stringParameter == "top" )
+                    {
+                        reflectTop = true;
+                    }
+                    else if( stringParameter == "bottom" )
+                    {
+                        reflectBottom = true;
+                    }
+                    else if( stringParameter == "x" )
+                    {
+
+                    }
+                    else if( stringParameter == "y" )
+                    {
+
+                    }
+                    else if( stringParameter == "all" )
+                    {
+
+                    }
+                    else
+                    {
+                        std::cerr << "unknown argument for flag -r" << std::endl
+                            << "valid arguments are 'left', 'right', 'top', 'bottom', 'x', 'y', 'all'" << std::endl
+                            << "the arguments 'top' and 'bottom' only take effect if the simulation is 2d" << std::endl;
+                        return EXIT_FAILURE;
+                    }
                     reflectLeft = true;
                     std::cout << "Activated Reflect on Left side" << std::endl;
-                    break;
-
-                case Arguments::USE_REFLECT_RIGHT:
-                    reflectRight = true;
-                    std::cout << "Activated Reflect on Right side" << std::endl;
                     break;
 
                 default:
@@ -280,6 +326,8 @@ int main( int   i_argc,
     // set Reflection
     l_waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::LEFT, reflectLeft );
     l_waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::RIGHT, reflectRight );
+    l_waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::TOP, reflectTop );
+    l_waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::BOTTOM, reflectBottom );
 
     // maximum observed height in the setup
     tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
@@ -323,6 +371,25 @@ int main( int   i_argc,
                                        l_b );
         }
     }
+
+    for( size_t i = 0; i < l_ny; i++ )
+    {
+        for( size_t j = 0; j < l_nx; j++ )
+        {
+            tsunami_lab::t_real value = std::sin( 2 * 3.14 * j / ( 1.0f * l_nx ) ) + 3 * std::cos( 2 * 3.14 * i / ( 1.0f * l_ny ) );
+            value -= 5;
+            value = std::min( value, 3.0f );
+            l_waveProp->setBathymetry( i, j, value );
+        }
+    }
+    for( size_t i = 120; i < 130; i++ )
+    {
+        for( size_t j = 200; j < 400; j++ )
+        {
+            l_waveProp->setBathymetry( i, j, 10 );
+        }
+    }
+    l_waveProp->updateWaterHeight();
 
     // derive maximum wave speed in setup; the momentum is ignored
     tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );

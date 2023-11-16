@@ -14,6 +14,7 @@
    submissions/riemann_solver.rst
    submissions/finite_volume_discretization.rst
    submissions/bathymetry_boundary_conditions.rst
+   submissions/two_dimensional_solver.rst
 
 .. toctree::
    :maxdepth: 4
@@ -27,5 +28,4 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
