@@ -362,7 +362,7 @@ The calculation of reflection and update are the same as performed in ``WaveProp
 
 .. _two_dimensional_solver_circular_dam_break:
 
-2. Circular Dam break
+2. Circular Dam Break
 ^^^^^^^^^^^^^^^^^^^^^
 
 The circular dam break setup is implemented by a standard constructor with hard coded values from the example:
@@ -420,9 +420,7 @@ Visualizing the bathymetry effects with 500 x 500 cells.
     :width: 700
 
 The red lines on the left and right indicate that the wave in the x-direction propagates more slowly than the wave in the y-direction because there is a dent in the bathymetry in the center in y-direction.
-Otherwise, the waves in the x and y directions should hit the simulation boundary at the same time, as can be seen in the video `Circular dam break <two_dimensional_solver_circular_dam_break_>` at about 3 seconds.
-
-Translated with www.DeepL.com/Translator (free version)
+Otherwise, the waves in the x and y directions should hit the simulation boundary at the same time, as can be seen in the video `Circular dam break <two_dimensional_solver_circular_dam_break_>`_ at about 3 seconds.
 
 Visualizing the bathymetry with and obstacle effects with 500 x 500 cells.
 Reflection at the wall can be seen at about 1 second.
