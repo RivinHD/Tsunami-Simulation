@@ -7,18 +7,24 @@ message("###                              ###")
 message("### https://scalable.uni-jena.de ###")
 message("####################################")
 
+option(ENABLE_TESTMODE "Adds the Test defintion to any build")
+if(ENABLE_TESTMODE)
+    add_compile_definitions(TEST)
+    message("-- Starting in Test Mode")
+endif(ENABLE_TESTMODE)
+
 # Setup compile Flags
 if(MSVC)
     set(CMAKE_CXX_FLAGS "/Wall /W3 /WL /EHsc ")
     set(CMAKE_CXX_FLAGS_RELEASE "/O2")
     set(CMAKE_CXX_FLAGS_DEBUG "/Od")
 else()
-    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Werror")
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Werror -pthread")
     set(CMAKE_CXX_FLAGS_RELEASE "-O2")
     set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 endif()
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD_REQUIRED on)
 set(CMAKE_VERBOSE_MAKEFILE on)
 
 

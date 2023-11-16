@@ -80,6 +80,9 @@ void tsunami_lab::io::Csv::write( t_real i_dxy,
     if( nanCount > 0 )
     {
         std::cout << yellow << "  WARNING: " << nanCount << " nan values were written to this file!" << reset << std::endl;
+#ifdef TEST
+        exit( EXIT_FAILURE );
+#endif // TEST
     }
 }
 

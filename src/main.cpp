@@ -28,8 +28,6 @@
 
 namespace fs = std::filesystem;
 
-#define SKIP_ARGUMENTS
-
 const std::string SOLUTION_FOLDER = "solutions";
 bool KILL_THREAD = false;
 
@@ -45,7 +43,8 @@ enum Arguments
     USE_REFLECTION = 'r',
 };
 const int requiredArguments = 1;
-const std::vector<ArgSetup> optionalArguments = {
+const int optionalArguments = 1;
+const std::vector<ArgSetup> optionalFlags = {
     ArgSetup( Arguments::SOLVER, 1 ),
     ArgSetup( Arguments::USE_BATHYMETRY, 0 ),
     ArgSetup( Arguments::USE_REFLECTION, 1 ),
@@ -68,7 +67,7 @@ void printHelp()
         << "OPTIONAL FLAGS:" << std::endl
         << green << "\t-s" << reset << " set used solvers requires " << cyan << "'fwave'" << reset << " or " << cyan << "'roe'" << reset << " as inputs" << std::endl
         << green << "\t-B" << reset << " enables the input for bathymetry" << std::endl
-        << green << "\t-r" << reset << " enables the reflection on the given side of the simulation" << std::endl
+        << green << "\t-r" << reset << " enables the reflection on the specified side of the simulation. Several arguments can be passed." << std::endl
         << "\t   where " << cyan << "left | right | top | bottom'" << reset << " enables their respective sides" << std::endl
         << "\t   where " << cyan << "x | y" << reset << " enables the left & right | top & bottom side" << std::endl
         << "\t   where " << cyan << "all" << reset << " enables all sides" << std::endl;
@@ -90,12 +89,6 @@ void writeStations( tsunami_lab::io::Stations* stations, tsunami_lab::patches::W
 int main( int   i_argc,
           char* i_argv[] )
 {
-    // number of cells in x- and y-direction
-    tsunami_lab::t_idx l_nx = 0;
-    tsunami_lab::t_idx l_ny = 1;
-
-    // set cell size
-    tsunami_lab::t_real l_dxy = 1;
 
     std::cout << "#####################################################" << std::endl;
     std::cout << "###                  Tsunami Lab                  ###" << std::endl;
@@ -105,18 +98,21 @@ int main( int   i_argc,
     std::cout << "#####################################################" << std::endl;
 
     // default arguments values
+    tsunami_lab::t_idx l_nx = 0;
+    tsunami_lab::t_idx l_ny = 1;
+    tsunami_lab::t_real l_dxy = 1;
     tsunami_lab::patches::Solver solver = tsunami_lab::patches::Solver::FWAVE;
     bool useBathymetry = false;
     bool reflectLeft = false;
     bool reflectRight = false;
     bool reflectTop = false;
     bool reflectBottom = false;
-    bool use2D = true;
+    bool use2D = false;
 
 #ifndef SKIP_ARGUMENTS
     // error: wrong number of arguments.
     int minArgLength = 1 + requiredArguments;
-    int maxArgLength = minArgLength + ArgSetup::getArgumentsLength( optionalArguments );
+    int maxArgLength = minArgLength + optionalArguments + ArgSetup::getArgumentsLength( optionalFlags );
     if( i_argc < minArgLength || i_argc > maxArgLength )
     {
         std::cerr << "invalid number of arguments, usage:" << std::endl;
@@ -146,7 +142,7 @@ int main( int   i_argc,
 
     // parse optional Argumentes
     int argMapParameterCount[ArgSetup::LENGTH_ARG_CHAR] = { 0 };
-    ArgSetup::generateCountMap( optionalArguments, argMapParameterCount );
+    ArgSetup::generateCountMap( optionalFlags, argMapParameterCount );
     for( int i = minArgLength; i < i_argc; i++ )
     {
         char* arg = i_argv[i];
@@ -162,12 +158,12 @@ int main( int   i_argc,
         {
             if( arg[argI] < START_ARG_CHAR || arg[argI] > END_ARG_CHAR )
             {
-                std::cerr << "The Flag: " << arg[argI] << " is not a valid flag (Out of Bounds)" << std::endl;
+                std::cerr << "The Flag: " << green << arg[argI] << reset << " is not a valid flag (Out of Bounds)" << std::endl;
                 return EXIT_FAILURE;
             }
             if( i + argMapParameterCount[arg[argI] - START_ARG_CHAR] >= i_argc )
             {
-                std::cerr << "The Flag: " << arg[argI] << " has not enough Inputs" << std::endl;
+                std::cerr << "The Flag: " << green << arg[argI] << reset << " has not enough Inputs" << std::endl;
                 return EXIT_FAILURE;
             }
             switch( arg[argI] )
@@ -192,49 +188,59 @@ int main( int   i_argc,
 
                 case Arguments::USE_BATHYMETRY:
                     useBathymetry = true;
-                    std::cout << "Activated Bathymetry" << std::endl;
                     break;
 
                 case Arguments::USE_REFLECTION:
-                    //TODO finish
-                    stringParameter = std::string( i_argv[++i] );
-                    if( stringParameter == "left" )
+                    stringParameter = std::string( i_argv[i + 1] );
+                    do
                     {
-                        reflectLeft = true;
-                    }
-                    else if( stringParameter == "right" )
-                    {
-                        reflectRight = true;
-                    }
-                    else if( stringParameter == "top" )
-                    {
-                        reflectTop = true;
-                    }
-                    else if( stringParameter == "bottom" )
-                    {
-                        reflectBottom = true;
-                    }
-                    else if( stringParameter == "x" )
-                    {
-
-                    }
-                    else if( stringParameter == "y" )
-                    {
-
-                    }
-                    else if( stringParameter == "all" )
-                    {
-
-                    }
-                    else
-                    {
-                        std::cerr << "unknown argument for flag -r" << std::endl
-                            << "valid arguments are 'left', 'right', 'top', 'bottom', 'x', 'y', 'all'" << std::endl
-                            << "the arguments 'top' and 'bottom' only take effect if the simulation is 2d" << std::endl;
-                        return EXIT_FAILURE;
-                    }
-                    reflectLeft = true;
-                    std::cout << "Activated Reflect on Left side" << std::endl;
+                        i += 1;
+                        if( stringParameter == "left" )
+                        {
+                            reflectLeft = true;
+                        }
+                        else if( stringParameter == "right" )
+                        {
+                            reflectRight = true;
+                        }
+                        else if( stringParameter == "top" )
+                        {
+                            reflectTop = true;
+                        }
+                        else if( stringParameter == "bottom" )
+                        {
+                            reflectBottom = true;
+                        }
+                        else if( stringParameter == "x" )
+                        {
+                            reflectLeft = true;
+                            reflectRight = true;
+                        }
+                        else if( stringParameter == "y" )
+                        {
+                            reflectTop = true;
+                            reflectBottom = true;
+                        }
+                        else if( stringParameter == "all" )
+                        {
+                            reflectLeft = true;
+                            reflectRight = true;
+                            reflectTop = true;
+                            reflectBottom = true;
+                        }
+                        else
+                        {
+                            std::cerr << "unknown argument for flag -r" << std::endl
+                                << "valid arguments are 'left', 'right', 'top', 'bottom', 'x', 'y', 'all'" << std::endl
+                                << "the arguments 'top' and 'bottom' only take effect if the simulation is 2d" << std::endl;
+                            return EXIT_FAILURE;
+                        }
+                        if( i + 1 >= i_argc )
+                        {
+                            break;
+                        }
+                        stringParameter = std::string( i_argv[i + 1] );
+                    } while( stringParameter[0] != '-' );
                     break;
 
                 default:
@@ -245,7 +251,7 @@ int main( int   i_argc,
             }
         }
     }
-#endif // SKIP_ARGUMENTS
+#endif // !SKIP_ARGUMENTS
 #ifdef SKIP_ARGUMENTS
     l_nx = 500;
     l_ny = 500;
@@ -254,7 +260,7 @@ int main( int   i_argc,
     reflectBottom = false;
     reflectTop = false;
     useBathymetry = true;
-    use2D = true;
+    use2D = false;
     std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
 
@@ -266,6 +272,11 @@ int main( int   i_argc,
     else
     {
         std::cout << "Simulation is set to 1D" << std::endl;
+    }
+
+    if( useBathymetry )
+    {
+        std::cout << "Activated Bathymetry" << std::endl;
     }
 
     std::cout << "Set Solver: ";
@@ -283,11 +294,30 @@ int main( int   i_argc,
         std::cerr << "ERROR: Roe solver does not have options for bathymetry" << std::endl;
         return EXIT_FAILURE;
     }
+
+    std::string reflectionsText = "";
+    bool reflectionAppended = false;
+    reflectionsText += reflectLeft ? "Left" : "";
+    reflectionAppended |= reflectLeft;
+    reflectionsText += reflectRight ? ( reflectionAppended ? ", Right" : "Right" ) : "";
+    reflectionAppended |= reflectRight;
+    reflectionsText += reflectTop ? ( reflectionAppended ? ", Top" : "Top" ) : "";
+    reflectionAppended |= reflectTop;
+    reflectionsText += reflectBottom ? ( reflectionAppended ? ", Bottom" : "Bottom" ) : "";
+    reflectionAppended |= reflectBottom;
+    std::cout << "Activated Reflection on " << reflectionsText << " side" << std::endl;
     // End print
 
     tsunami_lab::t_real l_scaleX = 100;
     tsunami_lab::t_real l_scaleY = 100;
-    l_dxy = std::min( l_scaleX / l_nx, l_scaleY / l_ny );
+    if( use2D )
+    {
+        l_dxy = std::min( l_scaleX / l_nx, l_scaleY / l_ny );
+    }
+    else
+    {
+        l_dxy = l_scaleX / l_nx;
+    }
 
     std::cout << "runtime configuration" << std::endl;
     std::cout << "  number of cells in x-direction: " << l_nx << std::endl;

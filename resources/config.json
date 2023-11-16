@@ -1,5 +1,5 @@
 {
-  "output_frequency": 5,
+  "output_frequency": 1,
   "stations": [
     {
       "name": "station01",

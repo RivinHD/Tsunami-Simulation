@@ -178,7 +178,11 @@ The next steps are the same as performed in ``WavePropagation1d``.
         [ ... ]
     }
 
+Then the h buffers are swapped to load the ``m_h`` and ``m_hv`` from the same step.
+Thus the new results for ``m_h``, ``m_hu``, ``m_hv`` are located in the same step.
+
 .. code-block:: cpp
+    :emphasize-lines: 2-4
 
     //swapping the h buffer new and old to write new data in previous old
     m_h[m_step] = l_hOld;
@@ -200,7 +204,25 @@ The next steps are the same as performed in ``WavePropagation1d``.
         l_hvNew[l_ce] = l_hvOld[l_ce];
     }
 
+The calculation in the y-direction follows the same principle, but now we have to take a full stride to the next cell, i.e. we use the top and bottom cells for the update.
+To make this calculation more efficient, four values in the x-direction are updated simultaneously in the y-direction.
+This is done to address a 128-bit cache line, i.e. :math:`\text{sizeof(float)} \cdot 4 = 32 \text{ bit} \cdot 4 = 128 \text{ bit}`.
+Otherwise, three loaded values would be lost if the arrays are aligned correctly.
+If the cache line is smaller than 128 bits, e.g. 64 bits or 32 bits, then values are loaded that would also be loaded later.
+However, the number of simultaneously updated values in the y-direction should not be too large, otherwise loaded values from the lower cells that are needed in the next iteration will be wasted.
+
+To change the value used, which makes the calculation more efficient as explained above, the variable ``ITERATIONS_CACHE`` is used.
+In this case, ``ITERATIONS_CACHE`` is four, which will be used for the rest of the explanation.
+The implementation requires two loops.
+The first loop iterates over all cells in the x-direction as long as the number of cells is divisible by four.
+The next inner loop iterates over the rows, and the last inner loop is used to make the calculation more efficient.
+The indices of the top and bottom cells to be updated are then determined.
+The second loop deals with the remaining cells in the x direction that are less than four. 
+The loop iterates over the rows and the inner loop over the remaining cells in the x-direction, using the same calculations as the first loop.
+The calculation of reflection and update are the same as performed in ``WavePropagation1d``.
+
 .. code-block:: cpp
+    :emphasize-lines: 2-3, 9, 12, 15, 18-19, 69, 72, 75-76
 
     // calculates xCells dividable by ITERATIONS_CACHE and remaining cells
     t_idx full_xCells = ( m_xCells / ITERATIONS_CACHE ) * ITERATIONS_CACHE;
@@ -338,8 +360,38 @@ The next steps are the same as performed in ``WavePropagation1d``.
     }
 
 
+.. _two_dimensional_solver_circular_dam_break:
+
 2. Circular Dam break
 ^^^^^^^^^^^^^^^^^^^^^
+
+The circular dam break setup is implemented by a standard constructor with hard coded values from the example:
+
+.. _two_dimensional_solver_circular_dam_break_example:
+
+.. math::
+
+    \begin{cases}
+    [h, hu, hv]^T = [10, 0, 0]^T &\text{if } \sqrt{x^2+y^2} < 10 \\
+    [h, hu, hv]^T = [5, 0, 0]^T  \quad &\text{else}
+    \end{cases}
+
+There is also a constructor with which the circular dam break can be adjusted, i.e. the height of the center, the height outside the center, the position of the center and the scale of the center can be set.
+
+The height is set according to the `calculation in the example <two_dimensional_solver_circular_dam_break_example_>`_, which creates a circle on a 2D plane.
+The momentum and bathymetry functions return zero, as none of these functions are set in this setup.
+
+.. code-block:: cpp
+    :emphasize-lines: 4-5
+
+    tsunami_lab::t_real tsunami_lab::setups::CircularDamBreak2d::getHeight( t_real i_x,
+                                                                            t_real i_y ) const
+    {
+        bool isInside = std::sqrt( std::pow( i_x - locationCenter[0], 2 ) + std::pow( i_y - locationCenter[1], 2 ) ) < scaleCenter;
+        return isInside ? heightCenter : heightOutside;
+    }
+
+Visualizing the circular dam break without bathymetry with 500 x 500 cells.
 
 .. raw:: html
 
@@ -353,6 +405,28 @@ The next steps are the same as performed in ``WavePropagation1d``.
 3. Bathymetry & Obstacle 
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
+Visualizing the bathymetry effects with 500 x 500 cells.
+
+.. raw:: html
+
+    <center>
+        <video width="700" controls>
+            <source src="../_static/videos/task_4_1_3.mp4" type="video/mp4">
+        </video>
+    </center>
+
+.. image:: ../images/Task_4_1_3.png
+    :align: center
+    :width: 700
+
+The red lines on the left and right indicate that the wave in the x-direction propagates more slowly than the wave in the y-direction because there is a dent in the bathymetry in the center in y-direction.
+Otherwise, the waves in the x and y directions should hit the simulation boundary at the same time, as can be seen in the video `Circular dam break <two_dimensional_solver_circular_dam_break_>` at about 3 seconds.
+
+Translated with www.DeepL.com/Translator (free version)
+
+Visualizing the bathymetry with and obstacle effects with 500 x 500 cells.
+Reflection at the wall can be seen at about 1 second.
+
 .. raw:: html
 
     <center>
@@ -360,11 +434,6 @@ The next steps are the same as performed in ``WavePropagation1d``.
             <source src="../_static/videos/task_4_1_3_alt.mp4" type="video/mp4">
         </video>
     </center>
-
-.. image:: ../images/Task_4_1_3.png
-    :align: center
-
-The red lines on the left and right side indicate that the wave in x-direction propagate slower than the wave in y-direction because of the bathymetry dent in the middle in y-direction.
 
 
 4.2. Stations

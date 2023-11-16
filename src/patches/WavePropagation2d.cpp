@@ -341,7 +341,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                 {
                     // determine left and right cell-id
                     t_idx l_ceT = stride * j + i + k;
-                    t_idx l_ceB = stride * ( j + 1 ) + k;
+                    t_idx l_ceB = stride * ( j + 1 ) + i + k;
 
                     // noting to compute both shore cells
                     if( l_hOld[l_ceT] == 0 && l_hOld[l_ceB] == 0 )

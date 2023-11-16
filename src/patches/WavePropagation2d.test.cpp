@@ -29,6 +29,7 @@ TEST_CASE( "Test the 2d wave propagation solver.", "[WaveProp2d]" )
      *    -88.25985     | -88.25985
      */
 
+
      // construct solver and setup a dam break problem
     tsunami_lab::patches::WavePropagation2d m_waveProp_FWave( 100, 100 );
     m_waveProp_FWave.setSolver( tsunami_lab::patches::Solver::FWAVE );
@@ -77,6 +78,61 @@ TEST_CASE( "Test the 2d wave propagation solver.", "[WaveProp2d]" )
     {
         REQUIRE( m_waveProp_FWave.getHeight()[l_ce] == Approx( 8 ) );
         REQUIRE( m_waveProp_FWave.getMomentumX()[l_ce] == Approx( 0 ) );
+    }
+
+    /*
+    * Same Test but with bathymetry enabled
+    */
+
+    // construct solver and setup a dam break problem
+    tsunami_lab::patches::WavePropagation2d m_waveProp_FWaveB( 100, 100 );
+    m_waveProp_FWaveB.enableBathymetry( true );
+    m_waveProp_FWaveB.setSolver( tsunami_lab::patches::Solver::FWAVE );
+
+    for( std::size_t l_ce = 0; l_ce < 50; l_ce++ )
+    {
+        m_waveProp_FWaveB.setHeight( l_ce,
+                                     0,
+                                     10 );
+        m_waveProp_FWaveB.setMomentumX( l_ce,
+                                        0,
+                                        0 );
+    }
+    for( std::size_t l_ce = 50; l_ce < 100; l_ce++ )
+    {
+        m_waveProp_FWaveB.setHeight( l_ce,
+                                     0,
+                                     8 );
+        m_waveProp_FWaveB.setMomentumX( l_ce,
+                                        0,
+                                        0 );
+    }
+
+    // set outflow boundary condition
+    m_waveProp_FWaveB.setGhostOutflow();
+
+    // perform a time step
+    m_waveProp_FWaveB.timeStep( 0.1 );
+
+    // steady state
+    for( std::size_t l_ce = 0; l_ce < 49; l_ce++ )
+    {
+        REQUIRE( m_waveProp_FWaveB.getHeight()[l_ce] == Approx( 10 ) );
+        REQUIRE( m_waveProp_FWaveB.getMomentumX()[l_ce] == Approx( 0 ) );
+    }
+
+    // dam-break
+    REQUIRE( m_waveProp_FWaveB.getHeight()[49] == Approx( 10 - 0.1 * 9.394671362 ) );
+    REQUIRE( m_waveProp_FWaveB.getMomentumX()[49] == Approx( 0 + 0.1 * 88.25985 ) );
+
+    REQUIRE( m_waveProp_FWaveB.getHeight()[50] == Approx( 8 + 0.1 * 9.394671362 ) );
+    REQUIRE( m_waveProp_FWaveB.getMomentumX()[50] == Approx( 0 + 0.1 * 88.25985 ) );
+
+    // steady state
+    for( std::size_t l_ce = 51; l_ce < 100; l_ce++ )
+    {
+        REQUIRE( m_waveProp_FWaveB.getHeight()[l_ce] == Approx( 8 ) );
+        REQUIRE( m_waveProp_FWaveB.getMomentumX()[l_ce] == Approx( 0 ) );
     }
 
     /*
@@ -154,9 +210,35 @@ TEST_CASE( "Test the 2d wave propagation reflection", "[WaveProp2d]" )
     */
     tsunami_lab::patches::WavePropagation2d m_waveProp( 5, 5 );
 
+
+    m_waveProp.setReflection( tsunami_lab::patches::WavePropagation2d::Side::LEFT, true );
+    REQUIRE( m_waveProp.hasReflection[0] );
+    m_waveProp.setReflection( tsunami_lab::patches::WavePropagation2d::Side::RIGHT, true );
+    REQUIRE( m_waveProp.hasReflection[1] );
+    m_waveProp.setReflection( tsunami_lab::patches::WavePropagation2d::Side::TOP, true );
+    REQUIRE( m_waveProp.hasReflection[2] );
+    m_waveProp.setReflection( tsunami_lab::patches::WavePropagation2d::Side::BOTTOM, true );
+    REQUIRE( m_waveProp.hasReflection[3] );
+
+    m_waveProp.setReflection( tsunami_lab::patches::WavePropagation2d::Side::LEFT, false );
+    REQUIRE( !m_waveProp.hasReflection[0] );
+    m_waveProp.setReflection( tsunami_lab::patches::WavePropagation2d::Side::RIGHT, false );
+    REQUIRE( !m_waveProp.hasReflection[1] );
+    m_waveProp.setReflection( tsunami_lab::patches::WavePropagation2d::Side::TOP, false );
+    REQUIRE( !m_waveProp.hasReflection[2] );
+    m_waveProp.setReflection( tsunami_lab::patches::WavePropagation2d::Side::BOTTOM, false );
+    REQUIRE( !m_waveProp.hasReflection[3] );
+
     m_waveProp.setReflection( tsunami_lab::patches::WavePropagation2d::Side::LEFT, true );
     m_waveProp.setReflection( tsunami_lab::patches::WavePropagation2d::Side::RIGHT, false );
     tsunami_lab::t_idx stride = m_waveProp.getStride();
+
+    // Test initialized Ghost Cell Bathymetry
+    for( size_t i = 0; i < stride; i++ )
+    {
+        REQUIRE( m_waveProp.m_h[m_waveProp.m_step][i] == 0 );
+        REQUIRE( m_waveProp.m_h[m_waveProp.m_step][( m_waveProp.m_yCells + 1 ) * stride + i] == 0 );
+    }
 
     tsunami_lab::t_real l_h[5] = { 100, 0, 0, 200, 200 };
     tsunami_lab::t_real l_hu[5] = { 123, -234, 1, 423, 423 };
@@ -288,10 +370,6 @@ TEST_CASE( "Test the 2d wave propagation reflection", "[WaveProp2d]" )
     REQUIRE( m_bathymetry[-1] == tsunami_lab::t_real( 10 ) );
     REQUIRE( m_bathymetry[5] == tsunami_lab::t_real( 70 ) );
     REQUIRE( m_bathymetry[4 + stride * 2] == tsunami_lab::t_real( 45 ) );
-    for( size_t i = 0; i < stride; i++ )
-    {
-        REQUIRE( m_waveProp.m_h[m_waveProp.m_step][i] == 0 );
-    }
 
     // 1. Cell (water) and 2. Cell (shore)
     reflection = m_waveProp.calculateReflection( m_waveProp.m_h[m_waveProp.m_step],
