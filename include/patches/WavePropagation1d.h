@@ -141,7 +141,7 @@ public:
      **/
     t_idx getStride()
     {
-        return m_nCells + 2;
+        return 0;
     }
 
     /**

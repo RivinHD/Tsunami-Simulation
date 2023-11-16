@@ -83,7 +83,7 @@ void writeStations( tsunami_lab::io::Stations* stations, tsunami_lab::patches::W
             break;
         }
         stations->write( solver->getTotalHeight() );
-        std::this_thread::sleep_for( std::chrono::milliseconds( (int)stations->getOutputFrequency() ) );
+        std::this_thread::sleep_for( std::chrono::seconds( (int)stations->getOutputFrequency() ) );
     }
 }
 
@@ -111,7 +111,7 @@ int main( int   i_argc,
     bool reflectRight = false;
     bool reflectTop = false;
     bool reflectBottom = false;
-    bool use2D = false;
+    bool use2D = true;
 
 #ifndef SKIP_ARGUMENTS
     // error: wrong number of arguments.
@@ -133,7 +133,7 @@ int main( int   i_argc,
         return EXIT_FAILURE;
     }
     // Argument 2 (optional): N_CELLS_Y
-    if( i_argv[2][0] != '-' )
+    if( i_argc > 2 && i_argv[2][0] != '-' )
     {
         use2D = true;
         l_ny = atoi( i_argv[2] );
@@ -251,6 +251,8 @@ int main( int   i_argc,
     l_ny = 500;
     reflectLeft = false;
     reflectRight = false;
+    reflectBottom = false;
+    reflectTop = false;
     useBathymetry = true;
     use2D = true;
     std::cout << i_argv[i_argc - 1] << std::endl;
@@ -372,25 +374,6 @@ int main( int   i_argc,
         }
     }
 
-    for( size_t i = 0; i < l_ny; i++ )
-    {
-        for( size_t j = 0; j < l_nx; j++ )
-        {
-            tsunami_lab::t_real value = std::sin( 2 * 3.14 * j / ( 1.0f * l_nx ) ) + 3 * std::cos( 2 * 3.14 * i / ( 1.0f * l_ny ) );
-            value -= 5;
-            value = std::min( value, 3.0f );
-            l_waveProp->setBathymetry( i, j, value );
-        }
-    }
-    for( size_t i = 120; i < 130; i++ )
-    {
-        for( size_t j = 200; j < 400; j++ )
-        {
-            l_waveProp->setBathymetry( i, j, 10 );
-        }
-    }
-    l_waveProp->updateWaterHeight();
-
     // derive maximum wave speed in setup; the momentum is ignored
     tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
     std::cout << "Max speed " << l_speedMax << std::endl;
@@ -404,7 +387,7 @@ int main( int   i_argc,
     // set up time and print control
     tsunami_lab::t_idx  l_timeStep = 0;
     tsunami_lab::t_idx  l_nOut = 0;
-    tsunami_lab::t_real l_endTime = 25;
+    tsunami_lab::t_real l_endTime = 15;
     tsunami_lab::t_real l_simTime = 0;
 
 
@@ -439,7 +422,7 @@ int main( int   i_argc,
                                          l_nx,
                                          l_ny,
                                          l_waveProp->getStride(),
-                                         l_waveProp->getTotalHeight(),
+                                         l_waveProp->getHeight(),
                                          l_waveProp->getMomentumX(),
                                          l_waveProp->getMomentumY(),
                                          l_waveProp->getBathymetry(),
