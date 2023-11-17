@@ -232,7 +232,6 @@ net effect of the waves to the left and right “cell”:"[1]_
         }
     }
 
-.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_1.html#f-wave-solver (29.10.2023)
 
 
 F-wave Solver Unit Testing
@@ -580,3 +579,7 @@ Contribution
 ------------
 
 All team members contributed equally to the tasks.
+
+
+
+.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_1.html#f-wave-solver (29.10.2023)
