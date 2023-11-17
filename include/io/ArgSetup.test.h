@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
- * @section DESCRIPTION
  * The unit test for the ArgSetup
  **/
 #include <catch2/catch.hpp>

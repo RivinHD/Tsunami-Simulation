@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Roe Riemann solver for the shallow water equations.
  **/
 #include "../../include/solvers/Roe.h"

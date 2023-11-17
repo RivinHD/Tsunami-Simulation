@@ -515,7 +515,7 @@ Sphinx with Doxygen
 
 1. First we install ``Doxygen``.
 
-2. We install ``Sphinx`` and ``breathe`` and set breath as an extension. An installation guide can be found at :ref:`Building the Documentation`.
+2. We install ``Sphinx`` and ``breathe`` and set breath as an extension. An installation guide can be found at :ref:`getting_started/building_docs:Building the Documentation`.
     
     .. code-block:: python
 

@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Unit tests of the f-wave Riemann solver.
  **/
 #include "../../include/constants.h"

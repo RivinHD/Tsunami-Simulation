@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Tests the dam break setup.
  **/
 #include <catch2/catch.hpp>

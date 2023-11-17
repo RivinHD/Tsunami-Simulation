@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach
  *
- * @section DESCRIPTION
  * Summarizes a collection of user-defined stations.
  **/
 

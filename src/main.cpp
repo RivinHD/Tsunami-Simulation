@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Entry-point for simulations.
  **/
 #include "../include/patches/WavePropagation1d.h"

@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach
  *
- * @section DESCRIPTION
  * Unit tests for Stations.
  **/
 

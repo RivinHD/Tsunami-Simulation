@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
  * IO-routines for writing a snapshot as Comma Separated Values (CSV).
  **/
 

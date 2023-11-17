@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Base class of the wave propagation patches.
  **/
 #ifndef TSUNAMI_LAB_PATCHES_WAVE_PROPAGATION

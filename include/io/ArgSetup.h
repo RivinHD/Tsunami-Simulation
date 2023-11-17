@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
- * @section DESCRIPTION
  * A small class for better handling of arguments
  **/
 #ifndef TSUNAMISIMULATION_ARGSETUP

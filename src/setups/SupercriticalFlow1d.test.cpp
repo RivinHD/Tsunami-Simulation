@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Tests the supercritical Flow setup.
  **/
 #include "../../include/setups/SupercriticalFlow1d.h"

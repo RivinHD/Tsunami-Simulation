@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Unit tests of the Roe Riemann solver.
  **/
 #include <catch2/catch.hpp>

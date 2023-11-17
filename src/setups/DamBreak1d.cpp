@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
  * One-dimensional dam break problem.
  **/
 #include "../../include/setups/DamBreak1d.h"

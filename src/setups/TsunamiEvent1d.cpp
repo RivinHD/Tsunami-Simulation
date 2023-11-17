@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
- * @section DESCRIPTION
  * One-dimensional initialization of h, hu and b using the bathymetry reader and the artificial displacement.
  **/
 

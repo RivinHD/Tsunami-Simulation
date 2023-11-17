@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer, Fabian Hofer, Vincent Gerlach (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Unit tests for the one-dimensional wave propagation patch.
  **/
 #include <catch2/catch.hpp>

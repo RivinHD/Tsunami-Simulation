@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de), Fabian Hofer, Vincent Gerlach
  *
- * @section DESCRIPTION
  * Unit tests for the CSV-interface.
  **/
 #include <catch2/catch.hpp>

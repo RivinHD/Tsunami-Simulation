@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Tests the rare-rare break setup.
  **/
 #include <catch2/catch.hpp>

@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Tests the subcritical Flow setup.
  **/
 #include "../../include/setups/SubcriticalFlow1d.h"

@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
- * @section DESCRIPTION
  * The f-wave solver for solving the Initial Value Problem (IVP) for the shallow water equations.
  **/
 #ifndef TSUNAMISIMULATION_FWAVE_H

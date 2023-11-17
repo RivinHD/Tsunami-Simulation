@@ -643,8 +643,8 @@ Shock-Shock
 2.2. Dam-Break
 --------------
 
-Play around
-^^^^^^^^^^^
+Playing around
+^^^^^^^^^^^^^^
 
 l_hl...height of left side :raw-html:`<br>`
 l_hr...height of right side :raw-html:`<br>`
@@ -669,8 +669,8 @@ All results with 100 cells!
 |  200   |   190  |      5     | 1.1214 |
 +--------+--------+------------+--------+
 
-What we observe
-^^^^^^^^^^^^^^^
+Observation
+^^^^^^^^^^^
 
 The larger the gap between the left and right water height the bigger is the velocity.
 With higher water columns but same difference between left and right water height the
