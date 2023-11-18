@@ -266,7 +266,7 @@ TEST_CASE( "Test the 2d wave propagation reflection", "[WaveProp2d]" )
     const tsunami_lab::t_real* m_momentumY = m_waveProp.getMomentumY();
 
     // Left Ghost and 1. Cell
-    REQUIRE( m_height[-1] == tsunami_lab::t_real( 0.0 ) );
+    REQUIRE( m_height[-1] == Approx( 0.0 ) );
     REQUIRE( m_momentumX[-1] == l_hu[0] );
     REQUIRE( m_momentumY[5] == l_hv[4] );
 

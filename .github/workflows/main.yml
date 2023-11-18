@@ -90,3 +90,5 @@ jobs:
           ./simulation 10 10 -r all -s fwave -B
           ./simulation 10 -r left right top bottom -s fwave -B
           ./simulation 10 10 -r left right top bottom -s fwave -B
+          ./simulation 10 -r left right top bottom -s fwave -B -t 20
+          ./simulation 10 10 -r left right top bottom -s fwave -B -t 3 

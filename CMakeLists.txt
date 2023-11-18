@@ -65,6 +65,7 @@ set(MIDDLE_STATE_FILE ${PROJECT_SOURCE_DIR}/test_middle_states.cpp)
 set(PROJECT_RESOURCE_DIR "resources")
 set(RESOURCE_FILES
     middle_states.csv
+    middle_states.test.csv
     bathy_profile.csv
     config.json
     config.test.json

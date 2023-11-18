@@ -39,14 +39,17 @@ enum Arguments
 {
     SOLVER = 's',
     USE_BATHYMETRY = 'B',
-    USE_REFLECTION = 'r',
+    REFLECTION = 'r',
+    TIME = 't'
+
 };
 const int requiredArguments = 1;
 const int optionalArguments = 1;
 const std::vector<ArgSetup> optionalFlags = {
     ArgSetup( Arguments::SOLVER, 1 ),
     ArgSetup( Arguments::USE_BATHYMETRY, 0 ),
-    ArgSetup( Arguments::USE_REFLECTION, 1 ),
+    ArgSetup( Arguments::REFLECTION, 1 ),
+    ArgSetup( Arguments::TIME, 1 )
 };
 
 void printHelp()
@@ -54,7 +57,8 @@ void printHelp()
     std::cerr << "./build/simulation " << magenta << "N_CELLS_X (N_CELLS_Y) " << reset << "["
         << green << "-s " << cyan << "<fwave|roe>" << reset << "] ["
         << green << "-B" << reset << "] ["
-        << green << "-r " << cyan << "<left|right|top|bottom|x|y|all>" << reset << "]"
+        << green << "-r " << cyan << "<left|right|top|bottom|x|y|all>" << reset << "] ["
+        << green << "-t" << cyan << " <seconds>" << reset << "]"
         << std::endl << std::endl
         << "REQUIERED INPUT:" << std::endl
         << magenta << "\tN_CELLS_X" << reset << " is the number of cells in x-direction." << std::endl
@@ -62,14 +66,15 @@ void printHelp()
         << "OPTIONAL INPUT:" << std::endl
         << magenta << "\tN_CELLS_Y" << reset << " is the number of cells in y-direction." << std::endl
         << std::endl
-        << "NOTE: optional flags has be put after the required input" << std::endl
+        << "NOTE: optional flags must be set after the inputs.." << std::endl
         << "OPTIONAL FLAGS:" << std::endl
-        << green << "\t-s" << reset << " set used solvers requires " << cyan << "'fwave'" << reset << " or " << cyan << "'roe'" << reset << " as inputs" << std::endl
-        << green << "\t-B" << reset << " enables the input for bathymetry" << std::endl
+        << green << "\t-s" << reset << " set used solvers requires " << cyan << "fwave" << reset << " or " << cyan << "roe" << reset << " as inputs. The default is fwave." << std::endl
+        << green << "\t-B" << reset << " enables the use of bathymetry." << std::endl
         << green << "\t-r" << reset << " enables the reflection on the specified side of the simulation. Several arguments can be passed." << std::endl
-        << "\t   where " << cyan << "left | right | top | bottom'" << reset << " enables their respective sides" << std::endl
-        << "\t   where " << cyan << "x | y" << reset << " enables the left & right | top & bottom side" << std::endl
-        << "\t   where " << cyan << "all" << reset << " enables all sides" << std::endl;
+        << "\t   where " << cyan << "left | right | top | bottom" << reset << " enables their respective sides." << std::endl
+        << "\t   where " << cyan << "x" << reset << " enables the left & right and " << cyan << "y" << reset << " enables the top & bottom side." << std::endl
+        << "\t   where " << cyan << "all" << reset << " enables all sides." << std::endl
+        << green << "\t-t" << reset << " defines the total time in seconds that is used for the simulation. The default is 5 seconds." << std::endl;
 }
 
 void writeStations( tsunami_lab::io::Stations* stations, tsunami_lab::patches::WavePropagation* solver )
@@ -107,6 +112,7 @@ int main( int   i_argc,
     bool reflectTop = false;
     bool reflectBottom = false;
     bool use2D = false;
+    tsunami_lab::t_real l_endTime = 5;
 
 #ifndef SKIP_ARGUMENTS
     // error: wrong number of arguments.
@@ -153,6 +159,7 @@ int main( int   i_argc,
 
         unsigned int argI = 0;
         std::string stringParameter;
+        float floatParameter;
         while( arg[++argI] != '\0' )  // starts with argI = 1
         {
             if( arg[argI] < START_ARG_CHAR || arg[argI] > END_ARG_CHAR )
@@ -189,7 +196,7 @@ int main( int   i_argc,
                     useBathymetry = true;
                     break;
 
-                case Arguments::USE_REFLECTION:
+                case Arguments::REFLECTION:
                     stringParameter = std::string( i_argv[i + 1] );
                     do
                     {
@@ -241,6 +248,16 @@ int main( int   i_argc,
                         stringParameter = std::string( i_argv[i + 1] );
                     } while( stringParameter[0] != '-' );
                     break;
+                case Arguments::TIME:
+                    floatParameter = atof( i_argv[++i] );
+                    if( floatParameter <= 0 || std::isnan( floatParameter ) || std::isinf( floatParameter ) )
+                    {
+                        std::cerr << "invalid argument for flag -r" << std::endl
+                            << "the time should be a number larger than 0" << std::endl;
+                        return EXIT_FAILURE;
+                    }
+                    l_endTime = floatParameter;
+                    break;
 
                 default:
                     std::cerr << "unknown flag: " << arg[argI] << std::endl;
@@ -260,6 +277,7 @@ int main( int   i_argc,
     reflectTop = false;
     useBathymetry = true;
     use2D = false;
+    l_endTime = 5;
     std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
 
@@ -304,7 +322,12 @@ int main( int   i_argc,
     reflectionAppended |= reflectTop;
     reflectionsText += reflectBottom ? ( reflectionAppended ? ", Bottom" : "Bottom" ) : "";
     reflectionAppended |= reflectBottom;
-    std::cout << "Activated Reflection on " << reflectionsText << " side" << std::endl;
+    if( reflectionsText != "" )
+    {
+        std::cout << "Activated Reflection on " << reflectionsText << " side" << std::endl;
+    }
+
+    std::cout << "Simulation Time is set to " << l_endTime << " seconds" << std::endl;
     // End print
 
     tsunami_lab::t_real l_scaleX = 100;
@@ -416,7 +439,6 @@ int main( int   i_argc,
     // set up time and print control
     tsunami_lab::t_idx  l_timeStep = 0;
     tsunami_lab::t_idx  l_nOut = 0;
-    tsunami_lab::t_real l_endTime = 15;
     tsunami_lab::t_real l_simTime = 0;
 
 
