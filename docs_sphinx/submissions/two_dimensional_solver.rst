@@ -710,7 +710,8 @@ The ``config.json`` is the same in both cases but the output_frequency of the 1D
 frequency of the 2D solver is set to **5** because the computation time for this example is approximately 5 times
 higher on the 2D solver than on the 1D solver.
 
-X and y are given in per cent, so station 03 with :math:`x: 50` and :math:`y: 50` is exactly in the middle of the simulation.
+X and y are given absolute to the scale (scale x: 100, y: 100), so station 03 with :math:`x: 50` and :math:`y: 50` is
+exactly in the middle of the simulation.
 
 .. code-block::
 
@@ -745,7 +746,8 @@ X and y are given in per cent, so station 03 with :math:`x: 50` and :math:`y: 50
       ]
     }
 
-Visualization of the **1D** symmetrical problem:
+Visualization of the **1D** symmetrical problem: :raw-html:`<br>`
+Rendered with 500 cells
 
 +----------+------+------+------+------+------+
 |Stationion|  01  |  02  |  03  |  04  |  05  |
@@ -761,7 +763,8 @@ Visualization of the **1D** symmetrical problem:
         </video>
     </center>
 
-Visualization of the **2D** symmetrical problem:
+Visualization of the **2D** symmetrical problem: :raw-html:`<br>`
+Rendered with 500x500 cells
 
 +----------+------------+------------+------------+------------+------------+
 |Stationion|      01    |     02     |     03     |     04     |     05     |
@@ -777,45 +780,8 @@ Visualization of the **2D** symmetrical problem:
         </video>
     </center>
 
-In both cases, the water height is 5 m and at all positions within a radius of 5 m around the centre point, the water
+In both cases, the water height is 5 m and at all positions within a radius of 10 m around the centre point, the water
 height is 10 m.
-
-The ``config.json`` is the same in both cases but the output_frequency of the 1D solver is set to **1** and the output
-frequency of the 2D solver is set to **5** because the computation time for this example is approximately 5 times
-higher on the 2D solver than on the 1D solver.
-
-.. code-block::
-
-    {
-      "output_frequency": 1(5),
-      "stations": [
-        {
-          "name": "station01",
-          "x": 10,
-          "y": 50
-        },
-        {
-          "name": "station02",
-          "x": 30,
-          "y": 50
-        },
-        {
-          "name": "station03",
-          "x": 50,
-          "y": 50
-        },
-        {
-          "name": "station04",
-          "x": 70,
-          "y": 50
-        },
-        {
-          "name": "station05",
-          "x": 90,
-          "y": 50
-        }
-      ]
-    }
 
 **Comparison on 52 data points per station:**
 
@@ -833,7 +799,4 @@ Contribution
 
 All team members contributed equally to the tasks.
 
-
-
-
-.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_3.html#hydraulic-jumps (10.11.2023)
+.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_4.html#stations (19.11.2023)
