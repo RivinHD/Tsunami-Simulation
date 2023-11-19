@@ -187,7 +187,7 @@ int main( int   i_argc,
                     }
                     else
                     {
-                        std::cerr << "unknown argument for flag -s" << std::endl
+                        std::cerr << "'" << stringParameter << "' is an unknown argument for flag -s" << std::endl
                             << "valid arguments are 'fwave', 'roe'" << std::endl;
                         return EXIT_FAILURE;
                     }
@@ -238,7 +238,7 @@ int main( int   i_argc,
                         }
                         else
                         {
-                            std::cerr << "unknown argument for flag -r" << std::endl
+                            std::cerr << "'" << stringParameter << "' is an unknown argument for flag -r" << std::endl
                                 << "valid arguments are 'left', 'right', 'top', 'bottom', 'x', 'y', 'all'" << std::endl
                                 << "the arguments 'top' and 'bottom' only take effect if the simulation is 2d" << std::endl;
                             return EXIT_FAILURE;
@@ -248,7 +248,7 @@ int main( int   i_argc,
                             break;
                         }
                         stringParameter = std::string( i_argv[i + 1] );
-                    } while( stringParameter[0] != '-' || i < startIndex + 4 );
+                    } while( stringParameter[0] != '-' && i < startIndex + 4 );
                     break;
                 case Arguments::TIME:
                     floatParameter = atof( i_argv[++i] );
