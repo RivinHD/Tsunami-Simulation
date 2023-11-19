@@ -160,6 +160,7 @@ int main( int   i_argc,
         unsigned int argI = 0;
         std::string stringParameter;
         float floatParameter;
+        int startIndex;
         while( arg[++argI] != '\0' )  // starts with argI = 1
         {
             if( arg[argI] < START_ARG_CHAR || arg[argI] > END_ARG_CHAR )
@@ -197,7 +198,7 @@ int main( int   i_argc,
                     break;
 
                 case Arguments::REFLECTION:
-                    const int startIndex = i;
+                    startIndex = i;
                     stringParameter = std::string( i_argv[i + 1] );
                     do
                     {
