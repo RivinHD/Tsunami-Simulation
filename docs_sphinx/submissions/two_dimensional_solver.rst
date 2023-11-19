@@ -472,7 +472,7 @@ the queried position at which the station is located.
         m_time = 0;
         [ ... ]
 
-To get the user-defined station we have to include the header ``#include <../../../submodules/json/single_include/nlohmann/json.hpp>``
+To get the user-defined station we have to include the header ``#include <nlohmann/json.hpp>``
 which allows us to read data from our ``config.json``. To not use the actual .json config in our test cases we decide between
 config.test.json and config.json at the beginning.
 
@@ -619,13 +619,11 @@ a timestamp.
         m_time++;
     }
 
-.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_3.html#hydraulic-jumps (10.11.2023)
-
 2. Providing data and output-frequency
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 We use the submodule `json <https://github.com/nlohmann/jsonL>`_ which allows us to use json format for configuration files.
-All we have to do is include the header ``#include <../../../submodules/json/single_include/nlohmann/json.hpp>`` in all
+All we have to do is include the header ``#include <nlohmann/json.hpp>`` in all
 files in which we want to use json.
 
 To accomplish a time-step independent output-frequency for the stations we use an extra thread in the ``main.cpp``.
@@ -700,7 +698,8 @@ The ``config.json`` is the same in both cases but the output_frequency of the 1D
 frequency of the 2D solver is set to **5** because the computation time for this example is approximately 5 times
 higher on the 2D solver than on the 1D solver.
 
-X and y are given in per cent, so station 03 with :math:`x: 50` and :math:`y: 50` is exactly in the middle of the simulation.
+X and y are given absolute to the scale (scale x: 100, y: 100), so station 03 with :math:`x: 50` and :math:`y: 50` is
+exactly in the middle of the simulation.
 
 .. code-block::
 
@@ -735,7 +734,8 @@ X and y are given in per cent, so station 03 with :math:`x: 50` and :math:`y: 50
       ]
     }
 
-Visualization of the **1D** symmetrical problem:
+Visualization of the **1D** symmetrical problem: :raw-html:`<br>`
+Rendered with 500 cells
 
 +----------+------+------+------+------+------+
 |Stationion|  01  |  02  |  03  |  04  |  05  |
@@ -751,7 +751,8 @@ Visualization of the **1D** symmetrical problem:
         </video>
     </center>
 
-Visualization of the **2D** symmetrical problem:
+Visualization of the **2D** symmetrical problem: :raw-html:`<br>`
+Rendered with 500x500 cells
 
 +----------+------------+------------+------------+------------+------------+
 |Stationion|      01    |     02     |     03     |     04     |     05     |
@@ -767,45 +768,8 @@ Visualization of the **2D** symmetrical problem:
         </video>
     </center>
 
-In both cases, the water height is 5 m and at all positions within a radius of 5 m around the centre point, the water
+In both cases, the water height is 5 m and at all positions within a radius of 10 m around the centre point, the water
 height is 10 m.
-
-The ``config.json`` is the same in both cases but the output_frequency of the 1D solver is set to **1** and the output
-frequency of the 2D solver is set to **5** because the computation time for this example is approximately 5 times
-higher on the 2D solver than on the 1D solver.
-
-.. code-block::
-
-    {
-      "output_frequency": 1(5),
-      "stations": [
-        {
-          "name": "station01",
-          "x": 10,
-          "y": 50
-        },
-        {
-          "name": "station02",
-          "x": 30,
-          "y": 50
-        },
-        {
-          "name": "station03",
-          "x": 50,
-          "y": 50
-        },
-        {
-          "name": "station04",
-          "x": 70,
-          "y": 50
-        },
-        {
-          "name": "station05",
-          "x": 90,
-          "y": 50
-        }
-      ]
-    }
 
 **Comparison on 52 data points per station:**
 
@@ -822,3 +786,5 @@ Contribution
 ------------
 
 All team members contributed equally to the tasks.
+
+.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_4.html#stations (19.11.2023)
