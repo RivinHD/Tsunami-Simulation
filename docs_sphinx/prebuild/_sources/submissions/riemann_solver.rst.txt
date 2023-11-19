@@ -1,7 +1,7 @@
-.. _submissions_riemann_solver:
-
 .. role:: raw-html(raw)
     :format: html
+
+.. _submissions_riemann_solver:
 
 1. Riemann Solver
 ====================
@@ -232,7 +232,6 @@ net effect of the waves to the left and right “cell”:"[1]_
         }
     }
 
-.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_1.html#f-wave-solver (29.10.2023)
 
 
 F-wave Solver Unit Testing
@@ -515,7 +514,7 @@ Sphinx with Doxygen
 
 1. First we install ``Doxygen``.
 
-2. We install ``Sphinx`` and ``breathe`` and set breath as an extension. An installation guide can be found at :ref:`Building the Documentation`.
+2. We install ``Sphinx`` and ``breathe`` and set breath as an extension. An installation guide can be found at :ref:`getting_started/building_docs:Building the Documentation`.
     
     .. code-block:: python
 
@@ -580,3 +579,7 @@ Contribution
 ------------
 
 All team members contributed equally to the tasks.
+
+
+
+.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_1.html#f-wave-solver (29.10.2023)

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['rarerare1d_82',['RareRare1d',['../classtsunami__lab_1_1setups_1_1RareRare1d.html#aca9d8887080f8ef5ebfcd6b319b1cd7d',1,'tsunami_lab::setups::RareRare1d']]],
-  ['readbathymetry_83',['readBathymetry',['../classtsunami__lab_1_1io_1_1Csv.html#aa8f3fc6cb70bf58b784942251f08a562',1,'tsunami_lab::io::Csv']]]
+  ['netupdates_91',['netUpdates',['../classtsunami__lab_1_1solvers_1_1FWave.html#a6d19c9109a94599c4688e89d5cf0e6e4',1,'tsunami_lab::solvers::FWave::netUpdates(t_real i_hL, t_real i_hR, t_real i_huL, t_real i_huR, t_real o_netUpdateL[2], t_real o_netUpdateR[2])'],['../classtsunami__lab_1_1solvers_1_1FWave.html#a9e94fbf3d4872959d83edf7520db4b00',1,'tsunami_lab::solvers::FWave::netUpdates(t_real i_hL, t_real i_hR, t_real i_huL, t_real i_huR, t_real i_bL, t_real i_bR, t_real o_netUpdateL[2], t_real o_netUpdateR[2])'],['../classtsunami__lab_1_1solvers_1_1Roe.html#afd6790dc03b4a684728ccdea0661c0eb',1,'tsunami_lab::solvers::Roe::netUpdates()']]],
+  ['next_5fmiddle_5fstates_92',['next_middle_states',['../classtsunami__lab_1_1io_1_1Csv.html#a15b9dc2d2a6e318edac63aa937827357',1,'tsunami_lab::io::Csv']]]
 ];
