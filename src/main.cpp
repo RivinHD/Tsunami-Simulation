@@ -46,10 +46,10 @@ enum Arguments
 const int requiredArguments = 1;
 const int optionalArguments = 1;
 const std::vector<ArgSetup> optionalFlags = {
-    ArgSetup( Arguments::SOLVER, 1 ),
-    ArgSetup( Arguments::USE_BATHYMETRY, 0 ),
-    ArgSetup( Arguments::REFLECTION, 1 ),
-    ArgSetup( Arguments::TIME, 1 )
+    ArgSetup( Arguments::SOLVER, 1, 1 ),
+    ArgSetup( Arguments::USE_BATHYMETRY, 0, 0 ),
+    ArgSetup( Arguments::REFLECTION, 1, 4 ),
+    ArgSetup( Arguments::TIME, 1, 1 )
 };
 
 void printHelp()
@@ -70,7 +70,7 @@ void printHelp()
         << "OPTIONAL FLAGS:" << std::endl
         << green << "\t-s" << reset << " set used solvers requires " << cyan << "fwave" << reset << " or " << cyan << "roe" << reset << " as inputs. The default is fwave." << std::endl
         << green << "\t-B" << reset << " enables the use of bathymetry." << std::endl
-        << green << "\t-r" << reset << " enables the reflection on the specified side of the simulation. Several arguments can be passed." << std::endl
+        << green << "\t-r" << reset << " enables the reflection on the specified side of the simulation. Several arguments can be passed (maximum 4)." << std::endl
         << "\t   where " << cyan << "left | right | top | bottom" << reset << " enables their respective sides." << std::endl
         << "\t   where " << cyan << "x" << reset << " enables the left & right and " << cyan << "y" << reset << " enables the top & bottom side." << std::endl
         << "\t   where " << cyan << "all" << reset << " enables all sides." << std::endl
@@ -197,6 +197,7 @@ int main( int   i_argc,
                     break;
 
                 case Arguments::REFLECTION:
+                    const int startIndex = i;
                     stringParameter = std::string( i_argv[i + 1] );
                     do
                     {
@@ -246,7 +247,7 @@ int main( int   i_argc,
                             break;
                         }
                         stringParameter = std::string( i_argv[i + 1] );
-                    } while( stringParameter[0] != '-' );
+                    } while( stringParameter[0] != '-' || i < startIndex + 4 );
                     break;
                 case Arguments::TIME:
                     floatParameter = atof( i_argv[++i] );

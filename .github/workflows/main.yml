@@ -70,25 +70,47 @@ jobs:
           cd build
           cmake -D ENABLE_TESTMODE=ON ..
           cmake --build . --config Release --target simulation
+          echo "Test ./simulation 10"
           ./simulation 10
+          echo "Test ./simulation 10 10"
           ./simulation 10 10
+          echo "Test ./simulation 10 -B"
           ./simulation 10 -B
+          echo "Test ./simulation 10 10 -B"
           ./simulation 10 10 -B
+          echo "Test ./simulation 10 -s fwave"
           ./simulation 10 -s fwave
+          echo "Test ./simulation 10 10 -s fwave"
           ./simulation 10 10 -s fwave
+          echo "Test ./simulation 10 -s roe"
           ./simulation 10 -s roe
+          echo "Test ./simulation 10 10 -s roe"
           ./simulation 10 10 -s roe
+          echo "Test ./simulation 10 -s fwave -B"
           ./simulation 10 -s fwave -B
+          echo "Test ./simulation 10 10 -s fwave -B"
           ./simulation 10 10 -s fwave -B
+          echo "Test ./simulation 10 -r left -B"
           ./simulation 10 -r left -B
+          echo "Test ./simulation 10 10 -r left -B"
           ./simulation 10 10 -r left -B
+          echo "Test ./simulation 10 -r left right -s fwave"
           ./simulation 10 -r left right -s fwave
+          echo "Test ./simulation 10 10 -r left right -s fwave"
           ./simulation 10 10 -r left right -s fwave
+          echo "Test ./simulation 10 -r x -s roe"
           ./simulation 10 -r x -s roe
+          echo "Test ./simulation 10 10 -r x y -s roe"
           ./simulation 10 10 -r x y -s roe
+          echo "Test ./simulation 10 -r all -s fwave -B"
           ./simulation 10 -r all -s fwave -B
+          echo "Test ./simulation 10 10 -r all -s fwave -B"
           ./simulation 10 10 -r all -s fwave -B
+          echo "Test ./simulation 10 -r left right top bottom -s fwave -B"
           ./simulation 10 -r left right top bottom -s fwave -B
+          echo "Test ./simulation 10 10 -r left right top bottom -s fwave -B"
           ./simulation 10 10 -r left right top bottom -s fwave -B
+          echo "Test ./simulation 10 -r left right top bottom -s fwave -B -t 20"
           ./simulation 10 -r left right top bottom -s fwave -B -t 20
-          ./simulation 10 10 -r left right top bottom -s fwave -B -t 3 
+          echo "Test ./simulation 10 10 -r left right top bottom -s fwave -B -t 3"
+          ./simulation 10 10 -r left right top bottom -s fwave -B -t 3
