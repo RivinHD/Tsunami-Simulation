@@ -25,6 +25,7 @@ tsunami_lab::io::Stations::Stations( t_idx i_nx,
     m_scaleX = i_scaleX;
     m_scaleY = i_scaleY;
     m_time = 0;
+
 #ifdef TEST
     std::ifstream l_file( "resources/config.test.json" );
 #endif // TEST
@@ -54,9 +55,9 @@ tsunami_lab::io::Stations::Stations( t_idx i_nx,
     }
     fs::create_directory( SOLUTION_FOLDER + "/station" );
 
-    // add stations
     if( config.contains( "output_frequency" ) )
         m_outputFrequency = config["output_frequency"];
+    // add stations
     if( config.contains( "stations" ) )
     {
         for( size_t i = 0; i < config["stations"].size(); i++ )

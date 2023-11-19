@@ -437,6 +437,386 @@ Reflection at the wall can be seen at about 1 second.
 4.2. Stations
 -------------
 
+1. tsunami_lab::io::Stations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+"When solving wave propagation problems, we are often times interested in output at specific points (or stations) of the
+computational domain. A station is defined by its coordinates :math:`s=(x,y)` and is used to measure the water level at frequent intervals of seconds.
+a frequent interval of seconds."[1]_
+
+New class ```tsunami_lab::io::Stations`` summarizes a collection of user-defined stations.
+
+We enter the number of cells in x and y direction and the scale in x and y direction to later calculate the indices of
+the queried position at which the station is located.
+
+.. code-block:: cpp
+
+    /// File:   Stations.cpp
+    /// Header: Stations.h
+    /// Test:   Stations.test.cpp
+    namespace fs = std::filesystem;
+
+    const std::string SOLUTION_FOLDER = "solutions";
+
+    tsunami_lab::io::Stations::Stations( t_idx i_nx,
+                                         t_idx i_ny,
+                                         t_idx i_stride,
+                                         t_real i_scaleX,
+                                         t_real i_scaleY )
+    {
+        m_nx = i_nx;
+        m_ny = i_ny;
+        m_stride = i_stride;
+        m_scaleX = i_scaleX;
+        m_scaleY = i_scaleY;
+        m_time = 0;
+        [ ... ]
+
+To get the user-defined station we have to include the header ``#include <../../../submodules/json/single_include/nlohmann/json.hpp>``
+which allows us to read data from our ``config.json``. To not use the actual .json config in our test cases we decide between
+config.test.json and config.json at the beginning.
+
+.. code-block:: cpp
+    :emphasize-lines: 13
+
+    /// File: Stations.cpp
+    [ ... ]
+    #ifdef TEST
+        std::ifstream l_file( "resources/config.test.json" );
+    #endif // TEST
+    #ifndef TEST
+        std::ifstream l_file( "resources/config.json" );
+    #endif // !TEST
+
+    json config;
+    try
+    {
+        l_file >> config;
+    }
+    catch( const std::exception& e )
+    {
+        std::cerr << "Error parsing JSON: " << e.what() << std::endl;
+        exit( 1 );
+    }
+    [ ... ]
+
+We are saving the output of every station in a separate .csv file. First we check if the directory in which the data is
+saved exists. If it exists we delete the direction and in booth cases we are creating a new one with the old name.
+The same process with the single .csv files. Thus we are allways creating new data for every simulation.
+
+.. code-block:: cpp
+
+    /// File: Stations.cpp
+    [ ... ]
+    // create station folder inside solution folder
+    if( !fs::exists( SOLUTION_FOLDER ) )
+    {
+        fs::create_directory( SOLUTION_FOLDER );
+    }
+    if( fs::exists( SOLUTION_FOLDER + "/station" ) )
+    {
+        fs::remove_all( SOLUTION_FOLDER + "/station" );
+    }
+    fs::create_directory( SOLUTION_FOLDER + "/station" );
+    [ ... ]
+
+Now everything is set up and we can add every station which is defined in the ``config.json`` to our Stations class
+which will manage them. First of all we read the output frequency which all stations share. It specifies the time
+in seconds of the write operations to the stations comma-separated files.
+
+To simplify everything we defined in ``Stations.h`` a struct which saves the attributes of a station:
+
+.. code-block:: cpp
+
+    /// File: Stations.h
+    [ ... ]
+    struct Station
+    {
+        /**
+         * struct to save attributes of single station
+         *
+         * @param i_name name of station
+         * @param i_x x-coordinate of station
+         * @param i_y y-coordinate of station
+         * @param i_path path to the station file to be written to
+        */
+        Station( std::string i_name, t_real i_x, t_real i_y, std::string i_path )
+            : m_name( i_name ), m_x( i_x ), m_y( i_y ), m_path( i_path )
+        {
+        }
+
+        //! name of station
+        std::string m_name;
+
+        //! x-coordinate of station
+        t_real m_x;
+
+        //! y-coordinate of station
+        t_real m_y;
+
+        //! path to the station file to be written to
+        std::string m_path;
+    };
+    [ ... ]
+
+Afterwards we iterate over the json array ``stations`` in which the single stations are specified and gather the **name**,
+**x-coordinate** and **y-coordinate** of every station. The structures are then added to a vector to summarizes all stations.
+
+.. code-block:: cpp
+    :emphasize-lines: 4, 8, 13, 20
+
+        /// File: Stations.cpp
+        [ ... ]
+        if( config.contains( "output_frequency" ) )
+            m_outputFrequency = config["output_frequency"];
+        // add stations
+        if( config.contains( "stations" ) )
+        {
+            for( size_t i = 0; i < config["stations"].size(); i++ )
+            {
+                std::string l_name = config["stations"][i]["name"];
+                t_real l_x = config["stations"][i]["x"];
+                t_real l_y = config["stations"][i]["y"];
+                std::string l_path = SOLUTION_FOLDER + "/station/" + l_name;
+
+                std::ofstream l_fileStation;
+                l_fileStation.open( l_path, std::ios::app );
+                l_fileStation << "timestep,totalHeight" << "\n";
+
+                // forward arguments and construct station directly in the vector
+                m_stations.emplace_back( l_name, l_x, l_y, l_path );
+            }
+        }
+    }
+
+Now we need a write method which is used to write the current values to the respective csv files of the stations. At the
+moment we only write a timestamp together with the current water level in the csv files. To do this, we enter a pointer
+to the array with the current water levels in the write method. Since we internally calculate with a different number of
+cells than the user provides for the simulation, we first calculate the actual index of the cell in the array from the
+scale and the number of user-defined cells. We then read this value and write it to the corresponding file together with
+a timestamp.
+
+.. code-block:: cpp
+    :emphasize-lines: 8-10
+
+    /// File: Stations.cpp
+    [ ... ]
+    void tsunami_lab::io::Stations::write( const t_real* i_totalHeight )
+    {
+        for( const Station& station : m_stations )
+        {
+            // map station index to cell index
+            t_idx l_cellIndexX = roundf( ( m_nx / m_scaleX ) * station.m_x );
+            t_idx l_cellIndexY = roundf( ( m_ny / m_scaleY ) * station.m_y );
+            t_idx l_cellIndex = m_stride * l_cellIndexY + l_cellIndexX;
+
+            std::ofstream l_file;
+            l_file.open( station.m_path, std::ios::app );
+
+            l_file << m_time << "," << i_totalHeight[l_cellIndex] << "\n";
+            l_file.close();
+        }
+        m_time++;
+    }
+
+.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_3.html#hydraulic-jumps (10.11.2023)
+
+2. Providing data and output-frequency
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+We use the submodule `json <https://github.com/nlohmann/jsonL>`_ which allows us to use json format for configuration files.
+All we have to do is include the header ``#include <../../../submodules/json/single_include/nlohmann/json.hpp>`` in all
+files in which we want to use json.
+
+To accomplish a time-step independent output-frequency for the stations we use an extra thread in the ``main.cpp``.
+
+.. code-block:: cpp
+    :emphasize-lines: 10
+
+    /// File: main.cpp
+    [ ... ]
+    // initialize stations
+    tsunami_lab::io::Stations l_stations = tsunami_lab::io::Stations( l_nx,
+                                                                      l_ny,
+                                                                      l_waveProp->getStride(),
+                                                                      l_scaleX,
+                                                                      l_scaleY );
+    // create a thread that runs the stations write function
+    std::thread writeStationsThread( writeStations, &l_stations, l_waveProp );
+    [ ... ]
+
+This thread runs the helper function ``writeStations``.
+
+.. code-block:: cpp
+
+    /// File: main.cpp
+    [ ... ]
+    void writeStations( tsunami_lab::io::Stations* stations, tsunami_lab::patches::WavePropagation* solver )
+    {
+        while( true )
+        {
+            if( KILL_THREAD )
+            {
+                break;
+            }
+            stations->write( solver->getTotalHeight() );
+            std::this_thread::sleep_for( std::chrono::seconds( (int)stations->getOutputFrequency() ) );
+        }
+    }
+    [ ... ]
+
+The function needs a reference to our initialized Stations object which summarizes and manages the single stations and
+another reference to our WavePropagation (whether 1D or 2D) to get the information about current water height for example.
+
+We define a variable ``KILL_THREAD`` at the beginning of our main.cpp with initial value **false** to be able to close
+the thread later. If the first if condition inside the while loop is false we call the write method on our stations with
+the current water heights of our WavePropagation and thus write to the csv files.
+
+After the main program has finished we set the ``KILL_THREAD`` variable to **true** and wait for the thread.
+
+.. code-block:: cpp
+    :emphasize-lines: 8-11
+
+        std::cout << "finished time loop" << std::endl;
+
+        // free memory
+        std::cout << "freeing memory" << std::endl;
+        delete l_setup;
+        delete l_waveProp;
+
+        // kill thread
+        KILL_THREAD = true;
+        // wait for thread
+        writeStationsThread.join();
+
+        std::cout << "finished, exiting" << std::endl;
+        return EXIT_SUCCESS;
+    }
+
+3. Solver comparison
+^^^^^^^^^^^^^^^^^^^^
+
+The ``config.json`` is the same in both cases but the output_frequency of the 1D solver is set to **1** and the output
+frequency of the 2D solver is set to **5** because the computation time for this example is approximately 5 times
+higher on the 2D solver than on the 1D solver.
+
+X and y are given in per cent, so station 03 with :math:`x: 50` and :math:`y: 50` is exactly in the middle of the simulation.
+
+.. code-block::
+
+    {
+      "output_frequency": 1(5),
+      "stations": [
+        {
+          "name": "station01",
+          "x": 10,
+          "y": 50
+        },
+        {
+          "name": "station02",
+          "x": 30,
+          "y": 50
+        },
+        {
+          "name": "station03",
+          "x": 50,
+          "y": 50
+        },
+        {
+          "name": "station04",
+          "x": 70,
+          "y": 50
+        },
+        {
+          "name": "station05",
+          "x": 90,
+          "y": 50
+        }
+      ]
+    }
+
+Visualization of the **1D** symmetrical problem:
+
++----------+------+------+------+------+------+
+|Stationion|  01  |  02  |  03  |  04  |  05  |
++----------+------+------+------+------+------+
+|Position  +  50  | 150  | 250  | 350  | 450  |
++----------+------+------+------+------+------+
+
+.. raw:: html
+
+    <center>
+        <video width="700" controls>
+            <source src="../_static/videos/task_4_2_3_1d.mp4" type="video/mp4">
+        </video>
+    </center>
+
+Visualization of the **2D** symmetrical problem:
+
++----------+------------+------------+------------+------------+------------+
+|Stationion|      01    |     02     |     03     |     04     |     05     |
++----------+------------+------------+------------+------------+------------+
+|Position  +  (50/250)  | (150/250)  | (250/250)  | (350/250)  | (450/250)  |
++----------+------------+------------+------------+------------+------------+
+
+.. raw:: html
+
+    <center>
+        <video width="700" controls>
+            <source src="../_static/videos/task_4_2_3_2d.mp4" type="video/mp4">
+        </video>
+    </center>
+
+In both cases, the water height is 5 m and at all positions within a radius of 5 m around the centre point, the water
+height is 10 m.
+
+The ``config.json`` is the same in both cases but the output_frequency of the 1D solver is set to **1** and the output
+frequency of the 2D solver is set to **5** because the computation time for this example is approximately 5 times
+higher on the 2D solver than on the 1D solver.
+
+.. code-block::
+
+    {
+      "output_frequency": 1(5),
+      "stations": [
+        {
+          "name": "station01",
+          "x": 10,
+          "y": 50
+        },
+        {
+          "name": "station02",
+          "x": 30,
+          "y": 50
+        },
+        {
+          "name": "station03",
+          "x": 50,
+          "y": 50
+        },
+        {
+          "name": "station04",
+          "x": 70,
+          "y": 50
+        },
+        {
+          "name": "station05",
+          "x": 90,
+          "y": 50
+        }
+      ]
+    }
+
+**Comparison on 52 data points per station:**
+
+.. raw:: html
+
+    <center>
+        <img src="../_static/photos/task_4_2_3_comparison.png" alt="1D vs. 2D stations">
+    </center>
+
+You can clearly see the symmetrical problem in both cases. The values of 1D and 2D are not exactly the same, but they
+behave very similarly.
 
 Contribution
 ------------
