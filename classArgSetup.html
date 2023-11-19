@@ -76,8 +76,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a455f002e0f8eefff98f3ac6e29440582"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classArgSetup.html#a455f002e0f8eefff98f3ac6e29440582">ArgSetup</a> (const char &amp;<a class="el" href="classArgSetup.html#a69141eee7a165d3401cb288be6599479">flag</a>, short <a class="el" href="classArgSetup.html#ad0e8a335f87e08fdd78071a807280a31">numberOfOptions</a>)</td></tr>
-<tr class="separator:a455f002e0f8eefff98f3ac6e29440582"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0662a9fe136648d35be10e95a6288e5d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classArgSetup.html#a0662a9fe136648d35be10e95a6288e5d">ArgSetup</a> (const char &amp;<a class="el" href="classArgSetup.html#a69141eee7a165d3401cb288be6599479">flag</a>, short <a class="el" href="classArgSetup.html#ad0e8a335f87e08fdd78071a807280a31">numberOfOptions</a>, short <a class="el" href="classArgSetup.html#ae5be3b7482b393ea8d55227d290459bd">maxNumberOfOptions</a>)</td></tr>
+<tr class="separator:a0662a9fe136648d35be10e95a6288e5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -96,6 +96,10 @@ unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classArgSetup.html#ad0e8a335f87e08fdd78071a807280a31">numberOfOptions</a></td></tr>
 <tr class="memdesc:ad0e8a335f87e08fdd78071a807280a31"><td class="mdescLeft">&#160;</td><td class="mdescRight">the number of options E.g. is 2 when -f Option1 Option2 <br /></td></tr>
 <tr class="separator:ad0e8a335f87e08fdd78071a807280a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5be3b7482b393ea8d55227d290459bd"><td class="memItemLeft" align="right" valign="top"><a id="ae5be3b7482b393ea8d55227d290459bd"></a>
+short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classArgSetup.html#ae5be3b7482b393ea8d55227d290459bd">maxNumberOfOptions</a></td></tr>
+<tr class="memdesc:ae5be3b7482b393ea8d55227d290459bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">the maximum number of options that one flag can have <br /></td></tr>
+<tr class="separator:ae5be3b7482b393ea8d55227d290459bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -107,8 +111,8 @@ static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Setup for better handling of arguments. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a455f002e0f8eefff98f3ac6e29440582"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a455f002e0f8eefff98f3ac6e29440582">&#9670;&nbsp;</a></span>ArgSetup()</h2>
+<a id="a0662a9fe136648d35be10e95a6288e5d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0662a9fe136648d35be10e95a6288e5d">&#9670;&nbsp;</a></span>ArgSetup()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -126,7 +130,13 @@ static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">short&#160;</td>
-          <td class="paramname"><em>numberOfOptions</em>&#160;</td>
+          <td class="paramname"><em>numberOfOptions</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">short&#160;</td>
+          <td class="paramname"><em>maxNumberOfOptions</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

@@ -1,7 +1,7 @@
-.. _submissions_bathymetry_boundary_conditions:
-
 .. role:: raw-html(raw)
     :format: html
+
+.. _submissions_bathymetry_boundary_conditions:
 
 3. Bathymetry & Boundary Conditions
 ===================================
@@ -12,8 +12,8 @@
 1. Extended f-wave solver
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Bathymetry is the topography of the ocean. We use sea level as a reference which means the bathymetry of a dry cell
-(onshore) is zero or positive :math:`b_i \ge 0` and a wet cell (offshore) has a negative value :math:`b_j < 0`.
+"Bathymetry is the topography of the ocean. We use sea level as a reference which means the bathymetry of a dry cell
+(onshore) is zero or positive :math:`b_i \ge 0` and a wet cell (offshore) has a negative value :math:`b_j < 0`."[1]_
 
 The term :math:`\Delta x \Psi_{i-1/2}` stands for the effect of the bathymetry:
 
@@ -77,8 +77,9 @@ To add bathymetry into the f-wave solver we need to take these into account in o
 
 First we need to set the bathymetry to our ``WavePropagation1d``. Because bathymetry is only possible in the f-wave
 solver, we have an if-statement in ``WavePropagation1d`` which checks whether bathymetry is present.
+The return type ``Reflection`` is `explained later <explanation_of_type_reflection_>`_.
 
-.. code-block::
+.. code-block:: cpp
     :emphasize-lines: 15, 32, 52-53, 62-63, 72-73
 
     /// File:   WavePropagation1d.cpp
@@ -273,7 +274,7 @@ For the implementation, the case that :math:`\mathcal{C}_{i-1}` is dry and :math
 Therefore the following implementation is provided.
 For simulations without bathymetry, a similar implementation is provided that does not take bathymetry into account.
 
-.. code-block::
+.. code-block:: cpp
     :emphasize-lines: 16-19, 21-24
 
     /// File:   WavePropagation1d.cpp
@@ -304,11 +305,15 @@ For simulations without bathymetry, a similar implementation is provided that do
         return static_cast<Reflection>( leftReflection * Reflection::LEFT + rightReflection * Reflection::RIGHT );
     }
 
+.. _explanation_of_type_reflection:
+
 The return of the reflection is provided by an enumeration where ``LEFT`` and ``RIGHT`` can be summed to return ``BOTH``.
 If both cells are dry, the reflection and netUpdates do not need to be computed, i.e. there is no water to simulate with.
-The implementation is private inside ``WavePropagation1d`` as the reflection is only used internally.
+Therefore, a condition checks whether both cells are dry before calculating the reflection and netUpdate and skips this iteration if fulfilled.
+This also leads to a better simulation time, as large blocks with dry cells are skipped completely.
+The implementation of reflection is private inside ``WavePropagation1d`` as it is only used internally.
 
-.. code-block::
+.. code-block:: cpp
 
     enum Reflection
     {
@@ -321,7 +326,7 @@ The implementation is private inside ``WavePropagation1d`` as the reflection is 
 
 If a reflection occurs on one side of a cell, the height and momentum of the dry cell do not change, i.e.
 
-.. code-block::
+.. code-block:: cpp
 
     l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
     l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
@@ -361,9 +366,7 @@ Hydraulic jumps behavior in shallow water theory can be characterized by the Fro
     F := \frac{u}{\sqrt{gh}}
 
 
-"We call regions with :math:`F < 1` subcritical, :math:`F \approx 1` critical and :math:`F > 1` supercritical."[1]_
-
-.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_3.html#hydraulic-jumps (10.11.2023)
+"We call regions with :math:`F < 1` subcritical, :math:`F \approx 1` critical and :math:`F > 1` supercritical."[2]_
 
 1. Maximum Froude number
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -379,8 +382,8 @@ The velocity can be calculated with the momentum and height as follows:
         u(x) &= \frac{hu(x)}{h(x)}\\
         &=
         \begin{cases}
-            \frac{1.8 + 0.05 (x-10)^2}{4.42} \quad   &\text{if } x \in (8,12) \\
-            \frac{2}{4.42} \quad &\text{else}
+            \frac{4.42}{1.8 + 0.05 (x-10)^2} \quad   &\text{if } x \in (8,12) \\
+            \frac{4.42}{2} \quad &\text{else}
         \end{cases}\\
 
     \end{aligned}
@@ -392,21 +395,21 @@ Using the conditional velocity the Froude number can be calculated in the range 
     \begin{aligned}
 
         \text{For } x\in (8, 12): &\\
-        F(x) &= \frac{1.8 + 0.05 (x - 10)^2}{4.42 \sqrt{9.80665 \cdot 4.42}}\\
-        &= \frac{1.8 + 0.05 (x^2 - 20x + 100)}{4.42 \sqrt{9.80665 \cdot 4.42}}\\
+        F(x) &= \frac{4.42}{(1.8 + 0.05 (x - 10)^2) \cdot \sqrt{9.80665 \cdot (1.8 + 0.05 (x - 10)^2)}}\\
+        &= \frac{1.41144}{(0.05 (x-10)^2 + 1.8)^{3/2}}\\
 
     \end{aligned}
 
-The Froude number within the range (8, 12) becomes a quadratic equation with a positive gradient, so that the maximum can be found at the boundary i.e. :math:`x_1 = 8` and :math:`x = 12`:
+The Froude number within the range (8, 12) has a quadratic equation with a positive gradient in the denominator, so that the maximum can be found by derivation:
 
 .. math::
 
     \begin{aligned}
 
-        F(8) &= \frac{1.8 + 0.05 (8 - 10)^2}{4.42 \sqrt{9.80665 \cdot 4.42}}\\
-        &\approx 0.068728403\\
-        F(12) &= \frac{1.8 + 0.05 (12 - 10)^2}{4.42 \sqrt{9.80665 \cdot 4.42}}\\
-        &\approx 0.068728403
+        F'(x) &= \frac{0.211716 (x - 10)}{(0.05 (x - 10)^2 + 1.8)^{5/2}}\\
+        F'(x_1) &= 0 \\
+        x_1 &= 10 \\
+        F(10) &\approx 0.58445782
 
     \end{aligned}
 
@@ -417,12 +420,12 @@ The Froude number outside the range (8, 12) is calculated by:
     \begin{aligned}
 
         \text{For } x\notin (8, 12): &\\
-        F(x) &= \frac{2}{4.42\sqrt{9.80665 \cdot 4.42}} \approx 0.068728403
+        F(x) &= \frac{4.42}{2 \sqrt{9.80665 \cdot 2}} \approx 0.49901884
 
     \end{aligned}
 
 
-Therefore, the maximum Froude number of the subcritical flow in both cases it 0.068728403.
+Therefore, the maximum Froude number of the subcritical flow is 0.58445782.
 
 
 **Supercritical flow**
@@ -436,8 +439,8 @@ The velocity can again be calculated with momentum and height as follows:
         u(x) &= \frac{hu(x)}{h(x)}\\
         &=
         \begin{cases}
-            \frac{0.13 + 0.05 (x-10)^2}{0.18} \quad   &\text{if } x \in (8,12) \\
-            \frac{0.33}{0.18} \quad &\text{else}
+            \frac{0.18}{0.13 + 0.05 (x-10)^2} \quad   &\text{if } x \in (8,12) \\
+            \frac{0.18}{0.33} \quad &\text{else}
         \end{cases}\\
 
     \end{aligned}
@@ -449,21 +452,21 @@ Using the conditional velocity the Froude number can be calculated in the range 
     \begin{aligned}
 
         \text{For } x\in (8, 12): &\\
-        F(x) &= \frac{0.13 + 0.05 (x - 10)^2}{0.18 \sqrt{9.80665 \cdot 0.18}}\\
-        &= \frac{0.13 + 0.05 (x^2 - 20x + 100)}{0.18 \sqrt{9.80665 \cdot 0.18}}\\
+        F(x) &= \frac{0.18}{(0.13 + 0.05 (x - 10)^2) \sqrt{9.80665 \cdot (0.13 + 0.05 (x - 10)^2)}}\\
+        &= \frac{0.0574794}{(0.05 (x-10)^2 + 0.13)^{3/2}}\\
 
     \end{aligned}
 
-Again the Froude number within the range (8, 12) becomes a quadratic equation with a positive gradient, so that the maximum can be found at the boundary i.e. :math:`x_1 = 8` and :math:`x = 12`:
+Again the Froude number within the range (8, 12) has a quadratic equation with a positive gradient in the denominator, so that the maximum can be found by derivation:
 
 .. math::
 
     \begin{aligned}
 
-        F(x) &= \frac{0.13 + 0.05 (8 - 10)^2}{0.18 \sqrt{9.80665 \cdot 0.18}}\\
-        &\approx 1.3798912\\
-        F(x) &= \frac{0.13 + 0.05 (12 - 10)^2}{0.18 \sqrt{9.80665 \cdot 0.18}}\\
-        &\approx 1.3798912
+        F'(x) &= \frac{0.00862191 (x - 10)}{(0.05 (x - 10)^2 + 0.13)^{5/2}}\\
+        F'(x_1) &= 0\\
+        x_1 = 10\\
+        F(10) &\approx 1.2263012
 
     \end{aligned}
 
@@ -474,12 +477,12 @@ The Froude number outside the range (8, 12) is calculated by:
     \begin{aligned}
 
         \text{For } x\notin (8, 12): &\\
-        F(x) &= \frac{0.33}{0.18\sqrt{9.80665 \cdot 0.18}} \approx 1.3798912
+        F(x) &= \frac{0.18}{0.33 \sqrt{9.80665 \cdot 0.33}} \approx 0.30320842
 
     \end{aligned}
 
 
-Therefore, the maximum Froude number of the subcritical flow in both cases it 1.3798912.
+Therefore, the maximum Froude number of the subcritical flow is 1.2263012.
 
 2. Implementation into Setups
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -506,7 +509,7 @@ The implementation in setups is done using a subclass of ``setup::Setup.h`` wher
 The implementation is similar in both cases, for the subcritical flow the code is shown below.
 To calculate the bathymetry as a function of the x-coordinate, a function pointer is used to which a lambda is assigned.
 
-.. code-block::
+.. code-block:: cpp
     :emphasize-lines: 8-11
     
     /// File:   SubcriticalFlow1d.cpp
@@ -527,7 +530,7 @@ Therefore, the function pointer is needed to calculate the bathymetry and water 
 
 The bathymetry is returned based on the range with its stored bathymetry i.e.
 
-.. code-block::
+.. code-block:: cpp
     :emphasize-lines: 4-8
 
     tsunami_lab::t_real tsunami_lab::setups::SubcriticalFlow1d::getBathymetry( t_real i_x,
@@ -780,3 +783,7 @@ Contribution
 ------------
 
 All team members contributed equally to the tasks.
+
+.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_3.html#non-zero-source-term (17.11.2023)
+
+.. [2] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_3.html#hydraulic-jumps (10.11.2023)

@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['wavepropagation1d_97',['WavePropagation1d',['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#a888e18ad0bdf59dd05c05f2dc0f90efb',1,'tsunami_lab::patches::WavePropagation1d']]],
-  ['write_98',['write',['../classtsunami__lab_1_1io_1_1Csv.html#aea0713fa034f2a1d57ce9a8f51821c23',1,'tsunami_lab::io::Csv']]]
+  ['updatewaterheight_108',['updateWaterHeight',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#a94e96eea9155a3f4589b14b5abdd343f',1,'tsunami_lab::patches::WavePropagation::updateWaterHeight()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#a3fddda34ab81b315e99cdb53a39ab962',1,'tsunami_lab::patches::WavePropagation1d::updateWaterHeight()'],['../classtsunami__lab_1_1patches_1_1WavePropagation2d.html#a5f7b9b65c8783dc6fc5f4fc781191f56',1,'tsunami_lab::patches::WavePropagation2d::updateWaterHeight()']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['enablebathymetry_69',['enableBathymetry',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#a57339ee0e9b96e497be5fed7f08739ac',1,'tsunami_lab::patches::WavePropagation::enableBathymetry()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#a4ce63e4beb16058d00e59cebabd349bb',1,'tsunami_lab::patches::WavePropagation1d::enableBathymetry()']]]
+  ['dambreak1d_78',['DamBreak1d',['../classtsunami__lab_1_1setups_1_1DamBreak1d.html#a9d09ba838d9a6699b6e2821bc9ed08b7',1,'tsunami_lab::setups::DamBreak1d']]]
 ];
