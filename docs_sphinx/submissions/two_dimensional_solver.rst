@@ -17,6 +17,7 @@ There are changes needed to be done to the ``F-Wave solver``, because two-dimens
 Therefore only changes will be done in ``WavePropagation2d``.
 
 The constructor and destructor of ``WavePropagation2d`` is very similar to ``WavePropagation1d`` except the new variables:
+
     - ``m_hv`` for y-momentum
     - ``m_xCells`` & ``m_yCells`` for the number of x and y cells
     - ``stride`` the size in x-direction including ghost cells
@@ -35,6 +36,10 @@ In the second loop, the first and last rows (ghost rows) are set by taking the v
 In both loops the activated reflection is taken into account.
 
 .. code-block:: cpp
+
+    // Header: WavePropagation2d.h
+    // File:   WavePropagation2d.cpp
+    // Test:   WavePropagation2d.test.cpp
 
     void tsunami_lab::patches::WavePropagation2d::setGhostOutflow()
     {
@@ -88,7 +93,9 @@ Then the index of the left and right cells are calculated.
 The next steps are the same as performed in ``WavePropagation1d``.
 
 .. code-block:: cpp
-    :emphasize-lines: 12-13, 20, 23, 25-29
+    :emphasize-lines: 14-15, 22, 25, 27-31
+
+    // File: WavePropagation2d.cpp
 
     // pointers to old and new data
     t_real* l_hOld = m_h[m_step];
@@ -135,27 +142,27 @@ The next steps are the same as performed in ``WavePropagation1d``.
                 t_real bathymetryRight;
 
                 Reflection reflection = calculateReflection( l_hOld,
-                                                            l_huOld,
-                                                            l_ceL,
-                                                            l_ceR,
-                                                            heightLeft,
-                                                            heightRight,
-                                                            momentumLeft,
-                                                            momentumRight,
-                                                            bathymetryLeft,
-                                                            bathymetryRight );
+                                                             l_huOld,
+                                                             l_ceL,
+                                                             l_ceR,
+                                                             heightLeft,
+                                                             heightRight,
+                                                             momentumLeft,
+                                                             momentumRight,
+                                                             bathymetryLeft,
+                                                             bathymetryRight );
 
                 // compute net-updates
                 t_real l_netUpdates[2][2];
 
                 tsunami_lab::solvers::FWave::netUpdates( heightLeft,
-                                                        heightRight,
-                                                        momentumLeft,
-                                                        momentumRight,
-                                                        bathymetryRight,
-                                                        bathymetryLeft,
-                                                        l_netUpdates[0],
-                                                        l_netUpdates[1] );
+                                                         heightRight,
+                                                         momentumLeft,
+                                                         momentumRight,
+                                                         bathymetryRight,
+                                                         bathymetryLeft,
+                                                         l_netUpdates[0],
+                                                         l_netUpdates[1] );
 
                 // update the cells' quantities
                 l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
@@ -382,7 +389,11 @@ The height is set according to the `calculation in the example <two_dimensional_
 The momentum and bathymetry functions return zero, as none of these functions are set in this setup.
 
 .. code-block:: cpp
-    :emphasize-lines: 4-5
+    :emphasize-lines: 8-9
+
+    // Header: CircularDamBreak2d.h
+    // File:   CircularDamBreak2d.cpp
+    // Test:   CircularDamBreak2d.test.cpp
 
     tsunami_lab::t_real tsunami_lab::setups::CircularDamBreak2d::getHeight( t_real i_x,
                                                                             t_real i_y ) const
@@ -420,7 +431,8 @@ Visualizing the bathymetry effects with 500 x 500 cells.
     :width: 700
 
 The red lines on the left and right indicate that the wave in the x-direction propagates more slowly than the wave in the y-direction because there is a dent in the bathymetry in the center in y-direction.
-Otherwise, the waves in the x and y directions should hit the simulation boundary at the same time, as can be seen in the video `Circular dam break <two_dimensional_solver_circular_dam_break_>`_ at about 3 seconds.
+Otherwise, the waves in the x and y directions should hit the simulation boundary at the same time, as can be seen in the video `circular dam break <two_dimensional_solver_circular_dam_break_>`_ at about 3 seconds.
+The bathymetry is therefore also taken into account in the 2D simulation.
 
 Visualizing the bathymetry with and obstacle effects with 500 x 500 cells.
 Reflection at the wall can be seen at about 1 second.
@@ -472,7 +484,7 @@ the queried position at which the station is located.
         m_time = 0;
         [ ... ]
 
-To get the user-defined station we have to include the header ``#include <../../../submodules/json/single_include/nlohmann/json.hpp>``
+To get the user-defined station we have to include the header ``#include <nlohmann/json.hpp>``
 which allows us to read data from our ``config.json``. To not use the actual .json config in our test cases we decide between
 config.test.json and config.json at the beginning.
 
@@ -619,13 +631,11 @@ a timestamp.
         m_time++;
     }
 
-.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_3.html#hydraulic-jumps (10.11.2023)
-
 2. Providing data and output-frequency
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 We use the submodule `json <https://github.com/nlohmann/jsonL>`_ which allows us to use json format for configuration files.
-All we have to do is include the header ``#include <../../../submodules/json/single_include/nlohmann/json.hpp>`` in all
+All we have to do is include the header ``#include <nlohmann/json.hpp>`` in all
 files in which we want to use json.
 
 To accomplish a time-step independent output-frequency for the stations we use an extra thread in the ``main.cpp``.
@@ -822,3 +832,8 @@ Contribution
 ------------
 
 All team members contributed equally to the tasks.
+
+
+
+
+.. [1] From https://scalable.uni-jena.de/opt/tsunami/chapters/assignment_3.html#hydraulic-jumps (10.11.2023)

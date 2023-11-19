@@ -7,7 +7,7 @@
 #include <catch2/catch.hpp>
 #include "../../include/constants.h"
 #include <sstream>
-#include <../../../submodules/json/single_include/nlohmann/json.hpp>
+#include <nlohmann/json.hpp>
 #include <fstream>
 
 #define private public

@@ -7,7 +7,7 @@
 #ifndef TSUNAMISIMULATION_STATIONS_H
 #define TSUNAMISIMULATION_STATIONS_H
 
-#include <../../../submodules/json/single_include/nlohmann/json.hpp>
+#include <nlohmann/json.hpp>
 #include <string>
 #include "../constants.h"
 #include <iostream>
