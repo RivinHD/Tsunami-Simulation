@@ -32,5 +32,5 @@ TEST_CASE( "Test the one-dimensional tsunami-event setup.", "[RareRare1d]" )
 
     REQUIRE( l_tsunamiEvent.getBathymetry( 19, 0 ) == Approx( -26.3175566727f ) );
 
-    REQUIRE( l_tsunamiEvent.getVerticalDisplacement( 200000, 0 ) == Approx( -866.0254038f ) ); // displacement is scaled by 1000 instead of 10
+    REQUIRE( l_tsunamiEvent.getVerticalDisplacement( 200000, 0 ) == Approx( -8.660254038f ) ); // displacement is scaled by 1000 instead of 10
 }
