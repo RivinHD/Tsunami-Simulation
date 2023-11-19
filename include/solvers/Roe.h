@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Roe Riemann solver for the one-dimensional shallow water equations.
  **/
 #ifndef TSUNAMI_LAB_SOLVERS_ROE

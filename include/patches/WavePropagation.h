@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Base class of the wave propagation patches.
  **/
 #ifndef TSUNAMI_LAB_PATCHES_WAVE_PROPAGATION
@@ -40,7 +39,9 @@ public:
     enum Side
     {
         LEFT = 0,
-        RIGHT = 1
+        RIGHT = 1,
+        TOP = 2,
+        BOTTOM = 3
     };
 
     /**
@@ -163,8 +164,8 @@ public:
     virtual void enableBathymetry( bool enable ) = 0;
 
     /**
+     * Updates the water height with respect to the bathymetry.
      * If the bathymetry is higher than the water height than the water is set to zero.
-     * updates the water height with respect to the bathymetry.
     */
     virtual void updateWaterHeight() = 0;
 

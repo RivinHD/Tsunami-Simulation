@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Tests the shock-shock setup.
  **/
 #include "../../include/setups/ShockShock1d.h"

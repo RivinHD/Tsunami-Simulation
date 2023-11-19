@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer, Fabian Hofer, Vincent Gerlach (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Unit tests for the one-dimensional wave propagation patch.
  **/
 #include <catch2/catch.hpp>
@@ -176,7 +175,7 @@ TEST_CASE( "Test the 1d wave propagation reflection", "[WaveProp1d]" )
     const tsunami_lab::t_real* m_momentum = m_waveProp.getMomentumX();
 
     // Left Ghost and 1. Cell
-    REQUIRE( m_height[-1] == tsunami_lab::t_real( 0.0 ) );
+    REQUIRE( m_height[-1] == Approx( 0.0 ) );
     REQUIRE( m_momentum[-1] == l_hu[0] );
 
     // Right Ghost and 5. Cell

@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Simulation setup.
  **/
 #ifndef TSUNAMI_LAB_SETUPS_SETUP_H

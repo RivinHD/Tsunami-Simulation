@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
- * @section DESCRIPTION
  * The f-wave solver uses two shock waves to approximate the true solution.
  **/
 #include "../../include/solvers/FWave.h"

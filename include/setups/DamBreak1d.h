@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
  * One-dimensional dam break problem.
  **/
 #ifndef TSUNAMI_LAB_SETUPS_DAM_BREAK_1D_H

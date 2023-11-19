@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
- * @section DESCRIPTION
  * One-dimensional initialization of h, hu and b using the bathymetry reader and the artificial displacement.
  **/
 
@@ -78,7 +77,7 @@ tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getVerticalDisplacement
 {
     if( 175000 < i_x && i_x < 250000 )
     {
-        return 1000 * std::sin( ( ( i_x - 175000 ) / 37500 * M_PI ) + M_PI );
+        return 10 * std::sin( ( ( i_x - 175000 ) / 37500 * M_PI ) + M_PI );
     }
     return 0;
 }

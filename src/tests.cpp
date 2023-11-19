@@ -1,7 +1,6 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Entry-point for unit tests.
  **/
 #define CATCH_CONFIG_RUNNER

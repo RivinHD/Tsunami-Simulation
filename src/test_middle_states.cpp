@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Entry-point for middle states tests.
  **/
 #include "../include/patches/WavePropagation1d.h"

@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
- * @section DESCRIPTION
  * Supercritical flow setup for hydraulic jumps
  **/
 

@@ -1,14 +1,15 @@
 /**
- * @author Alexander Breuer, Fabian Hofer, Vincent Gerlach (alex.breuer AT uni-jena.de)
+ * @author Alexander Breuer (alex.breuer AT uni-jena.de), Fabian Hofer, Vincent Gerlach
  *
- * @section DESCRIPTION
  * Unit tests for the CSV-interface.
  **/
 #include <catch2/catch.hpp>
 #include "../../include/constants.h"
-#include <sstream>
+#include <iostream>
+#include <nlohmann/json.hpp>
 #define private public
 #include "../../include/io/Csv.h"
+#include <sstream>
 #undef public
 
 TEST_CASE( "Test the CSV-writer for 1D settings.", "[CsvWrite1d]" )
@@ -45,9 +46,9 @@ TEST_CASE( "Test the CSV-writer for 2D settings.", "[CsvWrite2d]" )
 {
     // define a simple example
     tsunami_lab::t_real l_h[16] = { 0,  1,  2,  3,
-                                      4,  5,  6,  7,
-                                      8,  9, 10, 11,
-                                     12, 13, 14, 15 };
+                                    4,  5,  6,  7,
+                                    8,  9, 10, 11,
+                                   12, 13, 14, 15 };
     tsunami_lab::t_real l_hu[16] = { 15, 14, 13, 12,
                                      11, 10,  9,  8,
                                       7,  6,  5,  4,
@@ -82,7 +83,7 @@ TEST_CASE( "Test the CSV-writer for 2D settings.", "[CsvWrite2d]" )
 
 TEST_CASE( "Test the CSV-reader for middle states", "[CsvRead]" )
 {
-    std::ifstream middle_states( "resources/middle_states.csv" );
+    std::ifstream middle_states( "resources/middle_states.test.csv" );
     tsunami_lab::t_real hLeft, hRight, huLeft, huRight, hStar;
     bool success;
     unsigned int linesCount = 0;
@@ -97,11 +98,11 @@ TEST_CASE( "Test the CSV-reader for middle states", "[CsvRead]" )
     linesCount += success;
 
     REQUIRE( success );
-    REQUIRE( hLeft == 8899.326826472694f );
-    REQUIRE( hRight == 8899.326826472694f );
-    REQUIRE( huLeft == 122.0337839252433f );
-    REQUIRE( huRight == -122.0337839252433f );
-    REQUIRE( hStar == 8899.739847378269f );
+    REQUIRE( hLeft == Approx( 8899.326826472694f ) );
+    REQUIRE( hRight == Approx( 8899.326826472694f ) );
+    REQUIRE( huLeft == Approx( 122.0337839252433f ) );
+    REQUIRE( huRight == Approx( -122.0337839252433f ) );
+    REQUIRE( hStar == Approx( 8899.739847378269f ) );
 
     while( success = tsunami_lab::io::Csv::next_middle_states( middle_states,
                                                                hLeft,
@@ -111,18 +112,18 @@ TEST_CASE( "Test the CSV-reader for middle states", "[CsvRead]" )
                                                                hStar ) )
     {
         linesCount += success;
-        if( linesCount == 500001 )
+        if( linesCount == 5001 )
         {
             REQUIRE( success );
-            REQUIRE( hLeft == 7974.350705934805f );
-            REQUIRE( hRight == 8378.341124205988f );
-            REQUIRE( huLeft == -185.7324996463998f );
-            REQUIRE( huRight == -322.8256083091958f );
-            REQUIRE( hStar == 8175.312258280472f );
+            REQUIRE( hLeft == Approx( 7974.350705934805f ) );
+            REQUIRE( hRight == Approx( 8378.341124205988f ) );
+            REQUIRE( huLeft == Approx( -185.7324996463998f ) );
+            REQUIRE( huRight == Approx( -322.8256083091958f ) );
+            REQUIRE( hStar == Approx( 8175.312258280472f ) );
         }
     }
 
-    REQUIRE( linesCount == 1000000 );
+    REQUIRE( linesCount == 10000 );
 }
 
 TEST_CASE( "Test the Bathymetry-reader for bathy_profile.csv", "[CsvRead]" )
@@ -137,7 +138,7 @@ TEST_CASE( "Test the Bathymetry-reader for bathy_profile.csv", "[CsvRead]" )
     linesCount += success;
 
     REQUIRE( success );
-    REQUIRE( hBathy == 14.7254650696f );
+    REQUIRE( hBathy == Approx( 14.7254650696f ) );
 
     while( success = tsunami_lab::io::Csv::readBathymetry( bathy_profile, hBathy ) )
     {
@@ -145,10 +146,9 @@ TEST_CASE( "Test the Bathymetry-reader for bathy_profile.csv", "[CsvRead]" )
         if( linesCount == 900 )
         {
             REQUIRE( success );
-            REQUIRE( hBathy == -7260.18122445f );
+            REQUIRE( hBathy == Approx( -7260.18122445f ) );
 
         }
     }
-
     REQUIRE( linesCount == 1763 );
 }

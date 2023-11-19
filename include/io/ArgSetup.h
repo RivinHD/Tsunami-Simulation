@@ -1,7 +1,6 @@
 /**
  * @author Fabian Hofer, Vincent Gerlach (AT uni-jena.de)
  *
- * @section DESCRIPTION
  * A small class for better handling of arguments
  **/
 #ifndef TSUNAMISIMULATION_ARGSETUP
@@ -29,14 +28,17 @@ public:
     //! the number of options E.g. is 2 when -f Option1 Option2
     short numberOfOptions;
 
+    //! the maximum number of options that one flag can have
+    short maxNumberOfOptions;
+
     /**
      * Generate a new Argument with the given flag and and the number of parameter
      *
      * @param flag the flag to call this argument with
      * @param numberOfOptions the number of options that one flag handles. Options are separated by a space. E.g. -f Option1 Option2 ...
     */
-    ArgSetup( const char& flag, short numberOfOptions )
-        : flag( flag ), numberOfOptions( numberOfOptions )
+    ArgSetup( const char& flag, short numberOfOptions, short maxNumberOfOptions )
+        : flag( flag ), numberOfOptions( numberOfOptions ), maxNumberOfOptions( maxNumberOfOptions )
     {
         if( flag < START_ARG_CHAR && flag > END_ARG_CHAR )
         {
@@ -55,7 +57,7 @@ public:
         int count = 0;
         for( std::vector<ArgSetup>::const_iterator it = argList.begin(); it != argList.end(); it++ )
         {
-            count += it->numberOfOptions + 1;
+            count += it->maxNumberOfOptions + 1;
         }
         return count;
     }
