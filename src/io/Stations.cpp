@@ -7,7 +7,6 @@
 #include "../../include/io/Stations.h"
 #include <fstream>
 #include <cmath>
-#include <fstream>
 
 namespace fs = std::filesystem;
 

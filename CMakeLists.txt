@@ -53,6 +53,7 @@ set(SRC_FILES
     patches/WavePropagation2d
     io/Csv
     io/Stations
+    io/NetCdf
 )
 set(SRC_FILES_NO_TEST
 
