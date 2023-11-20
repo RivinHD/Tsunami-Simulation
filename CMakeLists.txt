@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.1.0)
 project(TsunamiSimulation VERSION 0.1.0 LANGUAGES C CXX)
 
+# find packages
+# set(NetCDF_DIR "/home/linuxbrew/.linuxbrew/Cellar/netcdf/4.9.2_1/lib/cmake/netCDF")
+find_package(netCDF REQUIRED)
+include_directories(${netCDF_INCLUDE_DIRS})
+link_libraries(${netCDF_LIBRARIES})
+
 message("####################################")
 message("### Tsunami Lab                  ###")
 message("###                              ###")
