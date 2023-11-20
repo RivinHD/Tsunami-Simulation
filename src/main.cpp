@@ -13,6 +13,7 @@
 #include "../include/setups/TsunamiEvent1d.h"
 #include "../include/setups/CircularDamBreak2d.h"
 #include "../include/io/Csv.h"
+#include "../include/io/NetCdf.h"
 #include "../include/io/ArgSetup.h"
 #include "../include/io/Stations.h"
 #include <cstdlib>
@@ -40,7 +41,8 @@ enum Arguments
     SOLVER = 's',
     USE_BATHYMETRY = 'B',
     REFLECTION = 'r',
-    TIME = 't'
+    TIME = 't',
+    IO_FORMAT = 'f'
 
 };
 const int requiredArguments = 1;
@@ -49,7 +51,8 @@ const std::vector<ArgSetup> optionalFlags = {
     ArgSetup( Arguments::SOLVER, 1, 1 ),
     ArgSetup( Arguments::USE_BATHYMETRY, 0, 0 ),
     ArgSetup( Arguments::REFLECTION, 1, 4 ),
-    ArgSetup( Arguments::TIME, 1, 1 )
+    ArgSetup( Arguments::TIME, 1, 1 ),
+    ArgSetup( Arguments::IO_FORMAT, 1, 1)
 };
 
 void printHelp()
@@ -58,7 +61,8 @@ void printHelp()
         << green << "-s " << cyan << "<fwave|roe>" << reset << "] ["
         << green << "-B" << reset << "] ["
         << green << "-r " << cyan << "<left|right|top|bottom|x|y|all>" << reset << "] ["
-        << green << "-t" << cyan << " <seconds>" << reset << "]"
+        << green << "-t" << cyan << " <seconds>" << reset << "] ["
+        << green << "-f" << cyan << " <csv|netCDF>"
         << std::endl << std::endl
         << "REQUIERED INPUT:" << std::endl
         << magenta << "\tN_CELLS_X" << reset << " is the number of cells in x-direction." << std::endl
@@ -74,7 +78,8 @@ void printHelp()
         << "\t   where " << cyan << "left | right | top | bottom" << reset << " enables their respective sides." << std::endl
         << "\t   where " << cyan << "x" << reset << " enables the left & right and " << cyan << "y" << reset << " enables the top & bottom side." << std::endl
         << "\t   where " << cyan << "all" << reset << " enables all sides." << std::endl
-        << green << "\t-t" << reset << " defines the total time in seconds that is used for the simulation. The default is 5 seconds." << std::endl;
+        << green << "\t-t" << reset << " defines the total time in seconds that is used for the simulation. The default is 5 seconds." << std::endl
+        << green << "\t-f" << reset << " defines the output format. Requires " << cyan << "csv" << reset << " or " << cyan << "netCDF" << reset << ". The default is netCDF."  << std::endl;
 }
 
 void writeStations( tsunami_lab::io::Stations* stations, tsunami_lab::patches::WavePropagation* solver )
@@ -112,6 +117,7 @@ int main( int   i_argc,
     bool reflectTop = false;
     bool reflectBottom = false;
     bool use2D = false;
+    bool isCsv = false;
     tsunami_lab::t_real l_endTime = 5;
 
 #ifndef SKIP_ARGUMENTS
@@ -131,6 +137,7 @@ int main( int   i_argc,
     if( l_nx < 1 )
     {
         std::cerr << "N_CELLS_X: invalid number of cells" << std::endl;
+        printHelp();
         return EXIT_FAILURE;
     }
     // Argument 2 (optional): N_CELLS_Y
@@ -143,6 +150,8 @@ int main( int   i_argc,
     if( use2D && l_ny < 1 )
     {
         std::cerr << "N_CELLS_Y: invalid number of cells" << std::endl;
+        printHelp();
+        return EXIT_FAILURE;
     }
 
     // parse optional Argumentes
@@ -260,6 +269,23 @@ int main( int   i_argc,
                     }
                     l_endTime = floatParameter;
                     break;
+                case Arguments::IO_FORMAT:
+                    stringParameter = std::string( i_argv[++i] );
+                    if( stringParameter == "csv")
+                    {
+                        isCsv = true;
+                    }
+                    else if( stringParameter == "netCDF" )
+                    {
+                        isCsv = false;
+                    }
+                    else
+                    {
+                        std::cerr << "'" << stringParameter << "' is an unknown argument for flag -f" << std::endl
+                                  << "valid arguments are 'csv', 'netCDF'" << std::endl;
+                        return EXIT_FAILURE;
+                    }
+                    break;
 
                 default:
                     std::cerr << "unknown flag: " << arg[argI] << std::endl;
@@ -329,7 +355,8 @@ int main( int   i_argc,
         std::cout << "Activated Reflection on " << reflectionsText << " side" << std::endl;
     }
 
-    std::cout << "Simulation Time is set to " << l_endTime << " seconds" << std::endl;
+    std::cout << "Simulation Time is set to " << l_endTime << " seconds" << std::endl
+              << "Output format is set to " << (isCsv ? "csv" : "netCDF") << std::endl;
     // End print
 
     tsunami_lab::t_real l_scaleX = 100;
@@ -457,6 +484,15 @@ int main( int   i_argc,
 
     std::cout << "entering time loop" << std::endl;
 
+    tsunami_lab::io::NetCdf * netCdfWriter = nullptr;
+    if ( !isCsv )
+    {
+        netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/solution.nc",
+                                                l_nx,
+                                                l_ny,
+                                                l_waveProp->getStride() );
+    }
+
     // iterate over time
     while( l_simTime < l_endTime )
     {
@@ -465,24 +501,34 @@ int main( int   i_argc,
             std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
 
-            std::string l_path = SOLUTION_FOLDER + "/simulation/solution_" + std::to_string( l_nOut ) + ".csv";
-            std::cout << "  writing wave field to " << l_path << std::endl;
 
-            std::ofstream l_file;
-            l_file.open( l_path );
+            if ( isCsv )
+            {
+                std::string l_path = SOLUTION_FOLDER + "/simulation/solution_" + std::to_string( l_nOut ) + ".csv";
+                std::cout << "  writing wave field to " << l_path << std::endl;
 
-            tsunami_lab::io::Csv::write( l_dxy,
-                                         l_nx,
-                                         l_ny,
-                                         l_waveProp->getStride(),
-                                         l_waveProp->getHeight(),
-                                         l_waveProp->getMomentumX(),
-                                         l_waveProp->getMomentumY(),
-                                         l_waveProp->getBathymetry(),
-                                         l_waveProp->getTotalHeight(),
-                                         l_file );
-            l_file.close();
-            l_nOut++;
+                std::ofstream l_file;
+                l_file.open( l_path );
+                tsunami_lab::io::Csv::write( l_dxy,
+                                             l_nx,
+                                             l_ny,
+                                             l_waveProp->getStride(),
+                                             l_waveProp->getHeight(),
+                                             l_waveProp->getMomentumX(),
+                                             l_waveProp->getMomentumY(),
+                                             l_waveProp->getBathymetry(),
+                                             l_waveProp->getTotalHeight(),
+                                             l_file );
+                l_file.close();
+                l_nOut++;
+            }
+            else
+            {
+                netCdfWriter->write( l_waveProp->getTotalHeight(),
+                                     l_waveProp->getBathymetry(),
+                                     l_waveProp->getMomentumX(),
+                                     l_waveProp->getMomentumY() );
+            }
         }
 
         l_waveProp->setGhostOutflow();
@@ -497,6 +543,7 @@ int main( int   i_argc,
     std::cout << "freeing memory" << std::endl;
     delete l_setup;
     delete l_waveProp;
+    delete netCdfWriter;
 
     // kill thread
     KILL_THREAD = true;

@@ -32,17 +32,23 @@ private:
     //! stride length
     t_idx m_stride;
 
-    //! id of time
-    int m_timeId;
+    //! time of write operation
+    unsigned int m_time = 0;
 
     //! nc id
     int m_ncId;
+
+    //! id of time dimension
+    int m_dimTimeId;
 
     //! id of x dimension
     int m_dimXId;
 
     //! id of y dimension
     int m_dimYId;
+
+    //! id of time
+    int m_timeId;
 
     //! id of total height
     int m_totalHeightId;
@@ -60,8 +66,9 @@ public:
     /**
      * Check if command has worked.
      * @param i_err 0 if everything is ok, else 1
+     * @param text text to log
      */
-    void checkNcErr( int i_err );
+    void checkNcErr( int i_err, std::string text );
 
     /**
      * Constructor of NetCdf.
@@ -77,10 +84,20 @@ public:
             t_idx l_stride);
 
     /**
-     * Write current time step to a netCDF file.
+     * Destructor of NetCdf.
      */
-    void write( t_real *totalHeight,
-                t_real *bathymetry,
-                t_real *momentumX,
-                t_real *momentumY );
+    ~NetCdf();
+
+    /**
+     * Write current time step to a netCDF file.
+     *
+     * @param totalHeight total heights of cells
+     * @param bathymetry bathymetry of cells
+     * @param momentumX momentum of cells in x direction
+     * @param momentumY momentum of cells in y direction
+     */
+    void write( const t_real *totalHeight,
+                const t_real *bathymetry,
+                const t_real *momentumX,
+                const t_real *momentumY );
 };
