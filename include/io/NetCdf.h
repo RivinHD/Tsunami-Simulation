@@ -81,6 +81,8 @@ public:
     NetCdf( std::string filePath,
             t_idx l_nx,
             t_idx l_ny,
+            t_idx l_scaleX,
+            t_idx l_scaleY,
             t_idx l_stride );
 
     /**

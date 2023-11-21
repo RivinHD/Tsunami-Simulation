@@ -490,6 +490,8 @@ int main( int   i_argc,
         netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/solution.nc",
                                                     l_nx,
                                                     l_ny,
+                                                    l_scaleX,
+                                                    l_scaleY,
                                                     l_waveProp->getStride() );
     }
 
