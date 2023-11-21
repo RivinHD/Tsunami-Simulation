@@ -312,26 +312,26 @@ int main( int   i_argc,
     // Print activated Features
     if( use2D )
     {
-        std::cout << "Simulation is set to 2D" << std::endl;
+        std::cout << "Simulation is set to " << green << "2D" << reset << std::endl;
     }
     else
     {
-        std::cout << "Simulation is set to 1D" << std::endl;
+        std::cout << "Simulation is set to" << green << "1D" << reset << std::endl;
     }
 
     if( useBathymetry )
     {
-        std::cout << "Activated Bathymetry" << std::endl;
+        std::cout << green << "Activated Bathymetry" << reset << std::endl;
     }
 
     std::cout << "Set Solver: ";
     if( solver == tsunami_lab::patches::Solver::ROE )
     {
-        std::cout << "Roe" << std::endl;
+        std::cout << green << "Roe" << reset << std::endl;
     }
     else
     {
-        std::cout << "FWave" << std::endl;
+        std::cout << green << "FWave" << reset << std::endl;
     }
 
     if( ( useBathymetry ) && solver == tsunami_lab::patches::Solver::ROE )
@@ -352,11 +352,11 @@ int main( int   i_argc,
     reflectionAppended |= reflectBottom;
     if( reflectionsText != "" )
     {
-        std::cout << "Activated Reflection on " << reflectionsText << " side" << std::endl;
+        std::cout << "Activated Reflection on " << green << reflectionsText << reset << " side" << std::endl;
     }
 
-    std::cout << "Simulation Time is set to " << l_endTime << " seconds" << std::endl
-        << "Output format is set to " << ( isCsv ? "csv" : "netCDF" ) << std::endl;
+    std::cout << "Simulation Time is set to " << green << l_endTime << " seconds" << reset << std::endl
+        << "Output format is set to " << green << ( isCsv ? "csv" : "netCDF" ) << reset << std::endl;
     // End print
 
     tsunami_lab::t_real l_scaleX = 100;
@@ -524,7 +524,8 @@ int main( int   i_argc,
             }
             else
             {
-                netCdfWriter->write( l_waveProp->getTotalHeight(),
+                netCdfWriter->write( l_simTime,
+                                     l_waveProp->getTotalHeight(),
                                      l_waveProp->getBathymetry(),
                                      l_waveProp->getMomentumX(),
                                      l_waveProp->getMomentumY() );

@@ -96,7 +96,8 @@ public:
      * @param momentumX momentum of cells in x direction
      * @param momentumY momentum of cells in y direction
      */
-    void write( const t_real* totalHeight,
+    void write( const t_real timeStep,
+                const t_real* totalHeight,
                 const t_real* bathymetry,
                 const t_real* momentumX,
                 const t_real* momentumY );

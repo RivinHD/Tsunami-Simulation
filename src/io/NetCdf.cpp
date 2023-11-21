@@ -64,7 +64,7 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
 
     l_err = nc_def_var( m_ncId,             // ncid
                         "time",             // name
-                        NC_INT,             // xtype
+                        NC_FLOAT,           // xtype
                         1,                  // ndims
                         &m_dimTimeId,       // dimidsp
                         &m_timeId );        // varidp
@@ -124,7 +124,8 @@ tsunami_lab::io::NetCdf::~NetCdf()
     checkNcErr( l_err, "close" );
 }
 
-void tsunami_lab::io::NetCdf::write( const t_real* totalHeight,
+void tsunami_lab::io::NetCdf::write( const t_real timeStep,
+                                     const t_real* totalHeight,
                                      const t_real* bathymetry,
                                      const t_real* momentumX,
                                      const t_real* momentumY )
@@ -137,11 +138,10 @@ void tsunami_lab::io::NetCdf::write( const t_real* totalHeight,
     size_t index[1] = { m_time }; // index should be same as current time dimension
 
     // write data
-    int l_time = static_cast<int>( m_time );
-    l_err = nc_put_var1_int( m_ncId,     // ncid
-                             m_timeId,   // varid
-                             index,      // indexp
-                             &l_time );   // op
+    l_err = nc_put_var1_float( m_ncId,        // ncid
+                               m_timeId,      // varid
+                               index,         // indexp
+                               &timeStep );   // op
     checkNcErr( l_err, "putTime" );
 
     l_err = nc_put_varm_float( m_ncId,          // ncid

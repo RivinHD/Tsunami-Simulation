@@ -142,11 +142,11 @@ target_compile_definitions(sanitize_test PRIVATE TEST)
 add_executable(test_middle_states ${SOURCE_FILES})
 target_sources(test_middle_states PRIVATE ${MIDDLE_STATE_FILE})
 
-# Setup Build
+# Setup Simulation
 add_executable(simulation ${SOURCE_FILES})
 target_sources(simulation PRIVATE ${MAIN_FILE})
 
-# Setup Build + Sanitizer
+# Setup Simulation + Sanitizer
 add_executable(sanitize ${SOURCE_FILES})
 target_sources(sanitize PRIVATE ${MAIN_FILE})
 
