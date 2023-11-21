@@ -33,7 +33,7 @@ private:
     t_idx m_stride;
 
     //! time of write operation
-    unsigned int m_time = 0;
+    size_t m_time = 0;
 
     //! nc id
     int m_ncId;
@@ -81,7 +81,7 @@ public:
     NetCdf( std::string filePath,
             t_idx l_nx,
             t_idx l_ny,
-            t_idx l_stride);
+            t_idx l_stride );
 
     /**
      * Destructor of NetCdf.
@@ -96,8 +96,8 @@ public:
      * @param momentumX momentum of cells in x direction
      * @param momentumY momentum of cells in y direction
      */
-    void write( const t_real *totalHeight,
-                const t_real *bathymetry,
-                const t_real *momentumX,
-                const t_real *momentumY );
+    void write( const t_real* totalHeight,
+                const t_real* bathymetry,
+                const t_real* momentumX,
+                const t_real* momentumY );
 };

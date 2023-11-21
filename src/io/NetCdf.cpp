@@ -9,20 +9,22 @@
 #include <string>
 #include "../../include/io/NetCdf.h"
 
-void tsunami_lab::io::NetCdf::checkNcErr( int i_err, std::string text ) {
-    if( i_err ) {
-        std::cerr << "Error: "
-                  << nc_strerror( i_err )
-                  << std::endl
-                  << text << std::endl;
-        exit(2);
+void tsunami_lab::io::NetCdf::checkNcErr( int i_err, std::string text )
+{
+    if( i_err )
+    {
+        std::cerr << "Error at "
+            << text << ": "
+            << nc_strerror( i_err )
+            << std::endl;
+        exit( 2 );
     }
 }
 
 tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                                  t_idx l_nx,
                                  t_idx l_ny,
-                                 t_idx l_stride)
+                                 t_idx l_stride )
 {
     m_filePath = filePath;
     m_nx = l_nx;
@@ -41,7 +43,7 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     l_err = nc_def_dim( m_ncId,      // ncid
                         "time",      // name
                         NC_UNLIMITED,// len
-                        &m_timeId ); // idp
+                        &m_dimTimeId ); // idp
     checkNcErr( l_err, "dimTime" );
 
     l_err = nc_def_dim( m_ncId,      // ncid
@@ -105,11 +107,13 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                              m_timeId,
                              "units",
                              7,
-                             "seconds");
-    checkNcErr(l_err, "seconds");
+                             "seconds" );
+    checkNcErr( l_err, "seconds" );
 
     l_err = nc_enddef( m_ncId ); // ncid
     checkNcErr( l_err, "enddef" );
+    std::cout << "finished writing to " << m_filePath << std::endl
+        << "Use ncdump to view its contents" << std::endl;
 }
 
 tsunami_lab::io::NetCdf::~NetCdf()
@@ -120,24 +124,24 @@ tsunami_lab::io::NetCdf::~NetCdf()
     checkNcErr( l_err, "close" );
 }
 
-void tsunami_lab::io::NetCdf::write( const t_real *totalHeight,
-                                     const t_real *bathymetry,
-                                     const t_real *momentumX,
-                                     const t_real *momentumY )
+void tsunami_lab::io::NetCdf::write( const t_real* totalHeight,
+                                     const t_real* bathymetry,
+                                     const t_real* momentumX,
+                                     const t_real* momentumY )
 {
     int l_err;
-    size_t start[3] = { m_time++, 0, 0 };
+    size_t start[3] = { m_time, 0, 0 };
     size_t count[3] = { 1, m_ny, m_nx };
-    ptrdiff_t stride[3] = { 1, 1, 1};
-    ptrdiff_t map[3] = { 1, static_cast<ptrdiff_t>(m_stride), 1 };
-
-    std::cout << m_ncId << ", " << m_totalHeightId << ", " << m_bathymetryId << ", " << m_momentumXId << ", " << m_momentumYId << std::endl;
+    ptrdiff_t stride[3] = { 1, 1, 1 };
+    ptrdiff_t map[3] = { 1, static_cast<ptrdiff_t>( m_stride ), 1 };
+    size_t index[1] = { m_time }; // index should be same as current time dimension
 
     // write data
-    l_err = nc_put_var_uint( m_ncId,            //
-                             m_timeId,
-                             &m_time );
-
+    int l_time = static_cast<int>( m_time );
+    l_err = nc_put_var1_int( m_ncId,     // ncid
+                             m_timeId,   // varid
+                             index,      // indexp
+                             &l_time );   // op
     checkNcErr( l_err, "putTime" );
 
     l_err = nc_put_varm_float( m_ncId,          // ncid
@@ -176,7 +180,8 @@ void tsunami_lab::io::NetCdf::write( const t_real *totalHeight,
                                momentumY );     // op
     checkNcErr( l_err, "putMomentumY" );
 
-    std::cout << "finished writing to '" << m_filePath << "'" << std::endl
-              << "use ncdump to view its contents" << std::endl;
+    std::cout << " writing to '" << m_filePath << "'" << std::endl;
+
+    ++m_time;
 }
 
