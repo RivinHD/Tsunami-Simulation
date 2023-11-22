@@ -24,8 +24,6 @@ void tsunami_lab::io::NetCdf::checkNcErr( int i_err, std::string text )
 tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                                  t_idx l_nx,
                                  t_idx l_ny,
-                                 t_idx l_scaleX,
-                                 t_idx l_scaleY,
                                  t_idx l_stride )
 {
     m_filePath = filePath;
@@ -42,21 +40,21 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     checkNcErr( l_err, "create" );
 
     // define dimensions
-    l_err = nc_def_dim( m_ncId,      // ncid
-                        "time",      // name
-                        NC_UNLIMITED,// len
+    l_err = nc_def_dim( m_ncId,         // ncid
+                        "time",         // name
+                        NC_UNLIMITED,   // len
                         &m_dimTimeId ); // idp
     checkNcErr( l_err, "dimTime" );
 
     l_err = nc_def_dim( m_ncId,      // ncid
                         "x",         // name
-                        l_scaleX,    // len
+                        m_nx,        // len
                         &m_dimXId ); // idp
     checkNcErr( l_err, "dimX" );
 
     l_err = nc_def_dim( m_ncId,      // ncid
                         "y",         // name
-                        l_scaleY,    // len
+                        m_ny,        // len
                         &m_dimYId ); // idp
     checkNcErr( l_err, "dimY" );
 

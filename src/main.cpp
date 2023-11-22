@@ -12,6 +12,7 @@
 #include "../include/setups/SupercriticalFlow1d.h"
 #include "../include/setups/TsunamiEvent1d.h"
 #include "../include/setups/CircularDamBreak2d.h"
+#include "../include/setups/ArtificialTsunami2d.h"
 #include "../include/io/Csv.h"
 #include "../include/io/NetCdf.h"
 #include "../include/io/ArgSetup.h"
@@ -245,12 +246,16 @@ int main( int   i_argc,
                             reflectTop = true;
                             reflectBottom = true;
                         }
-                        else
+                        else if( i == startIndex + 1 )
                         {
                             std::cerr << "'" << stringParameter << "' is an unknown argument for flag -r" << std::endl
                                 << "valid arguments are 'left', 'right', 'top', 'bottom', 'x', 'y', 'all'" << std::endl
                                 << "the arguments 'top' and 'bottom' only take effect if the simulation is 2d" << std::endl;
                             return EXIT_FAILURE;
+                        }
+                        else
+                        {
+                            break;
                         }
                         if( i + 1 >= i_argc )
                         {
@@ -359,8 +364,8 @@ int main( int   i_argc,
         << "Output format is set to " << green << ( isCsv ? "csv" : "netCDF" ) << reset << std::endl;
     // End print
 
-    tsunami_lab::t_real l_scaleX = 100;
-    tsunami_lab::t_real l_scaleY = 100;
+    tsunami_lab::t_real l_scaleX = 10000;
+    tsunami_lab::t_real l_scaleY = 10000;
     if( use2D )
     {
         l_dxy = std::min( l_scaleX / l_nx, l_scaleY / l_ny );
@@ -377,7 +382,7 @@ int main( int   i_argc,
 
     // construct setup
     tsunami_lab::setups::Setup* l_setup;
-    l_setup = new tsunami_lab::setups::CircularDamBreak2d();
+    l_setup = new tsunami_lab::setups::ArtificialTsunami2d();
 
 
     // construct solver
@@ -460,7 +465,7 @@ int main( int   i_argc,
     std::cout << "Max speed " << l_speedMax << std::endl;
 
     // derive constant time step; changes at simulation time are ignored
-    tsunami_lab::t_real l_dt = 0.45 * l_dxy / l_speedMax;
+    tsunami_lab::t_real l_dt = std::min( 0.45 * l_dxy / l_speedMax, 0.01 );
 
     // derive scaling for a time step
     tsunami_lab::t_real l_scaling = l_dt / l_dxy;
@@ -490,8 +495,6 @@ int main( int   i_argc,
         netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/solution.nc",
                                                     l_nx,
                                                     l_ny,
-                                                    l_scaleX,
-                                                    l_scaleY,
                                                     l_waveProp->getStride() );
     }
 

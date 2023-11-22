@@ -18,7 +18,7 @@ namespace tsunami_lab
 }
 
 /**
- * 1d dam break setup.
+ * circular dam break setup.
  **/
 class tsunami_lab::setups::CircularDamBreak2d : public Setup
 {
