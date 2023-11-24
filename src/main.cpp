@@ -32,11 +32,6 @@ namespace fs = std::filesystem;
 const std::string SOLUTION_FOLDER = "solutions";
 bool KILL_THREAD = false;
 
-const std::string reset = "\033[0m";
-const std::string cyan = "\033[36;49m";
-const std::string magenta = "\033[35;49m";
-const std::string green = "\033[32;49m";
-
 enum Arguments
 {
     SOLVER = 's',
@@ -58,6 +53,11 @@ const std::vector<ArgSetup> optionalFlags = {
 
 void printHelp()
 {
+    const char* reset = "\033[0m";
+    const char* cyan = "\033[36;49m";
+    const char* magenta = "\033[35;49m";
+    const char* green = "\033[32;49m";
+
     std::cerr << "./build/simulation " << magenta << "N_CELLS_X (N_CELLS_Y) " << reset << "["
         << green << "-s " << cyan << "<fwave|roe>" << reset << "] ["
         << green << "-B" << reset << "] ["
@@ -99,6 +99,8 @@ void writeStations( tsunami_lab::io::Stations* stations, tsunami_lab::patches::W
 int main( int   i_argc,
           char* i_argv[] )
 {
+    const char* reset = "\033[0m";
+    const char* green = "\033[32;49m";
 
     std::cout << "#####################################################" << std::endl;
     std::cout << "###                  Tsunami Lab                  ###" << std::endl;
@@ -495,6 +497,8 @@ int main( int   i_argc,
         netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/solution.nc",
                                                     l_nx,
                                                     l_ny,
+                                                    l_scaleX,
+                                                    l_scaleY,
                                                     l_waveProp->getStride() );
     }
 
@@ -558,4 +562,4 @@ int main( int   i_argc,
 
     std::cout << "finished, exiting" << std::endl;
     return EXIT_SUCCESS;
-}
+        }

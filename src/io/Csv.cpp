@@ -8,8 +8,6 @@
 #include <sstream>
 #include <cmath>
 
-const char* reset = "\033[0m";
-const char* yellow = "\033[33;49m";
 
 void tsunami_lab::io::Csv::write( t_real i_dxy,
                                   t_idx i_nx,
@@ -78,6 +76,9 @@ void tsunami_lab::io::Csv::write( t_real i_dxy,
 
     if( nanCount > 0 )
     {
+        const char* reset = "\033[0m";
+        const char* yellow = "\033[33;49m";
+
         std::cout << yellow << "  WARNING: " << nanCount << " nan values were written to this file!" << reset << std::endl;
 #ifdef TEST
         exit( EXIT_FAILURE );
