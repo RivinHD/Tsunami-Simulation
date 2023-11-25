@@ -49,6 +49,7 @@ set(SRC_FILES
     setups/TsunamiEvent1d
     setups/CircularDamBreak2d
     setups/ArtificialTsunami2d
+    setups/TsunamiEvent2d
     patches/WavePropagation1d
     patches/WavePropagation2d
     io/Csv
@@ -78,6 +79,8 @@ set(RESOURCE_FILES
     config.test.json
     ReadNetCDF.test.nc
     WriteNetCDF.test.txt
+    artificialtsunami_displ_1000.nc
+    artificialtsunami_bathymetry_1000.nc
 )
 
 # Create SOURCE_FILES

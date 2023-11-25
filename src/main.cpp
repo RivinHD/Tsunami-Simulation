@@ -1,5 +1,5 @@
 /**
- * @author Alexander Breuer (alex.breuer AT uni-jena.de)
+ * @author Alexander Breuer (alex.breuer AT uni-jena.de), Fabian Hofer, Vincent Gerlach
  *
  * Entry-point for simulations.
  **/
@@ -13,6 +13,7 @@
 #include "../include/setups/TsunamiEvent1d.h"
 #include "../include/setups/CircularDamBreak2d.h"
 #include "../include/setups/ArtificialTsunami2d.h"
+#include "../include/setups/TsunamiEvent2d.h"
 #include "../include/io/Csv.h"
 #include "../include/io/NetCdf.h"
 #include "../include/io/ArgSetup.h"
@@ -385,7 +386,13 @@ int main( int   i_argc,
 
     // construct setup
     tsunami_lab::setups::Setup* l_setup;
-    l_setup = new tsunami_lab::setups::ArtificialTsunami2d();
+    const char* variables[3]{ "x", "y", "z" };
+    l_setup = new tsunami_lab::setups::TsunamiEvent2d( "resources/artificialtsunami_bathymetry_1000.nc",
+                                                       variables,
+                                                       "resources/artificialtsunami_displ_1000.nc",
+                                                       variables,
+                                                       l_scaleX,
+                                                       l_scaleY );
 
 
     // construct solver

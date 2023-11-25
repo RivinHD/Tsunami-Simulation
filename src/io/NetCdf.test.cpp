@@ -22,13 +22,13 @@ const std::string SOLUTION_FOLDER = "solutions";
 
 TEST_CASE( "The the write method for netCDF", "[netCDF]" )
 {
-    tsunami_lab::t_real* time = new tsunami_lab::t_real[]
+    tsunami_lab::t_real time[]
     {
         0, 0.25, 0.4999998, 0.7499996, 0.9999993, 1.249999, 1.499999,
         1.749999, 1.999998, 2.249998, 2.499998, 2.749998, 2.999998, 3.249997,
         3.499997, 3.749997, 3.999997, 4.250002, 4.500008, 4.750014
     };
-    tsunami_lab::t_real* totalHeight = new tsunami_lab::t_real[]
+    tsunami_lab::t_real totalHeight[]
     {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -231,7 +231,7 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     };
-    tsunami_lab::t_real* bathymetry = new tsunami_lab::t_real[]
+    tsunami_lab::t_real bathymetry[]
     {
         -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100,
         -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100,
@@ -434,7 +434,7 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
         -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100,
         -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100
     };
-    tsunami_lab::t_real* momentumX = new tsunami_lab::t_real[]
+    tsunami_lab::t_real momentumX[]
     {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -637,7 +637,7 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     };
-    tsunami_lab::t_real* momentumY = new tsunami_lab::t_real[]
+    tsunami_lab::t_real momentumY[]
     {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -859,31 +859,27 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
                                                                          10000,
                                                                          10000,
                                                                          12 );
-    for(size_t i = 0; i < 20; i++)
+    for( size_t i = 0; i < 20; i++ )
     {
         netCdfWriter->write( time[i],
-                             totalHeight + (i * 100),
-                             bathymetry + (i * 100),
-                             momentumX + (i * 100),
-                             momentumY + (i * 100));
+                             totalHeight + ( i * 100 ),
+                             bathymetry + ( i * 100 ),
+                             momentumX + ( i * 100 ),
+                             momentumY + ( i * 100 ) );
     }
 
-    delete[] totalHeight;
-    delete[] bathymetry;
-    delete[] momentumX;
-    delete[] momentumY;
     delete netCdfWriter;
 
-    system("ncdump solutions/simulation/WriteNetCDF.test.nc > tmp_file.txt");
+    system( "ncdump solutions/simulation/WriteNetCDF.test.nc > tmp_file.txt" );
 
     std::ifstream file1;
     std::ifstream file2;
     std::string line1, line2;
 
-    file1.open("tmp_file.txt");
-    file2.open("resources/WriteNetCDF.test.txt");
+    file1.open( "tmp_file.txt" );
+    file2.open( "resources/WriteNetCDF.test.txt" );
 
-    while( std::getline(file1, line1) && std::getline(file2, line2) )
+    while( std::getline( file1, line1 ) && std::getline( file2, line2 ) )
     {
         REQUIRE( line1 == line2 );
     }
@@ -896,7 +892,7 @@ TEST_CASE( "The the read method for netCDF", "[netCDF]" )
     tsunami_lab::io::NetCdf* reader = new tsunami_lab::io::NetCdf();
     const char* variables[2] = { "b", "h" };
     tsunami_lab::io::NetCdf::VarArray data[2];
-    tsunami_lab::io::NetCdf::VarArray singleDataArr[1];
+    tsunami_lab::io::NetCdf::VarArray singleData;
 
     SECTION( "Run Tests" )
     {
@@ -980,11 +976,10 @@ TEST_CASE( "The the read method for netCDF", "[netCDF]" )
         }
 
         // test the simple read method with one variable and a timeStep of 2
-        reader->read( "resources/ReadNetCDF.test.nc", "h", singleDataArr, 2 );
+        reader->read( "resources/ReadNetCDF.test.nc", "h", singleData, 2 );
 
         REQUIRE( reader->readDataArrays.size() == 5 );
 
-        tsunami_lab::io::NetCdf::VarArray& singleData = singleDataArr[0];
         REQUIRE( singleData.length == 24 );
         REQUIRE( singleData.stride == 3 );
         REQUIRE( singleData.type == tsunami_lab::io::NetCdf::VarType::FLOAT );
@@ -1008,5 +1003,5 @@ TEST_CASE( "The the read method for netCDF", "[netCDF]" )
 
     REQUIRE( data[0].array == nullptr );
     REQUIRE( data[1].array == nullptr );
-    REQUIRE( singleDataArr[0].array == nullptr );
+    REQUIRE( singleData.array == nullptr );
 }
