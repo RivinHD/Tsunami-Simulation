@@ -78,7 +78,7 @@ set(RESOURCE_FILES
     config.json
     config.test.json
     ReadNetCDF.test.nc
-    WriteNetCDF.test.nc
+    WriteNetCDF.test.txt
 )
 
 # Create SOURCE_FILES

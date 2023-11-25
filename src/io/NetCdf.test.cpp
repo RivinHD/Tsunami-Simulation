@@ -874,26 +874,21 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
     delete[] momentumY;
     delete netCdfWriter;
 
-    std::ifstream file1(SOLUTION_FOLDER + "/simulation/WriteNetCDF.test.nc", std::ios::binary);
-    std::ifstream file2("resources/WriteNetCDF.test.nc", std::ios::binary);
+    system("ncdump solutions/simulation/WriteNetCDF.test.nc > tmp_file.txt");
 
-    if(!file1.is_open() || !file2.is_open()) {
-        std::cerr << "Cannot open files for comparison." << std::endl;
-    }
+    std::ifstream file1;
+    std::ifstream file2;
+    std::string line1, line2;
 
-    std::istreambuf_iterator<char> begin1(file1);
-    std::istreambuf_iterator<char> begin2(file2);
+    file1.open("tmp_file.txt");
+    file2.open("resources/WriteNetCDF.test.txt");
 
-    std::istreambuf_iterator<char> end;
-
-    while(begin1 != end && begin2 != end)
+    while( std::getline(file1, line1) && std::getline(file2, line2) )
     {
-        REQUIRE( *begin1 == *begin2 );
-        ++begin1;
-        ++begin2;
+        REQUIRE( line1 == line2 );
     }
-    REQUIRE( begin1 == end );
-    REQUIRE( begin2 == end );
+
+    std::remove( "tmp_file.txt" );
 }
 
 TEST_CASE( "The the read method for netCDF", "[netCDF]" )
