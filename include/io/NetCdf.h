@@ -61,8 +61,14 @@ private:
     //! id of x dimension
     int m_dimXId;
 
+    //! id of longitude
+    int m_longitudeId;
+
     //! id of y dimension
     int m_dimYId;
+
+    //! id of latitude
+    int m_latitudeId;
 
     //! id of time
     int m_timeId;

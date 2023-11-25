@@ -40,8 +40,8 @@ enum Arguments
     REFLECTION = 'r',
     TIME = 't',
     IO_FORMAT = 'f'
-
 };
+
 const int requiredArguments = 1;
 const int optionalArguments = 1;
 const std::vector<ArgSetup> optionalFlags = {

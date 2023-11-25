@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <cmath>
 #include <cstdint>
 #include "../../include/io/NetCdf.h"
 
@@ -35,16 +36,6 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                                  t_idx l_stride )
     : isReadMode( false )
 {
-    // TODO add Conventions = "COARDS" as global attribute
-    // TODO variables for each dimension add same named variables with units (latitude (Y) with 'degrees_north', longitude(X) with 'degrees_east')
-    // TODO convert the cell-index into latitude and longitude in degrees based on the scale (m_scaleX, m_scaleY) in meters and write it as data to the file.
-    //      longitude should l_nx number of values and latitude should contain l_ny number of values corresponding to the cells in x/y direction. Example COARDS file: https://www.unidata.ucar.edu/software/netcdf/examples/rhum.2003.cdl
-    //      E.g. l_nx = 6 and scale is 110574 then the nc file latitude looks like this:
-    //      
-    //      data:
-    //        
-    //        latitude = 0, 22.1148, 44.2296, 66.3444, 88.4592, 110.574;
-
     m_filePath = filePath;
     m_nx = l_nx;
     m_ny = l_ny;
@@ -68,13 +59,13 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     checkNcErr( l_err, "dimTime" );
 
     l_err = nc_def_dim( m_ncId,      // ncid
-                        "x",         // name
+                        "longitude",         // name
                         m_nx,        // len
                         &m_dimXId ); // idp
     checkNcErr( l_err, "dimX" );
 
     l_err = nc_def_dim( m_ncId,      // ncid
-                        "y",         // name
+                        "latitude",         // name
                         m_ny,        // len
                         &m_dimYId ); // idp
     checkNcErr( l_err, "dimY" );
@@ -82,6 +73,22 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     m_dimIds[0] = m_dimTimeId;
     m_dimIds[1] = m_dimYId;
     m_dimIds[2] = m_dimXId;
+
+    l_err = nc_def_var( m_ncId,             // ncid
+                        "longitude",        // name
+                        NC_FLOAT,           // xtype
+                        1,                  // ndims
+                        &m_dimXId,          // dimidsp
+                        &m_longitudeId );   // varidp
+    checkNcErr( l_err, "longitude" );
+
+    l_err = nc_def_var( m_ncId,             // ncid
+                        "latitude",         // name
+                        NC_FLOAT,           // xtype
+                        1,                  // ndims
+                        &m_dimYId,          // dimidsp
+                        &m_latitudeId );    // varidp
+    checkNcErr( l_err, "latitude" );
 
     l_err = nc_def_var( m_ncId,             // ncid
                         "time",             // name
@@ -123,6 +130,14 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                         &m_momentumYId );   // varidp
     checkNcErr( l_err, "momentumY" );
 
+    // global attribute
+    l_err = nc_put_att_text( m_ncId,
+                             NC_GLOBAL,
+                             "Conventions",
+                             6,
+                             "COARDS");
+    checkNcErr(l_err, "coards");
+
     // Add units attribute to the variable
     l_err = nc_put_att_text( m_ncId,
                              m_timeId,
@@ -131,8 +146,50 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                              "seconds" );
     checkNcErr( l_err, "seconds" );
 
+    l_err = nc_put_att_text( m_ncId,
+                             m_longitudeId,
+                             "units",
+                             12,
+                             "degrees_east" );
+    checkNcErr( l_err, "degrees_east" );
+
+    l_err = nc_put_att_text( m_ncId,
+                             m_latitudeId,
+                             "units",
+                             13,
+                             "degrees_north" );
+    checkNcErr( l_err, "degrees_north" );
+
     l_err = nc_enddef( m_ncId ); // ncid
     checkNcErr( l_err, "enddef" );
+
+    // write longitude and latitude
+    t_real maxLat = m_scaleY / t_real(110574);
+    t_real maxLon = m_scaleX / (111320 * std::cos(maxLat * M_PI / 180));
+    t_real stepLat = maxLat / (l_ny - 1);
+    t_real stepLon = maxLon / (l_nx - 1);
+    t_real* lat = new t_real[l_ny];
+    t_real* lon = new t_real[l_nx];
+
+    for(size_t i = 0; i < l_ny; i++)
+    {
+        lat[i] = i * stepLat;
+    }
+    for(size_t i = 0; i < l_nx; i++)
+    {
+        lon[i] = i * stepLon;
+    }
+
+    l_err = nc_put_var_float( m_ncId,          // ncid
+                              m_latitudeId,    // varid
+                              lat );           // op
+    checkNcErr( l_err, "putLatitude" );
+
+    l_err = nc_put_var_float( m_ncId,         // ncid
+                              m_longitudeId,  // varid
+                              lon );          // op
+    checkNcErr( l_err, "putLongitude" );
+
     std::cout << "finished writing to " << m_filePath << std::endl
         << "Use ncdump to view its contents" << std::endl;
 }
@@ -212,9 +269,9 @@ void tsunami_lab::io::NetCdf::write( const t_real simulationTime,
     size_t index[1] = { m_time }; // index should be same as current time dimension
 
     // write data
-    l_err = nc_put_var1_float( m_ncId,        // ncid
-                               m_timeId,      // varid
-                               index,         // indexp
+    l_err = nc_put_var1_float( m_ncId,              // ncid
+                               m_timeId,            // varid
+                               index,               // indexp
                                &simulationTime );   // op
     checkNcErr( l_err, "putTime" );
 
