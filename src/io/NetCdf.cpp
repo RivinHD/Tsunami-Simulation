@@ -174,6 +174,7 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     for(size_t i = 0; i < l_ny; i++)
     {
         lat[i] = i * stepLat;
+        std::cout << i * stepLat << std::endl;
     }
     for(size_t i = 0; i < l_nx; i++)
     {
