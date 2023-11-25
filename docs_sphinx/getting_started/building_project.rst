@@ -18,7 +18,7 @@ You can check if ``CMake`` is installed by running
     cmake --version
 
 .. note::
-    ``CMake`` can be `downloaded <https://cmake.org/download/#latest>`_ or installed OS Specific through other methods
+    ``CMake`` can be `downloaded <https://cmake.org/download/#latest>`_ or installed OS specific through other methods
 
     *Windows*
         There are several ways to install ``CMake`` on Windows.
