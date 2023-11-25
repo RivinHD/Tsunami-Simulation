@@ -77,6 +77,7 @@ set(RESOURCE_FILES
     bathy_profile.csv
     config.json
     config.test.json
+    ReadNetCDF.test.nc
 )
 
 # Create SOURCE_FILES

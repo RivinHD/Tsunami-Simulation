@@ -26,11 +26,12 @@
 #include <filesystem> // requieres C++17 and up
 #include <chrono>
 #include <thread>
+#include <atomic>
 
 namespace fs = std::filesystem;
 
 const std::string SOLUTION_FOLDER = "solutions";
-bool KILL_THREAD = false;
+std::atomic_bool KILL_THREAD = false;
 
 enum Arguments
 {
@@ -557,9 +558,9 @@ int main( int   i_argc,
 
     // kill thread
     KILL_THREAD = true;
-    // wait for thread
+    // wait for threads
     writeStationsThread.join();
 
     std::cout << "finished, exiting" << std::endl;
     return EXIT_SUCCESS;
-        }
+}
