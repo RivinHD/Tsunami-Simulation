@@ -19,7 +19,7 @@ void tsunami_lab::io::NetCdf::_read( const char* filepath,
 {
     if( !isReadMode )
     {
-        std::cerr << "This netCdf object is not initialized in read mode. Write mode can only be used to wirte to a file." << std::endl;
+        std::cerr << "This netCdf object is not initialized in read mode. Write mode can only be used to write to a file." << std::endl;
         exit( 2 );
     }
 

@@ -62,8 +62,8 @@ private:
     //! reflection for the left (index: 0), right (index: 1), top (index: 2) and bottom (index: 3)
     bool hasReflection[4] = { false, false, false, false };
 
-    //! Iteration that should be performed to use the cache more efficiently e.g. 4 -> 4 * sizeof(t_real) = 4 * 32 bit = 128 bit Cacheline
-    static constexpr t_idx ITERATIONS_CACHE = 4;
+    //! Iteration that should be performed to use the cache more efficiently e.g. 32 -> 32 * sizeof(t_real) = 32 * 4 byte = 128 byte Cacheline
+    static constexpr t_idx ITERATIONS_CACHE = 32;
 
     /*
     * The Sides on which the reflection appears
