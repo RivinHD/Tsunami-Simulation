@@ -13,22 +13,23 @@
 1. Installation of netCDF
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``netCDF`` can be installed OS specific:
+.. note::
 
-    **Windows**
+    ``netCDF`` can be installed OS specific
 
-        1. `Download <https://docs.unidata.ucar.edu/netcdf-c/current/winbin.html>_` and install the netCDF-C library and utilities
+        **Windows**
 
-        2. Install as usual and make sure to ``add netCDF`` to the system ``PATH`` for all users
+            1. `Download <https://docs.unidata.ucar.edu/netcdf-c/current/winbin.html>`_ and install the netCDF-C library and utilities
 
-    **Linux and MAC**
+            2. Install as usual and make sure to ``add netCDF`` to the system ``PATH`` for all users
 
-        The easiest way to install netCDF is via `Homebrew <https://brew.sh/>_`. Run the following command in the terminal:
+        **Linux and MAC**
 
-        .. code-block:: bash
+            The easiest way to install netCDF is via `Homebrew <https://brew.sh/>`_. Run the following command in the terminal:
 
-            brew install netcdf
+            .. code-block:: bash
 
+                brew install netcdf
 
 To use netCDF we have to include the directories and link the library to the whole project in the ``CMakeLists.txt``.
 With ``find_package(netCDF REQUIRED)`` CMake will find the existing path and use it as reference.
@@ -45,10 +46,14 @@ With ``find_package(netCDF REQUIRED)`` CMake will find the existing path and use
 2. tsunami_lab::io::NetCdf::write
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-With the NetCdf constructor we set up our netCDF file. First we define our required dimensions:
+With the NetCdf constructor we set up our netCDF file. First we define our required dimensions.
+
+The ``useSpherical`` boolean decides if we are using degrees or meters in our netCDF file as unit. The default value is
+set to **true**. If the user wants to use meters he can set it with the ``-M`` flag at the beginning. The boolean is then
+used in various ternary operators to set the value to the right one.
 
 .. code-block:: cpp
-    :emphasize-lines: 23-45
+    :emphasize-lines: 24-46
 
     // Header: NetCdf.h
     // File:   NetCdf.cpp
@@ -59,7 +64,8 @@ With the NetCdf constructor we set up our netCDF file. First we define our requi
                                      t_idx l_ny,
                                      t_real l_scaleX,
                                      t_real l_scaleY,
-                                     t_idx l_stride )
+                                     t_idx l_stride,
+                                     bool useSpherical )
         : isReadMode( false )
     {
         m_filePath = filePath;
@@ -84,16 +90,16 @@ With the NetCdf constructor we set up our netCDF file. First we define our requi
                             &m_dimTimeId ); // idp
         checkNcErr( l_err, "dimTime" );
 
-        l_err = nc_def_dim( m_ncId,      // ncid
-                            "longitude", // name
-                            m_nx,        // len
-                            &m_dimXId ); // idp
+        l_err = nc_def_dim( m_ncId,                           // ncid
+                            useSpherical ? "longitude" : "X", // name
+                            m_nx,                             // len
+                            &m_dimXId );                      // idp
         checkNcErr( l_err, "dimX" );
 
-        l_err = nc_def_dim( m_ncId,      // ncid
-                            "latitude",  // name
-                            m_ny,        // len
-                            &m_dimYId ); // idp
+        l_err = nc_def_dim( m_ncId,                           // ncid
+                            useSpherical ? "latitude" : "Y",  // name
+                            m_ny,                             // len
+                            &m_dimYId );                      // idp
         checkNcErr( l_err, "dimY" );
 
         m_dimIds[0] = m_dimTimeId;
@@ -107,20 +113,20 @@ Next, we declare our variables:
 .. code-block:: cpp
 
     [ ... ]
-    l_err = nc_def_var( m_ncId,             // ncid
-                        "longitude",        // name
-                        NC_FLOAT,           // xtype
-                        1,                  // ndims
-                        &m_dimXId,          // dimidsp
-                        &m_longitudeId );   // varidp
+    l_err = nc_def_var( m_ncId,                            // ncid
+                        useSpherical ? "longitude" : "X",  // name
+                        NC_FLOAT,                          // xtype
+                        1,                                 // ndims
+                        &m_dimXId,                         // dimidsp
+                        &m_xId );                          // varidp
     checkNcErr( l_err, "longitude" );
 
-    l_err = nc_def_var( m_ncId,             // ncid
-                        "latitude",         // name
-                        NC_FLOAT,           // xtype
-                        1,                  // ndims
-                        &m_dimYId,          // dimidsp
-                        &m_latitudeId );    // varidp
+    l_err = nc_def_var( m_ncId,                           // ncid
+                        useSpherical ? "latitude" : "Y",  // name
+                        NC_FLOAT,                         // xtype
+                        1,                                // ndims
+                        &m_dimYId,                        // dimidsp
+                        &m_yId );                         // varidp
     checkNcErr( l_err, "latitude" );
 
     l_err = nc_def_var( m_ncId,             // ncid
@@ -142,8 +148,8 @@ Next, we declare our variables:
     l_err = nc_def_var( m_ncId,             // ncid
                         "bathymetry",       // name
                         NC_FLOAT,           // xtype
-                        3,                  // ndims
-                        m_dimIds,           // dimidsp
+                        2,                  // ndims
+                        m_dimIds + 1,       // dimidsp
                         &m_bathymetryId );  // varidp
     checkNcErr( l_err, "bathymetry" );
 
@@ -165,11 +171,10 @@ Next, we declare our variables:
     [ ... ]
 
 
-Now we have defined the global attributes and the units for a number of variables:
+Now we have to define the global attributes and the units for a number of variables:
 
 .. code-block:: cpp
-
-    :emphasize-lines: 7, 15, 22, 29
+    :emphasize-lines: 5, 12, 26, 33, 40, 47, 54
 
     [ ... ]
     // global attribute
@@ -177,8 +182,8 @@ Now we have defined the global attributes and the units for a number of variable
                              NC_GLOBAL,
                              "Conventions",
                              6,
-                             "COARDS");
-    checkNcErr(l_err, "coards");
+                             "COARDS" );
+    checkNcErr( l_err, "coards" );
 
     // Add units attribute to the variable
     l_err = nc_put_att_text( m_ncId,
@@ -189,59 +194,92 @@ Now we have defined the global attributes and the units for a number of variable
     checkNcErr( l_err, "seconds" );
 
     l_err = nc_put_att_text( m_ncId,
-                             m_longitudeId,
+                             m_xId,
                              "units",
-                             12,
-                             "degrees_east" );
+                             useSpherical ? 12 : 6,
+                             useSpherical ? "degrees_east" : "meters" );
     checkNcErr( l_err, "degrees_east" );
 
     l_err = nc_put_att_text( m_ncId,
-                             m_latitudeId,
+                             m_yId,
                              "units",
-                             13,
-                             "degrees_north" );
+                             useSpherical ? 13 : 6,
+                             useSpherical ? "degrees_north" : "meters" );
     checkNcErr( l_err, "degrees_north" );
+
+    l_err = nc_put_att_text( m_ncId,
+                             m_totalHeightId,
+                             "units",
+                             6,
+                             "meters" );
+    checkNcErr( l_err, "metersTotalHeight" );
+
+    l_err = nc_put_att_text( m_ncId,
+                             m_bathymetryId,
+                             "units",
+                             6,
+                             "meters" );
+    checkNcErr( l_err, "metersBathymetry" );
+
+    l_err = nc_put_att_text( m_ncId,
+                             m_momentumXId,
+                             "units",
+                             6,
+                             "meters" );
+    checkNcErr( l_err, "metersMomentumX" );
+
+    l_err = nc_put_att_text( m_ncId,
+                             m_momentumYId,
+                             "units",
+                             6,
+                             "meters" );
+    checkNcErr( l_err, "metersMomentumY" );
 
     l_err = nc_enddef( m_ncId ); // ncid
     checkNcErr( l_err, "enddef" );
     [ ... ]
 
 
-Finally, in accordance with convention, we calculate the latitude and longitude values by converting metres to degrees and write them to our netCDF file:
+Finally, in accordance with convention, we calculate the latitude and longitude values by converting metres to degrees
+and write them to our netCDF file if we are using degrees as our unit:
 
 .. code-block:: cpp
 
         [ ... ]
         // write longitude and latitude
-        t_real maxLat = m_scaleY / t_real(110574);
-        t_real maxLon = m_scaleX / (111320 * std::cos(maxLat * M_PI / 180));
-        t_real stepLat = maxLat / (l_ny - 1);
-        t_real stepLon = maxLon / (l_nx - 1);
+        t_real stepLat = m_scaleY / ( l_ny - 1 );
+        t_real stepLon = m_scaleX / ( l_nx - 1 );
+        if( useSpherical )
+        {
+            t_real maxLat = m_scaleY / t_real( 110574 );
+            t_real maxLon = m_scaleX / ( 111320 * std::cos( maxLat * M_PI / 180 ) );
+            stepLat = maxLat / ( l_ny - 1 );
+            stepLon = maxLon / ( l_nx - 1 );
+        }
         t_real* lat = new t_real[l_ny];
         t_real* lon = new t_real[l_nx];
 
-        for(size_t i = 0; i < l_ny; i++)
+        for( size_t i = 0; i < l_ny; i++ )
         {
             lat[i] = i * stepLat;
-            std::cout << i * stepLat << std::endl;
         }
-        for(size_t i = 0; i < l_nx; i++)
+        for( size_t i = 0; i < l_nx; i++ )
         {
             lon[i] = i * stepLon;
         }
 
         l_err = nc_put_var_float( m_ncId,          // ncid
-                                  m_latitudeId,    // varid
+                                  m_yId,    // varid
                                   lat );           // op
         checkNcErr( l_err, "putLatitude" );
 
         l_err = nc_put_var_float( m_ncId,         // ncid
-                                  m_longitudeId,  // varid
+                                  m_xId,  // varid
                                   lon );          // op
         checkNcErr( l_err, "putLongitude" );
 
-        std::cout << "finished writing to " << m_filePath << std::endl
-            << "Use ncdump to view its contents" << std::endl;
+        delete[] lat;
+        delete[] lon;
     }
 
 

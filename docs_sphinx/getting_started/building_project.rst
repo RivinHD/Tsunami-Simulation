@@ -11,7 +11,7 @@ Requirements
 ------------
 
 To use this project ``CMake`` is required.
-You can check if ``CMake`` is installed by running
+You can check if CMake is installed by running
 
 .. code-block:: bash
 
@@ -67,6 +67,31 @@ You can check if ``CMake`` is installed by running
         .. code-block:: bash
 
             brew install cmake
+
+
+As the project also uses ``netCDF``, this must also be installed on the PC.
+You can check if netCDF is installed by running
+
+.. code-block:: bash
+
+    nc-config --version
+
+.. note::
+    ``netCDF`` can be installed OS specific
+
+    **Windows**
+
+        1. `Download <https://docs.unidata.ucar.edu/netcdf-c/current/winbin.html>`_ and install the netCDF-C library and utilities
+
+        2. Install as usual and make sure to ``add netCDF`` to the system ``PATH`` for all users
+
+    **Linux and MAC**
+
+        The easiest way to install netCDF is via `Homebrew <https://brew.sh/>`_. Run the following command in the terminal:
+
+        .. code-block:: bash
+
+            brew install netcdf
 
 
 Building
@@ -182,8 +207,9 @@ Or on Windows with
 Simulation Output
 -----------------
 
-The output of the simulation consists of several CSV files named ``solution_<number>.csv``.
-The CSV files are stored in a separate ``solutions`` folder, which is located in the working directory of the executable.
+The output of the simulation consists of one netCDF file if nothing else is specified. If you define the output format
+as CSV several CSV files named ``solution_<number>.csv`` will be created. The files are stored in a separate
+``solutions/simulation/`` folder, which is located in the working directory of the executable.
 
 Extracting bathymetry data for the 1D domain
 --------------------------------------------
