@@ -45,10 +45,10 @@ jobs:
           cmake --build build --config Debug --target sanitize_test
           ./build/sanitize_test
           cmake --build build --config Debug --target sanitize
-          ./build/sanitize 25
+          ./build/sanitize 25 -f csv
           ./build/sanitize 25 25
           cmake --build build --config Release --target sanitize
-          ./build/sanitize 500
+          ./build/sanitize 500 -f csv
           ./build/sanitize 50 50
 
       - name: Valgrind
@@ -56,7 +56,7 @@ jobs:
           cmake --build build --config Debug --target test
           valgrind build/test
           cmake --build build --config Debug --target simulation
-          valgrind build/simulation 25
+          valgrind build/simulation 25 -f csv
           valgrind build/simulation 25 25
 
       - name: Release
@@ -64,7 +64,7 @@ jobs:
           cmake --build build --config Release --target test
           ./build/test
           cmake --build build --config Release --target simulation
-          ./build/simulation 500
+          ./build/simulation 500 -f csv
           ./build/simulation 50 50
 
       - name: Arguments Test
@@ -74,47 +74,47 @@ jobs:
           cd build
           cmake -D ENABLE_TESTMODE=ON ..
           cmake --build . --config Release --target simulation
-          echo "Test ./simulation 10"
-          ./simulation 10
+          echo "Test ./simulation 10 -f csv"
+          ./simulation 10 -f csv
           echo "Test ./simulation 10 10"
           ./simulation 10 10
-          echo "Test ./simulation 10 -B"
-          ./simulation 10 -B
-          echo "Test ./simulation 10 10 -B"
+          echo "Test ./simulation 10 -B -f csv"
+          ./simulation 10 -B -f csv
+          echo "Test ./simulation 10 10 -B" 
           ./simulation 10 10 -B
-          echo "Test ./simulation 10 -s fwave"
-          ./simulation 10 -s fwave
+          echo "Test ./simulation 10 -s fwave -f csv"
+          ./simulation 10 -s fwave -f csv
           echo "Test ./simulation 10 10 -s fwave"
           ./simulation 10 10 -s fwave
-          echo "Test ./simulation 10 -s roe"
-          ./simulation 10 -s roe
+          echo "Test ./simulation 10 -s roe -f csv"
+          ./simulation 10 -s roe -f csv
           echo "Test ./simulation 10 10 -s roe"
           ./simulation 10 10 -s roe
-          echo "Test ./simulation 10 -s fwave -B"
-          ./simulation 10 -s fwave -B
+          echo "Test ./simulation 10 -s fwave -B -f csv"
+          ./simulation 10 -s fwave -B -f csv
           echo "Test ./simulation 10 10 -s fwave -B"
           ./simulation 10 10 -s fwave -B
-          echo "Test ./simulation 10 -r left -B"
-          ./simulation 10 -r left -B
+          echo "Test ./simulation 10 -r left -B -f csv"
+          ./simulation 10 -r left -B -f csv
           echo "Test ./simulation 10 10 -r left -B"
           ./simulation 10 10 -r left -B
-          echo "Test ./simulation 10 -r left right -s fwave"
-          ./simulation 10 -r left right -s fwave
+          echo "Test ./simulation 10 -r left right -s fwave -f csv"
+          ./simulation 10 -r left right -s fwave -f csv
           echo "Test ./simulation 10 10 -r left right -s fwave"
           ./simulation 10 10 -r left right -s fwave
-          echo "Test ./simulation 10 -r x -s roe"
-          ./simulation 10 -r x -s roe
+          echo "Test ./simulation 10 -r x -s roe -f csv"
+          ./simulation 10 -r x -s roe -f csv
           echo "Test ./simulation 10 10 -r x y -s roe"
           ./simulation 10 10 -r x y -s roe
-          echo "Test ./simulation 10 -r all -s fwave -B"
-          ./simulation 10 -r all -s fwave -B
+          echo "Test ./simulation 10 -r all -s fwave -B -f csv"
+          ./simulation 10 -r all -s fwave -B -f csv
           echo "Test ./simulation 10 10 -r all -s fwave -B"
           ./simulation 10 10 -r all -s fwave -B
-          echo "Test ./simulation 10 -r left right top bottom -s fwave -B"
-          ./simulation 10 -r left right top bottom -s fwave -B
+          echo "Test ./simulation 10 -r left right top bottom -s fwave -B -f csv"
+          ./simulation 10 -r left right top bottom -s fwave -B -f csv
           echo "Test ./simulation 10 10 -r left right top bottom -s fwave -B"
           ./simulation 10 10 -r left right top bottom -s fwave -B
-          echo "Test ./simulation 10 -r left right top bottom -s fwave -B -t 20"
-          ./simulation 10 -r left right top bottom -s fwave -B -t 20
+          echo "Test ./simulation 10 -r left right top bottom -s fwave -B -t 20 -f csv"
+          ./simulation 10 -r left right top bottom -s fwave -B -t 20 -f csv
           echo "Test ./simulation 10 10 -r left right top bottom -s fwave -B -t 3"
           ./simulation 10 10 -r left right top bottom -s fwave -B -t 3

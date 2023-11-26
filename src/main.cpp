@@ -333,7 +333,7 @@ int main( int   i_argc,
     }
     else
     {
-        std::cout << "Simulation is set to" << green << "1D" << reset << std::endl;
+        std::cout << "Simulation is set to " << green << "1D" << reset << std::endl;
     }
 
     if( useBathymetry )
