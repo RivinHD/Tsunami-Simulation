@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="4. Two-Dimensional Solver" href="../submissions/two_dimensional_solver.html" />
+    <link rel="prev" title="5. Large Data Input and Output" href="../submissions/large_data_input_output.html" />
     <link href="../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -58,6 +58,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../submissions/finite_volume_discretization.html">2. Finite Volume Discretization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../submissions/bathymetry_boundary_conditions.html">3. Bathymetry &amp; Boundary Conditions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../submissions/two_dimensional_solver.html">4. Two-Dimensional Solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../submissions/large_data_input_output.html">5. Large Data Input and Output</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
@@ -69,6 +70,38 @@
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io3Csv5writeE6t_real5t_idx5t_idx5t_idxPK6t_realPK6t_realPK6t_realPK6t_realPK6t_realRNSt7ostreamE"><span class="pre">Csv::write()</span></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io3Csv18next_middle_statesERNSt8ifstreamER6t_realR6t_realR6t_realR6t_realR6t_real"><span class="pre">Csv::next_middle_states()</span></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io3Csv14readBathymetryERNSt8ifstreamER6t_real"><span class="pre">Csv::readBathymetry()</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdfE"><span class="pre">NetCdf</span></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarTypeE"><span class="pre">NetCdf::VarType</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfEv"><span class="pre">NetCdf::NetCdf()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfENSt6stringE5t_idx5t_idx6t_real6t_real5t_idxb"><span class="pre">NetCdf::NetCdf()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdfD0Ev"><span class="pre">NetCdf::~NetCdf()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5writeEK6t_realPK6t_realPK6t_realPK6t_realPK6t_real"><span class="pre">NetCdf::write()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4I_6size_tEN11tsunami_lab2io11tsunami_lab2io6NetCdf4readEvPKcRA1N_PKcRA1N_8VarArray6size_t"><span class="pre">NetCdf::read()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4readEPKcPKcR8VarArray6size_t"><span class="pre">NetCdf::read()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10checkNcErrEiNSt6stringE"><span class="pre">NetCdf::checkNcErr()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5_readEPKcPPKcP8VarArray6size_t6size_t"><span class="pre">NetCdf::_read()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10isReadModeE"><span class="pre">NetCdf::isReadMode</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10m_filePathE"><span class="pre">NetCdf::m_filePath</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4m_nxE"><span class="pre">NetCdf::m_nx</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4m_nyE"><span class="pre">NetCdf::m_ny</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_scaleXE"><span class="pre">NetCdf::m_scaleX</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_scaleYE"><span class="pre">NetCdf::m_scaleY</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_strideE"><span class="pre">NetCdf::m_stride</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6m_timeE"><span class="pre">NetCdf::m_time</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6m_ncIdE"><span class="pre">NetCdf::m_ncId</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf11m_dimTimeIdE"><span class="pre">NetCdf::m_dimTimeId</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_dimXIdE"><span class="pre">NetCdf::m_dimXId</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5m_xIdE"><span class="pre">NetCdf::m_xId</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_dimYIdE"><span class="pre">NetCdf::m_dimYId</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5m_yIdE"><span class="pre">NetCdf::m_yId</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_timeIdE"><span class="pre">NetCdf::m_timeId</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf15m_totalHeightIdE"><span class="pre">NetCdf::m_totalHeightId</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf14m_bathymetryIdE"><span class="pre">NetCdf::m_bathymetryId</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf13m_momentumXIdE"><span class="pre">NetCdf::m_momentumXId</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf13m_momentumYIdE"><span class="pre">NetCdf::m_momentumYId</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayE"><span class="pre">NetCdf::VarArray</span></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io8StationsE"><span class="pre">Stations</span></a><ul>
@@ -189,6 +222,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#setups">setups</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2dE"><span class="pre">ArtificialTsunami2d</span></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d19ArtificialTsunami2dEv"><span class="pre">ArtificialTsunami2d::ArtificialTsunami2d()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d9getHeightE6t_real6t_real"><span class="pre">ArtificialTsunami2d::getHeight()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12getMomentumXE6t_real6t_real"><span class="pre">ArtificialTsunami2d::getMomentumX()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12getMomentumYE6t_real6t_real"><span class="pre">ArtificialTsunami2d::getMomentumY()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d13getBathymetryE6t_real6t_real"><span class="pre">ArtificialTsunami2d::getBathymetry()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d16bathymetryHeightE"><span class="pre">ArtificialTsunami2d::bathymetryHeight</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12centerOffsetE"><span class="pre">ArtificialTsunami2d::centerOffset</span></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups18CircularDamBreak2dE"><span class="pre">CircularDamBreak2d</span></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups18CircularDamBreak2d18CircularDamBreak2dEv"><span class="pre">CircularDamBreak2d::CircularDamBreak2d()</span></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups18CircularDamBreak2d18CircularDamBreak2dE6t_real6t_realAL2E_6t_real6t_real"><span class="pre">CircularDamBreak2d::CircularDamBreak2d()</span></a></li>
@@ -299,6 +342,26 @@
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d12m_bathymetryE"><span class="pre">TsunamiEvent1d::m_bathymetry</span></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d7m_deltaE"><span class="pre">TsunamiEvent1d::m_delta</span></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d7m_scaleE"><span class="pre">TsunamiEvent1d::m_scale</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2dE"><span class="pre">TsunamiEvent2d</span></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14TsunamiEvent2dEPKcRAL3E_PKcPKcRAL3E_PKc6t_real6t_real6t_real"><span class="pre">TsunamiEvent2d::TsunamiEvent2d()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2dD0Ev"><span class="pre">TsunamiEvent2d::~TsunamiEvent2d()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d9getHeightE6t_real6t_real"><span class="pre">TsunamiEvent2d::getHeight()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12getMomentumXE6t_real6t_real"><span class="pre">TsunamiEvent2d::getMomentumX()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12getMomentumYE6t_real6t_real"><span class="pre">TsunamiEvent2d::getMomentumY()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d13getBathymetryE6t_real6t_real"><span class="pre">TsunamiEvent2d::getBathymetry()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d17getValueAscendingEAL3E_PCK6t_realAL3E_K5t_idxK5t_idxK6t_realK6t_real"><span class="pre">TsunamiEvent2d::getValueAscending()</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6scaleXE"><span class="pre">TsunamiEvent2d::scaleX</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6scaleYE"><span class="pre">TsunamiEvent2d::scaleY</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d5deltaE"><span class="pre">TsunamiEvent2d::delta</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14bathymetryDataE"><span class="pre">TsunamiEvent2d::bathymetryData</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d10bathymetryE"><span class="pre">TsunamiEvent2d::bathymetry</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14bathymetrySizeE"><span class="pre">TsunamiEvent2d::bathymetrySize</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d16displacementDataE"><span class="pre">TsunamiEvent2d::displacementData</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12displacementE"><span class="pre">TsunamiEvent2d::displacement</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d16displacementSizeE"><span class="pre">TsunamiEvent2d::displacementSize</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6readerE"><span class="pre">TsunamiEvent2d::reader</span></a></li>
 </ul>
 </li>
 </ul>
@@ -437,6 +500,364 @@
 </dd></dl>
 
 </div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdfE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdfE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdfE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NetCdf</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdfE" title="Link to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;NetCdf.h&gt;</em></div>
+<p>Supports either reading or writing to a netCDF file </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarTypeE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarTypeE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarTypeE"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a60ba7cc202578a2c784710ddbcf47cbe"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">VarType</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarTypeE" title="Link to this definition"></a><br /></dt>
+<dd><p>The data type parsed from a netCDF file. The given options contain the same value as the nc_type e.g. VarType::CHAR == NC_CHAR. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType4CHARE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType4CHARE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType4CHARE"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a60ba7cc202578a2c784710ddbcf47cbea954859fff642688365c4fa4a5a59f6e6"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CHAR</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType4CHARE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5SHORTE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5SHORTE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5SHORTE"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a60ba7cc202578a2c784710ddbcf47cbead110fa07479b4de47667e7f1457276e7"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SHORT</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5SHORTE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType3INTE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType3INTE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType3INTE"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a60ba7cc202578a2c784710ddbcf47cbea7bf25dea9faa15e242d2fe0eb3d10455"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">INT</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType3INTE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5FLOATE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5FLOATE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5FLOATE"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a60ba7cc202578a2c784710ddbcf47cbea165ba313e70ed8ef5271b17be15f2b7f"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FLOAT</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5FLOATE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6DOUBLEE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6DOUBLEE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6DOUBLEE"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a60ba7cc202578a2c784710ddbcf47cbeaab3ab77f547ad6602f0dc5a7c8ad3342"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DOUBLE</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6DOUBLEE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5UCHARE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5UCHARE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5UCHARE"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a60ba7cc202578a2c784710ddbcf47cbea82868b312eb4bd1027c2d27312584da4"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UCHAR</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5UCHARE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6USHORTE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6USHORTE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6USHORTE"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a60ba7cc202578a2c784710ddbcf47cbeabd0d0240769b169327b7743e5d441616"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">USHORT</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6USHORTE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType4UINTE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType4UINTE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType4UINTE"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a60ba7cc202578a2c784710ddbcf47cbea90460ef113db278dc37ce1e69583a50c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UINT</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType4UINTE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5INT64E">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5INT64E"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5INT64E"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a60ba7cc202578a2c784710ddbcf47cbeae9b86f59b730d991bf02fe15e33b1aff"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">INT64</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5INT64E" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6UINT64E">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6UINT64E"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6UINT64E"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a60ba7cc202578a2c784710ddbcf47cbeae5fb40d9e6a2fbf13cb252bf06383df2"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UINT64</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6UINT64E" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6STRINGE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6STRINGE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6STRINGE"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a60ba7cc202578a2c784710ddbcf47cbea331a7d65b2042846974a7ae490c168c5"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">STRING</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6STRINGE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfEv">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfEv"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfEv"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::NetCdf"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a2efa3c72dc8a7d78ad348737db7d07ff"></span><span class="sig-name descname"><span class="n"><span class="pre">NetCdf</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Read-Only Constructor of <a class="reference internal" href="#classtsunami__lab_1_1io_1_1NetCdf"><span class="std std-ref">NetCdf</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfENSt6stringE5t_idx5t_idx6t_real6t_real5t_idxb">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfENSt6stringE5t_idx5t_idx6t_real6t_real5t_idxb"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfENSt6stringE5t_idx5t_idx6t_real6t_real5t_idxb"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::NetCdf__ss.t_idx.t_idx.t_real.t_real.t_idx.b"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a985ff683f90eadc745b39a6adb52455c"></span><span class="sig-name descname"><span class="n"><span class="pre">NetCdf</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">filePath</span></span>, <a class="reference internal" href="#_CPPv4N11tsunami_lab5t_idxE" title="tsunami_lab::t_idx"><span class="n"><span class="pre">t_idx</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">l_nx</span></span>, <a class="reference internal" href="#_CPPv4N11tsunami_lab5t_idxE" title="tsunami_lab::t_idx"><span class="n"><span class="pre">t_idx</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">l_ny</span></span>, <a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">l_scaleX</span></span>, <a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">l_scaleY</span></span>, <a class="reference internal" href="#_CPPv4N11tsunami_lab5t_idxE" title="tsunami_lab::t_idx"><span class="n"><span class="pre">t_idx</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">l_stride</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">useSpherical</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfENSt6stringE5t_idx5t_idx6t_real6t_real5t_idxb" title="Link to this definition"></a><br /></dt>
+<dd><p>Write-Only Constructor of <a class="reference internal" href="#classtsunami__lab_1_1io_1_1NetCdf"><span class="std std-ref">NetCdf</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filePath</strong> – filepath of the netCDF file </p></li>
+<li><p><strong>l_nx</strong> – len in x dimension </p></li>
+<li><p><strong>l_ny</strong> – len in y dimension </p></li>
+<li><p><strong>l_scaleX</strong> – the scale in x direction in meters </p></li>
+<li><p><strong>l_scaleY</strong> – the scale in y direction in meters </p></li>
+<li><p><strong>l_stride</strong> – the stride of the data-set to write </p></li>
+<li><p><strong>useSpherical</strong> – use spherical Longitude &amp; Latitude in degrees for the X and Y Axis instead of meters </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdfD0Ev">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdfD0Ev"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdfD0Ev"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::~NetCdf"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a0b75cd499f62427ba7758acb5cb3aad2"></span><span class="sig-name descname"><span class="n"><span class="pre">~NetCdf</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdfD0Ev" title="Link to this definition"></a><br /></dt>
+<dd><p>Destructor of <a class="reference internal" href="#classtsunami__lab_1_1io_1_1NetCdf"><span class="std std-ref">NetCdf</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5writeEK6t_realPK6t_realPK6t_realPK6t_realPK6t_real">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf5writeEK6t_realPK6t_realPK6t_realPK6t_realPK6t_real"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf5writeEK6t_realPK6t_realPK6t_realPK6t_realPK6t_real"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::write__t_realC.t_realCP.t_realCP.t_realCP.t_realCP"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1abe92fb89a4b182c2fb9a1103734dab75"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">simulationTime</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">totalHeight</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">bathymetry</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">momentumX</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">momentumY</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5writeEK6t_realPK6t_realPK6t_realPK6t_realPK6t_real" title="Link to this definition"></a><br /></dt>
+<dd><p>Write current time step to a netCDF file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>simulationTime</strong> – the current simulation time in seconds </p></li>
+<li><p><strong>totalHeight</strong> – total heights of cells </p></li>
+<li><p><strong>bathymetry</strong> – bathymetry of cells </p></li>
+<li><p><strong>momentumX</strong> – momentum of cells in x direction </p></li>
+<li><p><strong>momentumY</strong> – momentum of cells in y direction </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4I_6size_tEN11tsunami_lab2io11tsunami_lab2io6NetCdf4readEvPKcRA1N_PKcRA1N_8VarArray6size_t">
+<span id="_CPPv3I_6size_tEN11tsunami_lab2io11tsunami_lab2io6NetCdf4readEPKcRA1N_PKcRA1N_8VarArray6size_t"></span><span id="_CPPv2I_6size_tEN11tsunami_lab2io11tsunami_lab2io6NetCdf4readEPKcRAN_PKcRAN_8VarArray6size_t"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">N</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a16795b4ccb33dad6c75555037d8e789c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">filepath</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">variableName</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#_CPPv4I_6size_tEN11tsunami_lab2io11tsunami_lab2io6NetCdf4readEvPKcRA1N_PKcRA1N_8VarArray6size_t" title="tsunami_lab::io::tsunami_lab::io::NetCdf::read::N"><span class="n"><span class="pre">N</span></span></a><span class="p"><span class="pre">]</span></span>, <a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayE" title="tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray"><span class="n"><span class="pre">VarArray</span></span></a><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">outData</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#_CPPv4I_6size_tEN11tsunami_lab2io11tsunami_lab2io6NetCdf4readEvPKcRA1N_PKcRA1N_8VarArray6size_t" title="tsunami_lab::io::tsunami_lab::io::NetCdf::read::N"><span class="n"><span class="pre">N</span></span></a><span class="p"><span class="pre">]</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">timeStep</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_6size_tEN11tsunami_lab2io11tsunami_lab2io6NetCdf4readEvPKcRA1N_PKcRA1N_8VarArray6size_t" title="Link to this definition"></a><br /></dt>
+<dd><p>read the data from the file at the given filepath and parse all given variables. the outData array contains all the needed information (array, type, length, stride) to work with the data</p>
+<p>IMPORTANT the size of variableName and outData should match N</p>
+<dl class="field-list simple">
+<dt class="field-odd">Template Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>N</strong> – number of variables to parse </p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>filepath</strong> – the path to the netCDF file </p></li>
+<li><p><strong>variableName</strong> – the names of the variables to parse </p></li>
+<li><p><strong>outData</strong> – the parsed data for each variable with the type, length and stride. If the <a class="reference internal" href="#structtsunami__lab_1_1io_1_1NetCdf_1_1VarArray"><span class="std std-ref">VarArray</span></a> is destroyed the read data ‘<a class="reference internal" href="#structtsunami__lab_1_1io_1_1NetCdf_1_1VarArray_1ac84bf5c905b3a5955319e1ae4a720718"><span class="std std-ref">VarArray::array</span></a>’ is destroyed to. </p></li>
+<li><p><strong>timeStep</strong> – OPTIONAL start of data parsing. The timeStep uses the dimension directly therefore index values are required e.g. 0, 1, 2, … </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4readEPKcPKcR8VarArray6size_t">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf4readEPKcPKcR8VarArray6size_t"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf4readEPKcPKcR8VarArray6size_t"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::read__cCP.cCP.VarArrayR.s"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a4541e3b0c29b7bf47d86c618846dd3ef"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">filepath</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variableName</span></span>, <a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayE" title="tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray"><span class="n"><span class="pre">VarArray</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">outData</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">timeStep</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4readEPKcPKcR8VarArray6size_t" title="Link to this definition"></a><br /></dt>
+<dd><p>read the data from the file at the given filepath and parse the one given variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> – filepath the path to the netCDF file </p></li>
+<li><p><strong>variableName</strong> – the names of the variable to parse </p></li>
+<li><p><strong>outData</strong> – the parsed data with the type, length and stride. If the <a class="reference internal" href="#structtsunami__lab_1_1io_1_1NetCdf_1_1VarArray"><span class="std std-ref">VarArray</span></a> is destroyed the read data ‘<a class="reference internal" href="#structtsunami__lab_1_1io_1_1NetCdf_1_1VarArray_1ac84bf5c905b3a5955319e1ae4a720718"><span class="std std-ref">VarArray::array</span></a>’ is destroyed to. </p></li>
+<li><p><strong>timeStep</strong> – OPTIONAL start of data parsing. The timeStep uses the dimension directly therefore index values are required e.g. 0, 1, 2, … </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10checkNcErrEiNSt6stringE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf10checkNcErrEiNSt6stringE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf10checkNcErrEiNSt6stringE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::checkNcErr__i.ss"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a2f26dd147d11212714c3db81333844ca"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">checkNcErr</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i_err</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">text</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10checkNcErrEiNSt6stringE" title="Link to this definition"></a><br /></dt>
+<dd><p>Check if command has worked. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i_err</strong> – 0 if everything is ok, else 1 </p></li>
+<li><p><strong>text</strong> – text to log </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-functions">Private Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5_readEPKcPPKcP8VarArray6size_t6size_t">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf5_readEPKcPPKcP8VarArray6size_t6size_t"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf5_readEPKcPPKcP8VarArray6size_t6size_t"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::_read__cCP.cCPP.VarArrayP.s.s"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a18bd8bb86e86a63c9e0a657809bbce9d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_read</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">filepath</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variableName</span></span>, <a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayE" title="tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray"><span class="n"><span class="pre">VarArray</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">outData</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">timeStep</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5_readEPKcPPKcP8VarArray6size_t6size_t" title="Link to this definition"></a><br /></dt>
+<dd><p>read the data from the file at the given filepath and parse all given variables. the outData array contains all the needed information (array, type, length, stride) to work with the data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> – the path to the netCDF file </p></li>
+<li><p><strong>variableName</strong> – the names of the variables to parse </p></li>
+<li><p><strong>outData</strong> – the parsed data for each variable with the type, length and stride. If the <a class="reference internal" href="#structtsunami__lab_1_1io_1_1NetCdf_1_1VarArray"><span class="std std-ref">VarArray</span></a> is destroyed the read data ‘<a class="reference internal" href="#structtsunami__lab_1_1io_1_1NetCdf_1_1VarArray_1ac84bf5c905b3a5955319e1ae4a720718"><span class="std std-ref">VarArray::array</span></a>’ is destroyed to. </p></li>
+<li><p><strong>timeStep</strong> – start of data parsing. The timeStep uses the dimension directly therefore index values are required e.g. 0, 1, 2, … </p></li>
+<li><p><strong>size</strong> – the size of outData and variableName </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10isReadModeE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf10isReadModeE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf10isReadModeE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::isReadMode__b"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a8a4754d1f322547c520b084fe699b9ae"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isReadMode</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10isReadModeE" title="Link to this definition"></a><br /></dt>
+<dd><p>indicates whether the netCdf is in read or write mode </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10m_filePathE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf10m_filePathE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf10m_filePathE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_filePath__ss"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1afbf800f0ab51522a335a902464d6aee1"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_filePath</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10m_filePathE" title="Link to this definition"></a><br /></dt>
+<dd><p>name of the netCDF file </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4m_nxE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf4m_nxE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf4m_nxE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_nx__t_idx"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1aeb05d726d42057c13eb8ef80893d5bff"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab5t_idxE" title="tsunami_lab::t_idx"><span class="n"><span class="pre">t_idx</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_nx</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4m_nxE" title="Link to this definition"></a><br /></dt>
+<dd><p>number of cells in x dimension </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4m_nyE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf4m_nyE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf4m_nyE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_ny__t_idx"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a7a5a665f2f8fc597e154ff7de88a4515"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab5t_idxE" title="tsunami_lab::t_idx"><span class="n"><span class="pre">t_idx</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_ny</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4m_nyE" title="Link to this definition"></a><br /></dt>
+<dd><p>number of cells in y dimension </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_scaleXE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_scaleXE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_scaleXE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_scaleX__t_idx"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a89b3eaa183cce501b506688fbf31851a"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab5t_idxE" title="tsunami_lab::t_idx"><span class="n"><span class="pre">t_idx</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_scaleX</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_scaleXE" title="Link to this definition"></a><br /></dt>
+<dd><p>scale in x dimension in meters </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_scaleYE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_scaleYE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_scaleYE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_scaleY__t_idx"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a7cae82b43db9b4c23616fc5e78c59bc2"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab5t_idxE" title="tsunami_lab::t_idx"><span class="n"><span class="pre">t_idx</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_scaleY</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_scaleYE" title="Link to this definition"></a><br /></dt>
+<dd><p>scale in y dimension in meters </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_strideE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_strideE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_strideE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_stride__t_idx"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a006361a762ddb73fc22121fddebdfbfb"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab5t_idxE" title="tsunami_lab::t_idx"><span class="n"><span class="pre">t_idx</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_stride</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_strideE" title="Link to this definition"></a><br /></dt>
+<dd><p>stride length </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6m_timeE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf6m_timeE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf6m_timeE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_time__s"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1afe5395bf8932eb50f30812855f8d72f6"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_time</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6m_timeE" title="Link to this definition"></a><br /></dt>
+<dd><p>time of write operation </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6m_ncIdE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf6m_ncIdE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf6m_ncIdE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_ncId__i"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1ad286a271baf3e9b1f83b885d23ae10dd"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_ncId</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6m_ncIdE" title="Link to this definition"></a><br /></dt>
+<dd><p>id of the netCDF file </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf11m_dimTimeIdE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf11m_dimTimeIdE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf11m_dimTimeIdE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_dimTimeId__i"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a13933c7e21b1635ca55381410b43fa72"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_dimTimeId</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf11m_dimTimeIdE" title="Link to this definition"></a><br /></dt>
+<dd><p>id of time dimension </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_dimXIdE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_dimXIdE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_dimXIdE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_dimXId__i"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a01acdc9e4552fbb73a8a2f63cd2c7a71"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_dimXId</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_dimXIdE" title="Link to this definition"></a><br /></dt>
+<dd><p>id of x dimension </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5m_xIdE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf5m_xIdE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf5m_xIdE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_xId__i"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a56e3ff77278c1c82d4ea6882d956ef10"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_xId</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5m_xIdE" title="Link to this definition"></a><br /></dt>
+<dd><p>id of longitude </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_dimYIdE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_dimYIdE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_dimYIdE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_dimYId__i"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a290bed61cc890f629692ef8dce6cb6a8"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_dimYId</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_dimYIdE" title="Link to this definition"></a><br /></dt>
+<dd><p>id of y dimension </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5m_yIdE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf5m_yIdE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf5m_yIdE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_yId__i"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1ab4c21f07f53f2bd62ecb098620342da5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_yId</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5m_yIdE" title="Link to this definition"></a><br /></dt>
+<dd><p>id of latitude </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_timeIdE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_timeIdE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_timeIdE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_timeId__i"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1aa3583e3c70362e424dadbff2361c7988"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_timeId</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_timeIdE" title="Link to this definition"></a><br /></dt>
+<dd><p>id of time </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf15m_totalHeightIdE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf15m_totalHeightIdE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf15m_totalHeightIdE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_totalHeightId__i"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a9fe38f639532e14f8820635d0cc87ef9"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_totalHeightId</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf15m_totalHeightIdE" title="Link to this definition"></a><br /></dt>
+<dd><p>id of total height </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf14m_bathymetryIdE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf14m_bathymetryIdE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf14m_bathymetryIdE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_bathymetryId__i"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1ac3933bd75a902476a5f976e90df3a17e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_bathymetryId</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf14m_bathymetryIdE" title="Link to this definition"></a><br /></dt>
+<dd><p>id of bathymetry </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf13m_momentumXIdE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf13m_momentumXIdE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf13m_momentumXIdE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_momentumXId__i"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1acd47e5819844124e45b0944a20a81e4f"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_momentumXId</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf13m_momentumXIdE" title="Link to this definition"></a><br /></dt>
+<dd><p>id of momentumX </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf13m_momentumYIdE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf13m_momentumYIdE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf13m_momentumYIdE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::m_momentumYId__i"></span><span class="target" id="classtsunami__lab_1_1io_1_1NetCdf_1a6228711b505591c619c14a6efd7e00cb"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_momentumYId</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf13m_momentumYIdE" title="Link to this definition"></a><br /></dt>
+<dd><p>id of momentumY </p>
+</dd></dl>
+
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray"></span><span class="target" id="structtsunami__lab_1_1io_1_1NetCdf_1_1VarArray"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">VarArray</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayE" title="Link to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;NetCdf.h&gt;</em></div>
+<p>struct that stores the array/data with the corresponding type, length and stride </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayD0Ev">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayD0Ev"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayD0Ev"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray::~VarArray"></span><span class="target" id="structtsunami__lab_1_1io_1_1NetCdf_1_1VarArray_1aa180da51f819b1b0b3e4445db93b09f6"></span><span class="sig-name descname"><span class="n"><span class="pre">~VarArray</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayD0Ev" title="Link to this definition"></a><br /></dt>
+<dd><p>Destructor of <a class="reference internal" href="#structtsunami__lab_1_1io_1_1NetCdf_1_1VarArray"><span class="std std-ref">VarArray</span></a> to delete the allocated array </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray5arrayE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray5arrayE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray5arrayE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray::array__voidP"></span><span class="target" id="structtsunami__lab_1_1io_1_1NetCdf_1_1VarArray_1ac84bf5c905b3a5955319e1ae4a720718"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">array</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray5arrayE" title="Link to this definition"></a><br /></dt>
+<dd><p>the array containing the data </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray4typeE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray4typeE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray4typeE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray::type__VarType"></span><span class="target" id="structtsunami__lab_1_1io_1_1NetCdf_1_1VarArray_1a9fade92d1f4ca937a89044d6b400937d"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarTypeE" title="tsunami_lab::io::tsunami_lab::io::NetCdf::VarType"><span class="n"><span class="pre">VarType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">type</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray4typeE" title="Link to this definition"></a><br /></dt>
+<dd><p>type of the array </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray6lengthE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray6lengthE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray6lengthE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray::length__s"></span><span class="target" id="structtsunami__lab_1_1io_1_1NetCdf_1_1VarArray_1a8546ee13e562d0fbbf0489cc55b2e5c4"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">length</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray6lengthE" title="Link to this definition"></a><br /></dt>
+<dd><p>length of the array </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray6strideE">
+<span id="_CPPv3N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray6strideE"></span><span id="_CPPv2N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray6strideE"></span><span id="tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray::stride__s"></span><span class="target" id="structtsunami__lab_1_1io_1_1NetCdf_1_1VarArray_1a455f77b0ba54e6158f277bfba61c1480"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stride</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray6strideE" title="Link to this definition"></a><br /></dt>
+<dd><p>stride of the array used for 2D arrays representation. If the array is 1D then the stride is the same as the length. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="cpp class">
@@ -1550,8 +1971,8 @@
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-static-attributes">Private Static Attributes</p>
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16ITERATIONS_CACHEE">
-<span id="_CPPv3N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16ITERATIONS_CACHEE"></span><span id="_CPPv2N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16ITERATIONS_CACHEE"></span><span id="tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::ITERATIONS_CACHE__t_idx"></span><span class="target" id="classtsunami__lab_1_1patches_1_1WavePropagation2d_1a6537ab21e001190b057cdafbc2d30ab8"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab5t_idxE" title="tsunami_lab::t_idx"><span class="n"><span class="pre">t_idx</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ITERATIONS_CACHE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">4</span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16ITERATIONS_CACHEE" title="Link to this definition"></a><br /></dt>
-<dd><p>Iteration that should be performed to use the cache more efficiently e.g. 4 -&gt; 4 * sizeof(t_real) = 4 * 32 bit = 128 bit Cacheline. </p>
+<span id="_CPPv3N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16ITERATIONS_CACHEE"></span><span id="_CPPv2N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16ITERATIONS_CACHEE"></span><span id="tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::ITERATIONS_CACHE__t_idx"></span><span class="target" id="classtsunami__lab_1_1patches_1_1WavePropagation2d_1a6537ab21e001190b057cdafbc2d30ab8"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab5t_idxE" title="tsunami_lab::t_idx"><span class="n"><span class="pre">t_idx</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ITERATIONS_CACHE</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">32</span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16ITERATIONS_CACHEE" title="Link to this definition"></a><br /></dt>
+<dd><p>Iteration that should be performed to use the cache more efficiently e.g. 32 -&gt; 32 * sizeof(t_real) = 32 * 4 byte = 128 byte Cacheline. </p>
 </dd></dl>
 
 </div>
@@ -1561,11 +1982,93 @@
 <section id="setups">
 <h2>setups<a class="headerlink" href="#setups" title="Link to this heading"></a></h2>
 <dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2dE">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2dE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2dE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d"></span><span class="target" id="classtsunami__lab_1_1setups_1_1ArtificialTsunami2d"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ArtificialTsunami2d</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">tsunami_lab</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">setups</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups5SetupE" title="tsunami_lab::setups::tsunami_lab::setups::Setup"><span class="n"><span class="pre">Setup</span></span></a><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2dE" title="Link to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;ArtificialTsunami2d.h&gt;</em></div>
+<p>artificial tsunami setup. This <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1Setup"><span class="std std-ref">Setup</span></a> only provides one hard-coded example. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d19ArtificialTsunami2dEv">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d19ArtificialTsunami2dEv"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d19ArtificialTsunami2dEv"></span><span id="tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::ArtificialTsunami2d"></span><span class="target" id="classtsunami__lab_1_1setups_1_1ArtificialTsunami2d_1a4afa49f46c3ec2a5555eff11b281681a"></span><span class="sig-name descname"><span class="n"><span class="pre">ArtificialTsunami2d</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d19ArtificialTsunami2dEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Default constructor with the default example. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d9getHeightE6t_real6t_real">
+<span id="_CPPv3NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d9getHeightE6t_real6t_real"></span><span id="_CPPv2NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d9getHeightE6t_real6t_real"></span><span id="tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::getHeight__t_real.t_realC"></span><span class="target" id="classtsunami__lab_1_1setups_1_1ArtificialTsunami2d_1ac6360918b327be1d3c453c4b1a76857c"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getHeight</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a>, <a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d9getHeightE6t_real6t_real" title="Link to this definition"></a><br /></dt>
+<dd><p>Gets the water height at a given point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>height at the given point. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12getMomentumXE6t_real6t_real">
+<span id="_CPPv3NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12getMomentumXE6t_real6t_real"></span><span id="_CPPv2NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12getMomentumXE6t_real6t_real"></span><span id="tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::getMomentumX__t_real.t_realC"></span><span class="target" id="classtsunami__lab_1_1setups_1_1ArtificialTsunami2d_1adc0d0c5338724c2118ad586b9fbf62ba"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getMomentumX</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a>, <a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12getMomentumXE6t_real6t_real" title="Link to this definition"></a><br /></dt>
+<dd><p>Gets the momentum in x-direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>momentum in x-direction. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12getMomentumYE6t_real6t_real">
+<span id="_CPPv3NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12getMomentumYE6t_real6t_real"></span><span id="_CPPv2NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12getMomentumYE6t_real6t_real"></span><span id="tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::getMomentumY__t_real.t_realC"></span><span class="target" id="classtsunami__lab_1_1setups_1_1ArtificialTsunami2d_1a56f954b1c89fe6a7d5e0a670c470909d"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getMomentumY</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a>, <a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12getMomentumYE6t_real6t_real" title="Link to this definition"></a><br /></dt>
+<dd><p>Gets the momentum in y-direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>momentum in y-direction. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d13getBathymetryE6t_real6t_real">
+<span id="_CPPv3NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d13getBathymetryE6t_real6t_real"></span><span id="_CPPv2NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d13getBathymetryE6t_real6t_real"></span><span id="tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::getBathymetry__t_real.t_realC"></span><span class="target" id="classtsunami__lab_1_1setups_1_1ArtificialTsunami2d_1a09879a0cb54c6e14721523e693866b1c"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getBathymetry</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">i_x</span></span>, <a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">i_y</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d13getBathymetryE6t_real6t_real" title="Link to this definition"></a><br /></dt>
+<dd><p>Gets the bathymetry at a given point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i_x</strong> – x-coordinate of the queried point. </p></li>
+<li><p><strong>i_y</strong> – y-coordinate of the queried point. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>bathymetry at a given point. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d16bathymetryHeightE">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d16bathymetryHeightE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d16bathymetryHeightE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::bathymetryHeight__t_real"></span><span class="target" id="classtsunami__lab_1_1setups_1_1ArtificialTsunami2d_1a5b87b055c07ba487b840c6016a8f618e"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bathymetryHeight</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d16bathymetryHeightE" title="Link to this definition"></a><br /></dt>
+<dd><p>the start height of bathymetry before displacement </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12centerOffsetE">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12centerOffsetE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12centerOffsetE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::centerOffset__t_real"></span><span class="target" id="classtsunami__lab_1_1setups_1_1ArtificialTsunami2d_1aeb837c7654136e68fc3d9f4cb2b8da22"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">centerOffset</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12centerOffsetE" title="Link to this definition"></a><br /></dt>
+<dd><p>the offset of the center of the displacement </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups18CircularDamBreak2dE">
 <span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups18CircularDamBreak2dE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups18CircularDamBreak2dE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::CircularDamBreak2d"></span><span class="target" id="classtsunami__lab_1_1setups_1_1CircularDamBreak2d"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CircularDamBreak2d</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">tsunami_lab</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">setups</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups5SetupE" title="tsunami_lab::setups::tsunami_lab::setups::Setup"><span class="n"><span class="pre">Setup</span></span></a><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups18CircularDamBreak2dE" title="Link to this definition"></a><br /></dt>
 <dd><div class="docutils container">
 <em>#include &lt;CircularDamBreak2d.h&gt;</em></div>
-<p>1d dam break setup. </p>
+<p>circular dam break setup. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
@@ -1987,7 +2490,7 @@
 <dd><div class="docutils container">
 <em>#include &lt;Setup.h&gt;</em></div>
 <p>Base setup. </p>
-<p>Subclassed by <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1CircularDamBreak2d"><span class="std std-ref">tsunami_lab::setups::CircularDamBreak2d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1DamBreak1d"><span class="std std-ref">tsunami_lab::setups::DamBreak1d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1MiddleStates1d"><span class="std std-ref">tsunami_lab::setups::MiddleStates1d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1RareRare1d"><span class="std std-ref">tsunami_lab::setups::RareRare1d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1ShockShock1d"><span class="std std-ref">tsunami_lab::setups::ShockShock1d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1SubcriticalFlow1d"><span class="std std-ref">tsunami_lab::setups::SubcriticalFlow1d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1SupercriticalFlow1d"><span class="std std-ref">tsunami_lab::setups::SupercriticalFlow1d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1TsunamiEvent1d"><span class="std std-ref">tsunami_lab::setups::TsunamiEvent1d</span></a></p>
+<p>Subclassed by <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1ArtificialTsunami2d"><span class="std std-ref">tsunami_lab::setups::ArtificialTsunami2d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1CircularDamBreak2d"><span class="std std-ref">tsunami_lab::setups::CircularDamBreak2d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1DamBreak1d"><span class="std std-ref">tsunami_lab::setups::DamBreak1d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1MiddleStates1d"><span class="std std-ref">tsunami_lab::setups::MiddleStates1d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1RareRare1d"><span class="std std-ref">tsunami_lab::setups::RareRare1d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1ShockShock1d"><span class="std std-ref">tsunami_lab::setups::ShockShock1d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1SubcriticalFlow1d"><span class="std std-ref">tsunami_lab::setups::SubcriticalFlow1d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1SupercriticalFlow1d"><span class="std std-ref">tsunami_lab::setups::SupercriticalFlow1d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1TsunamiEvent1d"><span class="std std-ref">tsunami_lab::setups::TsunamiEvent1d</span></a>, <a class="reference internal" href="#classtsunami__lab_1_1setups_1_1TsunamiEvent2d"><span class="std std-ref">tsunami_lab::setups::TsunamiEvent2d</span></a></p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
@@ -2522,6 +3025,183 @@
 </div>
 </dd></dl>
 
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2dE">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2dE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2dE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TsunamiEvent2d</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">tsunami_lab</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">setups</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups5SetupE" title="tsunami_lab::setups::tsunami_lab::setups::Setup"><span class="n"><span class="pre">Setup</span></span></a><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2dE" title="Link to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;TsunamiEvent2d.h&gt;</em></div>
+<p><a class="reference internal" href="#classtsunami__lab_1_1setups_1_1TsunamiEvent2d"><span class="std std-ref">TsunamiEvent2d</span></a> setup. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14TsunamiEvent2dEPKcRAL3E_PKcPKcRAL3E_PKc6t_real6t_real6t_real">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14TsunamiEvent2dEPKcRAL3E_PKcPKcRAL3E_PKc6t_real6t_real6t_real"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14TsunamiEvent2dEPKcRA3_PKcPKcRA3_PKc6t_real6t_real6t_real"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1a91ed79e3730abcce8b1c9c848c8c69cd"></span><span class="sig-name descname"><span class="n"><span class="pre">TsunamiEvent2d</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">bathymetryFilePath</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">bathymetryVariable</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">displacementFilePath</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">displacementVariable</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span>, <a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">scaleX</span></span>, <a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">scaleY</span></span>, <a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">delta</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">20</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14TsunamiEvent2dEPKcRAL3E_PKcPKcRAL3E_PKc6t_real6t_real6t_real" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates the 2d tsunami event that is read from two netCdf files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bathymetryFilePath</strong> – filepath to the bathymetry file </p></li>
+<li><p><strong>bathymetryVariable</strong> – variables to read in the bathymetry file. The first should be the X dimension, the second the Y dimension and the third the bathymetry data </p></li>
+<li><p><strong>displacementFilePath</strong> – filepath to the displacement file </p></li>
+<li><p><strong>displacementVariable</strong> – variables to read in the displacement file. The first should be the X dimension, the second the Y dimension and the third the displacement data </p></li>
+<li><p><strong>scaleX</strong> – width of the grid </p></li>
+<li><p><strong>scaleY</strong> – height of the grid </p></li>
+<li><p><strong>delta</strong> – avoids running into numerical issues due to missing support for wetting and drying in our solver </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2dD0Ev">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2dD0Ev"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2dD0Ev"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::~TsunamiEvent2d"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1a581589290bd9e9de1321da4e83950413"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~TsunamiEvent2d</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2dD0Ev" title="Link to this definition"></a><br /></dt>
+<dd><p>Destroys the 2d tsunami event. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d9getHeightE6t_real6t_real">
+<span id="_CPPv3NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d9getHeightE6t_real6t_real"></span><span id="_CPPv2NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d9getHeightE6t_real6t_real"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::getHeight__t_real.t_realC"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1a65bfd647409e447e6d28fb46c0e8f650"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getHeight</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">i_x</span></span>, <a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">i_y</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d9getHeightE6t_real6t_real" title="Link to this definition"></a><br /></dt>
+<dd><p>Gets the water height at a given point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i_x</strong> – x-coordinate of the queried point. </p></li>
+<li><p><strong>i_y</strong> – y-coordinate of the queried point. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>height at the given point. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12getMomentumXE6t_real6t_real">
+<span id="_CPPv3NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12getMomentumXE6t_real6t_real"></span><span id="_CPPv2NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12getMomentumXE6t_real6t_real"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::getMomentumX__t_real.t_realC"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1ae807b9182de6d54fd33dee60918d0559"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getMomentumX</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a>, <a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12getMomentumXE6t_real6t_real" title="Link to this definition"></a><br /></dt>
+<dd><p>Gets the momentum in x-direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>momentum in x-direction. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12getMomentumYE6t_real6t_real">
+<span id="_CPPv3NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12getMomentumYE6t_real6t_real"></span><span id="_CPPv2NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12getMomentumYE6t_real6t_real"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::getMomentumY__t_real.t_realC"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1ad335f62abe0a31c94f58d4717cd10120"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getMomentumY</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a>, <a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12getMomentumYE6t_real6t_real" title="Link to this definition"></a><br /></dt>
+<dd><p>Gets the momentum in y-direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>momentum in y-direction. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d13getBathymetryE6t_real6t_real">
+<span id="_CPPv3NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d13getBathymetryE6t_real6t_real"></span><span id="_CPPv2NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d13getBathymetryE6t_real6t_real"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::getBathymetry__t_real.t_realC"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1ad483c149f642d0ca016daf2779801b89"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getBathymetry</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">i_x</span></span>, <a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">i_y</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d13getBathymetryE6t_real6t_real" title="Link to this definition"></a><br /></dt>
+<dd><p>Gets the bathymetry at a given point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i_x</strong> – x-coordinate of the queried point. </p></li>
+<li><p><strong>i_y</strong> – y-coordinate of the queried point. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>bathymetry at a given point. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-functions">Private Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d17getValueAscendingEAL3E_PCK6t_realAL3E_K5t_idxK5t_idxK6t_realK6t_real">
+<span id="_CPPv3NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d17getValueAscendingEAL3E_PCK6t_realAL3E_K5t_idxK5t_idxK6t_realK6t_real"></span><span id="_CPPv2NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d17getValueAscendingEA3_PCK6t_realA3_K5t_idxK5t_idxK6t_realK6t_real"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::getValueAscending__t_realCPCA.t_idxCA.t_idxC.t_realC.t_realCC"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1ae35e0c0bfc5565286666c6a09c85cb5e"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getValueAscending</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">data</span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab5t_idxE" title="tsunami_lab::t_idx"><span class="n"><span class="pre">t_idx</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab5t_idxE" title="tsunami_lab::t_idx"><span class="n"><span class="pre">t_idx</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">zStride</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">x</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">y</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d17getValueAscendingEAL3E_PCK6t_realAL3E_K5t_idxK5t_idxK6t_realK6t_real" title="Link to this definition"></a><br /></dt>
+<dd><p>get the closest data point from an ascending sorted array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – data arrays where index 0 is x, 1 is y, 2 is z/data </p></li>
+<li><p><strong>size</strong> – the size of the data arrays where index 0 is x, 1 is y, 2 is z/data </p></li>
+<li><p><strong>zStride</strong> – the stride of the third/z array </p></li>
+<li><p><strong>x</strong> – the x-coordinate to obtain the closest value </p></li>
+<li><p><strong>y</strong> – the y-coordinate to obtain the closest value </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the closest value found or 0 if no lower not be found or calculated index is out of range </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6scaleXE">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6scaleXE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6scaleXE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::scaleX__t_real"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1afe99100784eae1e650021bc39fe35182"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">scaleX</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6scaleXE" title="Link to this definition"></a><br /></dt>
+<dd><p>scale in x direction of our grid </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6scaleYE">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6scaleYE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6scaleYE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::scaleY__t_real"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1ae42bbe6ca6541bb08a3460c3afe8908f"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">scaleY</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6scaleYE" title="Link to this definition"></a><br /></dt>
+<dd><p>scale in y direction of our grid </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d5deltaE">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d5deltaE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d5deltaE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::delta__t_real"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1a75fb0943b17f0e6e1bf60c351d75a170"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">delta</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d5deltaE" title="Link to this definition"></a><br /></dt>
+<dd><p>delta to avoid numerical issues </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14bathymetryDataE">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14bathymetryDataE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14bathymetryDataE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::bathymetryData__tsunami_lab::io::NetCdf::VarArrayA"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1a241046c90da840bbe9f287e2fb033f98"></span><span class="n"><span class="pre">tsunami_lab</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">io</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">NetCdf</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">VarArray</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bathymetryData</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14bathymetryDataE" title="Link to this definition"></a><br /></dt>
+<dd><p>the bathymetry data from the file where index 0 is x, 1 is y, 2 is z/data </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d10bathymetryE">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d10bathymetryE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d10bathymetryE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::bathymetry__t_realPA"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1ad0e6648b5c1125dc364a55ba8edf7ede"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">bathymetry</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d10bathymetryE" title="Link to this definition"></a><br /></dt>
+<dd><p>the the converted bathymetry data where the array is stored. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14bathymetrySizeE">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14bathymetrySizeE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14bathymetrySizeE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::bathymetrySize__t_idxA"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1a35ed692050dbef84bddd0a57bdedd9bb"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab5t_idxE" title="tsunami_lab::t_idx"><span class="n"><span class="pre">t_idx</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bathymetrySize</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14bathymetrySizeE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d16displacementDataE">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d16displacementDataE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d16displacementDataE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::displacementData__tsunami_lab::io::NetCdf::VarArrayA"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1ac7b0114f33bb687c66fa206102e39318"></span><span class="n"><span class="pre">tsunami_lab</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">io</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">NetCdf</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">VarArray</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">displacementData</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d16displacementDataE" title="Link to this definition"></a><br /></dt>
+<dd><p>the vertical displacement data from the file where index 0 is x, 1 is y, 2 is z/data </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12displacementE">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12displacementE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12displacementE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::displacement__t_realPA"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1a5913133e7591345f11a2e7a2a495c088"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab6t_realE" title="tsunami_lab::t_real"><span class="n"><span class="pre">t_real</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">displacement</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12displacementE" title="Link to this definition"></a><br /></dt>
+<dd><p>the the converted displacement data where the array is stored. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d16displacementSizeE">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d16displacementSizeE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d16displacementSizeE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::displacementSize__t_idxA"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1a6d9f233b8069eeec5824ce4acda74d6e"></span><a class="reference internal" href="#_CPPv4N11tsunami_lab5t_idxE" title="tsunami_lab::t_idx"><span class="n"><span class="pre">t_idx</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">displacementSize</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d16displacementSizeE" title="Link to this definition"></a><br /></dt>
+<dd><p>the size of each displacement array. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6readerE">
+<span id="_CPPv3N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6readerE"></span><span id="_CPPv2N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6readerE"></span><span id="tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::reader__tsunami_lab::io::NetCdfP"></span><span class="target" id="classtsunami__lab_1_1setups_1_1TsunamiEvent2d_1a0d9705a5ba19cde1f51eae66ea88f830"></span><span class="n"><span class="pre">tsunami_lab</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">io</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">NetCdf</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">reader</span></span></span><a class="headerlink" href="#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6readerE" title="Link to this definition"></a><br /></dt>
+<dd><p>the reader use to reader the data </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
 </section>
 <section id="solvers">
 <h2>solvers<a class="headerlink" href="#solvers" title="Link to this heading"></a></h2>
@@ -2745,7 +3425,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../submissions/two_dimensional_solver.html" class="btn btn-neutral float-left" title="4. Two-Dimensional Solver" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../submissions/large_data_input_output.html" class="btn btn-neutral float-left" title="5. Large Data Input and Output" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

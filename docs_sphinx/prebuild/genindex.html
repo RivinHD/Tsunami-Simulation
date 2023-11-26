@@ -56,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="submissions/finite_volume_discretization.html">2. Finite Volume Discretization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="submissions/bathymetry_boundary_conditions.html">3. Bathymetry &amp; Boundary Conditions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="submissions/two_dimensional_solver.html">4. Two-Dimensional Solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="submissions/large_data_input_output.html">5. Large Data Input and Output</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -102,6 +103,94 @@
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io3Csv14readBathymetryERNSt8ifstreamER6t_real">tsunami_lab::io::tsunami_lab::io::Csv::readBathymetry (C++ function)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io3Csv5writeE6t_real5t_idx5t_idx5t_idxPK6t_realPK6t_realPK6t_realPK6t_realPK6t_realRNSt7ostreamE">tsunami_lab::io::tsunami_lab::io::Csv::write (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdfE">tsunami_lab::io::tsunami_lab::io::NetCdf (C++ class)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5_readEPKcPPKcP8VarArray6size_t6size_t">tsunami_lab::io::tsunami_lab::io::NetCdf::_read (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10checkNcErrEiNSt6stringE">tsunami_lab::io::tsunami_lab::io::NetCdf::checkNcErr (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10isReadModeE">tsunami_lab::io::tsunami_lab::io::NetCdf::isReadMode (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf14m_bathymetryIdE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_bathymetryId (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf11m_dimTimeIdE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_dimTimeId (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_dimXIdE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_dimXId (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_dimYIdE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_dimYId (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10m_filePathE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_filePath (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf13m_momentumXIdE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_momentumXId (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf13m_momentumYIdE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_momentumYId (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6m_ncIdE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_ncId (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4m_nxE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_nx (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4m_nyE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_ny (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_scaleXE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_scaleX (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_scaleYE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_scaleY (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_strideE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_stride (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6m_timeE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_time (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_timeIdE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_timeId (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf15m_totalHeightIdE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_totalHeightId (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5m_xIdE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_xId (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5m_yIdE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_yId (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfENSt6stringE5t_idx5t_idx6t_real6t_real5t_idxb">tsunami_lab::io::tsunami_lab::io::NetCdf::NetCdf (C++ function)</a>, <a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfEv">[1]</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4I_6size_tEN11tsunami_lab2io11tsunami_lab2io6NetCdf4readEvPKcRA1N_PKcRA1N_8VarArray6size_t">tsunami_lab::io::tsunami_lab::io::NetCdf::read (C++ function)</a>, <a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4readEPKcPKcR8VarArray6size_t">[1]</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray (C++ struct)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray5arrayE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray::array (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray6lengthE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray::length (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray6strideE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray::stride (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArray4typeE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray::type (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayD0Ev">tsunami_lab::io::tsunami_lab::io::NetCdf::VarArray::~VarArray (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarTypeE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarType (C++ enum)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType4CHARE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarType::CHAR (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6DOUBLEE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarType::DOUBLE (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5FLOATE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarType::FLOAT (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType3INTE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarType::INT (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5INT64E">tsunami_lab::io::tsunami_lab::io::NetCdf::VarType::INT64 (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5SHORTE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarType::SHORT (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6STRINGE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarType::STRING (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType5UCHARE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarType::UCHAR (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType4UINTE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarType::UINT (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6UINT64E">tsunami_lab::io::tsunami_lab::io::NetCdf::VarType::UINT64 (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarType6USHORTE">tsunami_lab::io::tsunami_lab::io::NetCdf::VarType::USHORT (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5writeEK6t_realPK6t_realPK6t_realPK6t_realPK6t_real">tsunami_lab::io::tsunami_lab::io::NetCdf::write (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdfD0Ev">tsunami_lab::io::tsunami_lab::io::NetCdf::~NetCdf (C++ function)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8StationsE">tsunami_lab::io::tsunami_lab::io::Stations (C++ class)</a>
 </li>
@@ -303,6 +392,8 @@
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation12getMomentumYEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::getMomentumY (C++ function)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation9getStrideEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::getStride (C++ function)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation14getTotalHeightEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::getTotalHeight (C++ function)</a>
@@ -321,8 +412,6 @@
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation9setSolverE6Solver">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::setSolver (C++ function)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation4SideE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::Side (C++ enum)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation4Side6BOTTOME">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::Side::BOTTOM (C++ enumerator)</a>
@@ -338,6 +427,22 @@
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation17updateWaterHeightEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::updateWaterHeight (C++ function)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagationD0Ev">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::~WavePropagation (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2dE">tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d (C++ class)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d19ArtificialTsunami2dEv">tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::ArtificialTsunami2d (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d16bathymetryHeightE">tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::bathymetryHeight (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12centerOffsetE">tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::centerOffset (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d13getBathymetryE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::getBathymetry (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d9getHeightE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::getHeight (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12getMomentumXE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::getMomentumX (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12getMomentumYE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::getMomentumY (C++ function)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups18CircularDamBreak2dE">tsunami_lab::setups::tsunami_lab::setups::CircularDamBreak2d (C++ class)</a>
 </li>
@@ -520,6 +625,42 @@
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d7m_scaleE">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent1d::m_scale (C++ member)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent1d14TsunamiEvent1dENSt6stringE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent1d::TsunamiEvent1d (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2dE">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d (C++ class)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d10bathymetryE">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::bathymetry (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14bathymetryDataE">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::bathymetryData (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14bathymetrySizeE">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::bathymetrySize (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d5deltaE">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::delta (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12displacementE">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::displacement (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d16displacementDataE">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::displacementData (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d16displacementSizeE">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::displacementSize (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d13getBathymetryE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::getBathymetry (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d9getHeightE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::getHeight (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12getMomentumXE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::getMomentumX (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d12getMomentumYE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::getMomentumY (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d17getValueAscendingEAL3E_PCK6t_realAL3E_K5t_idxK5t_idxK6t_realK6t_real">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::getValueAscending (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6readerE">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::reader (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6scaleXE">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::scaleX (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d6scaleYE">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::scaleY (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2d14TsunamiEvent2dEPKcRAL3E_PKcPKcRAL3E_PKc6t_real6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::TsunamiEvent2d (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups14TsunamiEvent2dD0Ev">tsunami_lab::setups::tsunami_lab::setups::TsunamiEvent2d::~TsunamiEvent2d (C++ function)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWaveE">tsunami_lab::solvers::tsunami_lab::solvers::FWave (C++ class)</a>
 </li>

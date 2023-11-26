@@ -15,6 +15,7 @@
    submissions/finite_volume_discretization.rst
    submissions/bathymetry_boundary_conditions.rst
    submissions/two_dimensional_solver.rst
+   submissions/large_data_input_output.rst
 
 .. toctree::
    :maxdepth: 4
