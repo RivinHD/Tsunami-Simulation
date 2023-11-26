@@ -30,17 +30,25 @@ tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent2d::getValueAscending( cons
     {
         xIndex = xLower - xBegin;
     }
+    else if( xLower < xBegin )
+    {
+        xIndex = xHigh - xBegin;
+    }
     else
     {
-        xIndex = ( std::abs( *xLower - x ) < std::abs( *xHigh - x ) ? xLower : xHigh ) - xBegin;
+        xIndex = ( std::abs( ( *xLower ) - x ) < std::abs( ( *xHigh ) - x ) ? xLower : xHigh ) - xBegin;
     }
     if( yHigh >= yEnd )
     {
         yIndex = xLower - xBegin;
     }
+    else if( yLower < yBegin )
+    {
+        yIndex = yHigh - yBegin;
+    }
     else
     {
-        yIndex = ( std::abs( *yLower - y ) < std::abs( *yHigh - y ) ? yLower : yHigh ) - yBegin;
+        yIndex = ( std::abs( ( *yLower ) - y ) < std::abs( ( *yHigh ) - y ) ? yLower : yHigh ) - yBegin;
     }
     const t_idx index = yIndex * zStride + xIndex;
 
