@@ -1,12 +1,7 @@
 var searchData=
 [
-  ['_7emiddlestates1d_49',['~MiddleStates1d',['../classtsunami__lab_1_1setups_1_1MiddleStates1d.html#a22cc84086ba36e3293bf2f9b86901bd5',1,'tsunami_lab::setups::MiddleStates1d']]],
-  ['_7erarerare1d_50',['~RareRare1d',['../classtsunami__lab_1_1setups_1_1RareRare1d.html#a80dcecc5c64f3de629046d859b544fbd',1,'tsunami_lab::setups::RareRare1d']]],
-  ['_7esetup_51',['~Setup',['../classtsunami__lab_1_1setups_1_1Setup.html#a0b6131241d5bd20fc68d3d6a764bcd35',1,'tsunami_lab::setups::Setup']]],
-  ['_7eshockshock1d_52',['~ShockShock1d',['../classtsunami__lab_1_1setups_1_1ShockShock1d.html#ad269c43920a4ff7cdf40557b3ee260cc',1,'tsunami_lab::setups::ShockShock1d']]],
-  ['_7esubcriticalflow1d_53',['~SubcriticalFlow1d',['../classtsunami__lab_1_1setups_1_1SubcriticalFlow1d.html#a7ca664c40f6b4ecb14b7ef7156110900',1,'tsunami_lab::setups::SubcriticalFlow1d']]],
-  ['_7esupercriticalflow1d_54',['~SupercriticalFlow1d',['../classtsunami__lab_1_1setups_1_1SupercriticalFlow1d.html#a37148d13e0cc301e77b6ae102de7738d',1,'tsunami_lab::setups::SupercriticalFlow1d']]],
-  ['_7ewavepropagation_55',['~WavePropagation',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#a5f0a9d03b1ab9387cf90f172800aaa92',1,'tsunami_lab::patches::WavePropagation']]],
-  ['_7ewavepropagation1d_56',['~WavePropagation1d',['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#af9cb88214b84e3c2cabbb8a1daaf4784',1,'tsunami_lab::patches::WavePropagation1d']]],
-  ['_7ewavepropagation2d_57',['~WavePropagation2d',['../classtsunami__lab_1_1patches_1_1WavePropagation2d.html#a4b881588ee7509fbadf4970ad2fadfd2',1,'tsunami_lab::patches::WavePropagation2d']]]
+  ['wavepropagation_56',['WavePropagation',['../classtsunami__lab_1_1patches_1_1WavePropagation.html',1,'tsunami_lab::patches']]],
+  ['wavepropagation1d_57',['WavePropagation1d',['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html',1,'tsunami_lab::patches::WavePropagation1d'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#a888e18ad0bdf59dd05c05f2dc0f90efb',1,'tsunami_lab::patches::WavePropagation1d::WavePropagation1d()']]],
+  ['wavepropagation2d_58',['WavePropagation2d',['../classtsunami__lab_1_1patches_1_1WavePropagation2d.html',1,'tsunami_lab::patches::WavePropagation2d'],['../classtsunami__lab_1_1patches_1_1WavePropagation2d.html#a3a489c2b680a496bf0ea3b20183f6d16',1,'tsunami_lab::patches::WavePropagation2d::WavePropagation2d()']]],
+  ['write_59',['write',['../classtsunami__lab_1_1io_1_1Csv.html#aea0713fa034f2a1d57ce9a8f51821c23',1,'tsunami_lab::io::Csv::write()'],['../classtsunami__lab_1_1io_1_1NetCdf.html#abe92fb89a4b182c2fb9a1103734dab75',1,'tsunami_lab::io::NetCdf::write()'],['../classtsunami__lab_1_1io_1_1Stations.html#a0c25977d5dd70b1b66fb77a972232f98',1,'tsunami_lab::io::Stations::write()']]]
 ];

@@ -66,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../submissions/finite_volume_discretization.html">2. Finite Volume Discretization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../submissions/bathymetry_boundary_conditions.html">3. Bathymetry &amp; Boundary Conditions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../submissions/two_dimensional_solver.html">4. Two-Dimensional Solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../submissions/large_data_input_output.html">5. Large Data Input and Output</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -101,13 +102,13 @@
 <section id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
 <p>To use this project <code class="docutils literal notranslate"><span class="pre">CMake</span></code> is required.
-You can check if <code class="docutils literal notranslate"><span class="pre">CMake</span></code> is installed by running</p>
+You can check if CMake is installed by running</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>--version
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><code class="docutils literal notranslate"><span class="pre">CMake</span></code> can be <a class="reference external" href="https://cmake.org/download/#latest">downloaded</a> or installed OS Specific through other methods</p>
+<p><code class="docutils literal notranslate"><span class="pre">CMake</span></code> can be <a class="reference external" href="https://cmake.org/download/#latest">downloaded</a> or installed OS specific through other methods</p>
 <dl>
 <dt><em>Windows</em></dt><dd><p>There are several ways to install <code class="docutils literal notranslate"><span class="pre">CMake</span></code> on Windows.</p>
 <dl>
@@ -143,6 +144,29 @@ You can check if <code class="docutils literal notranslate"><span class="pre">CM
 </div>
 </dd>
 </dl>
+</div>
+<p>As the project also uses <code class="docutils literal notranslate"><span class="pre">netCDF</span></code>, this must also be installed on the PC.
+You can check if netCDF is installed by running</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nc-config<span class="w"> </span>--version
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">netCDF</span></code> can be installed OS specific</p>
+<p><strong>Windows</strong></p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><a class="reference external" href="https://docs.unidata.ucar.edu/netcdf-c/current/winbin.html">Download</a> and install the netCDF-C library and utilities</p></li>
+<li><p>Install as usual and make sure to <code class="docutils literal notranslate"><span class="pre">add</span> <span class="pre">netCDF</span></code> to the system <code class="docutils literal notranslate"><span class="pre">PATH</span></code> for all users</p></li>
+</ol>
+</div></blockquote>
+<p><strong>Linux and MAC</strong></p>
+<blockquote>
+<div><p>The easiest way to install netCDF is via <a class="reference external" href="https://brew.sh/">Homebrew</a>. Run the following command in the terminal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>netcdf
+</pre></div>
+</div>
+</div></blockquote>
 </div>
 </section>
 <section id="building">
@@ -258,8 +282,9 @@ The available executables are <code class="docutils literal notranslate"><span c
 </section>
 <section id="simulation-output">
 <h2>Simulation Output<a class="headerlink" href="#simulation-output" title="Link to this heading"></a></h2>
-<p>The output of the simulation consists of several CSV files named <code class="docutils literal notranslate"><span class="pre">solution_&lt;number&gt;.csv</span></code>.
-The CSV files are stored in a separate <code class="docutils literal notranslate"><span class="pre">solutions</span></code> folder, which is located in the working directory of the executable.</p>
+<p>The output of the simulation consists of one netCDF file if nothing else is specified. If you define the output format
+as CSV several CSV files named <code class="docutils literal notranslate"><span class="pre">solution_&lt;number&gt;.csv</span></code> will be created. The files are stored in a separate
+<code class="docutils literal notranslate"><span class="pre">solutions/simulation/</span></code> folder, which is located in the working directory of the executable.</p>
 </section>
 <section id="extracting-bathymetry-data-for-the-1d-domain">
 <h2>Extracting bathymetry data for the 1D domain<a class="headerlink" href="#extracting-bathymetry-data-for-the-1d-domain" title="Link to this heading"></a></h2>

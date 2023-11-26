@@ -493,12 +493,12 @@ config.test.json and config.json at the beginning.
 
     /// File: Stations.cpp
     [ ... ]
-    #ifdef TEST
+    #ifdef TSUNAMI_SIMULATION_TEST
         std::ifstream l_file( "resources/config.test.json" );
-    #endif // TEST
-    #ifndef TEST
+    #endif // TSUNAMI_SIMULATION_TEST
+    #ifndef TSUNAMI_SIMULATION_TEST
         std::ifstream l_file( "resources/config.json" );
-    #endif // !TEST
+    #endif // !TSUNAMI_SIMULATION_TEST
 
     json config;
     try

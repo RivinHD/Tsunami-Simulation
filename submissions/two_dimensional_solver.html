@@ -24,7 +24,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tsunami_lab" href="../api/tsunami_lab.html" />
+    <link rel="next" title="5. Large Data Input and Output" href="large_data_input_output.html" />
     <link rel="prev" title="3. Bathymetry &amp; Boundary Conditions" href="bathymetry_boundary_conditions.html" />
     <link href="../_static/style.css" rel="stylesheet" type="text/css">
 
@@ -75,6 +75,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#contribution">Contribution</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="large_data_input_output.html">5. Large Data Input and Output</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -533,12 +534,12 @@ which allows us to read data from our <code class="docutils literal notranslate"
 config.test.json and config.json at the beginning.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">/// File: Stations.cpp</span>
 <span class="p">[</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">]</span>
-<span class="cp">#ifdef TEST</span>
+<span class="cp">#ifdef TSUNAMI_SIMULATION_TEST</span>
 <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="n">l_file</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;resources/config.test.json&quot;</span><span class="w"> </span><span class="p">);</span>
-<span class="cp">#endif </span><span class="c1">// TEST</span>
-<span class="cp">#ifndef TEST</span>
+<span class="cp">#endif </span><span class="c1">// TSUNAMI_SIMULATION_TEST</span>
+<span class="cp">#ifndef TSUNAMI_SIMULATION_TEST</span>
 <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="n">l_file</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;resources/config.json&quot;</span><span class="w"> </span><span class="p">);</span>
-<span class="cp">#endif </span><span class="c1">// !TEST</span>
+<span class="cp">#endif </span><span class="c1">// !TSUNAMI_SIMULATION_TEST</span>
 
 <span class="n">json</span><span class="w"> </span><span class="n">config</span><span class="p">;</span>
 <span class="k">try</span>
@@ -838,7 +839,7 @@ behave very similarly.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="bathymetry_boundary_conditions.html" class="btn btn-neutral float-left" title="3. Bathymetry &amp; Boundary Conditions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../api/tsunami_lab.html" class="btn btn-neutral float-right" title="tsunami_lab" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="large_data_input_output.html" class="btn btn-neutral float-right" title="5. Large Data Input and Output" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
