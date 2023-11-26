@@ -36,6 +36,7 @@ public:
      *
      * @param flag the flag to call this argument with
      * @param numberOfOptions the number of options that one flag handles. Options are separated by a space. E.g. -f Option1 Option2 ...
+     * @param maxNumberOfOptions the maximum number of options that one flag should be able to handle.
     */
     ArgSetup( const char& flag, short numberOfOptions, short maxNumberOfOptions )
         : flag( flag ), numberOfOptions( numberOfOptions ), maxNumberOfOptions( maxNumberOfOptions )

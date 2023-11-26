@@ -1,5 +1,5 @@
 /**
- * @author Alexander Breuer (alex.breuer AT uni-jena.de)
+ * @author Alexander Breuer (alex.breuer AT uni-jena.de), Fabian Hofer, Vincent Gerlach
  *
  * Entry-point for simulations.
  **/
@@ -12,7 +12,10 @@
 #include "../include/setups/SupercriticalFlow1d.h"
 #include "../include/setups/TsunamiEvent1d.h"
 #include "../include/setups/CircularDamBreak2d.h"
+#include "../include/setups/ArtificialTsunami2d.h"
+#include "../include/setups/TsunamiEvent2d.h"
 #include "../include/io/Csv.h"
+#include "../include/io/NetCdf.h"
 #include "../include/io/ArgSetup.h"
 #include "../include/io/Stations.h"
 #include <cstdlib>
@@ -24,40 +27,47 @@
 #include <filesystem> // requieres C++17 and up
 #include <chrono>
 #include <thread>
+#include <atomic>
 
 namespace fs = std::filesystem;
 
 const std::string SOLUTION_FOLDER = "solutions";
-bool KILL_THREAD = false;
-
-const std::string reset = "\033[0m";
-const std::string cyan = "\033[36;49m";
-const std::string magenta = "\033[35;49m";
-const std::string green = "\033[32;49m";
+std::atomic_bool KILL_THREAD = false;
 
 enum Arguments
 {
     SOLVER = 's',
     USE_BATHYMETRY = 'B',
     REFLECTION = 'r',
-    TIME = 't'
-
+    TIME = 't',
+    IO_FORMAT = 'f',
+    USE_AXIS_METERS = 'M'
 };
+
 const int requiredArguments = 1;
 const int optionalArguments = 1;
 const std::vector<ArgSetup> optionalFlags = {
     ArgSetup( Arguments::SOLVER, 1, 1 ),
     ArgSetup( Arguments::USE_BATHYMETRY, 0, 0 ),
     ArgSetup( Arguments::REFLECTION, 1, 4 ),
-    ArgSetup( Arguments::TIME, 1, 1 )
+    ArgSetup( Arguments::TIME, 1, 1 ),
+    ArgSetup( Arguments::IO_FORMAT, 1, 1 ),
+    ArgSetup( Arguments::USE_AXIS_METERS, 0, 0 )
 };
 
 void printHelp()
 {
+    const char* reset = "\033[0m";
+    const char* cyan = "\033[36;49m";
+    const char* magenta = "\033[35;49m";
+    const char* green = "\033[32;49m";
+
     std::cerr << "./build/simulation " << magenta << "N_CELLS_X (N_CELLS_Y) " << reset << "["
-        << green << "-s " << cyan << "<fwave|roe>" << reset << "] ["
         << green << "-B" << reset << "] ["
+        << green << "-M" << reset << "] ["
+        << green << "-f" << cyan << " <csv|netCDF>" << reset << "] ["
         << green << "-r " << cyan << "<left|right|top|bottom|x|y|all>" << reset << "] ["
+        << green << "-s " << cyan << "<fwave|roe>" << reset << "] ["
         << green << "-t" << cyan << " <seconds>" << reset << "]"
         << std::endl << std::endl
         << "REQUIERED INPUT:" << std::endl
@@ -68,12 +78,14 @@ void printHelp()
         << std::endl
         << "NOTE: optional flags must be set after the inputs.." << std::endl
         << "OPTIONAL FLAGS:" << std::endl
-        << green << "\t-s" << reset << " set used solvers requires " << cyan << "fwave" << reset << " or " << cyan << "roe" << reset << " as inputs. The default is fwave." << std::endl
         << green << "\t-B" << reset << " enables the use of bathymetry." << std::endl
+        << green << "\t-M" << reset << " use meters as unit for the X-Axis and Y-Axis instead of the Longitude and Latitude units degrees_east and degrees_north." << std::endl
+        << green << "\t-f" << reset << " defines the output format. Requires " << cyan << "csv" << reset << " or " << cyan << "netCDF" << reset << ". The default is netCDF." << std::endl
         << green << "\t-r" << reset << " enables the reflection on the specified side of the simulation. Several arguments can be passed (maximum 4)." << std::endl
         << "\t   where " << cyan << "left | right | top | bottom" << reset << " enables their respective sides." << std::endl
         << "\t   where " << cyan << "x" << reset << " enables the left & right and " << cyan << "y" << reset << " enables the top & bottom side." << std::endl
         << "\t   where " << cyan << "all" << reset << " enables all sides." << std::endl
+        << green << "\t-s" << reset << " set used solvers requires " << cyan << "fwave" << reset << " or " << cyan << "roe" << reset << " as inputs. The default is fwave." << std::endl
         << green << "\t-t" << reset << " defines the total time in seconds that is used for the simulation. The default is 5 seconds." << std::endl;
 }
 
@@ -93,6 +105,8 @@ void writeStations( tsunami_lab::io::Stations* stations, tsunami_lab::patches::W
 int main( int   i_argc,
           char* i_argv[] )
 {
+    const char* reset = "\033[0m";
+    const char* green = "\033[32;49m";
 
     std::cout << "#####################################################" << std::endl;
     std::cout << "###                  Tsunami Lab                  ###" << std::endl;
@@ -112,6 +126,8 @@ int main( int   i_argc,
     bool reflectTop = false;
     bool reflectBottom = false;
     bool use2D = false;
+    bool isCsv = false;
+    bool useAxisMeters = false;
     tsunami_lab::t_real l_endTime = 5;
 
 #ifndef SKIP_ARGUMENTS
@@ -131,6 +147,7 @@ int main( int   i_argc,
     if( l_nx < 1 )
     {
         std::cerr << "N_CELLS_X: invalid number of cells" << std::endl;
+        printHelp();
         return EXIT_FAILURE;
     }
     // Argument 2 (optional): N_CELLS_Y
@@ -143,6 +160,8 @@ int main( int   i_argc,
     if( use2D && l_ny < 1 )
     {
         std::cerr << "N_CELLS_Y: invalid number of cells" << std::endl;
+        printHelp();
+        return EXIT_FAILURE;
     }
 
     // parse optional Argumentes
@@ -236,12 +255,16 @@ int main( int   i_argc,
                             reflectTop = true;
                             reflectBottom = true;
                         }
-                        else
+                        else if( i == startIndex + 1 )
                         {
                             std::cerr << "'" << stringParameter << "' is an unknown argument for flag -r" << std::endl
                                 << "valid arguments are 'left', 'right', 'top', 'bottom', 'x', 'y', 'all'" << std::endl
                                 << "the arguments 'top' and 'bottom' only take effect if the simulation is 2d" << std::endl;
                             return EXIT_FAILURE;
+                        }
+                        else
+                        {
+                            break;
                         }
                         if( i + 1 >= i_argc )
                         {
@@ -260,7 +283,26 @@ int main( int   i_argc,
                     }
                     l_endTime = floatParameter;
                     break;
-
+                case Arguments::IO_FORMAT:
+                    stringParameter = std::string( i_argv[++i] );
+                    if( stringParameter == "csv" )
+                    {
+                        isCsv = true;
+                    }
+                    else if( stringParameter == "netCDF" )
+                    {
+                        isCsv = false;
+                    }
+                    else
+                    {
+                        std::cerr << "'" << stringParameter << "' is an unknown argument for flag -f" << std::endl
+                            << "valid arguments are 'csv', 'netCDF'" << std::endl;
+                        return EXIT_FAILURE;
+                    }
+                    break;
+                case Arguments::USE_AXIS_METERS:
+                    useAxisMeters = true;
+                    break;
                 default:
                     std::cerr << "unknown flag: " << arg[argI] << std::endl;
                     printHelp();
@@ -279,6 +321,7 @@ int main( int   i_argc,
     reflectTop = false;
     useBathymetry = true;
     use2D = false;
+    useAxisMeters = true;
     l_endTime = 5;
     std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
@@ -286,26 +329,26 @@ int main( int   i_argc,
     // Print activated Features
     if( use2D )
     {
-        std::cout << "Simulation is set to 2D" << std::endl;
+        std::cout << "Simulation is set to " << green << "2D" << reset << std::endl;
     }
     else
     {
-        std::cout << "Simulation is set to 1D" << std::endl;
+        std::cout << "Simulation is set to " << green << "1D" << reset << std::endl;
     }
 
     if( useBathymetry )
     {
-        std::cout << "Activated Bathymetry" << std::endl;
+        std::cout << green << "Activated Bathymetry" << reset << std::endl;
     }
 
     std::cout << "Set Solver: ";
     if( solver == tsunami_lab::patches::Solver::ROE )
     {
-        std::cout << "Roe" << std::endl;
+        std::cout << green << "Roe" << reset << std::endl;
     }
     else
     {
-        std::cout << "FWave" << std::endl;
+        std::cout << green << "FWave" << reset << std::endl;
     }
 
     if( ( useBathymetry ) && solver == tsunami_lab::patches::Solver::ROE )
@@ -326,14 +369,15 @@ int main( int   i_argc,
     reflectionAppended |= reflectBottom;
     if( reflectionsText != "" )
     {
-        std::cout << "Activated Reflection on " << reflectionsText << " side" << std::endl;
+        std::cout << "Activated Reflection on " << green << reflectionsText << reset << " side" << std::endl;
     }
 
-    std::cout << "Simulation Time is set to " << l_endTime << " seconds" << std::endl;
+    std::cout << "Simulation Time is set to " << green << l_endTime << " seconds" << reset << std::endl
+        << "Output format is set to " << green << ( isCsv ? "csv" : "netCDF" ) << reset << std::endl;
     // End print
 
-    tsunami_lab::t_real l_scaleX = 100;
-    tsunami_lab::t_real l_scaleY = 100;
+    tsunami_lab::t_real l_scaleX = 10000;
+    tsunami_lab::t_real l_scaleY = 10000;
     if( use2D )
     {
         l_dxy = std::min( l_scaleX / l_nx, l_scaleY / l_ny );
@@ -350,7 +394,14 @@ int main( int   i_argc,
 
     // construct setup
     tsunami_lab::setups::Setup* l_setup;
-    l_setup = new tsunami_lab::setups::CircularDamBreak2d();
+    const char* variables[3]{ "x", "y", "z" };
+    l_setup = new tsunami_lab::setups::TsunamiEvent2d( "resources/artificialtsunami_bathymetry_1000.nc",
+                                                       variables,
+                                                       "resources/artificialtsunami_displ_1000.nc",
+                                                       variables,
+                                                       l_scaleX,
+                                                       l_scaleY );
+
 
 
     // construct solver
@@ -433,7 +484,7 @@ int main( int   i_argc,
     std::cout << "Max speed " << l_speedMax << std::endl;
 
     // derive constant time step; changes at simulation time are ignored
-    tsunami_lab::t_real l_dt = 0.45 * l_dxy / l_speedMax;
+    tsunami_lab::t_real l_dt = std::min( 0.45 * l_dxy / l_speedMax, 0.01 );
 
     // derive scaling for a time step
     tsunami_lab::t_real l_scaling = l_dt / l_dxy;
@@ -457,6 +508,18 @@ int main( int   i_argc,
 
     std::cout << "entering time loop" << std::endl;
 
+    tsunami_lab::io::NetCdf* netCdfWriter = nullptr;
+    if( !isCsv )
+    {
+        netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/solution.nc",
+                                                    l_nx,
+                                                    l_ny,
+                                                    l_scaleX,
+                                                    l_scaleY,
+                                                    l_waveProp->getStride(),
+                                                    !useAxisMeters );
+    }
+
     // iterate over time
     while( l_simTime < l_endTime )
     {
@@ -465,24 +528,35 @@ int main( int   i_argc,
             std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
 
-            std::string l_path = SOLUTION_FOLDER + "/simulation/solution_" + std::to_string( l_nOut ) + ".csv";
-            std::cout << "  writing wave field to " << l_path << std::endl;
 
-            std::ofstream l_file;
-            l_file.open( l_path );
+            if( isCsv )
+            {
+                std::string l_path = SOLUTION_FOLDER + "/simulation/solution_" + std::to_string( l_nOut ) + ".csv";
+                std::cout << "  writing wave field to " << l_path << std::endl;
 
-            tsunami_lab::io::Csv::write( l_dxy,
-                                         l_nx,
-                                         l_ny,
-                                         l_waveProp->getStride(),
-                                         l_waveProp->getHeight(),
-                                         l_waveProp->getMomentumX(),
-                                         l_waveProp->getMomentumY(),
-                                         l_waveProp->getBathymetry(),
-                                         l_waveProp->getTotalHeight(),
-                                         l_file );
-            l_file.close();
-            l_nOut++;
+                std::ofstream l_file;
+                l_file.open( l_path );
+                tsunami_lab::io::Csv::write( l_dxy,
+                                             l_nx,
+                                             l_ny,
+                                             l_waveProp->getStride(),
+                                             l_waveProp->getHeight(),
+                                             l_waveProp->getMomentumX(),
+                                             l_waveProp->getMomentumY(),
+                                             l_waveProp->getBathymetry(),
+                                             l_waveProp->getTotalHeight(),
+                                             l_file );
+                l_file.close();
+                l_nOut++;
+            }
+            else
+            {
+                netCdfWriter->write( l_simTime,
+                                     l_waveProp->getTotalHeight(),
+                                     l_waveProp->getBathymetry(),
+                                     l_waveProp->getMomentumX(),
+                                     l_waveProp->getMomentumY() );
+            }
         }
 
         l_waveProp->setGhostOutflow();
@@ -493,15 +567,16 @@ int main( int   i_argc,
     }
     std::cout << "finished time loop" << std::endl;
 
+    // kill thread
+    KILL_THREAD = true;
+    // wait for threads
+    writeStationsThread.join();
+
     // free memory
     std::cout << "freeing memory" << std::endl;
     delete l_setup;
     delete l_waveProp;
-
-    // kill thread
-    KILL_THREAD = true;
-    // wait for thread
-    writeStationsThread.join();
+    delete netCdfWriter;
 
     std::cout << "finished, exiting" << std::endl;
     return EXIT_SUCCESS;

@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.1.0)
 project(TsunamiSimulation VERSION 0.1.0 LANGUAGES C CXX)
 
+# find packages
+find_package(netCDF REQUIRED)
+include_directories(${netCDF_INCLUDE_DIRS})
+link_libraries(${netCDF_LIBRARIES})
+
 message("####################################")
 message("### Tsunami Lab                  ###")
 message("###                              ###")
@@ -9,7 +14,7 @@ message("####################################")
 
 option(ENABLE_TESTMODE "Adds the Test defintion to any build")
 if(ENABLE_TESTMODE)
-    add_compile_definitions(TEST)
+    add_compile_definitions(TSUNAMI_SIMULATION_TEST)
     message("-- Starting in Test Mode")
 endif(ENABLE_TESTMODE)
 
@@ -43,10 +48,13 @@ set(SRC_FILES
     setups/SupercriticalFlow1d
     setups/TsunamiEvent1d
     setups/CircularDamBreak2d
+    setups/ArtificialTsunami2d
+    setups/TsunamiEvent2d
     patches/WavePropagation1d
     patches/WavePropagation2d
     io/Csv
     io/Stations
+    io/NetCdf
 )
 set(SRC_FILES_NO_TEST
 
@@ -69,6 +77,11 @@ set(RESOURCE_FILES
     bathy_profile.csv
     config.json
     config.test.json
+    ReadNetCDF.test.nc
+    WriteNetCDF_S.test.txt
+    WriteNetCDF_M.test.txt
+    artificialtsunami_displ_1000.nc
+    artificialtsunami_bathymetry_1000.nc
 )
 
 # Create SOURCE_FILES
@@ -123,23 +136,23 @@ link_libraries(nlohmann_json::nlohmann_json)
 add_executable(test ${SOURCE_FILES})
 target_link_libraries(test PRIVATE Catch2::Catch2)
 target_sources(test PRIVATE ${TEST_FILES})
-target_compile_definitions(test PRIVATE TEST)
+target_compile_definitions(test PRIVATE TSUNAMI_SIMULATION_TEST)
 
 # Setup Testing + Sanitizer
 add_executable(sanitize_test ${SOURCE_FILES})
 target_link_libraries(sanitize_test PRIVATE Catch2::Catch2)
 target_sources(sanitize_test PRIVATE ${TEST_FILES})
-target_compile_definitions(sanitize_test PRIVATE TEST)
+target_compile_definitions(sanitize_test PRIVATE TSUNAMI_SIMULATION_TEST)
 
 # Setup Testing for middle states
 add_executable(test_middle_states ${SOURCE_FILES})
 target_sources(test_middle_states PRIVATE ${MIDDLE_STATE_FILE})
 
-# Setup Build
+# Setup Simulation
 add_executable(simulation ${SOURCE_FILES})
 target_sources(simulation PRIVATE ${MAIN_FILE})
 
-# Setup Build + Sanitizer
+# Setup Simulation + Sanitizer
 add_executable(sanitize ${SOURCE_FILES})
 target_sources(sanitize PRIVATE ${MAIN_FILE})
 
