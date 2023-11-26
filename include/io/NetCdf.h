@@ -111,7 +111,7 @@ public:
     struct VarArray
     {
         //! the array containing the data
-        void* array;
+        void* array = nullptr;
 
         //! type of the array
         VarType type;
