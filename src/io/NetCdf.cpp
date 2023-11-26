@@ -23,6 +23,14 @@ void tsunami_lab::io::NetCdf::_read( const char* filepath,
         exit( 2 );
     }
 
+    for( size_t i = 0; i < size; i++ )
+    {
+        if( outData[i].array != nullptr )
+        {
+            outData[i].~VarArray();
+        }
+    }
+
     int l_err;
 
     // open the file

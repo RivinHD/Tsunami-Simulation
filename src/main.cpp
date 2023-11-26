@@ -567,16 +567,16 @@ int main( int   i_argc,
     }
     std::cout << "finished time loop" << std::endl;
 
+    // kill thread
+    KILL_THREAD = true;
+    // wait for threads
+    writeStationsThread.join();
+
     // free memory
     std::cout << "freeing memory" << std::endl;
     delete l_setup;
     delete l_waveProp;
     delete netCdfWriter;
-
-    // kill thread
-    KILL_THREAD = true;
-    // wait for threads
-    writeStationsThread.join();
 
     std::cout << "finished, exiting" << std::endl;
     return EXIT_SUCCESS;
