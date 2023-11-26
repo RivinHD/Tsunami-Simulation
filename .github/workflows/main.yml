@@ -15,8 +15,12 @@ on:
 
 jobs:
   CI:
-    runs-on: ubuntu-latest
-
+    runs-on: 
+      os: ubuntu-22.04
+      key: docker-linuxbrew
+      container:
+         image: ghcr.io/homebrew/ubuntu22.04:master
+         options: --user=linuxbrew
     steps:
       - uses: actions/checkout@v4
 
