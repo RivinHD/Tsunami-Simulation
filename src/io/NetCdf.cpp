@@ -423,14 +423,24 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     checkNcErr( l_err, "enddef" );
 
     // write longitude and latitude
-    t_real stepLat = m_scaleY / ( l_ny - 1 );
-    t_real stepLon = m_scaleX / ( l_nx - 1 );
+    t_idx xCount = l_nx - 1;
+    t_idx yCount = l_ny - 1;
+    if( xCount <= 0 )
+    {
+        xCount = 1;
+    }
+    if( yCount <= 0 )
+    {
+        yCount = 1;
+    }
+    t_real stepLat = m_scaleY / static_cast<tsunami_lab::t_real>( yCount );
+    t_real stepLon = m_scaleX / static_cast<tsunami_lab::t_real>( xCount );
     if( useSpherical )
     {
         t_real maxLat = m_scaleY / t_real( 110574 );
         t_real maxLon = m_scaleX / ( 111320 * std::cos( maxLat * M_PI / 180 ) );
-        stepLat = maxLat / ( l_ny - 1 );
-        stepLon = maxLon / ( l_nx - 1 );
+        stepLat = maxLat / static_cast<tsunami_lab::t_real>( yCount );
+        stepLon = maxLon / static_cast<tsunami_lab::t_real>( xCount );
     }
     t_real* lat = new t_real[l_ny];
     t_real* lon = new t_real[l_nx];
