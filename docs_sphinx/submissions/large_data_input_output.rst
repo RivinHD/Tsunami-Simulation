@@ -13,17 +13,17 @@
 1. Installation of netCDF
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``netCDF`` can be installed OS specific:
+``netCDF`` can be installed OS specific
 
     **Windows**
 
-        1. `Download <https://docs.unidata.ucar.edu/netcdf-c/current/winbin.html>_` and install the netCDF-C library and utilities
+        1. `Download <https://docs.unidata.ucar.edu/netcdf-c/current/winbin.html>`_ and install the netCDF-C library and utilities
 
         2. Install as usual and make sure to ``add netCDF`` to the system ``PATH`` for all users
 
     **Linux and MAC**
 
-        The easiest way to install netCDF is via `Homebrew <https://brew.sh/>_`. Run the following command in the terminal:
+        The easiest way to install netCDF is via `Homebrew <https://brew.sh/>`_. Run the following command in the terminal:
 
         .. code-block:: bash
 
