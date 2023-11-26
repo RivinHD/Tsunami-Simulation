@@ -40,7 +40,8 @@ enum Arguments
     USE_BATHYMETRY = 'B',
     REFLECTION = 'r',
     TIME = 't',
-    IO_FORMAT = 'f'
+    IO_FORMAT = 'f',
+    USE_AXIS_METERS = 'M'
 };
 
 const int requiredArguments = 1;
@@ -50,7 +51,8 @@ const std::vector<ArgSetup> optionalFlags = {
     ArgSetup( Arguments::USE_BATHYMETRY, 0, 0 ),
     ArgSetup( Arguments::REFLECTION, 1, 4 ),
     ArgSetup( Arguments::TIME, 1, 1 ),
-    ArgSetup( Arguments::IO_FORMAT, 1, 1 )
+    ArgSetup( Arguments::IO_FORMAT, 1, 1 ),
+    ArgSetup( Arguments::USE_AXIS_METERS, 0, 0 )
 };
 
 void printHelp()
@@ -61,11 +63,12 @@ void printHelp()
     const char* green = "\033[32;49m";
 
     std::cerr << "./build/simulation " << magenta << "N_CELLS_X (N_CELLS_Y) " << reset << "["
-        << green << "-s " << cyan << "<fwave|roe>" << reset << "] ["
         << green << "-B" << reset << "] ["
+        << green << "-M" << reset << "] ["
+        << green << "-f" << cyan << " <csv|netCDF>" << reset << "] ["
         << green << "-r " << cyan << "<left|right|top|bottom|x|y|all>" << reset << "] ["
-        << green << "-t" << cyan << " <seconds>" << reset << "] ["
-        << green << "-f" << cyan << " <csv|netCDF>"
+        << green << "-s " << cyan << "<fwave|roe>" << reset << "] ["
+        << green << "-t" << cyan << " <seconds>" << reset << "]"
         << std::endl << std::endl
         << "REQUIERED INPUT:" << std::endl
         << magenta << "\tN_CELLS_X" << reset << " is the number of cells in x-direction." << std::endl
@@ -75,14 +78,15 @@ void printHelp()
         << std::endl
         << "NOTE: optional flags must be set after the inputs.." << std::endl
         << "OPTIONAL FLAGS:" << std::endl
-        << green << "\t-s" << reset << " set used solvers requires " << cyan << "fwave" << reset << " or " << cyan << "roe" << reset << " as inputs. The default is fwave." << std::endl
         << green << "\t-B" << reset << " enables the use of bathymetry." << std::endl
+        << green << "\t-M" << reset << " use meters as unit for the X-Axis and Y-Axis instead of the Longitude and Latitude units degrees_east and degrees_north." << std::endl
+        << green << "\t-f" << reset << " defines the output format. Requires " << cyan << "csv" << reset << " or " << cyan << "netCDF" << reset << ". The default is netCDF." << std::endl
         << green << "\t-r" << reset << " enables the reflection on the specified side of the simulation. Several arguments can be passed (maximum 4)." << std::endl
         << "\t   where " << cyan << "left | right | top | bottom" << reset << " enables their respective sides." << std::endl
         << "\t   where " << cyan << "x" << reset << " enables the left & right and " << cyan << "y" << reset << " enables the top & bottom side." << std::endl
         << "\t   where " << cyan << "all" << reset << " enables all sides." << std::endl
-        << green << "\t-t" << reset << " defines the total time in seconds that is used for the simulation. The default is 5 seconds." << std::endl
-        << green << "\t-f" << reset << " defines the output format. Requires " << cyan << "csv" << reset << " or " << cyan << "netCDF" << reset << ". The default is netCDF." << std::endl;
+        << green << "\t-s" << reset << " set used solvers requires " << cyan << "fwave" << reset << " or " << cyan << "roe" << reset << " as inputs. The default is fwave." << std::endl
+        << green << "\t-t" << reset << " defines the total time in seconds that is used for the simulation. The default is 5 seconds." << std::endl;
 }
 
 void writeStations( tsunami_lab::io::Stations* stations, tsunami_lab::patches::WavePropagation* solver )
@@ -123,6 +127,7 @@ int main( int   i_argc,
     bool reflectBottom = false;
     bool use2D = false;
     bool isCsv = false;
+    bool useAxisMeters = false;
     tsunami_lab::t_real l_endTime = 5;
 
 #ifndef SKIP_ARGUMENTS
@@ -295,7 +300,9 @@ int main( int   i_argc,
                         return EXIT_FAILURE;
                     }
                     break;
-
+                case Arguments::USE_AXIS_METERS:
+                    useAxisMeters = true;
+                    break;
                 default:
                     std::cerr << "unknown flag: " << arg[argI] << std::endl;
                     printHelp();
@@ -314,6 +321,7 @@ int main( int   i_argc,
     reflectTop = false;
     useBathymetry = true;
     use2D = false;
+    useAxisMeters = true;
     l_endTime = 5;
     std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
@@ -393,6 +401,7 @@ int main( int   i_argc,
                                                        variables,
                                                        l_scaleX,
                                                        l_scaleY );
+
 
 
     // construct solver
@@ -507,7 +516,8 @@ int main( int   i_argc,
                                                     l_ny,
                                                     l_scaleX,
                                                     l_scaleY,
-                                                    l_waveProp->getStride() );
+                                                    l_waveProp->getStride(),
+                                                    !useAxisMeters );
     }
 
     // iterate over time

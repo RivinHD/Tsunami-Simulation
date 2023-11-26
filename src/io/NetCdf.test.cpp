@@ -877,7 +877,49 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
     std::string line1, line2;
 
     file1.open( "tmp_file.txt" );
-    file2.open( "resources/WriteNetCDF.test.txt" );
+    file2.open( "resources/WriteNetCDF_S.test.txt" );
+
+    while( std::getline( file1, line1 ) && std::getline( file2, line2 ) )
+    {
+        REQUIRE( line1 == line2 );
+    }
+
+    std::remove( "tmp_file.txt" );
+
+    // create simulation folder inside solution folder
+    if( !fs::exists( SOLUTION_FOLDER ) )
+    {
+        fs::create_directory( SOLUTION_FOLDER );
+    }
+    if( fs::exists( SOLUTION_FOLDER + "/simulation" ) )
+    {
+        fs::remove_all( SOLUTION_FOLDER + "/simulation" );
+    }
+    fs::create_directory( SOLUTION_FOLDER + "/simulation" );
+
+    //tsunami_lab::patches::WavePropagation* l_waveProp = new tsunami_lab::patches::WavePropagation2d( 10, 10 );
+    netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/WriteNetCDF.test.nc",
+                                                10,
+                                                10,
+                                                10000,
+                                                10000,
+                                                12,
+                                                false );
+    for( size_t i = 0; i < 20; i++ )
+    {
+        netCdfWriter->write( time[i],
+                             totalHeight + ( i * 100 ),
+                             bathymetry + ( i * 100 ),
+                             momentumX + ( i * 100 ),
+                             momentumY + ( i * 100 ) );
+    }
+
+    delete netCdfWriter;
+
+    system( "ncdump solutions/simulation/WriteNetCDF.test.nc > tmp_file.txt" );
+
+    file1.open( "tmp_file.txt" );
+    file2.open( "resources/WriteNetCDF_M.test.txt" );
 
     while( std::getline( file1, line1 ) && std::getline( file2, line2 ) )
     {
@@ -889,119 +931,103 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
 
 TEST_CASE( "The the read method for netCDF", "[netCDF]" )
 {
-    tsunami_lab::io::NetCdf* reader = new tsunami_lab::io::NetCdf();
+    tsunami_lab::io::NetCdf reader = tsunami_lab::io::NetCdf();
     const char* variables[2] = { "b", "h" };
     tsunami_lab::io::NetCdf::VarArray data[2];
     tsunami_lab::io::NetCdf::VarArray singleData;
 
-    SECTION( "Run Tests" )
+    REQUIRE( reader.isReadMode );
+
+    reader.read( "resources/ReadNetCDF.test.nc", variables, data );
+
+    // Check the data for "b"
+    REQUIRE( data[0].length == 24 );
+    REQUIRE( data[0].stride == 3 );
+    REQUIRE( data[0].type == tsunami_lab::io::NetCdf::VarType::FLOAT );
+    const float b[] = { -2,  -3,  -5,
+                        -7, -11, -13,
+                       -17, -19, -23,
+                       -29, -31, -37,
+                       -41, -43, -47,
+                       -53, -59, -61,
+                       -67, -71, -73,
+                       -79, -83, -89 };
+
+    float* bData = static_cast<float*>( data[0].array );
+    for( size_t i = 0; i < 24; i++ )
     {
-        REQUIRE( reader->isReadMode );
-
-        reader->read( "resources/ReadNetCDF.test.nc", variables, data );
-
-        REQUIRE( reader->readDataArrays.size() == 2 );
-
-        // Check the data for "b"
-        REQUIRE( data[0].length == 24 );
-        REQUIRE( data[0].stride == 3 );
-        REQUIRE( data[0].type == tsunami_lab::io::NetCdf::VarType::FLOAT );
-        const float b[] = { -2,  -3,  -5,
-                            -7, -11, -13,
-                           -17, -19, -23,
-                           -29, -31, -37,
-                           -41, -43, -47,
-                           -53, -59, -61,
-                           -67, -71, -73,
-                           -79, -83, -89 };
-
-        float* bData = static_cast<float*>( data[0].array );
-        for( size_t i = 0; i < 24; i++ )
-        {
-            REQUIRE( bData[i] == b[i] );
-        }
-
-        // Check the data for "h"
-        REQUIRE( data[1].length == 24 );
-        REQUIRE( data[1].stride == 3 );
-        REQUIRE( data[1].type == tsunami_lab::io::NetCdf::VarType::FLOAT );
-        const float h0[] = { 2,  3,  5,
-                             7, 11, 13,
-                            17, 19, 23,
-                            29, 31, 37,
-                            41, 43, 47,
-                            53, 59, 61,
-                            67, 71, 73,
-                            79, 83, 89 };
-
-        float* hData = static_cast<float*>( data[1].array );
-        for( size_t i = 0; i < 24; i++ )
-        {
-            REQUIRE( hData[i] == h0[i] );
-        }
-
-        // Read with timeStep of 1
-        reader->read( "resources/ReadNetCDF.test.nc", variables, data, 1 );
-
-        REQUIRE( reader->readDataArrays.size() == 4 );
-
-        // Check the data for "b"
-        REQUIRE( data[0].length == 24 );
-        REQUIRE( data[0].stride == 3 );
-        REQUIRE( data[0].type == tsunami_lab::io::NetCdf::VarType::FLOAT );
-
-        bData = static_cast<float*>( data[0].array );
-        for( size_t i = 0; i < 24; i++ )
-        {
-            REQUIRE( bData[i] == b[i] );
-        }
-
-        // Check the data for "h"
-        REQUIRE( data[1].length == 24 );
-        REQUIRE( data[1].stride == 3 );
-        REQUIRE( data[1].type == tsunami_lab::io::NetCdf::VarType::FLOAT );
-        const float h1[] = { 2,    3,    5,
-                             7,   11,   13,
-                            17,   19,   23,
-                            29,   31,   37,
-                          41.5, 43.5, 47.5,
-                          53.5,   60, 61.5,
-                          67.5, 71.5, 73.5,
-                            79,   83,   89 };
-
-        hData = static_cast<float*>( data[1].array );
-        for( size_t i = 0; i < 24; i++ )
-        {
-            REQUIRE( hData[i] == h1[i] );
-        }
-
-        // test the simple read method with one variable and a timeStep of 2
-        reader->read( "resources/ReadNetCDF.test.nc", "h", singleData, 2 );
-
-        REQUIRE( reader->readDataArrays.size() == 5 );
-
-        REQUIRE( singleData.length == 24 );
-        REQUIRE( singleData.stride == 3 );
-        REQUIRE( singleData.type == tsunami_lab::io::NetCdf::VarType::FLOAT );
-        const float h2[] = { 2,     3,     5,
-                             7,    11,    13,
-                            17,    19,    23,
-                         29.05,  31.1, 37.05,
-                         41.25, 43.25, 47.25,
-                         53.25,  60.5, 61.25,
-                         67.25, 71.25, 73.25,
-                         79.05,  83.1, 89.05 };
-        hData = static_cast<float*>( singleData.array );
-        for( size_t i = 0; i < 24; i++ )
-        {
-            REQUIRE( hData[i] == h2[i] );
-        }
+        REQUIRE( bData[i] == b[i] );
     }
 
-    // free memory
-    delete reader;
+    // Check the data for "h"
+    REQUIRE( data[1].length == 24 );
+    REQUIRE( data[1].stride == 3 );
+    REQUIRE( data[1].type == tsunami_lab::io::NetCdf::VarType::FLOAT );
+    const float h0[] = { 2,  3,  5,
+                         7, 11, 13,
+                        17, 19, 23,
+                        29, 31, 37,
+                        41, 43, 47,
+                        53, 59, 61,
+                        67, 71, 73,
+                        79, 83, 89 };
 
-    REQUIRE( data[0].array == nullptr );
-    REQUIRE( data[1].array == nullptr );
-    REQUIRE( singleData.array == nullptr );
+    float* hData = static_cast<float*>( data[1].array );
+    for( size_t i = 0; i < 24; i++ )
+    {
+        REQUIRE( hData[i] == h0[i] );
+    }
+
+    // Read with timeStep of 1
+    reader.read( "resources/ReadNetCDF.test.nc", variables, data, 1 );
+
+    // Check the data for "b"
+    REQUIRE( data[0].length == 24 );
+    REQUIRE( data[0].stride == 3 );
+    REQUIRE( data[0].type == tsunami_lab::io::NetCdf::VarType::FLOAT );
+
+    bData = static_cast<float*>( data[0].array );
+    for( size_t i = 0; i < 24; i++ )
+    {
+        REQUIRE( bData[i] == b[i] );
+    }
+
+    // Check the data for "h"
+    REQUIRE( data[1].length == 24 );
+    REQUIRE( data[1].stride == 3 );
+    REQUIRE( data[1].type == tsunami_lab::io::NetCdf::VarType::FLOAT );
+    const float h1[] = { 2,    3,    5,
+                         7,   11,   13,
+                        17,   19,   23,
+                        29,   31,   37,
+                      41.5, 43.5, 47.5,
+                      53.5,   60, 61.5,
+                      67.5, 71.5, 73.5,
+                        79,   83,   89 };
+
+    hData = static_cast<float*>( data[1].array );
+    for( size_t i = 0; i < 24; i++ )
+    {
+        REQUIRE( hData[i] == h1[i] );
+    }
+
+    // test the simple read method with one variable and a timeStep of 2
+    reader.read( "resources/ReadNetCDF.test.nc", "h", singleData, 2 );
+
+    REQUIRE( singleData.length == 24 );
+    REQUIRE( singleData.stride == 3 );
+    REQUIRE( singleData.type == tsunami_lab::io::NetCdf::VarType::FLOAT );
+    const float h2[] = { 2,     3,     5,
+                         7,    11,    13,
+                        17,    19,    23,
+                     29.05,  31.1, 37.05,
+                     41.25, 43.25, 47.25,
+                     53.25,  60.5, 61.25,
+                     67.25, 71.25, 73.25,
+                     79.05,  83.1, 89.05 };
+    hData = static_cast<float*>( singleData.array );
+    for( size_t i = 0; i < 24; i++ )
+    {
+        REQUIRE( hData[i] == h2[i] );
+    }
 }

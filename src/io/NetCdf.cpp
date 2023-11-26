@@ -11,7 +11,11 @@
 #include <cstdint>
 #include "../../include/io/NetCdf.h"
 
-void tsunami_lab::io::NetCdf::_read( const char* filepath, const char** variableName, VarArray* outData, size_t timeStep, size_t size )
+void tsunami_lab::io::NetCdf::_read( const char* filepath,
+                                     const char** variableName,
+                                     VarArray* outData,
+                                     size_t timeStep,
+                                     size_t size )
 {
     if( !isReadMode )
     {
@@ -216,7 +220,6 @@ void tsunami_lab::io::NetCdf::_read( const char* filepath, const char** variable
                 outData[i].array = new std::string[length];
                 break;
         }
-        readDataArrays.push_back( &outData[i] );
         l_err = nc_get_vara( ncID, varID, start, count, outData[i].array );
 
         // free memory
@@ -252,7 +255,8 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                                  t_idx l_ny,
                                  t_real l_scaleX,
                                  t_real l_scaleY,
-                                 t_idx l_stride )
+                                 t_idx l_stride,
+                                 bool useSpherical )
     : isReadMode( false )
 {
     m_filePath = filePath;
@@ -277,36 +281,36 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                         &m_dimTimeId ); // idp
     checkNcErr( l_err, "dimTime" );
 
-    l_err = nc_def_dim( m_ncId,      // ncid
-                        "longitude", // name
-                        m_nx,        // len
-                        &m_dimXId ); // idp
+    l_err = nc_def_dim( m_ncId,                           // ncid
+                        useSpherical ? "longitude" : "X", // name
+                        m_nx,                             // len
+                        &m_dimXId );                      // idp
     checkNcErr( l_err, "dimX" );
 
-    l_err = nc_def_dim( m_ncId,      // ncid
-                        "latitude",  // name
-                        m_ny,        // len
-                        &m_dimYId ); // idp
+    l_err = nc_def_dim( m_ncId,                           // ncid
+                        useSpherical ? "latitude" : "Y",  // name
+                        m_ny,                             // len
+                        &m_dimYId );                      // idp            
     checkNcErr( l_err, "dimY" );
 
     m_dimIds[0] = m_dimTimeId;
     m_dimIds[1] = m_dimYId;
     m_dimIds[2] = m_dimXId;
 
-    l_err = nc_def_var( m_ncId,             // ncid
-                        "longitude",        // name
-                        NC_FLOAT,           // xtype
-                        1,                  // ndims
-                        &m_dimXId,          // dimidsp
-                        &m_longitudeId );   // varidp
+    l_err = nc_def_var( m_ncId,                            // ncid
+                        useSpherical ? "longitude" : "X",  // name
+                        NC_FLOAT,                          // xtype
+                        1,                                 // ndims
+                        &m_dimXId,                         // dimidsp
+                        &m_xId );                          // varidp
     checkNcErr( l_err, "longitude" );
 
-    l_err = nc_def_var( m_ncId,             // ncid
-                        "latitude",         // name
-                        NC_FLOAT,           // xtype
-                        1,                  // ndims
-                        &m_dimYId,          // dimidsp
-                        &m_latitudeId );    // varidp
+    l_err = nc_def_var( m_ncId,                           // ncid
+                        useSpherical ? "latitude" : "Y",  // name
+                        NC_FLOAT,                         // xtype
+                        1,                                // ndims
+                        &m_dimYId,                        // dimidsp
+                        &m_yId );                         // varidp
     checkNcErr( l_err, "latitude" );
 
     l_err = nc_def_var( m_ncId,             // ncid
@@ -366,27 +370,60 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     checkNcErr( l_err, "seconds" );
 
     l_err = nc_put_att_text( m_ncId,
-                             m_longitudeId,
+                             m_xId,
                              "units",
-                             12,
-                             "degrees_east" );
+                             useSpherical ? 12 : 6,
+                             useSpherical ? "degrees_east" : "meters" );
     checkNcErr( l_err, "degrees_east" );
 
     l_err = nc_put_att_text( m_ncId,
-                             m_latitudeId,
+                             m_yId,
                              "units",
-                             13,
-                             "degrees_north" );
+                             useSpherical ? 13 : 6,
+                             useSpherical ? "degrees_north" : "meters" );
     checkNcErr( l_err, "degrees_north" );
+
+    l_err = nc_put_att_text( m_ncId,
+                             m_totalHeightId,
+                             "units",
+                             6,
+                             "meters" );
+    checkNcErr( l_err, "metersTotalHeight" );
+
+    l_err = nc_put_att_text( m_ncId,
+                             m_bathymetryId,
+                             "units",
+                             6,
+                             "meters" );
+    checkNcErr( l_err, "metersBathymetry" );
+
+    l_err = nc_put_att_text( m_ncId,
+                             m_momentumXId,
+                             "units",
+                             6,
+                             "meters" );
+    checkNcErr( l_err, "metersMomentumX" );
+
+    l_err = nc_put_att_text( m_ncId,
+                             m_momentumYId,
+                             "units",
+                             6,
+                             "meters" );
+    checkNcErr( l_err, "metersMomentumY" );
 
     l_err = nc_enddef( m_ncId ); // ncid
     checkNcErr( l_err, "enddef" );
 
     // write longitude and latitude
-    t_real maxLat = m_scaleY / t_real( 110574 );
-    t_real maxLon = m_scaleX / ( 111320 * std::cos( maxLat * M_PI / 180 ) );
-    t_real stepLat = maxLat / ( l_ny - 1 );
-    t_real stepLon = maxLon / ( l_nx - 1 );
+    t_real stepLat = m_scaleY / ( l_ny - 1 );
+    t_real stepLon = m_scaleX / ( l_nx - 1 );
+    if( useSpherical )
+    {
+        t_real maxLat = m_scaleY / t_real( 110574 );
+        t_real maxLon = m_scaleX / ( 111320 * std::cos( maxLat * M_PI / 180 ) );
+        stepLat = maxLat / ( l_ny - 1 );
+        stepLon = maxLon / ( l_nx - 1 );
+    }
     t_real* lat = new t_real[l_ny];
     t_real* lon = new t_real[l_nx];
 
@@ -400,63 +437,22 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     }
 
     l_err = nc_put_var_float( m_ncId,          // ncid
-                              m_latitudeId,    // varid
+                              m_yId,    // varid
                               lat );           // op
     checkNcErr( l_err, "putLatitude" );
 
     l_err = nc_put_var_float( m_ncId,         // ncid
-                              m_longitudeId,  // varid
+                              m_xId,  // varid
                               lon );          // op
     checkNcErr( l_err, "putLongitude" );
+
+    delete[] lat;
+    delete[] lon;
 }
 
 tsunami_lab::io::NetCdf::~NetCdf()
 {
-    if( isReadMode )
-    {
-        for( size_t i = 0; i < readDataArrays.size(); i++ )
-        {
-            switch( readDataArrays[i]->type )
-            {
-                case VarType::CHAR:
-                    delete[] static_cast<char*>( readDataArrays[i]->array );
-                    break;
-                case VarType::SHORT:
-                    delete[] static_cast<short*>( readDataArrays[i]->array );
-                    break;
-                case VarType::INT:
-                    delete[] static_cast<int*>( readDataArrays[i]->array );
-                    break;
-                case VarType::FLOAT:
-                    delete[] static_cast<float*>( readDataArrays[i]->array );
-                    break;
-                case VarType::DOUBLE:
-                    delete[] static_cast<double*>( readDataArrays[i]->array );
-                    break;
-                case VarType::UCHAR:
-                    delete[] static_cast<unsigned char*>( readDataArrays[i]->array );
-                    break;
-                case VarType::USHORT:
-                    delete[] static_cast<unsigned short*>( readDataArrays[i]->array );
-                    break;
-                case VarType::UINT:
-                    delete[] static_cast<unsigned int*>( readDataArrays[i]->array );
-                    break;
-                case VarType::INT64:
-                    delete[] static_cast<int64_t*>( readDataArrays[i]->array );
-                    break;
-                case VarType::UINT64:
-                    delete[] static_cast<uint64_t*>( readDataArrays[i]->array );
-                    break;
-                case VarType::STRING:
-                    delete[] static_cast<std::string*>( readDataArrays[i]->array );
-                    break;
-            }
-            readDataArrays[i]->array = nullptr;
-        }
-        readDataArrays.clear();
-    }
-    else
+    if( !isReadMode )
     {
         int l_err;
         // close file
@@ -534,7 +530,50 @@ void tsunami_lab::io::NetCdf::write( const t_real simulationTime,
     ++m_time;
 }
 
-void tsunami_lab::io::NetCdf::read( const char* filepath, const char* variableName, VarArray& outData, size_t timeStep )
+void tsunami_lab::io::NetCdf::read( const char* filepath,
+                                    const char* variableName,
+                                    VarArray& outData,
+                                    size_t timeStep )
 {
     _read( filepath, &variableName, &outData, timeStep, 1 );
+}
+
+tsunami_lab::io::NetCdf::VarArray::~VarArray()
+{
+    switch( type )
+    {
+        case VarType::CHAR:
+            delete[] static_cast<char*>( array );
+            break;
+        case VarType::SHORT:
+            delete[] static_cast<short*>( array );
+            break;
+        case VarType::INT:
+            delete[] static_cast<int*>( array );
+            break;
+        case VarType::FLOAT:
+            delete[] static_cast<float*>( array );
+            break;
+        case VarType::DOUBLE:
+            delete[] static_cast<double*>( array );
+            break;
+        case VarType::UCHAR:
+            delete[] static_cast<unsigned char*>( array );
+            break;
+        case VarType::USHORT:
+            delete[] static_cast<unsigned short*>( array );
+            break;
+        case VarType::UINT:
+            delete[] static_cast<unsigned int*>( array );
+            break;
+        case VarType::INT64:
+            delete[] static_cast<int64_t*>( array );
+            break;
+        case VarType::UINT64:
+            delete[] static_cast<uint64_t*>( array );
+            break;
+        case VarType::STRING:
+            delete[] static_cast<std::string*>( array );
+            break;
+    }
 }

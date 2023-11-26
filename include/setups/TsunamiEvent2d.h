@@ -35,22 +35,21 @@ private:
     t_real delta;
 
     //! the bathymetry data from the file where index 0 is x, 1 is y, 2 is z/data
+    tsunami_lab::io::NetCdf::VarArray bathymetryData[3];
+
+    //! the the converted bathymetry data where the array is stored.
     t_real* bathymetry[3];
 
-    //! the size of the bathymetry array where index 0 is x, 1 is y, 2 is z/data
     t_idx bathymetrySize[3];
 
-    //! the stride of the bathymetry array where index 0 is x, 1 is y, 2 is z/data
-    t_idx bathymetryStride[3];
-
     //! the vertical displacement data from the file where index 0 is x, 1 is y, 2 is z/data
+    tsunami_lab::io::NetCdf::VarArray displacementData[3];
+
+    //! the the converted displacement data where the array is stored.
     t_real* displacement[3];
 
-    //! the size of the bathymetry array where index 0 is x, 1 is y, 2 is z/data
+    //! the size of each displacement array.
     t_idx displacementSize[3];
-
-    //! the stride of the bathymetry array where index 0 is x, 1 is y, 2 is z/data
-    t_idx displacementStride[3];
 
     //! the reader use to reader the data
     tsunami_lab::io::NetCdf* reader;
@@ -95,7 +94,9 @@ public:
     /**
      * Destroys the 2d tsunami event.
     */
-    ~TsunamiEvent2d();
+    ~TsunamiEvent2d()
+    {
+    }
 
 
     /**

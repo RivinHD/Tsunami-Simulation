@@ -14,7 +14,7 @@ message("####################################")
 
 option(ENABLE_TESTMODE "Adds the Test defintion to any build")
 if(ENABLE_TESTMODE)
-    add_compile_definitions(TEST)
+    add_compile_definitions(TSUNAMI_SIMULATION_TEST)
     message("-- Starting in Test Mode")
 endif(ENABLE_TESTMODE)
 
@@ -78,7 +78,8 @@ set(RESOURCE_FILES
     config.json
     config.test.json
     ReadNetCDF.test.nc
-    WriteNetCDF.test.txt
+    WriteNetCDF_S.test.txt
+    WriteNetCDF_M.test.txt
     artificialtsunami_displ_1000.nc
     artificialtsunami_bathymetry_1000.nc
 )
@@ -135,13 +136,13 @@ link_libraries(nlohmann_json::nlohmann_json)
 add_executable(test ${SOURCE_FILES})
 target_link_libraries(test PRIVATE Catch2::Catch2)
 target_sources(test PRIVATE ${TEST_FILES})
-target_compile_definitions(test PRIVATE TEST)
+target_compile_definitions(test PRIVATE TSUNAMI_SIMULATION_TEST)
 
 # Setup Testing + Sanitizer
 add_executable(sanitize_test ${SOURCE_FILES})
 target_link_libraries(sanitize_test PRIVATE Catch2::Catch2)
 target_sources(sanitize_test PRIVATE ${TEST_FILES})
-target_compile_definitions(sanitize_test PRIVATE TEST)
+target_compile_definitions(sanitize_test PRIVATE TSUNAMI_SIMULATION_TEST)
 
 # Setup Testing for middle states
 add_executable(test_middle_states ${SOURCE_FILES})

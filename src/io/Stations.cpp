@@ -25,12 +25,12 @@ tsunami_lab::io::Stations::Stations( t_idx i_nx,
     m_scaleY = i_scaleY;
     m_time = 0;
 
-#ifdef TEST
+#ifdef TSUNAMI_SIMULATION_TEST
     std::ifstream l_file( "resources/config.test.json" );
-#endif // TEST
-#ifndef TEST
+#endif // TSUNAMI_SIMULATION_TEST
+#ifndef TSUNAMI_SIMULATION_TEST
     std::ifstream l_file( "resources/config.json" );
-#endif // !TEST
+#endif // !TSUNAMI_SIMULATION_TEST
 
     json config;
     try

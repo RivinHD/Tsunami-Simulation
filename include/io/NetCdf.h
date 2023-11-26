@@ -62,13 +62,13 @@ private:
     int m_dimXId;
 
     //! id of longitude
-    int m_longitudeId;
+    int m_xId;
 
     //! id of y dimension
     int m_dimYId;
 
     //! id of latitude
-    int m_latitudeId;
+    int m_yId;
 
     //! id of time
     int m_timeId;
@@ -121,12 +121,14 @@ public:
 
         //! stride of the array used for 2D arrays representation. If the array is 1D then the stride is the same as the length.
         size_t stride;
+
+        /**
+         * Destructor of VarArray to delete the allocated array
+        */
+        ~VarArray();
     };
 
 private:
-
-    //! stores all data arrays that have been read to delete them if the object is destroyed. The pointers will be replaced with nullptr.
-    std::vector<VarArray*> readDataArrays;
 
     /**
      * read the data from the file at the given filepath and parse all given variables.
@@ -135,7 +137,7 @@ private:
      *
      * @param filepath the path to the netCDF file
      * @param variableName the names of the variables to parse
-     * @param outData the parsed data for each variable with the type, length and stride. If the reader is deleted the stored data is removed i.e. the property array becomes a nullptr.
+     * @param outData the parsed data for each variable with the type, length and stride. If the VarArray is destroyed the read data 'VarArray::array' is destroyed to.
      * @param timeStep start of data parsing. The timeStep uses the dimension directly therefore index values are required e.g. 0, 1, 2, ...
      * @param size the size of outData and variableName
     */
@@ -168,13 +170,15 @@ public:
      * @param l_scaleX the scale in x direction in meters
      * @param l_scaleY the scale in y direction in meters
      * @param l_stride the stride of the data-set to write
+     * @param useSpherical use spherical Longitude & Latitude in degrees for the X and Y Axis instead of meters
      */
     NetCdf( std::string filePath,
             t_idx l_nx,
             t_idx l_ny,
             t_real l_scaleX,
             t_real l_scaleY,
-            t_idx l_stride );
+            t_idx l_stride,
+            bool useSpherical = true );
 
     /**
      * Destructor of NetCdf.
@@ -205,7 +209,7 @@ public:
      * @tparam N number of variables to parse
      * @param filepath the path to the netCDF file
      * @param variableName the names of the variables to parse
-     * @param outData the parsed data for each variable with the type, length and stride. If the reader is deleted the stored data is removed i.e. the property array becomes a nullptr.
+     * @param outData the parsed data for each variable with the type, length and stride. If the VarArray is destroyed the read data 'VarArray::array' is destroyed to.
      * @param timeStep OPTIONAL start of data parsing. The timeStep uses the dimension directly therefore index values are required e.g. 0, 1, 2, ...
     */
     template <size_t N>
@@ -223,7 +227,7 @@ public:
      *
      * @param filepath filepath the path to the netCDF file
      * @param variableName  the names of the variable to parse
-     * @param outData the parsed data with the type, length and stride. If the reader is deleted the stored data is removed i.e. the property array becomes a nullptr.
+     * @param outData the parsed data with the type, length and stride. If the VarArray is destroyed the read data 'VarArray::array' is destroyed to.
      * @param timeStep OPTIONAL start of data parsing. The timeStep uses the dimension directly therefore index values are required e.g. 0, 1, 2, ...
     */
     void read( const char* filepath,
