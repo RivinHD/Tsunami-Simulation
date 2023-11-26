@@ -92,12 +92,12 @@ void tsunami_lab::io::NetCdf::_read( const char* filepath,
         const char* name = variableName[i];
         int varID;
         l_err = nc_inq_varid( ncID, name, &varID );
-        checkNcErr( l_err, std::string( "readVarID:", name ) );
+        checkNcErr( l_err, "readVarID" );
 
         // get the variable type
         nc_type varType;
         l_err = nc_inq_vartype( ncID, varID, &varType );
-        checkNcErr( l_err, std::string( "readVarType:", name ) );
+        checkNcErr( l_err, "readVarType" );
         if( varType == NC_NAT )
         {
             std::cerr << "ERROR: The parsed type of the variable is NAT (Not a Type)" << variableName[i] << std::endl;
