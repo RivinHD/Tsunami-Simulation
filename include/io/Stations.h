@@ -86,9 +86,6 @@ private:
     //! shared output frequency of stations
     t_real m_outputFrequency;
 
-    //! shared current time of stations
-    t_real m_time;
-
 public:
 
     /**
@@ -107,7 +104,7 @@ public:
      *
      * @param totalHeight pointer to array of all totalHeights
      */
-    void write( const t_real* totalHeight );
+    void write( t_real time, const t_real* totalHeight ) const;
 
     /**
      * Returns shared output frequency of stations.

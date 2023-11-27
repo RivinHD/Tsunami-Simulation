@@ -23,7 +23,6 @@ tsunami_lab::io::Stations::Stations( t_idx i_nx,
     m_stride = i_stride;
     m_scaleX = i_scaleX;
     m_scaleY = i_scaleY;
-    m_time = 0;
 
 #ifdef TSUNAMI_SIMULATION_TEST
     std::ifstream l_file( "resources/config.test.json" );
@@ -76,7 +75,7 @@ tsunami_lab::io::Stations::Stations( t_idx i_nx,
     }
 }
 
-void tsunami_lab::io::Stations::write( const t_real* i_totalHeight )
+void tsunami_lab::io::Stations::write( t_real time, const t_real* i_totalHeight ) const
 {
     for( const Station& station : m_stations )
     {
@@ -96,10 +95,9 @@ void tsunami_lab::io::Stations::write( const t_real* i_totalHeight )
         std::ofstream l_file;
         l_file.open( station.m_path, std::ios::app );
 
-        l_file << m_time << "," << i_totalHeight[l_cellIndex] << std::endl;
+        l_file << time << "," << i_totalHeight[l_cellIndex] << std::endl;
         l_file.close();
     }
-    m_time++;
 }
 
 tsunami_lab::t_real tsunami_lab::io::Stations::getOutputFrequency()
