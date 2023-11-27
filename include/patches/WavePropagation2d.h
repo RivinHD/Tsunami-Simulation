@@ -168,18 +168,7 @@ public:
      *
      * @return combined height
     */
-    t_real const* getTotalHeight()
-    {
-        for( t_idx i = 1; i < m_yCells + 1; i++ )
-        {
-            for( t_idx j = 1; j < m_xCells + 1; j++ )
-            {
-                t_idx k = stride * i + j;
-                m_totalHeight[k] = m_h[m_step][k] + m_bathymetry[k];
-            }
-        }
-        return m_totalHeight + 1 + stride;
-    }
+    t_real const* getTotalHeight();
 
     /**
      * Gets the cells' momenta in x-direction.

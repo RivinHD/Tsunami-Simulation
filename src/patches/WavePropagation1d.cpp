@@ -217,3 +217,12 @@ tsunami_lab::patches::WavePropagation1d::Reflection tsunami_lab::patches::WavePr
 
     return static_cast<Reflection>( leftReflection * Reflection::LEFT + rightReflection * Reflection::RIGHT );
 }
+
+const tsunami_lab::t_real *tsunami_lab::patches::WavePropagation1d::getTotalHeight()
+{
+    for( t_idx i = 1; i < m_nCells + 1; i++ )
+    {
+        m_totalHeight[i] = m_h[m_step][i] + m_bathymetry[i];
+    }
+    return m_totalHeight + 1;
+}
