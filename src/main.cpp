@@ -70,7 +70,7 @@ void printHelp()
         << green << "-s " << cyan << "<fwave|roe>" << reset << "] ["
         << green << "-t" << cyan << " <seconds>" << reset << "]"
         << std::endl << std::endl
-        << "REQUIERED INPUT:" << std::endl
+        << "REQUIRED INPUT:" << std::endl
         << magenta << "\tN_CELLS_X" << reset << " is the number of cells in x-direction." << std::endl
         << std::endl
         << "OPTIONAL INPUT:" << std::endl
@@ -87,19 +87,6 @@ void printHelp()
         << "\t   where " << cyan << "all" << reset << " enables all sides." << std::endl
         << green << "\t-s" << reset << " set used solvers requires " << cyan << "fwave" << reset << " or " << cyan << "roe" << reset << " as inputs. The default is fwave." << std::endl
         << green << "\t-t" << reset << " defines the total time in seconds that is used for the simulation. The default is 5 seconds." << std::endl;
-}
-
-void writeStations( tsunami_lab::io::Stations* stations, tsunami_lab::patches::WavePropagation* solver )
-{
-    while( true )
-    {
-        if( KILL_THREAD )
-        {
-            break;
-        }
-        stations->write( solver->getTotalHeight() );
-        std::this_thread::sleep_for( std::chrono::seconds( (int)stations->getOutputFrequency() ) );
-    }
 }
 
 int main( int   i_argc,
@@ -421,8 +408,6 @@ int main( int   i_argc,
                                                                       l_waveProp->getStride(),
                                                                       l_scaleX,
                                                                       l_scaleY );
-    // create a thread that runs the stations write function
-    std::thread writeStationsThread( writeStations, &l_stations, l_waveProp );
 
     // set the solver to use
     l_waveProp->setSolver( solver );
@@ -520,9 +505,19 @@ int main( int   i_argc,
                                                     !useAxisMeters );
     }
 
+    // var to check if it's time to write stations
+    tsunami_lab::t_real l_timeCount = 0.0;
+
     // iterate over time
     while( l_simTime < l_endTime )
     {
+        if ( l_timeCount / l_stations.getOutputFrequency() >= 1.0 )
+        {
+            l_stations.write( l_simTime, l_waveProp->getTotalHeight() );
+            l_timeCount -= l_stations.getOutputFrequency();
+        }
+        l_timeCount += l_dt;
+
         if( l_timeStep % 25 == 0 )
         {
             std::cout << "  simulation time / #time steps: "
@@ -564,13 +559,11 @@ int main( int   i_argc,
 
         l_timeStep++;
         l_simTime += l_dt;
+
+        // wait for threads
+        writeStationsThread.join();
     }
     std::cout << "finished time loop" << std::endl;
-
-    // kill thread
-    KILL_THREAD = true;
-    // wait for threads
-    writeStationsThread.join();
 
     // free memory
     std::cout << "freeing memory" << std::endl;
