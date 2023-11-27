@@ -13,7 +13,7 @@
 1. Two-Dimensional Splitting
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-There are changes needed to be done to the ``F-Wave solver``, because two-dimensional splitting is used i.e, first calculating the x-direction than the y-direction.
+There are no changes needed to be done to the ``F-Wave solver``, because two-dimensional splitting is used i.e, first calculating the x-direction than the y-direction.
 Therefore only changes will be done in ``WavePropagation2d``.
 
 The constructor and destructor of ``WavePropagation2d`` is very similar to ``WavePropagation1d`` except the new variables:
