@@ -559,9 +559,6 @@ int main( int   i_argc,
 
         l_timeStep++;
         l_simTime += l_dt;
-
-        // wait for threads
-        writeStationsThread.join();
     }
     std::cout << "finished time loop" << std::endl;
 
