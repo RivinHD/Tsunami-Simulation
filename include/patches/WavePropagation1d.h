@@ -39,13 +39,13 @@ private:
     Solver solver = Solver::FWAVE;
 
     //! bathymetry for the current an next time step for all cells
-    t_real* m_bathymetry;
+    t_real* m_bathymetry = nullptr;
 
     //! check if bathymetry exists
-    bool hasBathymetry;
+    bool hasBathymetry = false;
 
     //! total height of water height + bathymetry
-    t_real* m_totalHeight;
+    t_real* m_totalHeight = nullptr;
 
     //! reflection for the left (index: 0) and right (index: 1)
     bool hasReflection[2] = { false, false };

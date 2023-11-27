@@ -27,16 +27,16 @@ private:
     unsigned short m_step = 0;
 
     //! number of total cells including water and ghost cells
-    t_idx totalCells;
+    t_idx totalCells = 1;
 
     //! number of cells in x direction without ghost cells
-    t_idx m_xCells = 0;
+    t_idx m_xCells = 1;
 
     //! number of cells in y direction without ghost cells
-    t_idx m_yCells = 0;
+    t_idx m_yCells = 1;
 
     //! the size in x-direction of the cells
-    t_idx stride;
+    t_idx stride = 1;
 
     //! water heights for the current and next time step for all cells
     t_real* m_h[2] = { nullptr, nullptr };
@@ -51,13 +51,13 @@ private:
     Solver solver = Solver::FWAVE;
 
     //! bathymetry for the current an next time step for all cells
-    t_real* m_bathymetry;
+    t_real* m_bathymetry = nullptr;
 
     //! check if bathymetry exists
-    bool hasBathymetry;
+    bool hasBathymetry = false;
 
     //! total height of water height + bathymetry
-    t_real* m_totalHeight;
+    t_real* m_totalHeight = nullptr;
 
     //! reflection for the left (index: 0), right (index: 1), top (index: 2) and bottom (index: 3)
     bool hasReflection[4] = { false, false, false, false };

@@ -24,10 +24,10 @@ class tsunami_lab::setups::ArtificialTsunami2d : public Setup
 {
 private:
     //! the start height of bathymetry before displacement
-    t_real bathymetryHeight;
+    t_real bathymetryHeight = 0;
 
     //! the offset of the center of the displacement
-    t_real centerOffset;
+    t_real centerOffset = 0;
 
 public:
     /**

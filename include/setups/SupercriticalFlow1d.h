@@ -24,16 +24,16 @@ class tsunami_lab::setups::SupercriticalFlow1d : public Setup
 {
 private:
     //! The fixed momentum of the water
-    t_real momentum;
+    t_real momentum = 0;
 
     //! the range were the dynamic bathymetry appears
-    t_real range[2];
+    t_real range[2] = { 0, 0 };
 
     //! the bathymetry that exists outside of the specified range
-    t_real bathymetryOutRange;
+    t_real bathymetryOutRange = 0;
 
     //! the function to create the dynamic bathymetry with
-    t_real( *bathymetryInRange )( t_real );
+    t_real( *bathymetryInRange )( t_real ) = nullptr;
 
 public:
     /**

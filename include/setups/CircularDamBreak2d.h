@@ -24,16 +24,16 @@ class tsunami_lab::setups::CircularDamBreak2d : public Setup
 {
 private:
     //! height inside the circular dam
-    t_real heightCenter;
+    t_real heightCenter = 0;
 
     //! height on the outside of the circular dam
-    t_real heightOutside;
+    t_real heightOutside = 0;
 
     //! location of circular dam
-    t_real locationCenter[2];
+    t_real locationCenter[2] = { 0,0 };
 
     //! scale of the circular dam
-    t_real scaleCenter;
+    t_real scaleCenter = 1;
 
 public:
     /**

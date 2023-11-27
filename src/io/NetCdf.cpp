@@ -507,41 +507,53 @@ void tsunami_lab::io::NetCdf::write( const t_real simulationTime,
                                &simulationTime );   // op
     checkNcErr( l_err, "putTime" );
 
-    l_err = nc_put_varm_float( m_ncId,          // ncid
-                               m_totalHeightId, // varid
-                               start,           // startp
-                               count,           // countp
-                               stride,          // stridep
-                               map,             // imap
-                               totalHeight );   // op
-    checkNcErr( l_err, "putTotalHeight" );
+    if( totalHeight != nullptr )
+    {
+        l_err = nc_put_varm_float( m_ncId,          // ncid
+                                   m_totalHeightId, // varid
+                                   start,           // startp
+                                   count,           // countp
+                                   stride,          // stridep
+                                   map,             // imap
+                                   totalHeight );   // op
+        checkNcErr( l_err, "putTotalHeight" );
+    }
 
-    l_err = nc_put_varm_float( m_ncId,          // ncid
-                               m_bathymetryId,  // varid
-                               start + 1,       // startp
-                               count + 1,       // countp
-                               stride + 1,      // stridep
-                               map + 1,         // imap
-                               bathymetry );    // op
-    checkNcErr( l_err, "putBathymetry" );
+    if( bathymetry != nullptr )
+    {
+        l_err = nc_put_varm_float( m_ncId,          // ncid
+                                   m_bathymetryId,  // varid
+                                   start + 1,       // startp
+                                   count + 1,       // countp
+                                   stride + 1,      // stridep
+                                   map + 1,         // imap
+                                   bathymetry );    // op
+        checkNcErr( l_err, "putBathymetry" );
+    }
 
-    l_err = nc_put_varm_float( m_ncId,          // ncid
-                               m_momentumXId,   // varid
-                               start,           // startp
-                               count,           // countp
-                               stride,          // stridep
-                               map,             // imap
-                               momentumX );     // op
-    checkNcErr( l_err, "putMomentumX" );
+    if( momentumX != nullptr )
+    {
+        l_err = nc_put_varm_float( m_ncId,          // ncid
+                                   m_momentumXId,   // varid
+                                   start,           // startp
+                                   count,           // countp
+                                   stride,          // stridep
+                                   map,             // imap
+                                   momentumX );     // op
+        checkNcErr( l_err, "putMomentumX" );
+    }
 
-    l_err = nc_put_varm_float( m_ncId,          // ncid
-                               m_momentumYId,   // varid
-                               start,           // startp
-                               count,           // countp
-                               stride,          // stridep
-                               map,             // imap
-                               momentumY );     // op
-    checkNcErr( l_err, "putMomentumY" );
+    if( momentumY != nullptr )
+    {
+        l_err = nc_put_varm_float( m_ncId,          // ncid
+                                   m_momentumYId,   // varid
+                                   start,           // startp
+                                   count,           // countp
+                                   stride,          // stridep
+                                   map,             // imap
+                                   momentumY );     // op
+        checkNcErr( l_err, "putMomentumY" );
+    }
 
     std::cout << " writing to '" << m_filePath << "'" << std::endl;
 

@@ -26,33 +26,30 @@ class tsunami_lab::setups::TsunamiEvent2d : public Setup
 private:
 
     //! scale in x direction of our grid
-    t_real scaleX;
+    t_real scaleX = 1;
 
     //! scale in y direction of our grid
-    t_real scaleY;
+    t_real scaleY = 1;
 
     //! delta to avoid numerical issues
-    t_real delta;
+    t_real delta = 20;
 
     //! the bathymetry data from the file where index 0 is x, 1 is y, 2 is z/data
     tsunami_lab::io::NetCdf::VarArray bathymetryData[3];
 
     //! the the converted bathymetry data where the array is stored.
-    t_real* bathymetry[3];
+    t_real* bathymetry[3] = { nullptr, nullptr, nullptr };
 
-    t_idx bathymetrySize[3];
+    t_idx bathymetrySize[3] = { 0, 0, 0 };
 
     //! the vertical displacement data from the file where index 0 is x, 1 is y, 2 is z/data
     tsunami_lab::io::NetCdf::VarArray displacementData[3];
 
     //! the the converted displacement data where the array is stored.
-    t_real* displacement[3];
+    t_real* displacement[3] = { nullptr,nullptr,nullptr };
 
     //! the size of each displacement array.
-    t_idx displacementSize[3];
-
-    //! the reader use to reader the data
-    tsunami_lab::io::NetCdf* reader;
+    t_idx displacementSize[3] = { 0,0,0 };
 
     /**
      * get the closest data point from an ascending sorted array

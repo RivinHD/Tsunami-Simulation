@@ -23,13 +23,13 @@ public:
     const static int LENGTH_ARG_CHAR = END_ARG_CHAR - START_ARG_CHAR + 1;
 
     //! the character to use for the flag
-    unsigned char flag;
+    unsigned char flag = START_ARG_CHAR;
 
     //! the number of options E.g. is 2 when -f Option1 Option2
-    short numberOfOptions;
+    short numberOfOptions = 0;
 
     //! the maximum number of options that one flag can have
-    short maxNumberOfOptions;
+    short maxNumberOfOptions = 0;
 
     /**
      * Generate a new Argument with the given flag and and the number of parameter
