@@ -170,7 +170,9 @@ public:
      * @param l_scaleX the scale in x direction in meters
      * @param l_scaleY the scale in y direction in meters
      * @param l_stride the stride of the data-set to write
+     * @param bathymetry bathymetry data to write if no bathymetry should be written pass a nullptr
      * @param useSpherical use spherical Longitude & Latitude in degrees for the X and Y Axis instead of meters
+     * @param useMomenta if true also create variables fór momentumX and momentumY and enable writing to these
      */
     NetCdf( std::string filePath,
             t_idx l_nx,
@@ -178,7 +180,9 @@ public:
             t_real l_scaleX,
             t_real l_scaleY,
             t_idx l_stride,
-            bool useSpherical = true );
+            const t_real* bathymetry,
+            bool useSpherical = true,
+            bool useMomenta = true );
 
     /**
      * Destructor of NetCdf.
@@ -190,13 +194,11 @@ public:
      *
      * @param simulationTime the current simulation time in seconds
      * @param totalHeight total heights of cells
-     * @param bathymetry bathymetry of cells
      * @param momentumX momentum of cells in x direction
      * @param momentumY momentum of cells in y direction
      */
     void write( const t_real simulationTime,
                 const t_real* totalHeight,
-                const t_real* bathymetry,
                 const t_real* momentumX,
                 const t_real* momentumY );
 

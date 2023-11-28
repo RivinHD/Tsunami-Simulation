@@ -75,9 +75,9 @@ tsunami_lab::setups::TsunamiEvent2d::TsunamiEvent2d( const char* bathymetryFileP
     // read & check the bathymetry data
     reader.read( bathymetryFilePath, bathymetryVariable, bathymetryData );
 
-    if( bathymetryData[0].type != tsunami_lab::io::NetCdf::FLOAT
-        && bathymetryData[1].type != tsunami_lab::io::NetCdf::FLOAT
-        && bathymetryData[2].type != tsunami_lab::io::NetCdf::FLOAT )
+    if( !( ( bathymetryData[0].type == tsunami_lab::io::NetCdf::FLOAT || bathymetryData[0].type == tsunami_lab::io::NetCdf::DOUBLE )
+           && ( bathymetryData[1].type == tsunami_lab::io::NetCdf::FLOAT || bathymetryData[1].type == tsunami_lab::io::NetCdf::DOUBLE )
+           && ( bathymetryData[2].type == tsunami_lab::io::NetCdf::FLOAT || bathymetryData[2].type == tsunami_lab::io::NetCdf::DOUBLE ) ) )
     {
         std::cerr << "The read data for bathymetry is not of type float" << std::endl;
         exit( 2 );
@@ -86,9 +86,9 @@ tsunami_lab::setups::TsunamiEvent2d::TsunamiEvent2d( const char* bathymetryFileP
     // read & check the displacement data
     reader.read( displacementFilePath, displacementVariable, displacementData );
 
-    if( displacementData[0].type != tsunami_lab::io::NetCdf::FLOAT
-        && displacementData[1].type != tsunami_lab::io::NetCdf::FLOAT
-        && displacementData[2].type != tsunami_lab::io::NetCdf::FLOAT )
+    if( !( ( displacementData[0].type == tsunami_lab::io::NetCdf::FLOAT || displacementData[0].type == tsunami_lab::io::NetCdf::DOUBLE )
+           && ( displacementData[1].type == tsunami_lab::io::NetCdf::FLOAT || displacementData[1].type == tsunami_lab::io::NetCdf::DOUBLE )
+           && ( displacementData[2].type == tsunami_lab::io::NetCdf::FLOAT || displacementData[2].type == tsunami_lab::io::NetCdf::DOUBLE ) ) )
     {
         std::cerr << "The read data for displacement is not of type float" << std::endl;
         exit( 2 );
@@ -97,9 +97,39 @@ tsunami_lab::setups::TsunamiEvent2d::TsunamiEvent2d( const char* bathymetryFileP
     // assign the data to bathymetry and displacement
     for( size_t i = 0; i < 3; i++ )
     {
-        bathymetry[i] = static_cast<float*>( bathymetryData[i].array );
+        if( bathymetryData[i].type == tsunami_lab::io::NetCdf::DOUBLE )
+        {
+            float* castedBathymetry = new float[bathymetryData[i].length];
+            for( size_t k = 0; k < bathymetryData[i].length; k++ )
+            {
+                castedBathymetry[k] = static_cast<float>( static_cast<double*>( bathymetryData[i].array )[k] );
+            }
+            bathymetry[i] = castedBathymetry;
+            delete[] static_cast<double*>( bathymetryData[i].array );
+            bathymetryData[i].array = castedBathymetry;
+            bathymetryData[i].type = tsunami_lab::io::NetCdf::FLOAT;
+        }
+        else
+        {
+            bathymetry[i] = static_cast<float*>( bathymetryData[i].array );
+        }
         bathymetrySize[i] = bathymetryData[i].length;
-        displacement[i] = static_cast<float*>( displacementData[i].array );
+        if( displacementData[i].type == tsunami_lab::io::NetCdf::DOUBLE )
+        {
+            float* castedDisplacement = new float[displacementData[i].length];
+            for( size_t k = 0; k < displacementData[i].length; k++ )
+            {
+                castedDisplacement[k] = static_cast<float>( static_cast<double*>( displacementData[i].array )[k] );
+            }
+            displacement[i] = castedDisplacement;
+            delete[] static_cast<double*>( displacementData[i].array );
+            displacementData[i].array = castedDisplacement;
+            displacementData[i].type = tsunami_lab::io::NetCdf::FLOAT;
+        }
+        else
+        {
+            displacement[i] = static_cast<float*>( displacementData[i].array );
+        }
         displacementSize[i] = displacementData[i].length;
     }
 }
@@ -144,5 +174,5 @@ tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent2d::getBathymetry( t_real i
         d = getValueAscending( displacement, displacementSize, displacementData[2].stride, x, y );
     }
 
-    return ( b < 0 ? std::min( b, delta ) : std::max( b, delta ) ) + d;
+    return ( b < 0 ? std::min( b, -delta ) : std::max( b, delta ) ) + d;
 }

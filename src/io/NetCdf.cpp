@@ -264,7 +264,9 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                                  t_real l_scaleX,
                                  t_real l_scaleY,
                                  t_idx l_stride,
-                                 bool useSpherical )
+                                 const t_real* bathymetry,
+                                 bool useSpherical,
+                                 bool useMomenta )
     : isReadMode( false )
 {
     m_filePath = filePath;
@@ -337,29 +339,35 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                         &m_totalHeightId ); // varidp
     checkNcErr( l_err, "totalHeight" );
 
-    l_err = nc_def_var( m_ncId,             // ncid
-                        "bathymetry",       // name
-                        NC_FLOAT,           // xtype
-                        2,                  // ndims
-                        m_dimIds + 1,       // dimidsp
-                        &m_bathymetryId );  // varidp
-    checkNcErr( l_err, "bathymetry" );
+    if( bathymetry != nullptr )
+    {
+        l_err = nc_def_var( m_ncId,             // ncid
+                            "bathymetry",       // name
+                            NC_FLOAT,           // xtype
+                            2,                  // ndims
+                            m_dimIds + 1,       // dimidsp
+                            &m_bathymetryId );  // varidp
+        checkNcErr( l_err, "bathymetry" );
+    }
 
-    l_err = nc_def_var( m_ncId,             // ncid
-                        "momentumX",        // name
-                        NC_FLOAT,           // xtype
-                        3,                  // ndims
-                        m_dimIds,           // dimidsp
-                        &m_momentumXId );   // varidp
-    checkNcErr( l_err, "momentumX" );
+    if( useMomenta )
+    {
+        l_err = nc_def_var( m_ncId,             // ncid
+                            "momentumX",        // name
+                            NC_FLOAT,           // xtype
+                            3,                  // ndims
+                            m_dimIds,           // dimidsp
+                            &m_momentumXId );   // varidp
+        checkNcErr( l_err, "momentumX" );
 
-    l_err = nc_def_var( m_ncId,             // ncid
-                        "momentumY",        // name
-                        NC_FLOAT,           // xtype
-                        3,                  // ndims
-                        m_dimIds,           // dimidsp
-                        &m_momentumYId );   // varidp
-    checkNcErr( l_err, "momentumY" );
+        l_err = nc_def_var( m_ncId,             // ncid
+                            "momentumY",        // name
+                            NC_FLOAT,           // xtype
+                            3,                  // ndims
+                            m_dimIds,           // dimidsp
+                            &m_momentumYId );   // varidp
+        checkNcErr( l_err, "momentumY" );
+    }
 
     // global attribute
     l_err = nc_put_att_text( m_ncId,
@@ -405,19 +413,22 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                              "meters" );
     checkNcErr( l_err, "metersBathymetry" );
 
-    l_err = nc_put_att_text( m_ncId,
-                             m_momentumXId,
-                             "units",
-                             6,
-                             "meters" );
-    checkNcErr( l_err, "metersMomentumX" );
+    if( useMomenta )
+    {
+        l_err = nc_put_att_text( m_ncId,
+                                 m_momentumXId,
+                                 "units",
+                                 6,
+                                 "meters" );
+        checkNcErr( l_err, "metersMomentumX" );
 
-    l_err = nc_put_att_text( m_ncId,
-                             m_momentumYId,
-                             "units",
-                             6,
-                             "meters" );
-    checkNcErr( l_err, "metersMomentumY" );
+        l_err = nc_put_att_text( m_ncId,
+                                 m_momentumYId,
+                                 "units",
+                                 6,
+                                 "meters" );
+        checkNcErr( l_err, "metersMomentumY" );
+    }
 
     l_err = nc_enddef( m_ncId ); // ncid
     checkNcErr( l_err, "enddef" );
@@ -466,6 +477,23 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
 
     delete[] lat;
     delete[] lon;
+
+    size_t start[3] = { m_time, 0, 0 };
+    size_t count[3] = { 1, m_ny, m_nx };
+    ptrdiff_t stride[3] = { 1, 1, 1 };
+    ptrdiff_t map[3] = { 1, static_cast<ptrdiff_t>( m_stride ), 1 };
+
+    if( bathymetry != nullptr )
+    {
+        l_err = nc_put_varm_float( m_ncId,          // ncid
+                                   m_bathymetryId,  // varid
+                                   start + 1,       // startp
+                                   count + 1,       // countp
+                                   stride + 1,      // stridep
+                                   map + 1,         // imap
+                                   bathymetry );    // op
+        checkNcErr( l_err, "putBathymetry" );
+    }
 }
 
 tsunami_lab::io::NetCdf::~NetCdf()
@@ -483,7 +511,6 @@ tsunami_lab::io::NetCdf::~NetCdf()
 
 void tsunami_lab::io::NetCdf::write( const t_real simulationTime,
                                      const t_real* totalHeight,
-                                     const t_real* bathymetry,
                                      const t_real* momentumX,
                                      const t_real* momentumY )
 {
@@ -519,19 +546,7 @@ void tsunami_lab::io::NetCdf::write( const t_real simulationTime,
         checkNcErr( l_err, "putTotalHeight" );
     }
 
-    if( bathymetry != nullptr )
-    {
-        l_err = nc_put_varm_float( m_ncId,          // ncid
-                                   m_bathymetryId,  // varid
-                                   start + 1,       // startp
-                                   count + 1,       // countp
-                                   stride + 1,      // stridep
-                                   map + 1,         // imap
-                                   bathymetry );    // op
-        checkNcErr( l_err, "putBathymetry" );
-    }
-
-    if( momentumX != nullptr )
+    if( momentumX != nullptr && m_momentumXId >= 0 )
     {
         l_err = nc_put_varm_float( m_ncId,          // ncid
                                    m_momentumXId,   // varid
@@ -543,7 +558,7 @@ void tsunami_lab::io::NetCdf::write( const t_real simulationTime,
         checkNcErr( l_err, "putMomentumX" );
     }
 
-    if( momentumY != nullptr )
+    if( momentumY != nullptr && m_momentumYId >= 0 )
     {
         l_err = nc_put_varm_float( m_ncId,          // ncid
                                    m_momentumYId,   // varid

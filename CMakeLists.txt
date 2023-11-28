@@ -82,6 +82,12 @@ set(RESOURCE_FILES
     WriteNetCDF_M.test.txt
     artificialtsunami_displ_1000.nc
     artificialtsunami_bathymetry_1000.nc
+    
+    gebco20/output/chile_gebco20_usgs_250m_bath_fixed.nc
+    gebco20/output/chile_gebco20_usgs_250m_displ_fixed.nc
+    
+    gebco20/output/tohoku_gebco20_usgs_250m_bath.nc
+    gebco20/output/tohoku_gebco20_usgs_250m_displ.nc
 )
 
 # Create SOURCE_FILES
