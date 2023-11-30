@@ -532,7 +532,10 @@ int main( int   i_argc,
     {
         if( l_timeCount / l_stations.getOutputFrequency() >= 1.0 )
         {
-            l_stations.write( l_simTime, l_waveProp->getTotalHeight() );
+            l_stations.write( l_simTime,
+                              l_waveProp->getTotalHeight(),
+                              l_waveProp->getMomentumX(),
+                              l_waveProp->getMomentumY() );
             l_timeCount -= l_stations.getOutputFrequency();
         }
         l_timeCount += l_dt;

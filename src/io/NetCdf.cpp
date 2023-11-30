@@ -504,8 +504,9 @@ tsunami_lab::io::NetCdf::~NetCdf()
         // close file
         l_err = nc_close( m_ncId ); // ncid
         checkNcErr( l_err, "close" );
-
+#ifndef TSUNAMI_SIMULATION_TEST
         std::cout << "finished writing to '" << m_filePath << "'. Use ncdump to view its contents." << std::endl;
+#endif //!TSUNAMI_SIMULATION_TEST
     }
 }
 
@@ -569,9 +570,9 @@ void tsunami_lab::io::NetCdf::write( const t_real simulationTime,
                                    momentumY );     // op
         checkNcErr( l_err, "putMomentumY" );
     }
-
+#ifndef TSUNAMI_SIMULATION_TEST
     std::cout << " writing to '" << m_filePath << "'" << std::endl;
-
+#endif //!TSUNAMI_SIMULATION_TEST
     ++m_time;
 }
 

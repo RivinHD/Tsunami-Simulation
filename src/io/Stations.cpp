@@ -7,6 +7,7 @@
 #include "../../include/io/Stations.h"
 #include <fstream>
 #include <cmath>
+#include <limits>
 
 namespace fs = std::filesystem;
 
@@ -69,33 +70,41 @@ tsunami_lab::io::Stations::Stations( t_idx i_nx,
             l_fileStation.open( l_path, std::ios::app );
             l_fileStation << "timestep,totalHeight" << std::endl;
 
+            // map station index to cell index
+            t_idx l_cellIndexX = roundf( ( m_nx / m_scaleX ) * l_x );
+            if( l_cellIndexX >= m_nx )
+            {
+                l_cellIndexX = m_nx - 1;
+            }
+            t_idx l_cellIndexY = roundf( ( m_ny / m_scaleY ) * l_y );
+            if( l_cellIndexY >= m_ny )
+            {
+                l_cellIndexY = m_ny - 1;
+            }
+            t_idx l_cellIndex = m_stride * l_cellIndexY + l_cellIndexX;
+
             // forward arguments and construct station directly in the vector
-            m_stations.emplace_back( l_name, l_x, l_y, l_path );
+            m_stations.emplace_back( l_name, l_cellIndex, l_path );
         }
     }
 }
 
-void tsunami_lab::io::Stations::write( t_real time, const t_real* i_totalHeight ) const
+void tsunami_lab::io::Stations::write( t_real time,
+                                       const t_real* i_totalHeight,
+                                       const t_real* momentumX,
+                                       const t_real* momentumY ) const
 {
     for( const Station& station : m_stations )
     {
-        // map station index to cell index
-        t_idx l_cellIndexX = roundf( ( m_nx / m_scaleX ) * station.m_x );
-        if( l_cellIndexX >= m_nx )
-        {
-            l_cellIndexX = m_nx - 1;
-        }
-        t_idx l_cellIndexY = roundf( ( m_ny / m_scaleY ) * station.m_y );
-        if( l_cellIndexY >= m_ny )
-        {
-            l_cellIndexY = m_ny - 1;
-        }
-        t_idx l_cellIndex = m_stride * l_cellIndexY + l_cellIndexX;
 
         std::ofstream l_file;
         l_file.open( station.m_path, std::ios::app );
 
-        l_file << time << "," << i_totalHeight[l_cellIndex] << std::endl;
+        l_file << time << ","
+            << ( i_totalHeight != nullptr ? i_totalHeight[station.m_index] : std::numeric_limits<float>::quiet_NaN() )
+            << ( momentumX != nullptr ? momentumX[station.m_index] : std::numeric_limits<float>::quiet_NaN() )
+            << ( momentumX != nullptr ? momentumY[station.m_index] : std::numeric_limits<float>::quiet_NaN() )
+            << std::endl;
         l_file.close();
     }
 }

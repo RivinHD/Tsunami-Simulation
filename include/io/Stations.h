@@ -47,19 +47,16 @@ private:
          * @param i_y y-coordinate of station
          * @param i_path path to the station file to be written to
         */
-        Station( std::string i_name, t_real i_x, t_real i_y, std::string i_path )
-            : m_name( i_name ), m_x( i_x ), m_y( i_y ), m_path( i_path )
+        Station( std::string i_name, t_idx i_index, std::string i_path )
+            : m_name( i_name ), m_index( i_index ), m_path( i_path )
         {
         }
 
         //! name of station
         std::string m_name;
 
-        //! x-coordinate of station
-        t_real m_x;
-
-        //! y-coordinate of station
-        t_real m_y;
+        //! cell index
+        t_idx m_index;
 
         //! path to the station file to be written to
         std::string m_path;
@@ -103,8 +100,13 @@ public:
      * Write totalHeight of each station to its csv file with a shared time step.
      *
      * @param totalHeight pointer to array of all totalHeights
+     * @param momentumX pointer to array of all momentumX
+     * @param momentumY pointer to array of all momentumY
      */
-    void write( t_real time, const t_real* totalHeight ) const;
+    void write( t_real time,
+                const t_real* totalHeight,
+                const t_real* momentumX,
+                const t_real* momentumY ) const;
 
     /**
      * Returns shared output frequency of stations.
