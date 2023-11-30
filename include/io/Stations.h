@@ -43,8 +43,7 @@ private:
          * struct to save attributes of single station
          *
          * @param i_name name of station
-         * @param i_x x-coordinate of station
-         * @param i_y y-coordinate of station
+         * @param i_index mapped cell index of the station
          * @param i_path path to the station file to be written to
         */
         Station( std::string i_name, t_idx i_index, std::string i_path )
@@ -99,6 +98,7 @@ public:
     /**
      * Write totalHeight of each station to its csv file with a shared time step.
      *
+     * @param time the current simulation time
      * @param totalHeight pointer to array of all totalHeights
      * @param momentumX pointer to array of all momentumX
      * @param momentumY pointer to array of all momentumY

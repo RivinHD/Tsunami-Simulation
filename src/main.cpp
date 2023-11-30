@@ -84,7 +84,7 @@ void printHelp()
         << "NOTE: optional flags must be set after the inputs.." << std::endl
         << "OPTIONAL FLAGS:" << std::endl
         << green << "\t-B" << reset << " enables the use of bathymetry." << std::endl
-        << green << "\t-M" << reset << " use meters as unit for the X-Axis and Y-Axis instead of the Longitude and Latitude units degrees_east and degrees_north." << std::endl
+        << green << "\t-M" << reset << " use meters as unit for the x-axis and y-axis solution output instead of degrees_east (longitude) and degrees_north (latitude)." << std::endl
         << green << "\t-f" << reset << " defines the output format. Requires " << cyan << "csv" << reset << " or " << cyan << "netCDF" << reset << ". The default is netCDF." << std::endl
         << green << "\t-r" << reset << " enables the reflection on the specified side of the simulation. Several arguments can be passed (maximum 4)." << std::endl
         << "\t   where " << cyan << "left | right | top | bottom" << reset << " enables their respective sides." << std::endl

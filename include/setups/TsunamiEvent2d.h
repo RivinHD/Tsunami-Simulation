@@ -70,12 +70,14 @@ private:
 public:
 
     /**
-     * Creates the 2d tsunami event that is read from two netCdf files.
+     * Creates the 2d tsunami event that reads two files.
+     * The first should be the bathymetry file and the second one should be the displacement of the bathymetry.
+     * Variables must be defined for each file, which are then read from the netCDF file in order to read the data successfully.
      *
      * @param bathymetryFilePath filepath to the bathymetry file
-     * @param bathymetryVariable variables to read in the bathymetry file. The first should be the X dimension, the second the Y dimension and the third the bathymetry data
+     * @param bathymetryVariable netCDF variables to read from the bathymetry file. The first should be the X dimension, the second the Y dimension and the third the bathymetry data
      * @param displacementFilePath filepath to the displacement file
-     * @param displacementVariable variables to read in the displacement file. The first should be the X dimension, the second the Y dimension and the third the displacement data
+     * @param displacementVariable netCDF variables to read from the displacement file. The first should be the X dimension, the second the Y dimension and the third the displacement data
      * @param scaleX width of the grid
      * @param scaleY height of the grid
      * @param delta avoids running into numerical issues due to missing support for wetting and drying in our solver

@@ -538,7 +538,7 @@ To provided a friendlier use the NetCdf class contains two read methods.
     The time dimension is only read if the timeStep is greater than zero and is therefore required to read the data at the correct location.
 
     Reading a dimension follows the same pattern, so it will only be explained for longitude.
-    First, the variable to store the ID is created on the name that the netCdf uses as an alias for the longitude.
+    First, the variable to store the ID is created on the name that the netCdf uses as an alias for the longitude / x-axis.
     In this case, the aliases are ``lon``, ``longitude``, ``x``, ``X`` and a check is made to see if any of them are included in the file.
     If none of the alias names are contained, a corresponding netcdf error is output.
     A do-while loop is used to check the existence and the first matching dimension is used.
