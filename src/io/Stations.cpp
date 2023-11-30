@@ -100,10 +100,10 @@ void tsunami_lab::io::Stations::write( t_real time,
         std::ofstream l_file;
         l_file.open( station.m_path, std::ios::app );
 
-        l_file << time << ","
-            << ( i_totalHeight != nullptr ? i_totalHeight[station.m_index] : std::numeric_limits<float>::quiet_NaN() )
-            << ( momentumX != nullptr ? momentumX[station.m_index] : std::numeric_limits<float>::quiet_NaN() )
-            << ( momentumX != nullptr ? momentumY[station.m_index] : std::numeric_limits<float>::quiet_NaN() )
+        l_file << time
+            << "," << ( i_totalHeight != nullptr ? i_totalHeight[station.m_index] : std::numeric_limits<float>::quiet_NaN() )
+            << "," << ( momentumX != nullptr ? momentumX[station.m_index] : std::numeric_limits<float>::quiet_NaN() )
+            << "," << ( momentumX != nullptr ? momentumY[station.m_index] : std::numeric_limits<float>::quiet_NaN() )
             << std::endl;
         l_file.close();
     }
