@@ -426,7 +426,7 @@ Visualizing the bathymetry effects with 500 x 500 cells.
         </video>
     </center>
 
-.. image:: ../images/Task_4_1_3.png
+.. image:: ../_static/photos/Task_4_1_3.png
     :align: center
     :width: 700
 
