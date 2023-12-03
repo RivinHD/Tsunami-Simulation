@@ -75,10 +75,6 @@ Required cells in x-direction: :math:`\frac{3000000}{250}=12000`
         </video>
     </center>
 
-.. Error::
-
-    This is a pre version to only 3000 seconds :(
-
 6.2. 2011 M 9.1 Tohoku Event
 ----------------------------
 
