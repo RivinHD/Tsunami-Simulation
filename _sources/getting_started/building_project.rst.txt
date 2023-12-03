@@ -40,7 +40,7 @@ You can check if CMake is installed by running
         Using `Visual Studio <https://visualstudio.microsoft.com>`_
             `Official Installation Guid <https://learn.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio?view=msvc-170#installation>`_
 
-            .. image:: ../images/VisualStudio_CMake_Installation.png
+            .. image:: ../_static/photos/VisualStudio_CMake_Installation.png
                 :align: right
                 :scale: 75%
 

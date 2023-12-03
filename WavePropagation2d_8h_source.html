@@ -89,13 +89,13 @@ $(function() {
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span> m_step = 0;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> totalCells;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> totalCells = 1;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> m_xCells = 0;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> m_xCells = 1;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> m_yCells = 0;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> m_yCells = 1;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <a class="code" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> stride;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <a class="code" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> stride = 1;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <a class="code" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a>* m_h[2] = { <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span> };</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
@@ -105,15 +105,15 @@ $(function() {
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    Solver solver = Solver::FWAVE;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <a class="code" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a>* m_bathymetry;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <a class="code" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a>* m_bathymetry = <span class="keyword">nullptr</span>;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">bool</span> hasBathymetry;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">bool</span> hasBathymetry = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <a class="code" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a>* m_totalHeight;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <a class="code" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a>* m_totalHeight = <span class="keyword">nullptr</span>;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">bool</span> hasReflection[4] = { <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span> };</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keyword">static</span> constexpr <a class="code" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> ITERATIONS_CACHE = 32;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keyword">static</span> constexpr <a class="code" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> ITERATIONS_CACHE = 16;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="comment">/*</span></div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="comment">    * The Sides on which the reflection appears</span></div>
