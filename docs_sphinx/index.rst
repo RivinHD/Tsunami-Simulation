@@ -16,6 +16,7 @@
    submissions/bathymetry_boundary_conditions.rst
    submissions/two_dimensional_solver.rst
    submissions/large_data_input_output.rst
+   submissions/tsunami_simulation.rst
 
 .. toctree::
    :maxdepth: 4

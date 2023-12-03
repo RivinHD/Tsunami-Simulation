@@ -858,12 +858,12 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
                                                                          10,
                                                                          10000,
                                                                          10000,
-                                                                         12 );
+                                                                         12,
+                                                                         bathymetry );
     for( size_t i = 0; i < 20; i++ )
     {
         netCdfWriter->write( time[i],
                              totalHeight + ( i * 100 ),
-                             bathymetry + ( i * 100 ),
                              momentumX + ( i * 100 ),
                              momentumY + ( i * 100 ) );
     }
@@ -904,12 +904,12 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
                                                 10000,
                                                 10000,
                                                 12,
+                                                bathymetry,
                                                 false );
     for( size_t i = 0; i < 20; i++ )
     {
         netCdfWriter->write( time[i],
                              totalHeight + ( i * 100 ),
-                             bathymetry + ( i * 100 ),
                              momentumX + ( i * 100 ),
                              momentumY + ( i * 100 ) );
     }

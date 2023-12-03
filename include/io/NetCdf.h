@@ -32,58 +32,58 @@ private:
     bool isReadMode;
 
     //! name of the netCDF file
-    std::string m_filePath;
+    std::string m_filePath = "";
 
     //! number of cells in x dimension
-    t_idx m_nx;
+    t_idx m_nx = 1;
 
     //! number of cells in y dimension
-    t_idx m_ny;
+    t_idx m_ny = 1;
 
     //! scale in x dimension in meters
-    t_idx m_scaleX;
+    t_idx m_scaleX = 1;
 
     //! scale in y dimension in meters
-    t_idx m_scaleY;
+    t_idx m_scaleY = 1;
 
     //! stride length
-    t_idx m_stride;
+    t_idx m_stride = 1;
 
     //! time of write operation
     size_t m_time = 0;
 
     //! id of the netCDF file
-    int m_ncId;
+    int m_ncId = -1;
 
     //! id of time dimension
-    int m_dimTimeId;
+    int m_dimTimeId = -1;
 
     //! id of x dimension
-    int m_dimXId;
+    int m_dimXId = -1;
 
     //! id of longitude
-    int m_xId;
+    int m_xId = -1;
 
     //! id of y dimension
-    int m_dimYId;
+    int m_dimYId = -1;
 
     //! id of latitude
-    int m_yId;
+    int m_yId = -1;
 
     //! id of time
-    int m_timeId;
+    int m_timeId = -1;
 
     //! id of total height
-    int m_totalHeightId;
+    int m_totalHeightId = -1;
 
     //! id of bathymetry
-    int m_bathymetryId;
+    int m_bathymetryId = -1;
 
     //! id of momentumX
-    int m_momentumXId;
+    int m_momentumXId = -1;
 
     //! id of momentumY
-    int m_momentumYId;
+    int m_momentumYId = -1;
 
 public:
     /**
@@ -114,13 +114,13 @@ public:
         void* array = nullptr;
 
         //! type of the array
-        VarType type;
+        VarType type = VarType::INT;
 
         //! length of the array
-        size_t length;
+        size_t length = 0;
 
         //! stride of the array used for 2D arrays representation. If the array is 1D then the stride is the same as the length.
-        size_t stride;
+        size_t stride = 0;
 
         /**
          * Destructor of VarArray to delete the allocated array
@@ -170,7 +170,9 @@ public:
      * @param l_scaleX the scale in x direction in meters
      * @param l_scaleY the scale in y direction in meters
      * @param l_stride the stride of the data-set to write
+     * @param bathymetry bathymetry data to write if no bathymetry should be written pass a nullptr
      * @param useSpherical use spherical Longitude & Latitude in degrees for the X and Y Axis instead of meters
+     * @param useMomenta if true also create variables fór momentumX and momentumY and enable writing to these
      */
     NetCdf( std::string filePath,
             t_idx l_nx,
@@ -178,7 +180,9 @@ public:
             t_real l_scaleX,
             t_real l_scaleY,
             t_idx l_stride,
-            bool useSpherical = true );
+            const t_real* bathymetry,
+            bool useSpherical = true,
+            bool useMomenta = true );
 
     /**
      * Destructor of NetCdf.
@@ -190,13 +194,11 @@ public:
      *
      * @param simulationTime the current simulation time in seconds
      * @param totalHeight total heights of cells
-     * @param bathymetry bathymetry of cells
      * @param momentumX momentum of cells in x direction
      * @param momentumY momentum of cells in y direction
      */
     void write( const t_real simulationTime,
                 const t_real* totalHeight,
-                const t_real* bathymetry,
                 const t_real* momentumX,
                 const t_real* momentumY );
 

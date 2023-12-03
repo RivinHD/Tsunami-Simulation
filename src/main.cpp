@@ -29,6 +29,8 @@
 #include <thread>
 #include <atomic>
 
+ // #define SKIP_ARGUMENTS
+
 namespace fs = std::filesystem;
 
 const std::string SOLUTION_FOLDER = "solutions";
@@ -41,7 +43,8 @@ enum Arguments
     REFLECTION = 'r',
     TIME = 't',
     IO_FORMAT = 'f',
-    USE_AXIS_METERS = 'M'
+    USE_AXIS_METERS = 'M',
+    WRITE_INTERVALL = 'w'
 };
 
 const int requiredArguments = 1;
@@ -52,7 +55,8 @@ const std::vector<ArgSetup> optionalFlags = {
     ArgSetup( Arguments::REFLECTION, 1, 4 ),
     ArgSetup( Arguments::TIME, 1, 1 ),
     ArgSetup( Arguments::IO_FORMAT, 1, 1 ),
-    ArgSetup( Arguments::USE_AXIS_METERS, 0, 0 )
+    ArgSetup( Arguments::USE_AXIS_METERS, 0, 0 ),
+    ArgSetup( Arguments::WRITE_INTERVALL, 1, 1 )
 };
 
 void printHelp()
@@ -68,7 +72,8 @@ void printHelp()
         << green << "-f" << cyan << " <csv|netCDF>" << reset << "] ["
         << green << "-r " << cyan << "<left|right|top|bottom|x|y|all>" << reset << "] ["
         << green << "-s " << cyan << "<fwave|roe>" << reset << "] ["
-        << green << "-t" << cyan << " <seconds>" << reset << "]"
+        << green << "-t" << cyan << " <seconds>" << reset << "] ["
+        << green << "-w" << cyan << " <seconds>" << reset << "]"
         << std::endl << std::endl
         << "REQUIRED INPUT:" << std::endl
         << magenta << "\tN_CELLS_X" << reset << " is the number of cells in x-direction." << std::endl
@@ -79,14 +84,15 @@ void printHelp()
         << "NOTE: optional flags must be set after the inputs.." << std::endl
         << "OPTIONAL FLAGS:" << std::endl
         << green << "\t-B" << reset << " enables the use of bathymetry." << std::endl
-        << green << "\t-M" << reset << " use meters as unit for the X-Axis and Y-Axis instead of the Longitude and Latitude units degrees_east and degrees_north." << std::endl
+        << green << "\t-M" << reset << " use meters as unit for the x-axis and y-axis solution output instead of degrees_east (longitude) and degrees_north (latitude)." << std::endl
         << green << "\t-f" << reset << " defines the output format. Requires " << cyan << "csv" << reset << " or " << cyan << "netCDF" << reset << ". The default is netCDF." << std::endl
         << green << "\t-r" << reset << " enables the reflection on the specified side of the simulation. Several arguments can be passed (maximum 4)." << std::endl
         << "\t   where " << cyan << "left | right | top | bottom" << reset << " enables their respective sides." << std::endl
         << "\t   where " << cyan << "x" << reset << " enables the left & right and " << cyan << "y" << reset << " enables the top & bottom side." << std::endl
         << "\t   where " << cyan << "all" << reset << " enables all sides." << std::endl
         << green << "\t-s" << reset << " set used solvers requires " << cyan << "fwave" << reset << " or " << cyan << "roe" << reset << " as inputs. The default is fwave." << std::endl
-        << green << "\t-t" << reset << " defines the total time in seconds that is used for the simulation. The default is 5 seconds." << std::endl;
+        << green << "\t-t" << reset << " defines the total time in seconds that is used for the simulation. The default is 5 seconds." << std::endl
+        << green << "\t-w" << reset << " defines the time how often the simulation is written to the disk. The default is 0.25 seconds." << std::endl;
 }
 
 int main( int   i_argc,
@@ -116,6 +122,7 @@ int main( int   i_argc,
     bool isCsv = false;
     bool useAxisMeters = false;
     tsunami_lab::t_real l_endTime = 5;
+    tsunami_lab::t_real l_writeTime = tsunami_lab::t_real( 0.25 );
 
 #ifndef SKIP_ARGUMENTS
     // error: wrong number of arguments.
@@ -290,6 +297,16 @@ int main( int   i_argc,
                 case Arguments::USE_AXIS_METERS:
                     useAxisMeters = true;
                     break;
+                case Arguments::WRITE_INTERVALL:
+                    floatParameter = atof( i_argv[++i] );
+                    if( floatParameter <= 0 || std::isnan( floatParameter ) || std::isinf( floatParameter ) )
+                    {
+                        std::cerr << "invalid argument for flag -w" << std::endl
+                            << "the time should be a number larger than 0" << std::endl;
+                        return EXIT_FAILURE;
+                    }
+                    l_writeTime = floatParameter;
+                    break;
                 default:
                     std::cerr << "unknown flag: " << arg[argI] << std::endl;
                     printHelp();
@@ -300,33 +317,22 @@ int main( int   i_argc,
     }
 #endif // !SKIP_ARGUMENTS
 #ifdef SKIP_ARGUMENTS
-    l_nx = 500;
-    l_ny = 500;
+    l_nx = 3500;
+    l_ny = 3000;
     reflectLeft = false;
     reflectRight = false;
     reflectBottom = false;
     reflectTop = false;
     useBathymetry = true;
-    use2D = false;
+    use2D = true;
     useAxisMeters = true;
-    l_endTime = 5;
+    l_endTime = 13000;
     std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
 
     // Print activated Features
-    if( use2D )
-    {
-        std::cout << "Simulation is set to " << green << "2D" << reset << std::endl;
-    }
-    else
-    {
-        std::cout << "Simulation is set to " << green << "1D" << reset << std::endl;
-    }
-
-    if( useBathymetry )
-    {
-        std::cout << green << "Activated Bathymetry" << reset << std::endl;
-    }
+    std::cout << "Simulation is set to " << green << ( use2D ? "2D" : "1D" ) << reset << std::endl
+        << "Bathymetry is " << green << ( useBathymetry ? "Enabled" : "Disabled" ) << reset << std::endl;
 
     std::cout << "Set Solver: ";
     if( solver == tsunami_lab::patches::Solver::ROE )
@@ -358,13 +364,19 @@ int main( int   i_argc,
     {
         std::cout << "Activated Reflection on " << green << reflectionsText << reset << " side" << std::endl;
     }
+    else
+    {
+        std::cout << "Activated Reflection on " << green << "None" << reset << " side" << std::endl;
+    }
 
-    std::cout << "Simulation Time is set to " << green << l_endTime << " seconds" << reset << std::endl
-        << "Output format is set to " << green << ( isCsv ? "csv" : "netCDF" ) << reset << std::endl;
+    std::cout << "Output format is set to " << green << ( isCsv ? "csv" : "netCDF" ) << reset << std::endl
+        << "Writing the X-/Y-Axis in format " << green << ( useAxisMeters ? "meters" : "degrees" ) << reset << std::endl
+        << "Simulation Time is set to " << green << l_endTime << " seconds" << reset << std::endl
+        << "Writing to the disk every " << green << l_writeTime << " seconds" << reset << " of simulation time" << std::endl;
     // End print
 
-    tsunami_lab::t_real l_scaleX = 10000;
-    tsunami_lab::t_real l_scaleY = 10000;
+    tsunami_lab::t_real l_scaleX = 2700000;
+    tsunami_lab::t_real l_scaleY = 1500000;
     if( use2D )
     {
         l_dxy = std::min( l_scaleX / l_nx, l_scaleY / l_ny );
@@ -469,7 +481,7 @@ int main( int   i_argc,
     std::cout << "Max speed " << l_speedMax << std::endl;
 
     // derive constant time step; changes at simulation time are ignored
-    tsunami_lab::t_real l_dt = std::min( 0.45 * l_dxy / l_speedMax, 0.01 );
+    tsunami_lab::t_real l_dt = 0.45 * l_dxy / l_speedMax;
 
     // derive scaling for a time step
     tsunami_lab::t_real l_scaling = l_dt / l_dxy;
@@ -502,26 +514,37 @@ int main( int   i_argc,
                                                     l_scaleX,
                                                     l_scaleY,
                                                     l_waveProp->getStride(),
-                                                    !useAxisMeters );
+                                                    useBathymetry ? l_waveProp->getBathymetry() : nullptr,
+                                                    !useAxisMeters,
+                                                    false );
     }
 
     // var to check if it's time to write stations
     tsunami_lab::t_real l_timeCount = 0.0;
 
+    // var to check if it'S time to write to the disk
+    tsunami_lab::t_idx l_writeCount = 0;
+
+    const auto startTime = std::chrono::high_resolution_clock::now();
+
     // iterate over time
     while( l_simTime < l_endTime )
     {
-        if ( l_timeCount / l_stations.getOutputFrequency() >= 1.0 )
+        if( l_timeCount / l_stations.getOutputFrequency() >= 1.0 )
         {
-            l_stations.write( l_simTime, l_waveProp->getTotalHeight() );
+            l_stations.write( l_simTime,
+                              l_waveProp->getTotalHeight(),
+                              l_waveProp->getMomentumX(),
+                              l_waveProp->getMomentumY() );
             l_timeCount -= l_stations.getOutputFrequency();
         }
         l_timeCount += l_dt;
 
-        if( l_timeStep % 25 == 0 )
+        if( l_simTime >= ( l_writeTime * l_writeCount ) )
         {
-            std::cout << "  simulation time / #time steps: "
-                << l_simTime << " / " << l_timeStep << std::endl;
+            ++l_writeCount;
+            std::cout << "  simulation time / number of writes / time steps: "
+                << l_simTime << " / " << l_writeCount << " / " << l_timeStep << std::endl;
 
 
             if( isCsv )
@@ -548,7 +571,6 @@ int main( int   i_argc,
             {
                 netCdfWriter->write( l_simTime,
                                      l_waveProp->getTotalHeight(),
-                                     l_waveProp->getBathymetry(),
                                      l_waveProp->getMomentumX(),
                                      l_waveProp->getMomentumY() );
             }
@@ -567,6 +589,13 @@ int main( int   i_argc,
     delete l_setup;
     delete l_waveProp;
     delete netCdfWriter;
+
+    // Print the calculation time
+    const auto duration = std::chrono::high_resolution_clock::now() - startTime;
+    const auto hours = std::chrono::duration_cast<std::chrono::hours>( duration );
+    const auto minutes = std::chrono::duration_cast<std::chrono::minutes>( duration - hours );
+    const auto seconds = std::chrono::duration_cast<std::chrono::seconds>( duration - hours - minutes );
+    std::cout << "The Simulation took " << green << hours.count() << " h " << minutes.count() << " min " << seconds.count() << " sec" << reset << " to finish." << std::endl;
 
     std::cout << "finished, exiting" << std::endl;
     return EXIT_SUCCESS;
