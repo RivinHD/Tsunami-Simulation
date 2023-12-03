@@ -160,13 +160,13 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Creates the 2d tsunami event that is read from two netCdf files.</p>
+<p>Creates the 2d tsunami event that reads two files. The first should be the bathymetry file and the second one should be the displacement of the bathymetry. Variables must be defined for each file, which are then read from the netCDF file in order to read the data successfully.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">bathymetryFilePath</td><td>filepath to the bathymetry file </td></tr>
-    <tr><td class="paramname">bathymetryVariable</td><td>variables to read in the bathymetry file. The first should be the X dimension, the second the Y dimension and the third the bathymetry data </td></tr>
+    <tr><td class="paramname">bathymetryVariable</td><td>netCDF variables to read from the bathymetry file. The first should be the X dimension, the second the Y dimension and the third the bathymetry data </td></tr>
     <tr><td class="paramname">displacementFilePath</td><td>filepath to the displacement file </td></tr>
-    <tr><td class="paramname">displacementVariable</td><td>variables to read in the displacement file. The first should be the X dimension, the second the Y dimension and the third the displacement data </td></tr>
+    <tr><td class="paramname">displacementVariable</td><td>netCDF variables to read from the displacement file. The first should be the X dimension, the second the Y dimension and the third the displacement data </td></tr>
     <tr><td class="paramname">scaleX</td><td>width of the grid </td></tr>
     <tr><td class="paramname">scaleY</td><td>height of the grid </td></tr>
     <tr><td class="paramname">delta</td><td>avoids running into numerical issues due to missing support for wetting and drying in our solver </td></tr>

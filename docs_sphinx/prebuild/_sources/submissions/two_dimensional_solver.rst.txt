@@ -13,7 +13,7 @@
 1. Two-Dimensional Splitting
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-There are changes needed to be done to the ``F-Wave solver``, because two-dimensional splitting is used i.e, first calculating the x-direction than the y-direction.
+There are no changes needed to be done to the ``F-Wave solver``, because two-dimensional splitting is used i.e, first calculating the x-direction than the y-direction.
 Therefore only changes will be done in ``WavePropagation2d``.
 
 The constructor and destructor of ``WavePropagation2d`` is very similar to ``WavePropagation1d`` except the new variables:
@@ -212,19 +212,19 @@ Thus the new results for ``m_h``, ``m_hu``, ``m_hv`` are located in the same ste
     }
 
 The calculation in the y-direction follows the same principle, but now we have to take a full stride to the next cell, i.e. we use the top and bottom cells for the update.
-To make this calculation more efficient, four values in the x-direction are updated simultaneously in the y-direction.
-This is done to address a 128-bit cache line, i.e. :math:`\text{sizeof(float)} \cdot 4 = 32 \text{ bit} \cdot 4 = 128 \text{ bit}`.
+To make this calculation more efficient, 32 values in the x-direction are updated simultaneously in the y-direction.
+This is done to address a 128-byte cache line, i.e. :math:`\text{sizeof(float)} \cdot 32 = 4 \text{ byte} \cdot 32 = 128 \text{ byte}`.
 Otherwise, three loaded values would be lost if the arrays are aligned correctly.
-If the cache line is smaller than 128 bits, e.g. 64 bits or 32 bits, then values are loaded that would also be loaded later.
+If the cache line is smaller than 128 bytes, e.g. 64 bytes or 32 bytes, then values are loaded that would also be loaded later.
 However, the number of simultaneously updated values in the y-direction should not be too large, otherwise loaded values from the lower cells that are needed in the next iteration will be wasted.
 
 To change the value used, which makes the calculation more efficient as explained above, the variable ``ITERATIONS_CACHE`` is used.
-In this case, ``ITERATIONS_CACHE`` is four, which will be used for the rest of the explanation.
+In this case, ``ITERATIONS_CACHE`` is 32, which will be used for the rest of the explanation.
 The implementation requires two loops.
-The first loop iterates over all cells in the x-direction as long as the number of cells is divisible by four.
+The first loop iterates over all cells in the x-direction as long as the number of cells is divisible by 32.
 The next inner loop iterates over the rows, and the last inner loop is used to make the calculation more efficient.
 The indices of the top and bottom cells to be updated are then determined.
-The second loop deals with the remaining cells in the x direction that are less than four. 
+The second loop deals with the remaining cells in the x direction that are less than 32.
 The loop iterates over the rows and the inner loop over the remaining cells in the x-direction, using the same calculations as the first loop.
 The calculation of reflection and update are the same as performed in ``WavePropagation1d``.
 
@@ -426,7 +426,7 @@ Visualizing the bathymetry effects with 500 x 500 cells.
         </video>
     </center>
 
-.. image:: ../images/Task_4_1_3.png
+.. image:: ../_static/photos/Task_4_1_3.png
     :align: center
     :width: 700
 
