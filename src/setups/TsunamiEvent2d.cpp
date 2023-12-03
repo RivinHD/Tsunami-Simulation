@@ -132,20 +132,6 @@ tsunami_lab::setups::TsunamiEvent2d::TsunamiEvent2d( const char* bathymetryFileP
         }
         displacementSize[i] = displacementData[i].length;
     }
-
-    std::vector<unsigned char> input;
-
-    // parse the flag<i> from the i bit
-    unsigned char flag1 = input[0] & 0b00000001;
-    unsigned char flag2 = input[0] & 0b00000010;
-
-    unsigned char* ptr = &input[0];
-
-    // ptr + 1: pointer goes 1 byte to the right i.e. next element in the vector
-    ptr += 1;
-    unsigned int value1 = *reinterpret_cast<unsigned int*>( ptr );
-    ptr += sizeof( unsigned int ) / sizeof( unsigned char );
-    unsigned short value2 = *reinterpret_cast<unsigned short*>( ptr );
 }
 
 tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent2d::getHeight( t_real i_x,

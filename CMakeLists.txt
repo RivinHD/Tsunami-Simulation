@@ -82,9 +82,6 @@ set(RESOURCE_FILES
     WriteNetCDF_M.test.txt
     artificialtsunami_displ_1000.nc
     artificialtsunami_bathymetry_1000.nc
-    
-    chile_gebco20_usgs_250m_bath_fixed.nc
-    chile_gebco20_usgs_250m_displ_fixed.nc
 )
 
 # Create SOURCE_FILES

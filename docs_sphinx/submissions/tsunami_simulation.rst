@@ -135,10 +135,6 @@ Required cells in x-direction: :math:`\frac{2700000}{500}=3000`
         </video>
     </center>
 
-.. math::
-    \text{x: } -127956.17  - -200000 =  72043.83
-    \text{y: } -54518.72 - -750000 = 695481.28
-
 
 2. Sõma
 ^^^^^^^
@@ -147,13 +143,23 @@ Required cells in x-direction: :math:`\frac{2700000}{500}=3000`
 Pacific Ocean, 72 km east of the Oshika Peninsula in the Tōhoku region. It lasted about six minutes and generated a
 tsunami."[1]_
 
-"Sõma is a town in Japan about 54.6 km north and 127.6 km west of the March 11, 2011, M 9.1 Tohoku event’s epicenter.
+"Sõma is a town in Japan about 54.6 km north and 127.6 km west of the March 11, 2011, M 9.1 Tohoku event's epicenter.
 We are interested in the time between the earthquake rupture and the arrival of the first tsunami waves in Sõma."[2]_
 
 "On 13 March 2011, the Japan Meteorological Agency (JMA) published details of tsunami observations recorded around the
 coastline of Japan following the earthquake. These observations included [...] that the water height in Sõma was
 :math:`7.3\,m` or even higher at around 15:50 JST (06:50 UTC)."[2]_ 14:46 JST - 15:50 JST is a period of **01:04h** or
 **64 minutes**.
+
+The rule of thumb :math:`\lambda \approx \sqrt{gh}` with an epicenter height of :math:`h = 927.53\,m` returns a lambda of :math:`\lambda \approx 95.663\,\frac{m}{s}`.
+The arrival time can be calculated :math:`\frac{\text{distance}}{\text{wave speed}} = \frac{138791\,m}{95.663\,\frac{m}{s}} \approx 1451\,s`.
+
+Our epicenter is not the origin of our coordinate system.
+Therefore, we need to calculate the position of the station in relation to the lower left corner of the data input.
+
+.. math::
+    \text{x: } -127956.17 - -200000 = 72043.83\\
+    \text{y: } -54518.72 - -750000 = 695481.28
 
 Our station with the coordinates (72043.83, 695481.28) w.r.t.
 
