@@ -394,9 +394,9 @@ int main( int   i_argc,
     // construct setup
     tsunami_lab::setups::Setup* l_setup;
     const char* variables[3]{ "x", "y", "z" };
-    l_setup = new tsunami_lab::setups::TsunamiEvent2d( "artificialtsunami_bathymetry_1000.nc",
+    l_setup = new tsunami_lab::setups::TsunamiEvent2d( "resources/artificialtsunami_bathymetry_1000.nc",
                                                        variables,
-                                                       "artificialtsunami_displ_1000.nc",
+                                                       "resources/artificialtsunami_displ_1000.nc",
                                                        variables,
                                                        l_scaleX,
                                                        l_scaleY );
