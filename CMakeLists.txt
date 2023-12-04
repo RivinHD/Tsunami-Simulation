@@ -50,6 +50,7 @@ set(SRC_FILES
     setups/CircularDamBreak2d
     setups/ArtificialTsunami2d
     setups/TsunamiEvent2d
+    setups/CheckPoint
     patches/WavePropagation1d
     patches/WavePropagation2d
     io/Csv

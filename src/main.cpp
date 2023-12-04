@@ -14,6 +14,7 @@
 #include "../include/setups/CircularDamBreak2d.h"
 #include "../include/setups/ArtificialTsunami2d.h"
 #include "../include/setups/TsunamiEvent2d.h"
+#include "../include/setups/CheckPoint.h"
 #include "../include/io/Csv.h"
 #include "../include/io/NetCdf.h"
 #include "../include/io/ArgSetup.h"
@@ -26,15 +27,12 @@
 #include <string>
 #include <filesystem> // requieres C++17 and up
 #include <chrono>
-#include <thread>
-#include <atomic>
 
 // #define SKIP_ARGUMENTS
 
 namespace fs = std::filesystem;
 
 const std::string SOLUTION_FOLDER = "solutions";
-std::atomic_bool KILL_THREAD = false;
 
 enum Arguments
 {
@@ -45,7 +43,9 @@ enum Arguments
     IO_FORMAT = 'f',
     USE_AXIS_SPHERICAL = 'S',
     WRITE_INTERVALL = 'w',
-    AVERAGE_SEVERAL = 'k'
+    AVERAGE_SEVERAL = 'k',
+    WRITE_INTERVALL = 'w',
+    CHECKPOINT_INTERVALL = 'c'
 };
 
 const int requiredArguments = 1;
@@ -58,7 +58,8 @@ const std::vector<ArgSetup> optionalFlags = {
     ArgSetup( Arguments::IO_FORMAT, 1, 1 ),
     ArgSetup( Arguments::USE_AXIS_SPHERICAL, 0, 0 ),
     ArgSetup( Arguments::WRITE_INTERVALL, 1, 1 ),
-    ArgSetup( Arguments::AVERAGE_SEVERAL, 1, 1)
+    ArgSetup( Arguments::AVERAGE_SEVERAL, 1, 1),
+    ArgSetup( Arguments::CHECKPOINT_INTERVALL, 1, 1 )
 };
 
 void printHelp()
@@ -71,6 +72,7 @@ void printHelp()
     std::cerr << "./build/simulation " << magenta << "N_CELLS_X (N_CELLS_Y) " << reset << "["
         << green << "-B" << reset << "] ["
         << green << "-S" << reset << "] ["
+        << green << "-c" << cyan << " <minuten>" << reset << "] ["
         << green << "-f" << cyan << " <csv|netCDF>" << reset << "] ["
         << green << "-r " << cyan << "<left|right|top|bottom|x|y|all>" << reset << "] ["
         << green << "-k" << cyan << "<NUMBER>" << reset << "] ["
@@ -88,6 +90,7 @@ void printHelp()
         << "OPTIONAL FLAGS:" << std::endl
         << green << "\t-B" << reset << " enables the use of bathymetry." << std::endl
         << green << "\t-S" << reset << " use degrees_east (longitude) and degrees_north (latitude) as unit for the x-axis and y-axis solution output instead of meters." << std::endl
+        << green << "\t-c" << reset << " set the intervalls in realtime seconds when to create a checkpoint. The default is 20 minutes." << std::endl
         << green << "\t-f" << reset << " defines the output format. Requires " << cyan << "csv" << reset << " or " << cyan << "netCDF" << reset << ". The default is netCDF." << std::endl
         << green << "\t-k" << reset << " defines the number of cells to average several neighbouring cells of the computational grid into one cell" << std::endl
         << green << "\t-r" << reset << " enables the reflection on the specified side of the simulation. Several arguments can be passed (maximum 4)." << std::endl
@@ -112,7 +115,7 @@ int main( int   i_argc,
     std::cout << "### https://rivinhd.github.io/Tsunami-Simulation/ ###" << std::endl;
     std::cout << "#####################################################" << std::endl;
 
-    // default arguments values
+    // default arguments values"
     tsunami_lab::t_idx l_nx = 0;
     tsunami_lab::t_idx l_ny = 1;
     tsunami_lab::t_real l_dxy = 1;
@@ -126,8 +129,46 @@ int main( int   i_argc,
     bool isCsv = false;
     bool useAxisSpherical = false;
     tsunami_lab::t_idx l_averageCellNumber = 1;
-    tsunami_lab::t_real l_endTime = 5;
+    tsunami_lab::t_real l_endTime = 5; // in seconds
     tsunami_lab::t_real l_writeTime = tsunami_lab::t_real( 0.25 );
+    tsunami_lab::t_real checkpointIntervall = 20; // in minutes
+
+    // setup the variables
+    std::string commandline = i_argv[0];
+    for( int i = 1; i < i_argc; i++ )
+    {
+        commandline += " ";
+        commandline += i_argv[i];
+    }
+    tsunami_lab::setups::Setup* l_setup = nullptr;
+    tsunami_lab::t_real l_scaleX = 2700000;
+    tsunami_lab::t_real l_scaleY = 1500000;
+    bool useCheckpoint = false;
+    tsunami_lab::t_real l_simTime = 0;
+    tsunami_lab::t_idx  l_timeStep = 0;
+
+    std::cout << "Checking for Checkpoints: ";
+
+    // create simulation folder inside solution folder
+    std::string checkpointPath = SOLUTION_FOLDER + "/checkpoint.nc";
+    if( fs::exists( checkpointPath ) )
+    {
+        std::cout << green << "Loading checkpoint!" << reset << std::endl;
+        std::vector<char*> parsedArgv;
+        l_setup = new tsunami_lab::setups::Checkpoint( checkpointPath.c_str(),
+                                                       l_scaleX,
+                                                       l_scaleY,
+                                                       l_timeStep,
+                                                       l_simTime,
+                                                       parsedArgv );
+        i_argc = parsedArgv.size();
+        i_argv = parsedArgv.data();
+        useCheckpoint = true;
+    }
+    else
+    {
+        std::cout << green << "No checkpoint found!" << reset << std::endl;
+    }
 
 #ifndef SKIP_ARGUMENTS
     // error: wrong number of arguments.
@@ -314,14 +355,23 @@ int main( int   i_argc,
                     l_writeTime = floatParameter;
                     break;
                 case Arguments::AVERAGE_SEVERAL:
-                    ullongParameter = atof( i_argv[++i] );
-                    if( ullongParameter <= 0 || std::isnan( ullongParameter ) || std::isinf( floatParameter ) )
+                    ullongParameter = atoi( i_argv[++i] );
+                    if( ullongParameter <= 0 )
                     {
                         std::cerr << "invalid argument for flag -k" << std::endl
                                   << "the checkpoint write frequency should be a number larger than 0" << std::endl;
                         return EXIT_FAILURE;
                     }
                     l_averageCellNumber = ullongParameter;
+                case Arguments::CHECKPOINT_INTERVALL:
+                    floatParameter = atof( i_argv[++i] );
+                    if( floatParameter <= 0 || std::isnan( floatParameter ) || std::isinf( floatParameter ) )
+                    {
+                        std::cerr << "invalid argument for flag -c" << std::endl
+                            << "the time should be a number larger than 0" << std::endl;
+                        return EXIT_FAILURE;
+                    }
+                    checkpointIntervall = floatParameter;
                     break;
                 default:
                     std::cerr << "unknown flag: " << arg[argI] << std::endl;
@@ -388,11 +438,9 @@ int main( int   i_argc,
     std::cout << "Output format is set to " << green << ( isCsv ? "csv" : "netCDF" ) << reset << std::endl
         << "Writing the X-/Y-Axis in format " << green << ( useAxisSpherical ? "degrees" : "meters" ) << reset << std::endl
         << "Simulation Time is set to " << green << l_endTime << " seconds" << reset << std::endl
-        << "Writing to the disk every " << green << l_writeTime << " seconds" << reset << " of simulation time" << std::endl;
+        << "Writing to the disk every " << green << l_writeTime << " seconds" << reset << " of simulation time" << std::endl
+        << "Checkpointing every " << green << checkpointIntervall << " minutes" << reset << std::endl;
     // End print
-
-    tsunami_lab::t_real l_scaleX = 2700000;
-    tsunami_lab::t_real l_scaleY = 1500000;
     if( use2D )
     {
         l_dxy = std::min( l_scaleX / l_nx, l_scaleY / l_ny );
@@ -409,16 +457,16 @@ int main( int   i_argc,
     std::cout << "  number of cells combined to one cell: " << ( l_averageCellNumber * l_averageCellNumber ) << std::endl;
 
     // construct setup
-    tsunami_lab::setups::Setup* l_setup;
-    const char* variables[3]{ "x", "y", "z" };
-    l_setup = new tsunami_lab::setups::TsunamiEvent2d( "resources/gebco20/tohoku_gebco20_usgs_250m_bath.nc",
-                                                       variables,
-                                                       "resources/gebco20/tohoku_gebco20_usgs_250m_displ.nc",
-                                                       variables,
-                                                       l_scaleX,
-                                                       l_scaleY );
-
-
+    if( l_setup == nullptr )
+    {
+        const char* variables[3]{ "x", "y", "z" };
+        l_setup = new tsunami_lab::setups::TsunamiEvent2d( "resources/artificialtsunami_bathymetry_1000.nc",
+                                                           variables,
+                                                           "resources/artificialtsunami_displ_1000.nc",
+                                                           variables,
+                                                           l_scaleX,
+                                                           l_scaleY );
+    }
 
     // construct solver
     tsunami_lab::patches::WavePropagation* l_waveProp;
@@ -504,25 +552,26 @@ int main( int   i_argc,
     tsunami_lab::t_real l_scaling = l_dt / l_dxy;
 
     // set up time and print control
-    tsunami_lab::t_idx  l_timeStep = 0;
     tsunami_lab::t_idx  l_nOut = 0;
-    tsunami_lab::t_real l_simTime = 0;
 
-
-    // create simulation folder inside solution folder
-    if( !fs::exists( SOLUTION_FOLDER ) )
+    if( !useCheckpoint )
     {
-        fs::create_directory( SOLUTION_FOLDER );
+        // create simulation folder inside solution folder
+        if( !fs::exists( SOLUTION_FOLDER ) )
+        {
+            fs::create_directory( SOLUTION_FOLDER );
+        }
+        if( fs::exists( SOLUTION_FOLDER + "/simulation" ) )
+        {
+            fs::remove_all( SOLUTION_FOLDER + "/simulation" );
+        }
+        fs::create_directory( SOLUTION_FOLDER + "/simulation" );
     }
-    if( fs::exists( SOLUTION_FOLDER + "/simulation" ) )
-    {
-        fs::remove_all( SOLUTION_FOLDER + "/simulation" );
-    }
-    fs::create_directory( SOLUTION_FOLDER + "/simulation" );
 
     std::cout << "entering time loop" << std::endl;
 
     tsunami_lab::io::NetCdf* netCdfWriter = nullptr;
+    bool writeMomenta = false;
     if( !isCsv )
     {
         netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/solution.nc",
@@ -534,7 +583,7 @@ int main( int   i_argc,
                                                     l_waveProp->getStride(),
                                                     useBathymetry ? l_waveProp->getBathymetry() : nullptr,
                                                     useAxisSpherical,
-                                                    false );
+                                                    writeMomenta );
     }
 
     // var to check if it's time to write stations
@@ -544,6 +593,7 @@ int main( int   i_argc,
     tsunami_lab::t_idx l_writeCount = 0;
 
     const auto startTime = std::chrono::high_resolution_clock::now();
+    auto checkpointTime = std::chrono::high_resolution_clock::now();
 
     // iterate over time
     while( l_simTime < l_endTime )
@@ -592,6 +642,33 @@ int main( int   i_argc,
                                               l_waveProp->getMomentumX(),
                                               l_waveProp->getMomentumY() );
             }
+        }
+
+        if( std::chrono::duration_cast<std::chrono::seconds>( std::chrono::high_resolution_clock::now() - checkpointTime ).count() / 60.0f >= checkpointIntervall )
+        {
+            std::string tempCheckpointPath = SOLUTION_FOLDER + "/new_checkpoint";
+            tsunami_lab::io::NetCdf* checkpointWriter = new tsunami_lab::io::NetCdf( tempCheckpointPath,
+                                                                                     l_nx,
+                                                                                     l_ny,
+                                                                                     l_scaleX,
+                                                                                     l_scaleY,
+                                                                                     l_waveProp->getStride(),
+                                                                                     useBathymetry ? l_waveProp->getBathymetry() : nullptr,
+                                                                                     !useAxisMeters,
+                                                                                     writeMomenta,
+                                                                                     commandline.c_str() );
+            checkpointWriter->write( l_simTime,
+                                     l_waveProp->getTotalHeight(),
+                                     l_waveProp->getMomentumX(),
+                                     l_waveProp->getMomentumY(),
+                                     l_timeStep );
+            delete checkpointWriter;
+            if( fs::exists( checkpointPath ) )
+            {
+                fs::remove( checkpointPath );
+            }
+            fs::rename( tempCheckpointPath, checkpointPath );
+            checkpointTime = std::chrono::high_resolution_clock::now();
         }
 
         l_waveProp->setGhostOutflow();

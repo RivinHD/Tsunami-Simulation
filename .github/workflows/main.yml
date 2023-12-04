@@ -73,7 +73,7 @@ jobs:
           mkdir build
           cd build
           cmake -D ENABLE_TESTMODE=ON ..
-          cmake --build . --config Release --target simulation
+          cmake --build . --config Release --target sanitize
           echo "Test ./simulation 10 -f csv"
           ./simulation 10 -f csv
           echo "Test ./simulation 10 10"

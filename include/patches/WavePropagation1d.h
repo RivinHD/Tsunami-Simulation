@@ -47,6 +47,9 @@ private:
     //! total height of water height + bathymetry
     t_real* m_totalHeight = nullptr;
 
+    //! is true if the total height need to be updated
+    bool isDirtyTotalHeight = true;
+
     //! reflection for the left (index: 0) and right (index: 1)
     bool hasReflection[2] = { false, false };
 
