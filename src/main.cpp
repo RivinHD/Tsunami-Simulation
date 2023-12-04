@@ -29,7 +29,7 @@
 #include <thread>
 #include <atomic>
 
- // #define SKIP_ARGUMENTS
+// #define SKIP_ARGUMENTS
 
 namespace fs = std::filesystem;
 
@@ -43,8 +43,9 @@ enum Arguments
     REFLECTION = 'r',
     TIME = 't',
     IO_FORMAT = 'f',
-    USE_AXIS_METERS = 'M',
-    WRITE_INTERVALL = 'w'
+    USE_AXIS_SPHERICAL = 'S',
+    WRITE_INTERVALL = 'w',
+    AVERAGE_SEVERAL = 'k'
 };
 
 const int requiredArguments = 1;
@@ -55,8 +56,9 @@ const std::vector<ArgSetup> optionalFlags = {
     ArgSetup( Arguments::REFLECTION, 1, 4 ),
     ArgSetup( Arguments::TIME, 1, 1 ),
     ArgSetup( Arguments::IO_FORMAT, 1, 1 ),
-    ArgSetup( Arguments::USE_AXIS_METERS, 0, 0 ),
-    ArgSetup( Arguments::WRITE_INTERVALL, 1, 1 )
+    ArgSetup( Arguments::USE_AXIS_SPHERICAL, 0, 0 ),
+    ArgSetup( Arguments::WRITE_INTERVALL, 1, 1 ),
+    ArgSetup( Arguments::AVERAGE_SEVERAL, 1, 1)
 };
 
 void printHelp()
@@ -68,9 +70,10 @@ void printHelp()
 
     std::cerr << "./build/simulation " << magenta << "N_CELLS_X (N_CELLS_Y) " << reset << "["
         << green << "-B" << reset << "] ["
-        << green << "-M" << reset << "] ["
+        << green << "-S" << reset << "] ["
         << green << "-f" << cyan << " <csv|netCDF>" << reset << "] ["
         << green << "-r " << cyan << "<left|right|top|bottom|x|y|all>" << reset << "] ["
+        << green << "-k" << cyan << "<minutes>" << reset << "] ["
         << green << "-s " << cyan << "<fwave|roe>" << reset << "] ["
         << green << "-t" << cyan << " <seconds>" << reset << "] ["
         << green << "-w" << cyan << " <seconds>" << reset << "]"
@@ -84,8 +87,9 @@ void printHelp()
         << "NOTE: optional flags must be set after the inputs.." << std::endl
         << "OPTIONAL FLAGS:" << std::endl
         << green << "\t-B" << reset << " enables the use of bathymetry." << std::endl
-        << green << "\t-M" << reset << " use meters as unit for the x-axis and y-axis solution output instead of degrees_east (longitude) and degrees_north (latitude)." << std::endl
+        << green << "\t-S" << reset << " use degrees_east (longitude) and degrees_north (latitude) as unit for the x-axis and y-axis solution output instead of meters." << std::endl
         << green << "\t-f" << reset << " defines the output format. Requires " << cyan << "csv" << reset << " or " << cyan << "netCDF" << reset << ". The default is netCDF." << std::endl
+        << green << "\t-k" << reset << " defines the output frequency for creating a checkpoint in minutes" << std::endl
         << green << "\t-r" << reset << " enables the reflection on the specified side of the simulation. Several arguments can be passed (maximum 4)." << std::endl
         << "\t   where " << cyan << "left | right | top | bottom" << reset << " enables their respective sides." << std::endl
         << "\t   where " << cyan << "x" << reset << " enables the left & right and " << cyan << "y" << reset << " enables the top & bottom side." << std::endl
@@ -120,7 +124,8 @@ int main( int   i_argc,
     bool reflectBottom = false;
     bool use2D = false;
     bool isCsv = false;
-    bool useAxisMeters = false;
+    bool useAxisSpherical = false;
+    tsunami_lab::t_idx l_averageCellNumber = 1;
     tsunami_lab::t_real l_endTime = 5;
     tsunami_lab::t_real l_writeTime = tsunami_lab::t_real( 0.25 );
 
@@ -172,6 +177,7 @@ int main( int   i_argc,
 
         unsigned int argI = 0;
         std::string stringParameter;
+        tsunami_lab::t_idx ullongParameter;
         float floatParameter;
         int startIndex;
         while( arg[++argI] != '\0' )  // starts with argI = 1
@@ -294,8 +300,8 @@ int main( int   i_argc,
                         return EXIT_FAILURE;
                     }
                     break;
-                case Arguments::USE_AXIS_METERS:
-                    useAxisMeters = true;
+                case Arguments::USE_AXIS_SPHERICAL:
+                    useAxisSpherical = true;
                     break;
                 case Arguments::WRITE_INTERVALL:
                     floatParameter = atof( i_argv[++i] );
@@ -306,6 +312,16 @@ int main( int   i_argc,
                         return EXIT_FAILURE;
                     }
                     l_writeTime = floatParameter;
+                    break;
+                case Arguments::AVERAGE_SEVERAL:
+                    ullongParameter = atof( i_argv[++i] );
+                    if( ullongParameter <= 0 || std::isnan( ullongParameter ) || std::isinf( floatParameter ) )
+                    {
+                        std::cerr << "invalid argument for flag -k" << std::endl
+                                  << "the checkpoint write frequency should be a number larger than 0" << std::endl;
+                        return EXIT_FAILURE;
+                    }
+                    l_averageCellNumber = ullongParameter;
                     break;
                 default:
                     std::cerr << "unknown flag: " << arg[argI] << std::endl;
@@ -325,7 +341,7 @@ int main( int   i_argc,
     reflectTop = false;
     useBathymetry = true;
     use2D = true;
-    useAxisMeters = true;
+    useAxisSpherical = true;
     l_endTime = 13000;
     std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
@@ -370,7 +386,7 @@ int main( int   i_argc,
     }
 
     std::cout << "Output format is set to " << green << ( isCsv ? "csv" : "netCDF" ) << reset << std::endl
-        << "Writing the X-/Y-Axis in format " << green << ( useAxisMeters ? "meters" : "degrees" ) << reset << std::endl
+        << "Writing the X-/Y-Axis in format " << green << ( useAxisSpherical ? "degrees" : "meters" ) << reset << std::endl
         << "Simulation Time is set to " << green << l_endTime << " seconds" << reset << std::endl
         << "Writing to the disk every " << green << l_writeTime << " seconds" << reset << " of simulation time" << std::endl;
     // End print
@@ -511,18 +527,19 @@ int main( int   i_argc,
         netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/solution.nc",
                                                     l_nx,
                                                     l_ny,
+                                                    l_averageCellNumber,
                                                     l_scaleX,
                                                     l_scaleY,
                                                     l_waveProp->getStride(),
                                                     useBathymetry ? l_waveProp->getBathymetry() : nullptr,
-                                                    !useAxisMeters,
+                                                    useAxisSpherical,
                                                     false );
     }
 
     // var to check if it's time to write stations
     tsunami_lab::t_real l_timeCount = 0.0;
 
-    // var to check if it'S time to write to the disk
+    // var to check if it's time to write to the disk
     tsunami_lab::t_idx l_writeCount = 0;
 
     const auto startTime = std::chrono::high_resolution_clock::now();
@@ -569,10 +586,11 @@ int main( int   i_argc,
             }
             else
             {
-                netCdfWriter->write( l_simTime,
-                                     l_waveProp->getTotalHeight(),
-                                     l_waveProp->getMomentumX(),
-                                     l_waveProp->getMomentumY() );
+                netCdfWriter->averageSeveral( l_averageCellNumber,
+                                              l_simTime,
+                                              l_waveProp->getTotalHeight(),
+                                              l_waveProp->getMomentumX(),
+                                              l_waveProp->getMomentumY() );
             }
         }
 

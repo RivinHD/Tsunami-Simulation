@@ -167,6 +167,7 @@ public:
      * @param filePath filepath of the netCDF file
      * @param l_nx len in x dimension
      * @param l_ny len in y dimension
+     * @param l_k number of cells to average several neighbouring cells of the computational grid into one cell
      * @param l_scaleX the scale in x direction in meters
      * @param l_scaleY the scale in y direction in meters
      * @param l_stride the stride of the data-set to write
@@ -177,6 +178,7 @@ public:
     NetCdf( std::string filePath,
             t_idx l_nx,
             t_idx l_ny,
+            t_idx l_k,
             t_real l_scaleX,
             t_real l_scaleY,
             t_idx l_stride,
@@ -190,6 +192,22 @@ public:
     ~NetCdf();
 
     /**
+     * Averages the input arrays so that l_k cells are combined into one cell.
+     *
+     * @param l_k number of cells to average several neighbouring cells of the computational grid into one cell
+     * @param simulationTime the current simulation time in seconds
+     * @param totalHeight total heights of cells
+     * @param momentumX momentum of cells in x direction
+     * @param momentumY momentum of cells in y direction
+     */
+
+    void averageSeveral( t_idx l_k,
+                         const t_real simulationTime,
+                         const t_real* totalHeight,
+                         const t_real* momentumX,
+                         const t_real* momentumY );
+
+    /**
      * Write current time step to a netCDF file.
      *
      * @param simulationTime the current simulation time in seconds
@@ -197,6 +215,7 @@ public:
      * @param momentumX momentum of cells in x direction
      * @param momentumY momentum of cells in y direction
      */
+
     void write( const t_real simulationTime,
                 const t_real* totalHeight,
                 const t_real* momentumX,

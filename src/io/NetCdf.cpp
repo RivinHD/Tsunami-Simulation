@@ -261,6 +261,7 @@ tsunami_lab::io::NetCdf::NetCdf()
 tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                                  t_idx l_nx,
                                  t_idx l_ny,
+                                 t_idx l_k,
                                  t_real l_scaleX,
                                  t_real l_scaleY,
                                  t_idx l_stride,
@@ -270,8 +271,8 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     : isReadMode( false )
 {
     m_filePath = filePath;
-    m_nx = l_nx;
-    m_ny = l_ny;
+    m_nx = l_nx / l_k;
+    m_ny = l_ny / l_k;
     m_scaleX = l_scaleX;
     m_scaleY = l_scaleY;
     m_stride = l_stride;
@@ -582,6 +583,54 @@ void tsunami_lab::io::NetCdf::read( const char* filepath,
                                     size_t timeStep )
 {
     _read( filepath, &variableName, &outData, timeStep, 1 );
+}
+
+void tsunami_lab::io::NetCdf::averageSeveral( tsunami_lab::t_idx l_k,
+                                              const tsunami_lab::t_real simulationTime,
+                                              const tsunami_lab::t_real *totalHeight,
+                                              const tsunami_lab::t_real *momentumX,
+                                              const tsunami_lab::t_real *momentumY)
+{
+    t_idx l_size = ( m_nx / l_k ) * ( m_ny / l_k );
+    t_idx l_index = 0;
+    t_idx l_k2 = l_k * l_k;
+
+    t_real l_avgHeight = 0;
+    t_real l_avgMomentumX = 0;
+    t_real l_avgMomentumY = 0;
+
+    // set size??
+
+    t_real* l_totalHeight = new t_real[l_size]{ 0 };
+    t_real* l_momentumX = new t_real[l_size]{ 0 };
+    t_real* l_momentumY = new t_real[l_size]{ 0 };
+
+    for( t_idx y = 0; y < m_ny; y += l_k )
+    {
+        for( t_idx x = 0; x < m_nx; x += l_k )
+        {
+            for( t_idx i_y = y; i_y < y + l_k; i_y++ )
+            {
+                for ( t_idx i_x = x; i_x < x + l_k; i_x++ )
+                {
+                    l_avgHeight += totalHeight[ ( i_y * m_stride ) + i_x ];
+                    l_avgMomentumX += momentumX[ ( i_y * m_stride ) + i_x ];
+                    l_avgMomentumY += momentumY[ ( i_y * m_stride ) + i_x ];
+                }
+            }
+            // write combined cell to arrays
+            l_totalHeight[l_index] = l_avgHeight / l_k2;
+            l_momentumX[l_index] = l_avgMomentumX / l_k2;
+            l_momentumY[l_index] = l_avgMomentumY / l_k2;
+            l_index++;
+            // reset average values
+            l_avgHeight = 0;
+            l_avgMomentumX = 0;
+            l_avgMomentumY = 0;
+        }
+    }
+
+    write( simulationTime, l_totalHeight, l_momentumX, l_momentumY );
 }
 
 tsunami_lab::io::NetCdf::VarArray::~VarArray()
