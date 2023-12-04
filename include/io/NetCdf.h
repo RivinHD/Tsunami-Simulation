@@ -34,11 +34,20 @@ private:
     //! name of the netCDF file
     std::string m_filePath = "";
 
+    //! number of cells in x dimension when not using cell combination
+    t_idx m_singleCellnx = 1;
+
+    //! number of cells in y dimension when not using cell combination
+    t_idx m_singleCellny = 1;
+
     //! number of cells in x dimension
     t_idx m_nx = 1;
 
     //! number of cells in y dimension
     t_idx m_ny = 1;
+
+    //! number of cells to average several neighbouring cells of the computational grid into one cell
+    t_idx m_k = 1;
 
     //! scale in x dimension in meters
     t_idx m_scaleX = 1;
@@ -46,7 +55,10 @@ private:
     //! scale in y dimension in meters
     t_idx m_scaleY = 1;
 
-    //! stride length
+    //! stride length when not using cell combination
+    t_idx m_singleCellStride = 1;
+
+    //! stride length when using cell combination
     t_idx m_stride = 1;
 
     //! time of write operation
@@ -201,8 +213,7 @@ public:
      * @param momentumY momentum of cells in y direction
      */
 
-    void averageSeveral( t_idx l_k,
-                         const t_real simulationTime,
+    void averageSeveral( const t_real simulationTime,
                          const t_real* totalHeight,
                          const t_real* momentumX,
                          const t_real* momentumY );

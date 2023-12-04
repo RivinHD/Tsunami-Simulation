@@ -73,7 +73,7 @@ void printHelp()
         << green << "-S" << reset << "] ["
         << green << "-f" << cyan << " <csv|netCDF>" << reset << "] ["
         << green << "-r " << cyan << "<left|right|top|bottom|x|y|all>" << reset << "] ["
-        << green << "-k" << cyan << "<minutes>" << reset << "] ["
+        << green << "-k" << cyan << "<NUMBER>" << reset << "] ["
         << green << "-s " << cyan << "<fwave|roe>" << reset << "] ["
         << green << "-t" << cyan << " <seconds>" << reset << "] ["
         << green << "-w" << cyan << " <seconds>" << reset << "]"
@@ -89,7 +89,7 @@ void printHelp()
         << green << "\t-B" << reset << " enables the use of bathymetry." << std::endl
         << green << "\t-S" << reset << " use degrees_east (longitude) and degrees_north (latitude) as unit for the x-axis and y-axis solution output instead of meters." << std::endl
         << green << "\t-f" << reset << " defines the output format. Requires " << cyan << "csv" << reset << " or " << cyan << "netCDF" << reset << ". The default is netCDF." << std::endl
-        << green << "\t-k" << reset << " defines the output frequency for creating a checkpoint in minutes" << std::endl
+        << green << "\t-k" << reset << " defines the number of cells to average several neighbouring cells of the computational grid into one cell" << std::endl
         << green << "\t-r" << reset << " enables the reflection on the specified side of the simulation. Several arguments can be passed (maximum 4)." << std::endl
         << "\t   where " << cyan << "left | right | top | bottom" << reset << " enables their respective sides." << std::endl
         << "\t   where " << cyan << "x" << reset << " enables the left & right and " << cyan << "y" << reset << " enables the top & bottom side." << std::endl
@@ -403,16 +403,17 @@ int main( int   i_argc,
     }
 
     std::cout << "runtime configuration" << std::endl;
-    std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
-    std::cout << "  number of cells in y-direction: " << l_ny << std::endl;
-    std::cout << "  cell size:                      " << l_dxy << std::endl;
+    std::cout << "  number of cells in x-direction:       " << l_nx << std::endl;
+    std::cout << "  number of cells in y-direction:       " << l_ny << std::endl;
+    std::cout << "  cell size:                            " << l_dxy << std::endl;
+    std::cout << "  number of cells combined to one cell: " << ( l_averageCellNumber * l_averageCellNumber ) << std::endl;
 
     // construct setup
     tsunami_lab::setups::Setup* l_setup;
     const char* variables[3]{ "x", "y", "z" };
-    l_setup = new tsunami_lab::setups::TsunamiEvent2d( "resources/artificialtsunami_bathymetry_1000.nc",
+    l_setup = new tsunami_lab::setups::TsunamiEvent2d( "resources/gebco20/tohoku_gebco20_usgs_250m_bath.nc",
                                                        variables,
-                                                       "resources/artificialtsunami_displ_1000.nc",
+                                                       "resources/gebco20/tohoku_gebco20_usgs_250m_displ.nc",
                                                        variables,
                                                        l_scaleX,
                                                        l_scaleY );
@@ -586,8 +587,7 @@ int main( int   i_argc,
             }
             else
             {
-                netCdfWriter->averageSeveral( l_averageCellNumber,
-                                              l_simTime,
+                netCdfWriter->averageSeveral( l_simTime,
                                               l_waveProp->getTotalHeight(),
                                               l_waveProp->getMomentumX(),
                                               l_waveProp->getMomentumY() );

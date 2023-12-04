@@ -271,11 +271,15 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     : isReadMode( false )
 {
     m_filePath = filePath;
+    m_singleCellnx = l_nx;
+    m_singleCellny = l_ny;
     m_nx = l_nx / l_k;
     m_ny = l_ny / l_k;
+    m_k = l_k;
     m_scaleX = l_scaleX;
     m_scaleY = l_scaleY;
-    m_stride = l_stride;
+    m_singleCellStride = l_stride;
+    m_stride = m_nx;
     int l_err;
     int m_dimIds[3];
 
@@ -486,14 +490,42 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
 
     if( bathymetry != nullptr )
     {
+        t_idx l_size = m_nx * m_ny ;
+        t_idx l_index = 0;
+        t_idx l_k2 = m_k * m_k;
+
+        t_real l_avgBathymetry = 0;
+        t_real* l_bathymetry = new t_real[l_size]{ 0 };
+
+        for( t_idx y = 0; y < m_singleCellny; y += m_k )
+        {
+            for( t_idx x = 0; x < m_singleCellnx; x += m_k )
+            {
+                for( t_idx i_y = y; i_y < y + m_k; i_y++ )
+                {
+                    for ( t_idx i_x = x; i_x < x + m_k; i_x++ )
+                    {
+                        l_avgBathymetry += bathymetry[ ( i_y * m_singleCellStride ) + i_x ];
+                    }
+                }
+                // write combined cell to arrays
+                l_bathymetry[l_index] = l_avgBathymetry / l_k2;
+                l_index++;
+                // reset average values
+                l_avgBathymetry = 0;
+            }
+        }
+
         l_err = nc_put_varm_float( m_ncId,          // ncid
                                    m_bathymetryId,  // varid
                                    start + 1,       // startp
                                    count + 1,       // countp
                                    stride + 1,      // stridep
                                    map + 1,         // imap
-                                   bathymetry );    // op
+                                   l_bathymetry );  // op
         checkNcErr( l_err, "putBathymetry" );
+
+        delete[] l_bathymetry;
     }
 }
 
@@ -585,37 +617,34 @@ void tsunami_lab::io::NetCdf::read( const char* filepath,
     _read( filepath, &variableName, &outData, timeStep, 1 );
 }
 
-void tsunami_lab::io::NetCdf::averageSeveral( tsunami_lab::t_idx l_k,
-                                              const tsunami_lab::t_real simulationTime,
+void tsunami_lab::io::NetCdf::averageSeveral( const tsunami_lab::t_real simulationTime,
                                               const tsunami_lab::t_real *totalHeight,
                                               const tsunami_lab::t_real *momentumX,
-                                              const tsunami_lab::t_real *momentumY)
+                                              const tsunami_lab::t_real *momentumY )
 {
-    t_idx l_size = ( m_nx / l_k ) * ( m_ny / l_k );
+    t_idx l_size = m_nx * m_ny ;
     t_idx l_index = 0;
-    t_idx l_k2 = l_k * l_k;
+    t_idx l_k2 = m_k * m_k;
 
     t_real l_avgHeight = 0;
     t_real l_avgMomentumX = 0;
     t_real l_avgMomentumY = 0;
 
-    // set size??
-
     t_real* l_totalHeight = new t_real[l_size]{ 0 };
     t_real* l_momentumX = new t_real[l_size]{ 0 };
     t_real* l_momentumY = new t_real[l_size]{ 0 };
 
-    for( t_idx y = 0; y < m_ny; y += l_k )
+    for( t_idx y = 0; y < m_singleCellny; y += m_k )
     {
-        for( t_idx x = 0; x < m_nx; x += l_k )
+        for( t_idx x = 0; x < m_singleCellnx; x += m_k )
         {
-            for( t_idx i_y = y; i_y < y + l_k; i_y++ )
+            for( t_idx i_y = y; i_y < y + m_k; i_y++ )
             {
-                for ( t_idx i_x = x; i_x < x + l_k; i_x++ )
+                for ( t_idx i_x = x; i_x < x + m_k; i_x++ )
                 {
-                    l_avgHeight += totalHeight[ ( i_y * m_stride ) + i_x ];
-                    l_avgMomentumX += momentumX[ ( i_y * m_stride ) + i_x ];
-                    l_avgMomentumY += momentumY[ ( i_y * m_stride ) + i_x ];
+                    l_avgHeight += totalHeight[ ( i_y * m_singleCellStride ) + i_x ];
+                    l_avgMomentumX += momentumX[ ( i_y * m_singleCellStride ) + i_x ];
+                    l_avgMomentumY += momentumY[ ( i_y * m_singleCellStride ) + i_x ];
                 }
             }
             // write combined cell to arrays
@@ -631,6 +660,10 @@ void tsunami_lab::io::NetCdf::averageSeveral( tsunami_lab::t_idx l_k,
     }
 
     write( simulationTime, l_totalHeight, l_momentumX, l_momentumY );
+
+    delete[] l_totalHeight ;
+    delete[] l_momentumX ;
+    delete[] l_momentumY ;
 }
 
 tsunami_lab::io::NetCdf::VarArray::~VarArray()
