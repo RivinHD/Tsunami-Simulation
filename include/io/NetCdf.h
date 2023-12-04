@@ -46,7 +46,7 @@ private:
     //! number of cells in y dimension
     t_idx m_ny = 1;
 
-    //! number of cells to average several neighbouring cells of the computational grid into one cell
+    //! number of cells to average several neighboring cells of the computational grid into one cell
     t_idx m_k = 1;
 
     //! scale in x dimension in meters
@@ -103,8 +103,8 @@ private:
     //! indicates whether this is a checkpoint
     bool isCheckpoint = false;
 
-    //! the current commandline only used if this is a checkpoint
-    const char* commandline = "";
+    //! the current command line only used if this is a checkpoint
+    const char* commandLine = "";
 
 public:
     /**
@@ -213,14 +213,14 @@ public:
      * @param filePath filepath of the netCDF file
      * @param l_nx len in x dimension
      * @param l_ny len in y dimension
-     * @param l_k number of cells to average several neighbouring cells of the computational grid into one cell
+     * @param l_k number of cells to average several neighboring cells of the computational grid into one cell
      * @param l_scaleX the scale in x direction in meters
      * @param l_scaleY the scale in y direction in meters
      * @param l_stride the stride of the data-set to write
      * @param bathymetry bathymetry data to write if no bathymetry should be written pass a nullptr
      * @param useSpherical use spherical Longitude & Latitude in degrees for the X and Y Axis instead of meters
      * @param useMomenta if true also create variables for momentumX and momentumY and enable writing to these
-     * @param commandline the current input of the commandline as a string. Is not used if the file is not a checkpoint.
+     * @param commandLine the current input of the commandLine as a string. Is not used if the file is not a checkpoint.
      */
     NetCdf( std::string filePath,
             t_idx l_nx,
@@ -232,7 +232,7 @@ public:
             const t_real* bathymetry,
             bool useSpherical = true,
             bool useMomenta = true,
-            const char* commandline = "" );
+            const char* commandLine = "" );
 
     /**
      * Destructor of NetCdf.

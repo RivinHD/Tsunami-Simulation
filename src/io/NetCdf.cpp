@@ -270,8 +270,8 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                                  const t_real* bathymetry,
                                  bool useSpherical,
                                  bool useMomenta,
-                                 const char* commandline )
-    : isReadMode( false ), isCheckpoint( commandline[0] != '\0' ), commandline( commandline )
+                                 const char* commandLine )
+    : isReadMode( false ), isCheckpoint( commandLine[0] != '\0' ), commandLine( commandLine )
 {
     m_filePath = filePath;
     m_singleCellnx = l_nx;
@@ -316,7 +316,7 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     {
         l_err = nc_def_dim( m_ncId,
                             "strDim",
-                            strlen( commandline ),
+                            strlen( commandLine ),
                             &strDimID );
         checkNcErr( l_err, "strDim" );
     }
@@ -523,7 +523,7 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     ptrdiff_t map[3] = { 1, static_cast<ptrdiff_t>( m_stride ), 1 };
     if( bathymetry != nullptr )
     {
-        t_idx l_size = m_nx * m_ny ;
+        t_idx l_size = m_nx * m_ny;
         t_idx l_index = 0;
         t_idx l_k2 = m_k * m_k;
 
@@ -536,9 +536,9 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
             {
                 for( t_idx i_y = y; i_y < y + m_k; i_y++ )
                 {
-                    for ( t_idx i_x = x; i_x < x + m_k; i_x++ )
+                    for( t_idx i_x = x; i_x < x + m_k; i_x++ )
                     {
-                        l_avgBathymetry += bathymetry[ ( i_y * m_singleCellStride ) + i_x ];
+                        l_avgBathymetry += bathymetry[( i_y * m_singleCellStride ) + i_x];
                     }
                 }
                 // write combined cell to arrays
@@ -564,12 +564,12 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     if( isCheckpoint )
     {
         start[0] = 0;
-        count[0] = std::strlen( commandline );
+        count[0] = std::strlen( commandLine );
         nc_put_vara( m_ncId,
                      checkpointID,
                      start,
                      count,
-                     commandline );
+                     commandLine );
         checkNcErr( l_err, "checkpoint arguments" );
     }
 }
@@ -677,11 +677,11 @@ void tsunami_lab::io::NetCdf::read( const char* filepath,
 }
 
 void tsunami_lab::io::NetCdf::averageSeveral( const tsunami_lab::t_real simulationTime,
-                                              const tsunami_lab::t_real *totalHeight,
-                                              const tsunami_lab::t_real *momentumX,
-                                              const tsunami_lab::t_real *momentumY )
+                                              const tsunami_lab::t_real* totalHeight,
+                                              const tsunami_lab::t_real* momentumX,
+                                              const tsunami_lab::t_real* momentumY )
 {
-    t_idx l_size = m_nx * m_ny ;
+    t_idx l_size = m_nx * m_ny;
     t_idx l_index = 0;
     t_idx l_k2 = m_k * m_k;
 
@@ -699,11 +699,11 @@ void tsunami_lab::io::NetCdf::averageSeveral( const tsunami_lab::t_real simulati
         {
             for( t_idx i_y = y; i_y < y + m_k; i_y++ )
             {
-                for ( t_idx i_x = x; i_x < x + m_k; i_x++ )
+                for( t_idx i_x = x; i_x < x + m_k; i_x++ )
                 {
-                    l_avgHeight += totalHeight[ ( i_y * m_singleCellStride ) + i_x ];
-                    l_avgMomentumX += momentumX[ ( i_y * m_singleCellStride ) + i_x ];
-                    l_avgMomentumY += momentumY[ ( i_y * m_singleCellStride ) + i_x ];
+                    l_avgHeight += totalHeight[( i_y * m_singleCellStride ) + i_x];
+                    l_avgMomentumX += momentumX[( i_y * m_singleCellStride ) + i_x];
+                    l_avgMomentumY += momentumY[( i_y * m_singleCellStride ) + i_x];
                 }
             }
             // write combined cell to arrays
@@ -720,9 +720,9 @@ void tsunami_lab::io::NetCdf::averageSeveral( const tsunami_lab::t_real simulati
 
     write( simulationTime, l_totalHeight, l_momentumX, l_momentumY );
 
-    delete[] l_totalHeight ;
-    delete[] l_momentumX ;
-    delete[] l_momentumY ;
+    delete[] l_totalHeight;
+    delete[] l_momentumX;
+    delete[] l_momentumY;
 }
 
 tsunami_lab::io::NetCdf::VarArray::~VarArray()

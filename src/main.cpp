@@ -28,7 +28,7 @@
 #include <filesystem> // requieres C++17 and up
 #include <chrono>
 
-// #define SKIP_ARGUMENTS
+ // #define SKIP_ARGUMENTS
 
 namespace fs = std::filesystem;
 
@@ -44,7 +44,6 @@ enum Arguments
     USE_AXIS_SPHERICAL = 'S',
     WRITE_INTERVALL = 'w',
     AVERAGE_SEVERAL = 'k',
-    WRITE_INTERVALL = 'w',
     CHECKPOINT_INTERVALL = 'c'
 };
 
@@ -58,7 +57,7 @@ const std::vector<ArgSetup> optionalFlags = {
     ArgSetup( Arguments::IO_FORMAT, 1, 1 ),
     ArgSetup( Arguments::USE_AXIS_SPHERICAL, 0, 0 ),
     ArgSetup( Arguments::WRITE_INTERVALL, 1, 1 ),
-    ArgSetup( Arguments::AVERAGE_SEVERAL, 1, 1),
+    ArgSetup( Arguments::AVERAGE_SEVERAL, 1, 1 ),
     ArgSetup( Arguments::CHECKPOINT_INTERVALL, 1, 1 )
 };
 
@@ -218,7 +217,7 @@ int main( int   i_argc,
 
         unsigned int argI = 0;
         std::string stringParameter;
-        tsunami_lab::t_idx ullongParameter;
+        int intParameter;
         float floatParameter;
         int startIndex;
         while( arg[++argI] != '\0' )  // starts with argI = 1
@@ -355,14 +354,15 @@ int main( int   i_argc,
                     l_writeTime = floatParameter;
                     break;
                 case Arguments::AVERAGE_SEVERAL:
-                    ullongParameter = atoi( i_argv[++i] );
-                    if( ullongParameter <= 0 )
+                    intParameter = atoi( i_argv[++i] );
+                    if( intParameter <= 0 )
                     {
                         std::cerr << "invalid argument for flag -k" << std::endl
-                                  << "the checkpoint write frequency should be a number larger than 0" << std::endl;
+                            << "the checkpoint write frequency should be a number larger than 0" << std::endl;
                         return EXIT_FAILURE;
                     }
-                    l_averageCellNumber = ullongParameter;
+                    l_averageCellNumber = intParameter;
+                    break;
                 case Arguments::CHECKPOINT_INTERVALL:
                     floatParameter = atof( i_argv[++i] );
                     if( floatParameter <= 0 || std::isnan( floatParameter ) || std::isinf( floatParameter ) )
@@ -650,11 +650,12 @@ int main( int   i_argc,
             tsunami_lab::io::NetCdf* checkpointWriter = new tsunami_lab::io::NetCdf( tempCheckpointPath,
                                                                                      l_nx,
                                                                                      l_ny,
+                                                                                     1,
                                                                                      l_scaleX,
                                                                                      l_scaleY,
                                                                                      l_waveProp->getStride(),
                                                                                      useBathymetry ? l_waveProp->getBathymetry() : nullptr,
-                                                                                     !useAxisMeters,
+                                                                                     useAxisSpherical,
                                                                                      writeMomenta,
                                                                                      commandline.c_str() );
             checkpointWriter->write( l_simTime,
