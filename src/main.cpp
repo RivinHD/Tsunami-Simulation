@@ -659,10 +659,10 @@ int main( int   i_argc,
             }
             else
             {
-                netCdfWriter->write( l_simTime,
-                                     l_waveProp->getTotalHeight(),
-                                     l_waveProp->getMomentumX(),
-                                     l_waveProp->getMomentumY() );
+                netCdfWriter->averageSeveral( l_simTime,
+                                              l_waveProp->getTotalHeight(),
+                                              l_waveProp->getMomentumX(),
+                                              l_waveProp->getMomentumY() );
             }
         }
 
@@ -723,4 +723,4 @@ int main( int   i_argc,
 
     std::cout << "finished, exiting" << std::endl;
     return EXIT_SUCCESS;
-    }
+}
