@@ -856,10 +856,12 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
     tsunami_lab::io::NetCdf* netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/WriteNetCDF.test.nc",
                                                                          10,
                                                                          10,
+                                                                         1,
                                                                          10000,
                                                                          10000,
                                                                          12,
-                                                                         bathymetry );
+                                                                         bathymetry,
+                                                                         true );
     for( size_t i = 0; i < 20; i++ )
     {
         netCdfWriter->write( time[i],
@@ -901,6 +903,7 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
     netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/WriteNetCDF.test.nc",
                                                 10,
                                                 10,
+                                                1,
                                                 10000,
                                                 10000,
                                                 12,

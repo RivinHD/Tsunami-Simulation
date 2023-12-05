@@ -219,6 +219,91 @@ void tsunami_lab::io::NetCdf::_read( const char* filepath,
     checkNcErr( l_err, "closeFile" );
 }
 
+void tsunami_lab::io::NetCdf::_write( const t_real simulationTime,
+                                      const t_real* totalHeight,
+                                      const t_real* momentumX,
+                                      const t_real* momentumY,
+                                      const t_idx nx,
+                                      const t_idx ny,
+                                      const t_idx stride,
+                                      const t_idx writeCount )
+{
+
+    if( isReadMode )
+    {
+        std::cerr << "This netCdf object is not initialized in write mode. Read mode can only be used to read from files." << std::endl;
+        exit( 2 );
+    }
+
+    int l_err;
+    size_t startNC[3] = { m_time, 0, 0 };
+    size_t countNC[3] = { 1, ny, nx };
+    ptrdiff_t strideNC[3] = { 1, 1, 1 };
+    ptrdiff_t mapNC[3] = { 1, static_cast<ptrdiff_t>( stride ), 1 };
+    size_t indexNC[1] = { m_time }; // index should be same as current time dimension
+
+    // write data
+    l_err = nc_put_var1_float( m_ncId,              // ncid
+                               m_timeId,            // varid
+                               indexNC,               // indexp
+                               &simulationTime );   // op
+    checkNcErr( l_err, "putTime" );
+
+    if( totalHeight != nullptr )
+    {
+        l_err = nc_put_varm_float( m_ncId,          // ncid
+                                   m_totalHeightId, // varid
+                                   startNC,         // startp
+                                   countNC,         // countp
+                                   strideNC,        // stridep
+                                   mapNC,           // imap
+                                   totalHeight );   // op
+        checkNcErr( l_err, "putTotalHeight" );
+    }
+
+    if( momentumX != nullptr && m_momentumXId >= 0 )
+    {
+        l_err = nc_put_varm_float( m_ncId,          // ncid
+                                   m_momentumXId,   // varid
+                                   startNC,         // startp
+                                   countNC,         // countp
+                                   strideNC,        // stridep
+                                   mapNC,           // imap
+                                   momentumX );     // op
+        checkNcErr( l_err, "putMomentumX" );
+    }
+
+    if( momentumY != nullptr && m_momentumYId >= 0 )
+    {
+        l_err = nc_put_varm_float( m_ncId,          // ncid
+                                   m_momentumYId,   // varid
+                                   startNC,         // startp
+                                   countNC,         // countp
+                                   strideNC,        // stridep
+                                   mapNC,           // imap
+                                   momentumY );     // op
+        checkNcErr( l_err, "putMomentumY" );
+    }
+
+    if( m_writeCountId >= 0 )
+    {
+        indexNC[0] = 0;
+        unsigned long long ullWriteCount = static_cast<unsigned long long>( writeCount );
+        l_err = nc_put_var1_ulonglong( m_ncId,
+                                       m_writeCountId,
+                                       indexNC,
+                                       &ullWriteCount );
+        checkNcErr( l_err, "putWriteCount" );
+    }
+
+#ifndef TSUNAMI_SIMULATION_TEST
+    std::cout << " writing to '" << m_filePath << "'" << std::endl;
+#endif //!TSUNAMI_SIMULATION_TEST
+    ++m_time;
+
+    nc_sync( m_ncId );
+}
+
 void tsunami_lab::io::NetCdf::checkNcErr( int i_err, std::string text )
 {
     if( i_err )
@@ -236,7 +321,7 @@ tsunami_lab::io::NetCdf::NetCdf()
 {
 }
 
-tsunami_lab::io::NetCdf::NetCdf( t_idx timeStep,
+tsunami_lab::io::NetCdf::NetCdf( t_idx writeStep,
                                  std::string filePath,
                                  t_idx l_nx,
                                  t_idx l_ny,
@@ -248,7 +333,7 @@ tsunami_lab::io::NetCdf::NetCdf( t_idx timeStep,
                                  bool useSpherical )
     :isReadMode( false ), isCheckpoint( false )
 {
-    m_time = timeStep;
+    m_time = writeStep;
     m_filePath = filePath;
     m_singleCellnx = l_nx;
     m_singleCellny = l_ny;
@@ -346,7 +431,8 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                                  const t_real* bathymetry,
                                  bool useSpherical,
                                  bool useMomenta,
-                                 const char* commandLine )
+                                 const char* commandLine,
+                                 t_real hMax )
     : isReadMode( false ), isCheckpoint( commandLine[0] != '\0' ), commandLine( commandLine )
 {
     m_filePath = filePath;
@@ -475,20 +561,20 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
         checkNcErr( l_err, "checkpoint" );
 
         l_err = nc_def_var( m_ncId,
-                            "timeStep",
-                            NC_INT,
-                            1,
-                            &m_dimTimeId,
-                            &m_timeStepId );
-        checkNcErr( l_err, "timeStep" );
-
-        l_err = nc_def_var( m_ncId,
                             "writeCount",
                             NC_INT,
                             1,
                             &m_dimTimeId,
                             &m_writeCountId );
         checkNcErr( l_err, "writeCount" );
+
+        l_err = nc_def_var( m_ncId,
+                            "hMax",
+                            NC_FLOAT,
+                            1,
+                            &m_dimTimeId,
+                            &m_hMaxID );
+        checkNcErr( l_err, "hMax" );
     }
 
     // global attribute
@@ -605,6 +691,7 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     size_t count[3] = { 1, m_ny, m_nx };
     ptrdiff_t stride[3] = { 1, 1, 1 };
     ptrdiff_t map[3] = { 1, static_cast<ptrdiff_t>( m_stride ), 1 };
+    size_t index[1] = { 0 };
     if( bathymetry != nullptr )
     {
         t_idx l_size = m_nx * m_ny;
@@ -649,12 +736,19 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     {
         start[0] = 0;
         count[0] = std::strlen( commandLine ) + 1;
-        nc_put_vara( m_ncId,
-                     checkpointID,
-                     start,
-                     count,
-                     commandLine );
+        l_err = nc_put_vara( m_ncId,
+                             checkpointID,
+                             start,
+                             count,
+                             commandLine );
         checkNcErr( l_err, "checkpoint arguments" );
+
+        index[0] = 0;
+        l_err = nc_put_var1_float( m_ncId,
+                                   m_hMaxID,
+                                   index,
+                                   &hMax );
+        checkNcErr( l_err, "checkpoint hMax" );
     }
 }
 
@@ -676,91 +770,16 @@ void tsunami_lab::io::NetCdf::write( const t_real simulationTime,
                                      const t_real* totalHeight,
                                      const t_real* momentumX,
                                      const t_real* momentumY,
-                                     const t_idx timeStep,
                                      const t_idx writeCount )
 {
-    if( isReadMode )
-    {
-        std::cerr << "This netCdf object is not initialized in write mode. Read mode can only be used to read from files." << std::endl;
-        exit( 2 );
-    }
-
-    int l_err;
-    size_t start[3] = { m_time, 0, 0 };
-    size_t count[3] = { 1, m_ny, m_nx };
-    ptrdiff_t stride[3] = { 1, 1, 1 };
-    ptrdiff_t map[3] = { 1, static_cast<ptrdiff_t>( m_stride ), 1 };
-    size_t index[1] = { m_time }; // index should be same as current time dimension
-
-    // write data
-    l_err = nc_put_var1_float( m_ncId,              // ncid
-                               m_timeId,            // varid
-                               index,               // indexp
-                               &simulationTime );   // op
-    checkNcErr( l_err, "putTime" );
-
-    if( totalHeight != nullptr )
-    {
-        l_err = nc_put_varm_float( m_ncId,          // ncid
-                                   m_totalHeightId, // varid
-                                   start,           // startp
-                                   count,           // countp
-                                   stride,          // stridep
-                                   map,             // imap
-                                   totalHeight );   // op
-        checkNcErr( l_err, "putTotalHeight" );
-    }
-
-    if( momentumX != nullptr && m_momentumXId >= 0 )
-    {
-        l_err = nc_put_varm_float( m_ncId,          // ncid
-                                   m_momentumXId,   // varid
-                                   start,           // startp
-                                   count,           // countp
-                                   stride,          // stridep
-                                   map,             // imap
-                                   momentumX );     // op
-        checkNcErr( l_err, "putMomentumX" );
-    }
-
-    if( momentumY != nullptr && m_momentumYId >= 0 )
-    {
-        l_err = nc_put_varm_float( m_ncId,          // ncid
-                                   m_momentumYId,   // varid
-                                   start,           // startp
-                                   count,           // countp
-                                   stride,          // stridep
-                                   map,             // imap
-                                   momentumY );     // op
-        checkNcErr( l_err, "putMomentumY" );
-    }
-
-    if( m_timeStepId >= 0 )
-    {
-        index[0] = 0;
-        l_err = nc_put_var1_ulonglong( m_ncId,
-                                       m_timeStepId,
-                                       index,
-                                       &timeStep );
-        checkNcErr( l_err, "putTimeStep" );
-    }
-
-    if( m_writeCountId >= 0 )
-    {
-        index[0] = 0;
-        l_err = nc_put_var1_ulonglong( m_ncId,
-                                       m_writeCountId,
-                                       index,
-                                       &writeCount );
-        checkNcErr( l_err, "putWriteCount" );
-    }
-
-#ifndef TSUNAMI_SIMULATION_TEST
-    std::cout << " writing to '" << m_filePath << "'" << std::endl;
-#endif //!TSUNAMI_SIMULATION_TEST
-    ++m_time;
-
-    nc_sync( m_ncId );
+    _write( simulationTime,
+            totalHeight,
+            momentumX,
+            momentumY,
+            m_singleCellnx,
+            m_singleCellnx,
+            m_singleCellStride,
+            writeCount );
 }
 
 void tsunami_lab::io::NetCdf::read( const char* filepath,
@@ -813,7 +832,7 @@ void tsunami_lab::io::NetCdf::averageSeveral( const tsunami_lab::t_real simulati
         }
     }
 
-    write( simulationTime, l_totalHeight, l_momentumX, l_momentumY );
+    _write( simulationTime, l_totalHeight, l_momentumX, l_momentumY, m_nx, m_ny, m_stride, 0 );
 
     delete[] l_totalHeight;
     delete[] l_momentumX;

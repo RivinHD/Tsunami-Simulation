@@ -35,63 +35,64 @@ private:
 
 public:
     /**
-     * Default constructor with the default example.
+     * Restores the checkpoint from the given filepath.
+     * IMPORTANT: the get functions expects index instead of coordinate points.
      *
      * @param filepath the filepath to the checkpoint file
      * @param scale_x the scale in x direction of the simulation
      * @param scale_y the scale in y direction of the simulation
-     * @param timeStep output of the checkpointed time step
      * @param writeCount output of the checkpointed write count
      * @param simulationTime ouput of the checkpointed simulation time
+     * @param simulationTime ouput of the checkpointed max height
      * @param argv the command line parameter of the saved execution to restore
     */
     Checkpoint( const char* filepath,
                 t_real scale_x,
                 t_real scale_y,
-                t_idx& timeStep,
                 t_idx& writeCount,
                 t_real& simulationTime,
+                t_real& hMax,
                 std::vector<char*>& argv );
 
     /**
      * Gets the water height at a given point.
      *
-     * @param i_x x-coordinate of the queried point.
-     * @param i_y y-coordinate of the queried point.
+     * @param indexX x index of the queried point.
+     * @param indexY y index of the queried point.
      * @return height at the given point.
      **/
-    t_real getHeight( t_real i_x,
-                      t_real i_y ) const override;
+    t_real getHeight( t_real indexX,
+                      t_real indexY ) const override;
 
     /**
      * Gets the momentum in x-direction.
      *
-     * @param i_x x-coordinate of the queried point.
-     * @param i_y y-coordinate of the queried point.
+     * @param indexX x index of the queried point.
+     * @param indexY y index of the queried point.
      * @return momentum in x-direction.
      **/
-    t_real getMomentumX( t_real i_x,
-                         t_real i_y ) const override;
+    t_real getMomentumX( t_real indexX,
+                         t_real indexY ) const override;
 
     /**
      * Gets the momentum in y-direction.
      *
-     * @param i_x x-coordinate of the queried point.
-     * @param i_y y-coordinate of the queried point.
+     * @param indexX x index of the queried point.
+     * @param indexY y index of the queried point.
      * @return momentum in y-direction.
      **/
-    t_real getMomentumY( t_real i_x,
-                         t_real i_y ) const override;
+    t_real getMomentumY( t_real indexX,
+                         t_real indexY ) const override;
 
     /**
     * Gets the bathymetry at a given point.
     *
-    * @param i_x x-coordinate of the queried point.
-    * @param i_y y-coordinate of the queried point.
+    * @param indexX x index of the queried point.
+    * @param indexY y index of the queried point.
     * @return bathymetry at a given point.
     **/
-    t_real getBathymetry( t_real i_x,
-                          t_real i_y ) const override;
+    t_real getBathymetry( t_real indexX,
+                          t_real indexY ) const override;
 };
 
 #endif

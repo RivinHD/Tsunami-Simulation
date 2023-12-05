@@ -97,11 +97,11 @@ private:
     //! id of momentumY
     int m_momentumYId = -1;
 
-    //! id of timeStep
-    int m_timeStepId = -1;
-
     //! id of writeCount
     int m_writeCountId = -1;
+
+    //! id of hMax
+    int m_hMaxID = -1;
 
     //! indicates whether this is a checkpoint
     bool isCheckpoint = false;
@@ -172,6 +172,28 @@ private:
                 long long int timeStep,
                 size_t size );
 
+    /**
+     * Write current time step to a netCDF file.
+     *
+     * @param simulationTime the current simulation time in seconds
+     * @param totalHeight total heights of cells
+     * @param momentumX momentum of cells in x direction
+     * @param momentumY momentum of cells in y direction
+     * @param nx len in x dimension
+     * @param ny len in y dimension
+     * @param stride the stride of the data-set to write
+     * @param writeCount the current simulation internal write count  (only used for checkpoint)
+     */
+
+    void _write( const t_real simulationTime,
+                 const t_real* totalHeight,
+                 const t_real* momentumX,
+                 const t_real* momentumY,
+                 const t_idx nx,
+                 const t_idx ny,
+                 const t_idx stride,
+                 const t_idx writeCount );
+
 public:
 
     /**
@@ -189,7 +211,7 @@ public:
     /**
      * Write-Only Constructor of NetCdf for the continuation from a checkpoint.
      *
-     * @param timeStep the timeStep of the checkPoint
+     * @param writeStep the writeStep of the checkpoint
      * @param filePath filepath of the netCDF file
      * @param l_nx len in x dimension
      * @param l_ny len in y dimension
@@ -200,7 +222,7 @@ public:
      * @param bathymetry bathymetry data to write if no bathymetry should be written pass a nullptr
      * @param useSpherical use spherical Longitude & Latitude in degrees for the X and Y Axis instead of meters
      */
-    NetCdf( t_idx timeStep,
+    NetCdf( t_idx writeStep,
             std::string filePath,
             t_idx l_nx,
             t_idx l_ny,
@@ -225,6 +247,7 @@ public:
      * @param useSpherical use spherical Longitude & Latitude in degrees for the X and Y Axis instead of meters
      * @param useMomenta if true also create variables for momentumX and momentumY and enable writing to these
      * @param commandLine the current input of the commandLine as a string. Is not used if the file is not a checkpoint.
+     * @param hMax the current hMax. Is not used if the file is not a checkpoint.
      */
     NetCdf( std::string filePath,
             t_idx l_nx,
@@ -236,7 +259,8 @@ public:
             const t_real* bathymetry,
             bool useSpherical,
             bool useMomenta = true,
-            const char* commandLine = "" );
+            const char* commandLine = "",
+            t_real hMax = 1 );
 
     /**
      * Destructor of NetCdf.
@@ -265,7 +289,6 @@ public:
      * @param totalHeight total heights of cells
      * @param momentumX momentum of cells in x direction
      * @param momentumY momentum of cells in y direction
-     * @param timeStep the current simulation internal time step (only used for checkpoint)
      * @param writeCount the current simulation internal write count  (only used for checkpoint)
      */
 
@@ -273,7 +296,6 @@ public:
                 const t_real* totalHeight,
                 const t_real* momentumX,
                 const t_real* momentumY,
-                const t_idx timeStep = 0,
                 const t_idx writeCount = 0 );
 
     /**

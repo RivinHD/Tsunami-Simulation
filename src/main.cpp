@@ -71,7 +71,7 @@ void printHelp()
     std::cerr << "./build/simulation " << magenta << "N_CELLS_X (N_CELLS_Y) " << reset << "["
         << green << "-B" << reset << "] ["
         << green << "-S" << reset << "] ["
-        << green << "-c" << cyan << " <minuten>" << reset << "] ["
+        << green << "-c" << cyan << " <minutes>" << reset << "] ["
         << green << "-f" << cyan << " <csv|netCDF>" << reset << "] ["
         << green << "-r " << cyan << "<left|right|top|bottom|x|y|all>" << reset << "] ["
         << green << "-k" << cyan << "<NUMBER>" << reset << "] ["
@@ -89,9 +89,9 @@ void printHelp()
         << "OPTIONAL FLAGS:" << std::endl
         << green << "\t-B" << reset << " enables the use of bathymetry." << std::endl
         << green << "\t-S" << reset << " use degrees_east (longitude) and degrees_north (latitude) as unit for the x-axis and y-axis solution output instead of meters." << std::endl
-        << green << "\t-c" << reset << " set the intervalls in realtime seconds when to create a checkpoint. The default is 20 minutes." << std::endl
+        << green << "\t-c" << reset << " set the intervals in Realtime seconds when to create a checkpoint. The default is 20 minutes." << std::endl
         << green << "\t-f" << reset << " defines the output format. Requires " << cyan << "csv" << reset << " or " << cyan << "netCDF" << reset << ". The default is netCDF." << std::endl
-        << green << "\t-k" << reset << " defines the number of cells to average several neighbouring cells of the computational grid into one cell" << std::endl
+        << green << "\t-k" << reset << " defines the number of cells to average several neighboring cells of the computational grid into one cell" << std::endl
         << green << "\t-r" << reset << " enables the reflection on the specified side of the simulation. Several arguments can be passed (maximum 4)." << std::endl
         << "\t   where " << cyan << "left | right | top | bottom" << reset << " enables their respective sides." << std::endl
         << "\t   where " << cyan << "x" << reset << " enables the left & right and " << cyan << "y" << reset << " enables the top & bottom side." << std::endl
@@ -138,23 +138,23 @@ int main( int   i_argc,
     tsunami_lab::t_real l_scaleY = 1500000;
     bool useCheckpoint = false;
     tsunami_lab::t_real l_simTime = 0;
-    tsunami_lab::t_idx  l_timeStep = 0;
     tsunami_lab::t_idx l_writeCount = 0;
+    tsunami_lab::t_real checkpointHMax = 0;
 
     std::cout << "Checking for Checkpoints: ";
 
     // create simulation folder inside solution folder
     std::string checkpointPath = SOLUTION_FOLDER + "/checkpoint.nc";
+    std::vector<char*> parsedArgv;
     if( fs::exists( checkpointPath ) )
     {
         std::cout << green << "Loading checkpoint!" << reset << std::endl;
-        std::vector<char*> parsedArgv;
         l_setup = new tsunami_lab::setups::Checkpoint( checkpointPath.c_str(),
                                                        l_scaleX,
                                                        l_scaleY,
-                                                       l_timeStep,
                                                        l_writeCount,
                                                        l_simTime,
+                                                       checkpointHMax,
                                                        parsedArgv );
         i_argc = parsedArgv.size();
         i_argv = parsedArgv.data();
@@ -505,14 +505,20 @@ int main( int   i_argc,
     // maximum observed height in the setup
     tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
 
+    tsunami_lab::t_real cellSize = l_dxy;
+    // checkpoint setup uses index instead of coordinate
+    if( useCheckpoint )
+    {
+        cellSize = 1;
+    }
     // set up solver
     for( tsunami_lab::t_idx l_cy = 0; l_cy < l_ny; l_cy++ )
     {
-        tsunami_lab::t_real l_y = l_cy * l_dxy;
+        tsunami_lab::t_real l_y = l_cy * cellSize;
 
         for( tsunami_lab::t_idx l_cx = 0; l_cx < l_nx; l_cx++ )
         {
-            tsunami_lab::t_real l_x = l_cx * l_dxy;
+            tsunami_lab::t_real l_x = l_cx * cellSize;
 
             // get initial values of the setup
             tsunami_lab::t_real l_h = l_setup->getHeight( l_x,
@@ -544,6 +550,10 @@ int main( int   i_argc,
                                        l_b );
         }
     }
+    if( useCheckpoint )
+    {
+        l_hMax = checkpointHMax;
+    }
 
     // derive maximum wave speed in setup; the momentum is ignored
     tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
@@ -569,14 +579,12 @@ int main( int   i_argc,
         fs::create_directory( SOLUTION_FOLDER + "/simulation" );
     }
 
-    std::cout << "entering time loop" << std::endl;
-
     tsunami_lab::io::NetCdf* netCdfWriter = nullptr;
     if( !isCsv )
     {
         if( useCheckpoint )
         {
-            netCdfWriter = new tsunami_lab::io::NetCdf( l_timeStep,
+            netCdfWriter = new tsunami_lab::io::NetCdf( l_writeCount,
                                                         SOLUTION_FOLDER + "/simulation/solution.nc",
                                                         l_nx,
                                                         l_ny,
@@ -598,7 +606,7 @@ int main( int   i_argc,
                                                         l_waveProp->getStride(),
                                                         useBathymetry ? l_waveProp->getBathymetry() : nullptr,
                                                         useAxisSpherical,
-                                                        false );
+                                                        true );
         }
     }
 
@@ -607,6 +615,8 @@ int main( int   i_argc,
 
     const auto startTime = std::chrono::high_resolution_clock::now();
     auto checkpointTime = std::chrono::high_resolution_clock::now();
+
+    std::cout << "entering time loop" << std::endl;
 
     // iterate over time
     while( l_simTime < l_endTime )
@@ -624,8 +634,8 @@ int main( int   i_argc,
         if( l_simTime >= ( l_writeTime * l_writeCount ) )
         {
             ++l_writeCount;
-            std::cout << "  simulation time / number of writes / time steps: "
-                << l_simTime << " / " << l_writeCount << " / " << l_timeStep << std::endl;
+            std::cout << "  simulation time / number of writes: "
+                << l_simTime << " / " << l_writeCount << std::endl;
 
 
             if( isCsv )
@@ -649,10 +659,10 @@ int main( int   i_argc,
             }
             else
             {
-                netCdfWriter->averageSeveral( l_simTime,
-                                              l_waveProp->getTotalHeight(),
-                                              l_waveProp->getMomentumX(),
-                                              l_waveProp->getMomentumY() );
+                netCdfWriter->write( l_simTime,
+                                     l_waveProp->getTotalHeight(),
+                                     l_waveProp->getMomentumX(),
+                                     l_waveProp->getMomentumY() );
             }
         }
 
@@ -669,12 +679,12 @@ int main( int   i_argc,
                                                                                      useBathymetry ? l_waveProp->getBathymetry() : nullptr,
                                                                                      useAxisSpherical,
                                                                                      true,
-                                                                                     commandLine.c_str() );
+                                                                                     commandLine.c_str(),
+                                                                                     l_hMax );
             checkpointWriter->write( l_simTime,
                                      l_waveProp->getTotalHeight(),
                                      l_waveProp->getMomentumX(),
                                      l_waveProp->getMomentumY(),
-                                     l_timeStep,
                                      l_writeCount );
             delete checkpointWriter;
             if( fs::exists( checkpointPath ) )
@@ -688,7 +698,6 @@ int main( int   i_argc,
         l_waveProp->setGhostOutflow();
         l_waveProp->timeStep( l_scaling );
 
-        l_timeStep++;
         l_simTime += l_dt;
     }
     std::cout << "finished time loop" << std::endl;
@@ -698,6 +707,12 @@ int main( int   i_argc,
     delete l_setup;
     delete l_waveProp;
     delete netCdfWriter;
+
+    std::cout << "Removing Checkpoint" << std::endl;
+    if( fs::exists( checkpointPath ) )
+    {
+        fs::remove( checkpointPath );
+    }
 
     // Print the calculation time
     const auto duration = std::chrono::high_resolution_clock::now() - startTime;
