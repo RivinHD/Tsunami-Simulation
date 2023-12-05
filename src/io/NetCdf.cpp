@@ -40,29 +40,6 @@ void tsunami_lab::io::NetCdf::_read( const char* filepath,
     l_err = nc_open( filepath, NC_NOWRITE, &ncID );
     checkNcErr( l_err, "readFile" );
 
-    // check of lon, longitude, x, X and get the corresponding dimension size
-    int lonID;
-    const char* lonNames[] = { "lon", "longitude", "x", "X" };
-    int lonNameSize = sizeof( lonNames ) / sizeof( char* );
-    int lonNameIndex = 0;
-    do
-    {
-        l_err = nc_inq_dimid( ncID, lonNames[lonNameIndex], &lonID );
-    } while( l_err && ++lonNameIndex < lonNameSize );
-    checkNcErr( l_err, "readLongitude" );
-
-
-    // check of lat, latitude, y, Y and get the corresponding dimension size
-    int latID;
-    const char* latNames[] = { "lat", "latitude", "y", "Y" };
-    int latNameSize = sizeof( latNames ) / sizeof( char* );
-    int latNameIndex = 0;
-    do
-    {
-        l_err = nc_inq_dimid( ncID, latNames[latNameIndex], &latID );
-    } while( l_err && ++latNameIndex < latNameSize );
-    checkNcErr( l_err, "readLatitude" );
-
     // check of time, date, t, T and get the corresponding dimension size
     int timeID = -1;
     size_t timeSize = 1;
