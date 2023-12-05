@@ -97,8 +97,11 @@ private:
     //! id of momentumY
     int m_momentumYId = -1;
 
-    //! if of timeStep
+    //! id of timeStep
     int m_timeStepId = -1;
+
+    //! id of writeCount
+    int m_writeCountId = -1;
 
     //! indicates whether this is a checkpoint
     bool isCheckpoint = false;
@@ -113,6 +116,7 @@ public:
     */
     enum VarType
     {
+        NONE = 0,
         CHAR = NC_CHAR,
         SHORT = NC_SHORT,
         INT = NC_INT,
@@ -135,7 +139,7 @@ public:
         void* array = nullptr;
 
         //! type of the array
-        VarType type = VarType::INT;
+        VarType type = VarType::NONE;
 
         //! length of the array
         size_t length = 0;
@@ -154,18 +158,18 @@ private:
     /**
      * read the data from the file at the given filepath and parse all given variables.
      * the outData array contains all the needed information (array, type, length, stride) to work with the data
-     *
+     * If the timeStep does not matter or should be ignored set it to zero.
      *
      * @param filepath the path to the netCDF file
      * @param variableName the names of the variables to parse
      * @param outData the parsed data for each variable with the type, length and stride. If the VarArray is destroyed the read data 'VarArray::array' is destroyed to.
-     * @param timeStep start of data parsing. The timeStep uses the dimension directly therefore index values are required e.g. 0, 1, 2, ...
+     * @param timeStep start of data parsing. The timeStep uses the dimension directly therefore index values are required e.g. 0, 1, 2, ... . Can also be negativ to read from the back.
      * @param size the size of outData and variableName
     */
     void _read( const char* filepath,
                 const char** variableName,
                 VarArray* outData,
-                size_t timeStep,
+                long long int timeStep,
                 size_t size );
 
 public:
@@ -189,23 +193,23 @@ public:
      * @param filePath filepath of the netCDF file
      * @param l_nx len in x dimension
      * @param l_ny len in y dimension
+     * @param l_k number of cells to average several neighboring cells of the computational grid into one cell
      * @param l_scaleX the scale in x direction in meters
      * @param l_scaleY the scale in y direction in meters
      * @param l_stride the stride of the data-set to write
      * @param bathymetry bathymetry data to write if no bathymetry should be written pass a nullptr
      * @param useSpherical use spherical Longitude & Latitude in degrees for the X and Y Axis instead of meters
-     * @param useMomenta if true also create variables for momentumX and momentumY and enable writing to these
      */
-    NetCdf( t_real timeStep,
+    NetCdf( t_idx timeStep,
             std::string filePath,
             t_idx l_nx,
             t_idx l_ny,
+            t_idx l_k,
             t_real l_scaleX,
             t_real l_scaleY,
             t_idx l_stride,
             const t_real* bathymetry,
-            bool useSpherical,
-            bool useMomenta = true );
+            bool useSpherical );
 
     /**
      * Write-Only Constructor of NetCdf.
@@ -230,7 +234,7 @@ public:
             t_real l_scaleY,
             t_idx l_stride,
             const t_real* bathymetry,
-            bool useSpherical = true,
+            bool useSpherical,
             bool useMomenta = true,
             const char* commandLine = "" );
 
@@ -242,7 +246,7 @@ public:
     /**
      * Averages the input arrays so that l_k cells are combined into one cell.
      *
-     * @param l_k number of cells to average several neighbouring cells of the computational grid into one cell
+     * @param l_k number of cells to average several neighboring cells of the computational grid into one cell
      * @param simulationTime the current simulation time in seconds
      * @param totalHeight total heights of cells
      * @param momentumX momentum of cells in x direction
@@ -261,18 +265,21 @@ public:
      * @param totalHeight total heights of cells
      * @param momentumX momentum of cells in x direction
      * @param momentumY momentum of cells in y direction
-     * @param timeStep the current simulation internall time step (only used for checkpoint)
+     * @param timeStep the current simulation internal time step (only used for checkpoint)
+     * @param writeCount the current simulation internal write count  (only used for checkpoint)
      */
 
     void write( const t_real simulationTime,
                 const t_real* totalHeight,
                 const t_real* momentumX,
                 const t_real* momentumY,
-                const t_idx timeStep = 0 );
+                const t_idx timeStep = 0,
+                const t_idx writeCount = 0 );
 
     /**
      * read the data from the file at the given filepath and parse all given variables.
-     * the outData array contains all the needed information (array, type, length, stride) to work with the data
+     * the outData array contains all the needed information (array, type, length, stride) to work with the data.
+     * If the timeStep does not matter or should be ignored set it to zero.
      *
      * IMPORTANT the size of variableName and outData should match N
      *
@@ -280,13 +287,13 @@ public:
      * @param filepath the path to the netCDF file
      * @param variableName the names of the variables to parse
      * @param outData the parsed data for each variable with the type, length and stride. If the VarArray is destroyed the read data 'VarArray::array' is destroyed to.
-     * @param timeStep OPTIONAL start of data parsing. The timeStep uses the dimension directly therefore index values are required e.g. 0, 1, 2, ...
+     * @param timeStep OPTIONAL start of data parsing. The timeStep uses the dimension directly therefore index values are required e.g. 0, 1, 2, ... . Can also be negativ to read from the back.
     */
     template <size_t N>
     void read( const char* filepath,
                const char* ( &variableName )[N],
                VarArray( &outData )[N],
-               size_t timeStep = 0 )
+               long long int timeStep = 0 )
     {
         // NOTE: this function needs to be in the header because a template is used
         _read( filepath, variableName, outData, timeStep, N );
@@ -294,16 +301,17 @@ public:
 
     /**
      * read the data from the file at the given filepath and parse the one given variable.
+     * If the timeStep does not matter or should be ignored set it to zero.
      *
      * @param filepath filepath the path to the netCDF file
      * @param variableName  the names of the variable to parse
      * @param outData the parsed data with the type, length and stride. If the VarArray is destroyed the read data 'VarArray::array' is destroyed to.
-     * @param timeStep OPTIONAL start of data parsing. The timeStep uses the dimension directly therefore index values are required e.g. 0, 1, 2, ...
+     * @param timeStep OPTIONAL start of data parsing. The timeStep uses the dimension directly therefore index values are required e.g. 0, 1, 2, ... . Can also be negativ to read from the back.
     */
     void read( const char* filepath,
                const char* variableName,
                VarArray& outData,
-               size_t timeStep = 0 );
+               long long int timeStep = 0 );
 };
 
 #endif // !TSUNAMISIMULATION_NETCDF_H

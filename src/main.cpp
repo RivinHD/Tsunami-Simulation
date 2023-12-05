@@ -133,18 +133,13 @@ int main( int   i_argc,
     tsunami_lab::t_real checkpointIntervall = 20; // in minutes
 
     // setup the variables
-    std::string commandline = i_argv[0];
-    for( int i = 1; i < i_argc; i++ )
-    {
-        commandline += " ";
-        commandline += i_argv[i];
-    }
     tsunami_lab::setups::Setup* l_setup = nullptr;
     tsunami_lab::t_real l_scaleX = 2700000;
     tsunami_lab::t_real l_scaleY = 1500000;
     bool useCheckpoint = false;
     tsunami_lab::t_real l_simTime = 0;
     tsunami_lab::t_idx  l_timeStep = 0;
+    tsunami_lab::t_idx l_writeCount = 0;
 
     std::cout << "Checking for Checkpoints: ";
 
@@ -158,6 +153,7 @@ int main( int   i_argc,
                                                        l_scaleX,
                                                        l_scaleY,
                                                        l_timeStep,
+                                                       l_writeCount,
                                                        l_simTime,
                                                        parsedArgv );
         i_argc = parsedArgv.size();
@@ -167,6 +163,14 @@ int main( int   i_argc,
     else
     {
         std::cout << green << "No checkpoint found!" << reset << std::endl;
+    }
+
+    // compact the inputs to one string for the checkpoint
+    std::string commandLine = i_argv[0];
+    for( int i = 1; i < i_argc; i++ )
+    {
+        commandLine += " ";
+        commandLine += i_argv[i];
     }
 
 #ifndef SKIP_ARGUMENTS
@@ -551,9 +555,6 @@ int main( int   i_argc,
     // derive scaling for a time step
     tsunami_lab::t_real l_scaling = l_dt / l_dxy;
 
-    // set up time and print control
-    tsunami_lab::t_idx  l_nOut = 0;
-
     if( !useCheckpoint )
     {
         // create simulation folder inside solution folder
@@ -571,26 +572,38 @@ int main( int   i_argc,
     std::cout << "entering time loop" << std::endl;
 
     tsunami_lab::io::NetCdf* netCdfWriter = nullptr;
-    bool writeMomenta = false;
     if( !isCsv )
     {
-        netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/solution.nc",
-                                                    l_nx,
-                                                    l_ny,
-                                                    l_averageCellNumber,
-                                                    l_scaleX,
-                                                    l_scaleY,
-                                                    l_waveProp->getStride(),
-                                                    useBathymetry ? l_waveProp->getBathymetry() : nullptr,
-                                                    useAxisSpherical,
-                                                    writeMomenta );
+        if( useCheckpoint )
+        {
+            netCdfWriter = new tsunami_lab::io::NetCdf( l_timeStep,
+                                                        SOLUTION_FOLDER + "/simulation/solution.nc",
+                                                        l_nx,
+                                                        l_ny,
+                                                        l_averageCellNumber,
+                                                        l_scaleX,
+                                                        l_scaleY,
+                                                        l_waveProp->getStride(),
+                                                        useBathymetry ? l_waveProp->getBathymetry() : nullptr,
+                                                        useAxisSpherical );
+        }
+        else
+        {
+            netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/solution.nc",
+                                                        l_nx,
+                                                        l_ny,
+                                                        l_averageCellNumber,
+                                                        l_scaleX,
+                                                        l_scaleY,
+                                                        l_waveProp->getStride(),
+                                                        useBathymetry ? l_waveProp->getBathymetry() : nullptr,
+                                                        useAxisSpherical,
+                                                        false );
+        }
     }
 
     // var to check if it's time to write stations
     tsunami_lab::t_real l_timeCount = 0.0;
-
-    // var to check if it's time to write to the disk
-    tsunami_lab::t_idx l_writeCount = 0;
 
     const auto startTime = std::chrono::high_resolution_clock::now();
     auto checkpointTime = std::chrono::high_resolution_clock::now();
@@ -617,7 +630,7 @@ int main( int   i_argc,
 
             if( isCsv )
             {
-                std::string l_path = SOLUTION_FOLDER + "/simulation/solution_" + std::to_string( l_nOut ) + ".csv";
+                std::string l_path = SOLUTION_FOLDER + "/simulation/solution_" + std::to_string( l_writeCount ) + ".csv";
                 std::cout << "  writing wave field to " << l_path << std::endl;
 
                 std::ofstream l_file;
@@ -633,7 +646,6 @@ int main( int   i_argc,
                                              l_waveProp->getTotalHeight(),
                                              l_file );
                 l_file.close();
-                l_nOut++;
             }
             else
             {
@@ -656,13 +668,14 @@ int main( int   i_argc,
                                                                                      l_waveProp->getStride(),
                                                                                      useBathymetry ? l_waveProp->getBathymetry() : nullptr,
                                                                                      useAxisSpherical,
-                                                                                     writeMomenta,
-                                                                                     commandline.c_str() );
+                                                                                     true,
+                                                                                     commandLine.c_str() );
             checkpointWriter->write( l_simTime,
                                      l_waveProp->getTotalHeight(),
                                      l_waveProp->getMomentumX(),
                                      l_waveProp->getMomentumY(),
-                                     l_timeStep );
+                                     l_timeStep,
+                                     l_writeCount );
             delete checkpointWriter;
             if( fs::exists( checkpointPath ) )
             {
@@ -695,4 +708,4 @@ int main( int   i_argc,
 
     std::cout << "finished, exiting" << std::endl;
     return EXIT_SUCCESS;
-}
+    }

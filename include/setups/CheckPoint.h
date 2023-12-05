@@ -22,10 +22,10 @@ class tsunami_lab::setups::Checkpoint : public Setup
 {
 private:
     //! the variables to parse for the 
-    static const char* variables[7];
+    static const char* variables[8];
 
     //! the data to store the read values
-    tsunami_lab::io::NetCdf::VarArray data[7];
+    tsunami_lab::io::NetCdf::VarArray data[8];
 
     //! scale of the simulation in x-direction
     t_real scaleX = 1;
@@ -41,13 +41,15 @@ public:
      * @param scale_x the scale in x direction of the simulation
      * @param scale_y the scale in y direction of the simulation
      * @param timeStep output of the checkpointed time step
+     * @param writeCount output of the checkpointed write count
      * @param simulationTime ouput of the checkpointed simulation time
-     * @param argv the commandline parameter of the saved execution to restore
+     * @param argv the command line parameter of the saved execution to restore
     */
     Checkpoint( const char* filepath,
                 t_real scale_x,
                 t_real scale_y,
                 t_idx& timeStep,
+                t_idx& writeCount,
                 t_real& simulationTime,
                 std::vector<char*>& argv );
 
