@@ -39,16 +39,12 @@ public:
      * IMPORTANT: the get functions expects index instead of coordinate points.
      *
      * @param filepath the filepath to the checkpoint file
-     * @param scale_x the scale in x direction of the simulation
-     * @param scale_y the scale in y direction of the simulation
      * @param writeCount output of the checkpointed write count
      * @param simulationTime ouput of the checkpointed simulation time
      * @param simulationTime ouput of the checkpointed max height
      * @param argv the command line parameter of the saved execution to restore
     */
     Checkpoint( const char* filepath,
-                t_real scale_x,
-                t_real scale_y,
                 t_idx& writeCount,
                 t_real& simulationTime,
                 t_real& hMax,

@@ -194,6 +194,35 @@ private:
                  const t_idx stride,
                  const t_idx writeCount );
 
+    /**
+     * Write-Only Constructor of NetCdf.
+     *
+     * @param filePath filepath of the netCDF file
+     * @param l_nx len in x dimension
+     * @param l_ny len in y dimension
+     * @param l_k number of cells to average several neighboring cells of the computational grid into one cell
+     * @param l_scaleX the scale in x direction in meters
+     * @param l_scaleY the scale in y direction in meters
+     * @param l_stride the stride of the data-set to write
+     * @param bathymetry bathymetry data to write if no bathymetry should be written pass a nullptr
+     * @param useSpherical use spherical Longitude & Latitude in degrees for the X and Y Axis instead of meters
+     * @param useMomenta if true also create variables for momentumX and momentumY and enable writing to these
+     * @param commandLine the current input of the commandLine as a string. Is not used if the file is not a checkpoint.
+     * @param hMax the current hMax. Is not used if the file is not a checkpoint.
+     */
+    NetCdf( std::string filePath,
+            t_idx l_nx,
+            t_idx l_ny,
+            t_idx l_k,
+            t_real l_scaleX,
+            t_real l_scaleY,
+            t_idx l_stride,
+            const t_real* bathymetry,
+            bool useSpherical,
+            bool useMomenta,
+            const char* commandLine,
+            t_real hMax );
+
 public:
 
     /**
@@ -246,8 +275,6 @@ public:
      * @param bathymetry bathymetry data to write if no bathymetry should be written pass a nullptr
      * @param useSpherical use spherical Longitude & Latitude in degrees for the X and Y Axis instead of meters
      * @param useMomenta if true also create variables for momentumX and momentumY and enable writing to these
-     * @param commandLine the current input of the commandLine as a string. Is not used if the file is not a checkpoint.
-     * @param hMax the current hMax. Is not used if the file is not a checkpoint.
      */
     NetCdf( std::string filePath,
             t_idx l_nx,
@@ -258,9 +285,30 @@ public:
             t_idx l_stride,
             const t_real* bathymetry,
             bool useSpherical,
-            bool useMomenta = true,
-            const char* commandLine = "",
-            t_real hMax = 1 );
+            bool useMomenta );
+
+    /**
+     * Write-Only Constructor of NetCdf for Checkpoints.
+     *
+     * @param filePath filepath of the netCDF file
+     * @param l_nx len in x dimension
+     * @param l_ny len in y dimension
+     * @param l_scaleX the scale in x direction in meters
+     * @param l_scaleY the scale in y direction in meters
+     * @param l_stride the stride of the data-set to write
+     * @param bathymetry bathymetry data to write
+     * @param commandLine the current input of the commandLine as a string. Is not used if the file is not a checkpoint.
+     * @param hMax the current hMax. Is not used if the file is not a checkpoint.
+     */
+    NetCdf( std::string filePath,
+            t_idx l_nx,
+            t_idx l_ny,
+            t_real l_scaleX,
+            t_real l_scaleY,
+            t_idx l_stride,
+            const t_real* bathymetry,
+            const char* commandLine,
+            t_real hMax );
 
     /**
      * Destructor of NetCdf.

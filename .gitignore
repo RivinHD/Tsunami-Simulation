@@ -12,3 +12,4 @@ out/
 CMakeSettings.json
 resources/data_in.tar.xz
 resources/gebco20/
+cpp.hint

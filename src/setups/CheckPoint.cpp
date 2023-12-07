@@ -8,13 +8,10 @@
 const char* tsunami_lab::setups::Checkpoint::variables[8]{ "totalHeight", "bathymetry", "momentumX", "momentumY", "time", "checkpoint", "writeCount", "hMax" };
 
 tsunami_lab::setups::Checkpoint::Checkpoint( const char* filepath,
-                                             t_real scale_x,
-                                             t_real scale_y,
                                              t_idx& writeCount,
                                              t_real& simulationTime,
                                              t_real& hMax,
                                              std::vector<char*>& argv )
-    : scaleX( scale_x ), scaleY( scale_y )
 {
     // reading the checkpoint
     tsunami_lab::io::NetCdf reader = tsunami_lab::io::NetCdf();

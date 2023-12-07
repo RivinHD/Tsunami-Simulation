@@ -752,6 +752,34 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     }
 }
 
+
+tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
+                                 t_idx l_nx,
+                                 t_idx l_ny,
+                                 t_idx l_k,
+                                 t_real l_scaleX,
+                                 t_real l_scaleY,
+                                 t_idx l_stride,
+                                 const t_real* bathymetry,
+                                 bool useSpherical,
+                                 bool useMomenta )
+    : NetCdf( filePath, l_nx, l_ny, l_k, l_scaleX, l_scaleY, l_stride, bathymetry, useSpherical, useMomenta, "", 1 )
+{
+}
+
+tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
+                                 t_idx l_nx,
+                                 t_idx l_ny,
+                                 t_real l_scaleX,
+                                 t_real l_scaleY,
+                                 t_idx l_stride,
+                                 const t_real* bathymetry,
+                                 const char* commandLine,
+                                 t_real hMax )
+    : NetCdf( filePath, l_nx, l_ny, 1, l_scaleX, l_scaleY, l_stride, bathymetry, false, true, commandLine, hMax )
+{
+}
+
 tsunami_lab::io::NetCdf::~NetCdf()
 {
     if( !isReadMode )
@@ -777,7 +805,7 @@ void tsunami_lab::io::NetCdf::write( const t_real simulationTime,
             momentumX,
             momentumY,
             m_singleCellnx,
-            m_singleCellnx,
+            m_singleCellny,
             m_singleCellStride,
             writeCount );
 }

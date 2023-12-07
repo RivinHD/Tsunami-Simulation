@@ -861,6 +861,7 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
                                                                          10000,
                                                                          12,
                                                                          bathymetry,
+                                                                         true,
                                                                          true );
     for( size_t i = 0; i < 20; i++ )
     {
@@ -908,7 +909,8 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
                                                 10000,
                                                 12,
                                                 bathymetry,
-                                                false );
+                                                false,
+                                                true );
     for( size_t i = 0; i < 20; i++ )
     {
         netCdfWriter->write( time[i],
