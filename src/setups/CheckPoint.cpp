@@ -5,7 +5,7 @@
 #include <iterator>
 
 
-const char* tsunami_lab::setups::Checkpoint::variables[8]{ "totalHeight", "bathymetry", "momentumX", "momentumY", "time", "checkpoint", "writeCount", "hMax" };
+const char* tsunami_lab::setups::Checkpoint::variables[8]{ "totalHeight", "bathymetry", "momentumX", "momentumY", "time", "commandLine", "writeCount", "hMax" };
 
 tsunami_lab::setups::Checkpoint::Checkpoint( const char* filepath,
                                              t_idx& writeCount,
@@ -22,6 +22,24 @@ tsunami_lab::setups::Checkpoint::Checkpoint( const char* filepath,
     const char* yellow = "\033[33;49m";
     const char* red = "\033[31;49m";
 
+    // check totalHeight, bathymetry, momentumX, momentumY
+    if( !( data[0].length == data[1].length
+           && data[0].length == data[2].length
+           && data[0].length == data[3].length ) )
+    {
+        std::cerr << red << "ERROR: Size is not equal! The size of totalHeight, bathymetry, momentumX or momentumY should be the same. Aborting!" << reset << std::endl;
+        exit( EXIT_FAILURE );
+    }
+    if( !( data[0].type == tsunami_lab::io::NetCdf::FLOAT
+           && data[1].type == tsunami_lab::io::NetCdf::FLOAT
+           && data[2].type == tsunami_lab::io::NetCdf::FLOAT
+           && data[3].type == tsunami_lab::io::NetCdf::FLOAT ) )
+    {
+        std::cerr << red << "ERROR: Not of type float! The type of totalHeight, bathymetry, momentumX or momentumY should be float. Aborting!" << reset << std::endl;
+        exit( EXIT_FAILURE );
+    }
+
+    // check time
     if( data[4].length < 1 )
     {
         std::cout << yellow << "WARNING: Could not read simulation time because there are no values to read. Defaulting to zero." << reset << std::endl;
@@ -37,6 +55,7 @@ tsunami_lab::setups::Checkpoint::Checkpoint( const char* filepath,
         simulationTime = static_cast<float*>( data[4].array )[0];
     }
 
+    // check write count
     if( data[6].length < 1 )
     {
         std::cout << yellow << "WARNING: Could not read write count because there are no values to read. Defaulting to zero." << reset << std::endl;
@@ -52,6 +71,7 @@ tsunami_lab::setups::Checkpoint::Checkpoint( const char* filepath,
         writeCount = static_cast<int*>( data[6].array )[0];
     }
 
+    // check hMax
     if( data[7].length < 1 )
     {
         std::cout << yellow << "WARNING: Could not read hMax because there are no values to read. Defaulting to one." << reset << std::endl;
@@ -67,6 +87,7 @@ tsunami_lab::setups::Checkpoint::Checkpoint( const char* filepath,
         hMax = static_cast<float*>( data[7].array )[0];
     }
 
+    // check and convert commandLine to C like argument list
     if( data[5].length < 1 )
     {
         std::cerr << red << "ERROR: Could not read checkpoint because there are no values to read. Aborting!" << reset << std::endl;
@@ -74,7 +95,7 @@ tsunami_lab::setups::Checkpoint::Checkpoint( const char* filepath,
     }
     else if( data[5].type != tsunami_lab::io::NetCdf::CHAR )
     {
-        std::cerr << red << "WARNING: Could not read checkpoint because the type is wrong. Aborting!" << reset << std::endl;
+        std::cerr << red << "ERROR: Could not read checkpoint because the type is wrong. Aborting!" << reset << std::endl;
         exit( EXIT_FAILURE );
     }
     else
@@ -106,22 +127,22 @@ tsunami_lab::setups::Checkpoint::Checkpoint( const char* filepath,
 tsunami_lab::t_real tsunami_lab::setups::Checkpoint::getHeight( t_real indexX,
                                                                 t_real indexY ) const
 {
-    t_idx index = indexY * data[1].stride + indexX;
     // the size of bathymetry and totalHeight is the same
+    t_idx index = indexY * data[0].stride + indexX;
     return static_cast<float*>( data[0].array )[index] - static_cast<float*>( data[1].array )[index];
 }
 
 tsunami_lab::t_real tsunami_lab::setups::Checkpoint::getMomentumX( t_real indexX,
                                                                    t_real indexY ) const
 {
-    t_idx index = indexY * data[1].stride + indexX;
+    t_idx index = indexY * data[2].stride + indexX;
     return static_cast<float*>( data[2].array )[index];
 }
 
 tsunami_lab::t_real tsunami_lab::setups::Checkpoint::getMomentumY( t_real indexX,
                                                                    t_real indexY ) const
 {
-    t_idx index = indexY * data[1].stride + indexX;
+    t_idx index = indexY * data[3].stride + indexX;
     return static_cast<float*>( data[3].array )[index];
 }
 

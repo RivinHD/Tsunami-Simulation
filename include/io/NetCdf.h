@@ -207,7 +207,7 @@ private:
      * @param bathymetry bathymetry data to write if no bathymetry should be written pass a nullptr
      * @param useSpherical use spherical Longitude & Latitude in degrees for the X and Y Axis instead of meters
      * @param useMomenta if true also create variables for momentumX and momentumY and enable writing to these
-     * @param commandLine the current input of the commandLine as a string. Is not used if the file is not a checkpoint.
+     * @param commandLine the current input of the commandLine as a string and if empty the writer does not write checkpoint data. Is not used if the file is not a checkpoint.
      * @param hMax the current hMax. Is not used if the file is not a checkpoint.
      */
     NetCdf( std::string filePath,
@@ -299,6 +299,11 @@ public:
      * @param bathymetry bathymetry data to write
      * @param commandLine the current input of the commandLine as a string. Is not used if the file is not a checkpoint.
      * @param hMax the current hMax. Is not used if the file is not a checkpoint.
+     * @param totalHeight total heights of cells
+     * @param momentumX momentum of cells in x direction
+     * @param momentumY momentum of cells in y direction
+     * @param simulationTime the current simulation time in seconds
+     * @param writeCount the current simulation internal write count
      */
     NetCdf( std::string filePath,
             t_idx l_nx,
@@ -308,7 +313,12 @@ public:
             t_idx l_stride,
             const t_real* bathymetry,
             const char* commandLine,
-            t_real hMax );
+            t_real hMax,
+            const t_real* totalHeight,
+            const t_real* momentumX,
+            const t_real* momentumY,
+            t_real simulationTime,
+            const t_idx writeCount );
 
     /**
      * Destructor of NetCdf.
@@ -318,7 +328,6 @@ public:
     /**
      * Averages the input arrays so that l_k cells are combined into one cell.
      *
-     * @param l_k number of cells to average several neighboring cells of the computational grid into one cell
      * @param simulationTime the current simulation time in seconds
      * @param totalHeight total heights of cells
      * @param momentumX momentum of cells in x direction
@@ -337,14 +346,12 @@ public:
      * @param totalHeight total heights of cells
      * @param momentumX momentum of cells in x direction
      * @param momentumY momentum of cells in y direction
-     * @param writeCount the current simulation internal write count  (only used for checkpoint)
      */
 
     void write( const t_real simulationTime,
                 const t_real* totalHeight,
                 const t_real* momentumX,
-                const t_real* momentumY,
-                const t_idx writeCount = 0 );
+                const t_real* momentumY );
 
     /**
      * read the data from the file at the given filepath and parse all given variables.

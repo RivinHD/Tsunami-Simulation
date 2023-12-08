@@ -549,16 +549,16 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
         checkNcErr( l_err, "momentumY" );
     }
 
-    int checkpointID = -1;
+    int commandLineID = -1;
     if( isCheckpoint )
     {
         l_err = nc_def_var( m_ncId,
-                            "checkpoint",
+                            "commandLine",
                             NC_CHAR,
                             1,
                             &strDimID,
-                            &checkpointID );
-        checkNcErr( l_err, "checkpoint" );
+                            &commandLineID );
+        checkNcErr( l_err, "commandLine" );
 
         l_err = nc_def_var( m_ncId,
                             "writeCount",
@@ -737,21 +737,20 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
         start[0] = 0;
         count[0] = std::strlen( commandLine ) + 1;
         l_err = nc_put_vara( m_ncId,
-                             checkpointID,
+                             commandLineID,
                              start,
                              count,
                              commandLine );
-        checkNcErr( l_err, "checkpoint arguments" );
+        checkNcErr( l_err, "putCommandLine" );
 
         index[0] = 0;
         l_err = nc_put_var1_float( m_ncId,
                                    m_hMaxID,
                                    index,
                                    &hMax );
-        checkNcErr( l_err, "checkpoint hMax" );
+        checkNcErr( l_err, "putHMax" );
     }
 }
-
 
 tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                                  t_idx l_nx,
@@ -775,9 +774,15 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                                  t_idx l_stride,
                                  const t_real* bathymetry,
                                  const char* commandLine,
-                                 t_real hMax )
+                                 t_real hMax,
+                                 const t_real* totalHeight,
+                                 const t_real* momentumX,
+                                 const t_real* momentumY,
+                                 t_real simulationTime,
+                                 const t_idx writeCount )
     : NetCdf( filePath, l_nx, l_ny, 1, l_scaleX, l_scaleY, l_stride, bathymetry, false, true, commandLine, hMax )
 {
+    _write( simulationTime, totalHeight, momentumX, momentumY, l_nx, l_ny, l_stride, writeCount );
 }
 
 tsunami_lab::io::NetCdf::~NetCdf()
@@ -797,8 +802,7 @@ tsunami_lab::io::NetCdf::~NetCdf()
 void tsunami_lab::io::NetCdf::write( const t_real simulationTime,
                                      const t_real* totalHeight,
                                      const t_real* momentumX,
-                                     const t_real* momentumY,
-                                     const t_idx writeCount )
+                                     const t_real* momentumY )
 {
     _write( simulationTime,
             totalHeight,
@@ -807,7 +811,7 @@ void tsunami_lab::io::NetCdf::write( const t_real simulationTime,
             m_singleCellnx,
             m_singleCellny,
             m_singleCellStride,
-            writeCount );
+            0 );
 }
 
 void tsunami_lab::io::NetCdf::read( const char* filepath,

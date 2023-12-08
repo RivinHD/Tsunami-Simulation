@@ -18,6 +18,10 @@ namespace tsunami_lab
     }
 }
 
+/**
+ * Setup that loads a saved checkpoint.
+ * IMPORTANT: the get functions expects index instead of coordinate points.
+*/
 class tsunami_lab::setups::Checkpoint : public Setup
 {
 private:
@@ -41,7 +45,7 @@ public:
      * @param filepath the filepath to the checkpoint file
      * @param writeCount output of the checkpointed write count
      * @param simulationTime ouput of the checkpointed simulation time
-     * @param simulationTime ouput of the checkpointed max height
+     * @param hMax ouput of the checkpointed max height
      * @param argv the command line parameter of the saved execution to restore
     */
     Checkpoint( const char* filepath,

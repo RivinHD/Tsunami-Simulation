@@ -143,7 +143,6 @@ int main( int   i_argc,
 
     std::cout << "Checking for Checkpoints: ";
 
-    // create simulation folder inside solution folder
     std::string checkpointPath = SOLUTION_FOLDER + "/checkpoint.nc";
     std::vector<char*> parsedArgv;
     if( fs::exists( checkpointPath ) )
@@ -675,12 +674,12 @@ int main( int   i_argc,
                                                                                      l_waveProp->getStride(),
                                                                                      l_waveProp->getBathymetry(),
                                                                                      commandLine.c_str(),
-                                                                                     l_hMax );
-            checkpointWriter->write( l_simTime,
-                                     l_waveProp->getTotalHeight(),
-                                     l_waveProp->getMomentumX(),
-                                     l_waveProp->getMomentumY(),
-                                     l_writeCount );
+                                                                                     l_hMax,
+                                                                                     l_waveProp->getTotalHeight(),
+                                                                                     l_waveProp->getMomentumX(),
+                                                                                     l_waveProp->getMomentumY(),
+                                                                                     l_simTime,
+                                                                                     l_writeCount );
             delete checkpointWriter;
             if( fs::exists( checkpointPath ) )
             {
@@ -702,12 +701,6 @@ int main( int   i_argc,
     delete l_setup;
     delete l_waveProp;
     delete netCdfWriter;
-
-    std::cout << "Removing Checkpoint" << std::endl;
-    if( fs::exists( checkpointPath ) )
-    {
-        fs::remove( checkpointPath );
-    }
 
     // Print the calculation time
     const auto duration = std::chrono::high_resolution_clock::now() - startTime;

@@ -37,8 +37,12 @@ TEST_CASE( "Test the write-read checkpoint setup.", "[CheckPoint]" )
                                                                    stride,
                                                                    bathymetry,
                                                                    "100 50 -B -t 100",
-                                                                   123 );
-    writer->write( 20, totalHeight, momentumX, momentumY, 5 );
+                                                                   123,
+                                                                   totalHeight,
+                                                                   momentumX,
+                                                                   momentumY,
+                                                                   20,
+                                                                   5 );
     delete writer;
 
     tsunami_lab::t_idx writeCount;
