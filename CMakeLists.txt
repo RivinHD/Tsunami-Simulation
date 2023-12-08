@@ -3,8 +3,7 @@ project(TsunamiSimulation VERSION 0.1.0 LANGUAGES C CXX)
 
 # find packages
 find_package(netCDF REQUIRED)
-include_directories(${netCDF_INCLUDE_DIRS})
-link_libraries(${netCDF_LIBRARIES})
+link_libraries(netCDF::netcdf)
 
 message("####################################")
 message("### Tsunami Lab                  ###")
