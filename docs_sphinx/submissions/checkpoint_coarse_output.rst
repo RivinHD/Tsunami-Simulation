@@ -323,9 +323,128 @@ This ensures the stability of the checkpoint creation process.
 1. Modified output writer
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
+To modify the output recorder so that it averages several neighbouring cells of the calculation grid into one cell of
+the output file, we introduce the helper function ``averageSeveral``. The idea is to add the values of the **l_k** many
+high-resolution cells in x and y direction and then average them by dividing the sum by **l_k** at the end. The whole thing
+can then be done analogue for the height and both moments. (l_k is set in the constructor)
+
+.. code-block:: cpp
+
+    /// File:   NetCdf.cpp
+    /// Header: NetCdf.h
+    /// Test:   NetCdf.test.cpp
+    void tsunami_lab::io::NetCdf::averageSeveral( const t_real simulationTime,
+                                                  const t_real* totalHeight,
+                                                  const t_real* momentumX,
+                                                  const t_real* momentumY )
+    {
+        t_idx l_size = m_nx * m_ny;
+        t_idx l_index = 0;
+        t_idx l_k2 = m_k * m_k;
+
+    [ ... ]
+
+- **l_size** is the new size of the arrays with the reduced number of cells
+- **l_index** is the current calculated index of the new array
+- **l_k2** is the number of cells that are joined together
+
+For the implementation, we iterate over our matrix of cells (taking the stride into account, of course). The two outer
+loops iterate roughly over the matrix. This means that these two loops represent cell blocks of size
+::math::`l_k \cdot l_k`. Once in x and once in y direction.
+
+The inner two loops then iterate together over the elements in x and y direction of the cell block. The values of the
+individual cells of a cell block are then added together inside.
+
+.. code-block:: cpp
+    :emphasize-lines: 2-4, 6-8
+
+    [ ... ]
+    for( t_idx y = 0; y < m_singleCellny; y += m_k )
+    {
+        for( t_idx x = 0; x < m_singleCellnx; x += m_k )
+        {
+            for( t_idx i_y = y; i_y < y + m_k; i_y++ )
+            {
+                for( t_idx i_x = x; i_x < x + m_k; i_x++ )
+                {
+                    l_avgHeight += totalHeight[( i_y * m_singleCellStride ) + i_x];
+                    l_avgMomentumX += momentumX[( i_y * m_singleCellStride ) + i_x];
+                    l_avgMomentumY += momentumY[( i_y * m_singleCellStride ) + i_x];
+                }
+    [ ... ]
+
+As you can see, we have the variables ``m_nx, m_ny and m_stride``. Similarly, we have
+``m_singleCellnx, m_singleCellny and m_singleCellStride``. This is because we have to distinguish between the number a
+of high-resolution cells and the number of cells after we have made the summarization. The variables with the prefix
+**singleCell** are the values for the original numbers and those without the prefix for the summarised numbers.
+
+The average values must then be divided by the number of cells in a block (**l_k2**) and added to the corresponding array.
+It is important to zero the average values again and increase the index afterwards.
+
+.. code-block:: cpp
+    :emphasize-lines: 9-17
+
+    [ ... ]
+                for( t_idx i_x = x; i_x < x + m_k; i_x++ )
+                {
+                    l_avgHeight += totalHeight[( i_y * m_singleCellStride ) + i_x];
+                    l_avgMomentumX += momentumX[( i_y * m_singleCellStride ) + i_x];
+                    l_avgMomentumY += momentumY[( i_y * m_singleCellStride ) + i_x];
+                }
+            }
+            // write combined cell to arrays
+            l_totalHeight[l_index] = l_avgHeight / l_k2;
+            l_momentumX[l_index] = l_avgMomentumX / l_k2;
+            l_momentumY[l_index] = l_avgMomentumY / l_k2;
+            l_index++;
+            // reset average values
+            l_avgHeight = 0;
+            l_avgMomentumX = 0;
+            l_avgMomentumY = 0;
+        }
+    }
+    [ ... ]
+
+After we have also exited the fourth loop, we call the internal ``_write``` function with our reduced arrays and pass them.
+Of course, dont forget to delete the arrays.
+
+.. code-block:: cpp
+
+    [ ... ]
+        _write( simulationTime, l_totalHeight, l_momentumX, l_momentumY, m_nx, m_ny, m_stride, 0 );
+
+        delete[] l_totalHeight;
+        delete[] l_momentumX;
+        delete[] l_momentumY;
+    }
+
+
+
 2. Tohoku earthquake and tsunami event
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Cell size: **50m**
+
+Required cells in x-direction: :math:`\frac{2700000}{50}=54000` :raw-html:`<br>`
+Required cells in y-direction: :math:`\frac{2700000}{50}=30000`
+
+
+.. note::
+
+    We have selected an l_k of 5 so that a total of 25 cells are merged into one in the visualisation. Accordingly,
+    the cell size in the video is 250 metres.
+
+.. error::
+    CHANGE VIDEO
+
+
+.. raw:: html
+
+    <center>
+        <video width="700" controls>
+            <source src="../_static/videos/tohoku_500.mp4" type="video/mp4">
+        </video>
+    </center>
 
 Contribution
 ------------

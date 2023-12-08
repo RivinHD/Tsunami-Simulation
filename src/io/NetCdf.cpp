@@ -822,10 +822,10 @@ void tsunami_lab::io::NetCdf::read( const char* filepath,
     _read( filepath, &variableName, &outData, timeStep, 1 );
 }
 
-void tsunami_lab::io::NetCdf::averageSeveral( const tsunami_lab::t_real simulationTime,
-                                              const tsunami_lab::t_real* totalHeight,
-                                              const tsunami_lab::t_real* momentumX,
-                                              const tsunami_lab::t_real* momentumY )
+void tsunami_lab::io::NetCdf::averageSeveral( const t_real simulationTime,
+                                              const t_real* totalHeight,
+                                              const t_real* momentumX,
+                                              const t_real* momentumY )
 {
     t_idx l_size = m_nx * m_ny;
     t_idx l_index = 0;

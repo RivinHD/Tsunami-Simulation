@@ -134,8 +134,8 @@ int main( int   i_argc,
 
     // setup the variables
     tsunami_lab::setups::Setup* l_setup = nullptr;
-    tsunami_lab::t_real l_scaleX = 2700000;
-    tsunami_lab::t_real l_scaleY = 1500000;
+    tsunami_lab::t_real l_scaleX = 10000;
+    tsunami_lab::t_real l_scaleY = 10000;
     bool useCheckpoint = false;
     tsunami_lab::t_real l_simTime = 0;
     tsunami_lab::t_idx l_writeCount = 0;

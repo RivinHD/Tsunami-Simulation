@@ -20,16 +20,14 @@ namespace fs = std::filesystem;
 
 const std::string SOLUTION_FOLDER = "solutions";
 
-TEST_CASE( "The the write method for netCDF", "[netCDF]" )
+tsunami_lab::t_real l_time[]
 {
-    tsunami_lab::t_real time[]
-    {
         0, 0.25, 0.4999998, 0.7499996, 0.9999993, 1.249999, 1.499999,
         1.749999, 1.999998, 2.249998, 2.499998, 2.749998, 2.999998, 3.249997,
         3.499997, 3.749997, 3.999997, 4.250002, 4.500008, 4.750014
-    };
-    tsunami_lab::t_real totalHeight[]
-    {
+};
+tsunami_lab::t_real totalHeight[]
+{
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -230,9 +228,9 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    };
-    tsunami_lab::t_real bathymetry[]
-    {
+};
+tsunami_lab::t_real bathymetry[]
+{
         -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100,
         -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100,
         -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100,
@@ -433,9 +431,9 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
         -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100,
         -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100,
         -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100
-    };
-    tsunami_lab::t_real momentumX[]
-    {
+};
+tsunami_lab::t_real momentumX[]
+{
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -636,9 +634,9 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    };
-    tsunami_lab::t_real momentumY[]
-    {
+};
+tsunami_lab::t_real momentumY[]
+{
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -839,8 +837,10 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    };
+};
 
+TEST_CASE( "The write method for netCDF", "[netCDF]" )
+{
     // create simulation folder inside solution folder
     if( !fs::exists( SOLUTION_FOLDER ) )
     {
@@ -852,7 +852,6 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
     }
     fs::create_directory( SOLUTION_FOLDER + "/simulation" );
 
-    //tsunami_lab::patches::WavePropagation* l_waveProp = new tsunami_lab::patches::WavePropagation2d( 10, 10 );
     tsunami_lab::io::NetCdf* netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/WriteNetCDF.test.nc",
                                                                          10,
                                                                          10,
@@ -865,7 +864,7 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
                                                                          true );
     for( size_t i = 0; i < 20; i++ )
     {
-        netCdfWriter->write( time[i],
+        netCdfWriter->write( l_time[i],
                              totalHeight + ( i * 100 ),
                              momentumX + ( i * 100 ),
                              momentumY + ( i * 100 ) );
@@ -900,7 +899,6 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
     }
     fs::create_directory( SOLUTION_FOLDER + "/simulation" );
 
-    //tsunami_lab::patches::WavePropagation* l_waveProp = new tsunami_lab::patches::WavePropagation2d( 10, 10 );
     netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/WriteNetCDF.test.nc",
                                                 10,
                                                 10,
@@ -913,7 +911,7 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
                                                 true );
     for( size_t i = 0; i < 20; i++ )
     {
-        netCdfWriter->write( time[i],
+        netCdfWriter->write( l_time[i],
                              totalHeight + ( i * 100 ),
                              momentumX + ( i * 100 ),
                              momentumY + ( i * 100 ) );
@@ -934,7 +932,7 @@ TEST_CASE( "The the write method for netCDF", "[netCDF]" )
     std::remove( "tmp_file.txt" );
 }
 
-TEST_CASE( "The the read method for netCDF", "[netCDF]" )
+TEST_CASE( "The read method for netCDF", "[netCDF]" )
 {
     tsunami_lab::io::NetCdf reader = tsunami_lab::io::NetCdf();
     const char* variables[2] = { "b", "h" };
@@ -1035,4 +1033,54 @@ TEST_CASE( "The the read method for netCDF", "[netCDF]" )
     {
         REQUIRE( hData[i] == h2[i] );
     }
+}
+
+TEST_CASE( "The averageSeveral method for netCDF", "[netCDF]" )
+{
+    // create simulation folder inside solution folder
+    if( !fs::exists( SOLUTION_FOLDER ) )
+    {
+    fs::create_directory( SOLUTION_FOLDER );
+    }
+    if( fs::exists( SOLUTION_FOLDER + "/simulation" ) )
+    {
+    fs::remove_all( SOLUTION_FOLDER + "/simulation" );
+    }
+    fs::create_directory( SOLUTION_FOLDER + "/simulation" );
+
+    tsunami_lab::io::NetCdf* netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/AverageSeveralNetCDF.test.nc",
+                                                                         10,
+                                                                         10,
+                                                                         5,
+                                                                         10000,
+                                                                         10000,
+                                                                         12,
+                                                                         bathymetry,
+                                                                         false,
+                                                                         true );
+    for( size_t i = 0; i < 20; i++ )
+    {
+    netCdfWriter->averageSeveral( l_time[i],
+                                  totalHeight + ( i * 100 ),
+                                  momentumX + ( i * 100 ),
+                                  momentumY + ( i * 100 ) );
+    }
+
+    delete netCdfWriter;
+
+    system( "ncdump solutions/simulation/AverageSeveralNetCDF.test.nc > tmp_file.txt" );
+
+    std::ifstream file1;
+    std::ifstream file2;
+    std::string line1, line2;
+
+    file1.open( "tmp_file.txt" );
+    file2.open( "resources/AverageSeveral_M.test.txt" );
+
+    while( std::getline( file1, line1 ) && std::getline( file2, line2 ) )
+    {
+    REQUIRE( line1 == line2 );
+    }
+
+    std::remove( "tmp_file.txt" );
 }
