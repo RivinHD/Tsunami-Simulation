@@ -434,15 +434,61 @@ Required cells in y-direction: :math:`\frac{2700000}{50}=30000`
     We have selected an l_k of 5 so that a total of 25 cells are merged into one in the visualisation. Accordingly,
     the cell size in the video is 250 metres.
 
-.. error::
-    CHANGE VIDEO
-
 
 .. raw:: html
 
     <center>
         <video width="700" controls>
-            <source src="../_static/videos/tohoku_500.mp4" type="video/mp4">
+            <source src="../_static/videos/tohoku_50_5.mp4" type="video/mp4">
+        </video>
+    </center>
+
+The video is the visualisation of the first 10 seconds of our tsunami simulation. This period is of course too short to
+recognise changes in the tsunami. The reason for the short video is the simulation time. We needed just over **8 hours**
+on LeChuck to calculate 10 seconds. 
+
+.. image:: ../_static/photos/task_7_2_2_terminal.png
+    :align: center
+    :width: 700
+
+
+
+3. Bonus
+^^^^^^^^
+
+To make the differences more visible, we simulated Tohoku with a cell size of :math:`1000\,m` and visualised the whole
+thing with an :math:`l\_k \text{ of } 1, 5 \text{ and } 25`.
+
+Required cells in x-direction: :math:`\frac{2700000}{1000}=2700` :raw-html:`<br>`
+Required cells in y-direction: :math:`\frac{2700000}{1000}=1500`
+
+**l_k = 1**
+
+.. raw:: html
+
+    <center>
+        <video width="700" controls>
+            <source src="../_static/videos/tohoku_1000_1.mp4" type="video/mp4">
+        </video>
+    </center>
+
+**l_k = 5**
+
+.. raw:: html
+
+    <center>
+        <video width="700" controls>
+            <source src="../_static/videos/tohoku_1000_5.mp4" type="video/mp4">
+        </video>
+    </center>
+
+**l_k = 25**
+
+.. raw:: html
+
+    <center>
+        <video width="700" controls>
+            <source src="../_static/videos/tohoku_1000_25.mp4" type="video/mp4">
         </video>
     </center>
 
