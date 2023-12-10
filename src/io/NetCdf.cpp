@@ -288,11 +288,11 @@ void tsunami_lab::io::NetCdf::_write( const t_real simulationTime,
     if( m_writeCountId >= 0 )
     {
         indexNC[0] = 0;
-        unsigned long long ullWriteCount = static_cast<unsigned long long>( writeCount );
-        l_err = nc_put_var1_ulonglong( m_ncId,
-                                       m_writeCountId,
-                                       indexNC,
-                                       &ullWriteCount );
+        int intWriteCount = static_cast<int>( writeCount );
+        l_err = nc_put_var1_int( m_ncId,
+                                 m_writeCountId,
+                                 indexNC,
+                                 &intWriteCount );
         checkNcErr( l_err, "putWriteCount" );
     }
 
