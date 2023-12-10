@@ -78,8 +78,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af915452dd54ec69181b253155ace3441"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtsunami__lab_1_1io_1_1Stations.html#af915452dd54ec69181b253155ace3441">Stations</a> (<a class="el" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> i_nx, <a class="el" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> i_ny, <a class="el" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> i_stride, <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_scaleX, <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_scaleY)</td></tr>
-<tr class="separator:af915452dd54ec69181b253155ace3441"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae74efce0b1fa3a073998d7314ad05a09"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtsunami__lab_1_1io_1_1Stations.html#ae74efce0b1fa3a073998d7314ad05a09">Stations</a> (<a class="el" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> i_nx, <a class="el" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> i_ny, <a class="el" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> i_stride, <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_scaleX, <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_scaleY, bool isCheckpoint=false)</td></tr>
+<tr class="separator:ae74efce0b1fa3a073998d7314ad05a09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5cacc8a8b98c8746f130d7548cc29c44"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtsunami__lab_1_1io_1_1Stations.html#a5cacc8a8b98c8746f130d7548cc29c44">write</a> (<a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> time, const <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> *totalHeight, const <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> *momentumX, const <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> *momentumY) const</td></tr>
 <tr class="separator:a5cacc8a8b98c8746f130d7548cc29c44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa00e4b68418da82a912e075be5c8215c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtsunami__lab_1_1io_1_1Stations.html#aa00e4b68418da82a912e075be5c8215c">getOutputFrequency</a> ()</td></tr>
@@ -88,8 +88,8 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Set a station that measure the height in a given frequency. The frequency is independent of the simulation time. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="af915452dd54ec69181b253155ace3441"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af915452dd54ec69181b253155ace3441">&#9670;&nbsp;</a></span>Stations()</h2>
+<a id="ae74efce0b1fa3a073998d7314ad05a09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae74efce0b1fa3a073998d7314ad05a09">&#9670;&nbsp;</a></span>Stations()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -122,7 +122,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a>&#160;</td>
-          <td class="paramname"><em>i_scaleY</em>&#160;</td>
+          <td class="paramname"><em>i_scaleY</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isCheckpoint</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -139,6 +145,7 @@ Public Member Functions</h2></td></tr>
     <tr><td class="paramname">i_stride</td><td>stride size </td></tr>
     <tr><td class="paramname">i_scaleX</td><td>width of the grid </td></tr>
     <tr><td class="paramname">i_scaleY</td><td>height of the grid </td></tr>
+    <tr><td class="paramname">isCheckpoint</td><td>is true if the simulation is started from a checkpoint </td></tr>
   </table>
   </dd>
 </dl>

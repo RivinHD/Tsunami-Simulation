@@ -62,6 +62,7 @@
 <li class="toctree-l1"><a class="reference internal" href="submissions/two_dimensional_solver.html">4. Two-Dimensional Solver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="submissions/large_data_input_output.html">5. Large Data Input and Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="submissions/tsunami_simulation.html">6. Tsunami Simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="submissions/checkpoint_coarse_output.html">7. Checkpointing and Coarse Output</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -217,6 +218,23 @@
 <li class="toctree-l2"><a class="reference internal" href="submissions/tsunami_simulation.html#contribution">Contribution</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="submissions/checkpoint_coarse_output.html">7. Checkpointing and Coarse Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="submissions/checkpoint_coarse_output.html#checkpointing">7.1. Checkpointing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="submissions/checkpoint_coarse_output.html#extended-netcdf-writer">1. Extended netCDF writer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/checkpoint_coarse_output.html#setup-checkpoint">2. Setup Checkpoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/checkpoint_coarse_output.html#test-of-checkpointing">3. Test of checkpointing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/checkpoint_coarse_output.html#auto-loading-a-checkpoint">4. Auto Loading a Checkpoint</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="submissions/checkpoint_coarse_output.html#coarse-output">7.2 Coarse Output</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="submissions/checkpoint_coarse_output.html#modified-output-writer">1. Modified output writer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/checkpoint_coarse_output.html#tohoku-earthquake-and-tsunami-event">2. Tohoku earthquake and tsunami event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/checkpoint_coarse_output.html#bonus">3. Bonus</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="submissions/checkpoint_coarse_output.html#contribution">Contribution</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -235,19 +253,28 @@
 <li class="toctree-l3"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdfE"><code class="docutils literal notranslate"><span class="pre">NetCdf</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf7VarTypeE"><code class="docutils literal notranslate"><span class="pre">NetCdf::VarType</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfEv"><code class="docutils literal notranslate"><span class="pre">NetCdf::NetCdf()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfENSt6stringE5t_idx5t_idx6t_real6t_real5t_idxPK6t_realbb"><code class="docutils literal notranslate"><span class="pre">NetCdf::NetCdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfE5t_idxNSt6stringE5t_idx5t_idx5t_idx6t_real6t_real5t_idxPK6t_realb"><code class="docutils literal notranslate"><span class="pre">NetCdf::NetCdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfENSt6stringE5t_idx5t_idx5t_idx6t_real6t_real5t_idxPK6t_realbb"><code class="docutils literal notranslate"><span class="pre">NetCdf::NetCdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfENSt6stringE5t_idx5t_idx6t_real6t_real5t_idxPK6t_realPKc6t_realPK6t_realPK6t_realPK6t_real6t_realK5t_idx"><code class="docutils literal notranslate"><span class="pre">NetCdf::NetCdf()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdfD0Ev"><code class="docutils literal notranslate"><span class="pre">NetCdf::~NetCdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf14averageSeveralEK6t_realPK6t_realPK6t_realPK6t_real"><code class="docutils literal notranslate"><span class="pre">NetCdf::averageSeveral()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5writeEK6t_realPK6t_realPK6t_realPK6t_real"><code class="docutils literal notranslate"><span class="pre">NetCdf::write()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4I_6size_tEN11tsunami_lab2io11tsunami_lab2io6NetCdf4readEvPKcRA1N_PKcRA1N_8VarArray6size_t"><code class="docutils literal notranslate"><span class="pre">NetCdf::read()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4readEPKcPKcR8VarArray6size_t"><code class="docutils literal notranslate"><span class="pre">NetCdf::read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4I_6size_tEN11tsunami_lab2io11tsunami_lab2io6NetCdf4readEvPKcRA1N_PKcRA1N_8VarArrayx"><code class="docutils literal notranslate"><span class="pre">NetCdf::read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4readEPKcPKcR8VarArrayx"><code class="docutils literal notranslate"><span class="pre">NetCdf::read()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10checkNcErrEiNSt6stringE"><code class="docutils literal notranslate"><span class="pre">NetCdf::checkNcErr()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5_readEPKcPPKcP8VarArray6size_t6size_t"><code class="docutils literal notranslate"><span class="pre">NetCdf::_read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf5_readEPKcPPKcP8VarArrayx6size_t"><code class="docutils literal notranslate"><span class="pre">NetCdf::_read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6_writeEK6t_realPK6t_realPK6t_realPK6t_realK5t_idxK5t_idxK5t_idxK5t_idx"><code class="docutils literal notranslate"><span class="pre">NetCdf::_write()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6NetCdfENSt6stringE5t_idx5t_idx5t_idx6t_real6t_real5t_idxPK6t_realbbPKc6t_real"><code class="docutils literal notranslate"><span class="pre">NetCdf::NetCdf()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10isReadModeE"><code class="docutils literal notranslate"><span class="pre">NetCdf::isReadMode</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10m_filePathE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_filePath</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf14m_singleCellnxE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_singleCellnx</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf14m_singleCellnyE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_singleCellny</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4m_nxE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_nx</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf4m_nyE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_ny</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf3m_kE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_k</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_scaleXE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_scaleX</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_scaleYE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_scaleY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf18m_singleCellStrideE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_singleCellStride</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_strideE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_stride</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6m_timeE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_time</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf6m_ncIdE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_ncId</span></code></a></li>
@@ -261,11 +288,15 @@
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf14m_bathymetryIdE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_bathymetryId</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf13m_momentumXIdE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_momentumXId</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf13m_momentumYIdE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_momentumYId</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf14m_writeCountIdE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_writeCountId</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_hMaxIDE"><code class="docutils literal notranslate"><span class="pre">NetCdf::m_hMaxID</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf12isCheckpointE"><code class="docutils literal notranslate"><span class="pre">NetCdf::isCheckpoint</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf11commandLineE"><code class="docutils literal notranslate"><span class="pre">NetCdf::commandLine</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8VarArrayE"><code class="docutils literal notranslate"><span class="pre">NetCdf::VarArray</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8StationsE"><code class="docutils literal notranslate"><span class="pre">Stations</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations8StationsE5t_idx5t_idx5t_idx6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">Stations::Stations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations8StationsE5t_idx5t_idx5t_idx6t_real6t_realb"><code class="docutils literal notranslate"><span class="pre">Stations::Stations()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab2io11tsunami_lab2io8Stations5writeE6t_realPK6t_realPK6t_realPK6t_real"><code class="docutils literal notranslate"><span class="pre">Stations::write()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations18getOutputFrequencyEv"><code class="docutils literal notranslate"><span class="pre">Stations::getOutputFrequency()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations10m_stationsE"><code class="docutils literal notranslate"><span class="pre">Stations::m_stations</span></code></a></li>
@@ -337,6 +368,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d12m_bathymetryE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::m_bathymetry</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13hasBathymetryE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::hasBathymetry</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13m_totalHeightE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::m_totalHeight</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d18isDirtyTotalHeightE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::isDirtyTotalHeight</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13hasReflectionE"><code class="docutils literal notranslate"><span class="pre">WavePropagation1d::hasReflection</span></code></a></li>
 </ul>
 </li>
@@ -374,6 +406,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d12m_bathymetryE"><code class="docutils literal notranslate"><span class="pre">WavePropagation2d::m_bathymetry</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d13hasBathymetryE"><code class="docutils literal notranslate"><span class="pre">WavePropagation2d::hasBathymetry</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d13m_totalHeightE"><code class="docutils literal notranslate"><span class="pre">WavePropagation2d::m_totalHeight</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d18isDirtyTotalHeightE"><code class="docutils literal notranslate"><span class="pre">WavePropagation2d::isDirtyTotalHeight</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d13hasReflectionE"><code class="docutils literal notranslate"><span class="pre">WavePropagation2d::hasReflection</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16ITERATIONS_CACHEE"><code class="docutils literal notranslate"><span class="pre">WavePropagation2d::ITERATIONS_CACHE</span></code></a></li>
 </ul>
@@ -389,6 +422,18 @@
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d13getBathymetryE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">ArtificialTsunami2d::getBathymetry()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d16bathymetryHeightE"><code class="docutils literal notranslate"><span class="pre">ArtificialTsunami2d::bathymetryHeight</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12centerOffsetE"><code class="docutils literal notranslate"><span class="pre">ArtificialTsunami2d::centerOffset</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10CheckpointE"><code class="docutils literal notranslate"><span class="pre">Checkpoint</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10Checkpoint10CheckpointEPKcR5t_idxR6t_realR6t_realRNSt6vectorIPcEE"><code class="docutils literal notranslate"><span class="pre">Checkpoint::Checkpoint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10Checkpoint9getHeightE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">Checkpoint::getHeight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10Checkpoint12getMomentumXE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">Checkpoint::getMomentumX()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10Checkpoint12getMomentumYE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">Checkpoint::getMomentumY()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10Checkpoint13getBathymetryE6t_real6t_real"><code class="docutils literal notranslate"><span class="pre">Checkpoint::getBathymetry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10Checkpoint4dataE"><code class="docutils literal notranslate"><span class="pre">Checkpoint::data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10Checkpoint6scaleXE"><code class="docutils literal notranslate"><span class="pre">Checkpoint::scaleX</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10Checkpoint6scaleYE"><code class="docutils literal notranslate"><span class="pre">Checkpoint::scaleY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10Checkpoint9variablesE"><code class="docutils literal notranslate"><span class="pre">Checkpoint::variables</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups18CircularDamBreak2dE"><code class="docutils literal notranslate"><span class="pre">CircularDamBreak2d</span></code></a><ul>

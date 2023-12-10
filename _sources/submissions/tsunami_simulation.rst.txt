@@ -39,7 +39,7 @@ The bottom line is that we use 15000 seconds.
 Cell size: **1000m**
 
 Required cells in x-direction: :math:`\frac{3500000}{1000}=3500` :raw-html:`<br>`
-Required cells in x-direction: :math:`\frac{3000000}{1000}=3000`
+Required cells in y-direction: :math:`\frac{3000000}{1000}=3000`
 
 .. raw:: html
 
@@ -52,7 +52,7 @@ Required cells in x-direction: :math:`\frac{3000000}{1000}=3000`
 Cell size: **500m**
 
 Required cells in x-direction: :math:`\frac{3500000}{500}=7000` :raw-html:`<br>`
-Required cells in x-direction: :math:`\frac{3000000}{500}=6000`
+Required cells in y-direction: :math:`\frac{3000000}{500}=6000`
 
 .. raw:: html
 
@@ -65,7 +65,7 @@ Required cells in x-direction: :math:`\frac{3000000}{500}=6000`
 Cell size: **250m**
 
 Required cells in x-direction: :math:`\frac{3500000}{250}=14000` :raw-html:`<br>`
-Required cells in x-direction: :math:`\frac{3000000}{250}=12000`
+Required cells in y-direction: :math:`\frac{3000000}{250}=12000`
 
 .. raw:: html
 
@@ -99,7 +99,7 @@ The bottom line is that we use 13000 seconds.
 Cell size: **2000m**
 
 Required cells in x-direction: :math:`\frac{2700000}{2000}=1350` :raw-html:`<br>`
-Required cells in x-direction: :math:`\frac{2700000}{2000}=750`
+Required cells in y-direction: :math:`\frac{2700000}{2000}=750`
 
 .. raw:: html
 
@@ -112,7 +112,7 @@ Required cells in x-direction: :math:`\frac{2700000}{2000}=750`
 Cell size: **1000m**
 
 Required cells in x-direction: :math:`\frac{2700000}{1000}=2700` :raw-html:`<br>`
-Required cells in x-direction: :math:`\frac{2700000}{1000}=1500`
+Required cells in y-direction: :math:`\frac{2700000}{1000}=1500`
 
 .. raw:: html
 
@@ -125,7 +125,7 @@ Required cells in x-direction: :math:`\frac{2700000}{1000}=1500`
 Cell size: **500m**
 
 Required cells in x-direction: :math:`\frac{2700000}{500}=5400` :raw-html:`<br>`
-Required cells in x-direction: :math:`\frac{2700000}{500}=3000`
+Required cells in y-direction: :math:`\frac{2700000}{500}=3000`
 
 .. raw:: html
 
