@@ -3,8 +3,7 @@ project(TsunamiSimulation VERSION 0.1.0 LANGUAGES C CXX)
 
 # find packages
 find_package(netCDF REQUIRED)
-include_directories(${netCDF_INCLUDE_DIRS})
-link_libraries(${netCDF_LIBRARIES})
+link_libraries(netCDF::netcdf)
 
 message("####################################")
 message("### Tsunami Lab                  ###")
@@ -50,6 +49,7 @@ set(SRC_FILES
     setups/CircularDamBreak2d
     setups/ArtificialTsunami2d
     setups/TsunamiEvent2d
+    setups/CheckPoint
     patches/WavePropagation1d
     patches/WavePropagation2d
     io/Csv
@@ -80,6 +80,7 @@ set(RESOURCE_FILES
     ReadNetCDF.test.nc
     WriteNetCDF_S.test.txt
     WriteNetCDF_M.test.txt
+    AverageSeveral_M.test.txt
     artificialtsunami_displ_1000.nc
     artificialtsunami_bathymetry_1000.nc
 )

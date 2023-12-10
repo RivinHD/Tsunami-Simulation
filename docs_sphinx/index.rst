@@ -17,6 +17,7 @@
    submissions/two_dimensional_solver.rst
    submissions/large_data_input_output.rst
    submissions/tsunami_simulation.rst
+   submissions/checkpoint_coarse_output.rst
 
 .. toctree::
    :maxdepth: 4

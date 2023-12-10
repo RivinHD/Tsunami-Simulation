@@ -92,8 +92,14 @@ public:
      * @param i_stride stride size
      * @param i_scaleX width of the grid
      * @param i_scaleY height of the grid
+     * @param isCheckpoint is true if the simulation is started from a checkpoint
      */
-    Stations( t_idx i_nx, t_idx i_ny, t_idx i_stride, t_real i_scaleX, t_real i_scaleY );
+    Stations( t_idx i_nx,
+              t_idx i_ny,
+              t_idx i_stride,
+              t_real i_scaleX,
+              t_real i_scaleY,
+              bool isCheckpoint = false );
 
     /**
      * Write totalHeight of each station to its csv file with a shared time step.

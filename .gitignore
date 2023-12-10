@@ -12,5 +12,4 @@ out/
 CMakeSettings.json
 resources/data_in.tar.xz
 resources/gebco20/
-resources/chile_gebco20_usgs_250m_bath_fixed.nc
-resources/chile_gebco20_usgs_250m_displ_fixed.nc
+cpp.hint

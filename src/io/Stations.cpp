@@ -17,7 +17,8 @@ tsunami_lab::io::Stations::Stations( t_idx i_nx,
                                      t_idx i_ny,
                                      t_idx i_stride,
                                      t_real i_scaleX,
-                                     t_real i_scaleY )
+                                     t_real i_scaleY,
+                                     bool isCheckpoint )
 {
     m_nx = i_nx;
     m_ny = i_ny;
@@ -43,16 +44,19 @@ tsunami_lab::io::Stations::Stations( t_idx i_nx,
         exit( 1 );
     }
 
-    // create station folder inside solution folder
-    if( !fs::exists( SOLUTION_FOLDER ) )
+    if( !isCheckpoint )
     {
-        fs::create_directory( SOLUTION_FOLDER );
+        // create station folder inside solution folder
+        if( !fs::exists( SOLUTION_FOLDER ) )
+        {
+            fs::create_directory( SOLUTION_FOLDER );
+        }
+        if( fs::exists( SOLUTION_FOLDER + "/station" ) )
+        {
+            fs::remove_all( SOLUTION_FOLDER + "/station" );
+        }
+        fs::create_directory( SOLUTION_FOLDER + "/station" );
     }
-    if( fs::exists( SOLUTION_FOLDER + "/station" ) )
-    {
-        fs::remove_all( SOLUTION_FOLDER + "/station" );
-    }
-    fs::create_directory( SOLUTION_FOLDER + "/station" );
 
     if( config.contains( "output_frequency" ) )
         m_outputFrequency = config["output_frequency"];
@@ -103,7 +107,7 @@ void tsunami_lab::io::Stations::write( t_real time,
         l_file << time
             << "," << ( i_totalHeight != nullptr ? i_totalHeight[station.m_index] : std::numeric_limits<float>::quiet_NaN() )
             << "," << ( momentumX != nullptr ? momentumX[station.m_index] : std::numeric_limits<float>::quiet_NaN() )
-            << "," << ( momentumX != nullptr ? momentumY[station.m_index] : std::numeric_limits<float>::quiet_NaN() )
+            << "," << ( momentumY != nullptr ? momentumY[station.m_index] : std::numeric_limits<float>::quiet_NaN() )
             << std::endl;
         l_file.close();
     }

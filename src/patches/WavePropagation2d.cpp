@@ -40,6 +40,8 @@ tsunami_lab::patches::WavePropagation2d::~WavePropagation2d()
 
 void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
 {
+    isDirtyTotalHeight = true;
+
     // pointers to old and new data
     t_real* l_hOld = m_h[m_step];
     t_real* l_huOld = m_hu[m_step];
@@ -521,15 +523,19 @@ tsunami_lab::patches::WavePropagation2d::Reflection tsunami_lab::patches::WavePr
     return static_cast<Reflection>( leftReflection * Reflection::LEFT + rightReflection * Reflection::RIGHT );
 }
 
-const tsunami_lab::t_real *tsunami_lab::patches::WavePropagation2d::getTotalHeight()
+const tsunami_lab::t_real* tsunami_lab::patches::WavePropagation2d::getTotalHeight()
 {
-    for( t_idx i = 1; i < m_yCells + 1; i++ )
+    if( isDirtyTotalHeight )
     {
-        for( t_idx j = 1; j < m_xCells + 1; j++ )
+        for( t_idx i = 1; i < m_yCells + 1; i++ )
         {
-            t_idx k = stride * i + j;
-            m_totalHeight[k] = m_h[m_step][k] + m_bathymetry[k];
+            for( t_idx j = 1; j < m_xCells + 1; j++ )
+            {
+                t_idx k = stride * i + j;
+                m_totalHeight[k] = m_h[m_step][k] + m_bathymetry[k];
+            }
         }
     }
+    isDirtyTotalHeight = false;
     return m_totalHeight + 1 + stride;
 }
