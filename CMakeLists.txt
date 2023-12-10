@@ -83,8 +83,6 @@ set(RESOURCE_FILES
     AverageSeveral_M.test.txt
     artificialtsunami_displ_1000.nc
     artificialtsunami_bathymetry_1000.nc
-    gebco20/tohoku_gebco20_usgs_250m_displ.nc
-    gebco20/tohoku_gebco20_usgs_250m_bath.nc
 )
 
 # Create SOURCE_FILES

@@ -325,7 +325,7 @@ This ensures the stability of the checkpoint creation process.
 
 To modify the output recorder so that it averages several neighbouring cells of the calculation grid into one cell of
 the output file, we introduce the helper function ``averageSeveral``. The idea is to add the values of the **l_k** many
-high-resolution cells in x and y direction and then average them by dividing the sum by **l_k** at the end. The whole thing
+high-resolution cells in x and y direction and then average them by dividing the sum by **l_k2** at the end. The whole thing
 can then be done analogue for the height and both moments. (l_k is set in the constructor)
 
 .. code-block:: cpp
@@ -350,7 +350,7 @@ can then be done analogue for the height and both moments. (l_k is set in the co
 
 For the implementation, we iterate over our matrix of cells (taking the stride into account, of course). The two outer
 loops iterate roughly over the matrix. This means that these two loops represent cell blocks of size
-::math::`l_k \cdot l_k`. Once in x and once in y direction.
+:math:`l_k \cdot l_k`. Once in x and once in y direction.
 
 The inner two loops then iterate together over the elements in x and y direction of the cell block. The values of the
 individual cells of a cell block are then added together inside.
@@ -405,7 +405,7 @@ It is important to zero the average values again and increase the index afterwar
     }
     [ ... ]
 
-After we have also exited the fourth loop, we call the internal ``_write``` function with our reduced arrays and pass them.
+After we have also exited the fourth loop, we call the internal ``_write`` function with our reduced arrays and pass them.
 Of course, dont forget to delete the arrays.
 
 .. code-block:: cpp
