@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.1.0)
 project(TsunamiSimulation VERSION 0.1.0 LANGUAGES C CXX)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
+
 # find packages
-find_package(netCDF REQUIRED)
-link_libraries(netCDF::netcdf)
+find_package(NetCDF REQUIRED)
+link_libraries(NetCDF::NetCDF)
 
 message("####################################")
 message("### Tsunami Lab                  ###")
@@ -80,9 +82,6 @@ set(RESOURCE_FILES
     ReadNetCDF.test.nc
     WriteNetCDF_S.test.txt
     WriteNetCDF_M.test.txt
-    AverageSeveral_M.test.txt
-    artificialtsunami_displ_1000.nc
-    artificialtsunami_bathymetry_1000.nc
     gebco20/tohoku_gebco20_usgs_250m_displ.nc
     gebco20/tohoku_gebco20_usgs_250m_bath.nc
 )
