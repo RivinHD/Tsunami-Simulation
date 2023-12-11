@@ -14,6 +14,83 @@
 
 Follow the instructions off :ref:`getting_started_building_project`.
 
+To simplify matters, we have created two Slurm scripts for running our simulations. The first one ``launchSimulation.sh``
+compiles our code and is a wrapper to start the actually script ``simulation.sh`` in the right direction.
+
+.. warning::
+
+    Change to final scrips!
+
+.. code-block:: bash
+
+    ///File: launchSimulation.sh
+    #SBATCH --job-name=launch_simulation
+    #SBATCH --output=launch_simulation.out
+    #SBATCH --partition=s_hadoop
+    #SBATCH --nodes=1
+    #SBATCH --ntasks=1
+    #SBATCH --time=00:10:00
+    #SBATCH --cpus-per-task=2
+    #SBATCH --mem=4G
+
+    BuildDirectory="/home/$USER/tsunami/Tsunami-Simulation/build"
+    ScriptDirectory="/home/$USER/tsunami"
+
+    # Loading cmake to launch this task
+    echo "Loading needed modules"
+    module load tools/cmake/3.22.2
+    module load libs/netcdf/4.6.1-gcc-7.3.0
+    module load compiler/gcc/11.2.0
+    module load compiler/intel/2020-Update2
+    module load libs/netcdf/4.6.1-intel-2018
+
+
+    # Setting up cmake
+    echo "Setting up cmake"
+    cd "$BuildDirectory"
+    cmake ..
+
+    # Compiling c++
+    # Options:
+    #   --config: Release, Debug
+    #   --target: simulation, sanitize, test, sanitize_test, test_middle_states
+    echo "Building the project"
+    cmake --build . --config Release --target simulation
+
+    #creating ouput directory
+    directory=/beegfs/$USER/$(date +"%F_%H-%M")
+    mkdir $directory
+
+    # Coping requiered resources for this job
+    echo "Copying files to $directory"
+    cp simulation $directory/simulation
+    mkdir $directory/resources
+    cp -R resources/* $directory/resources/
+
+    echo "Launching the job"
+    sbatch -D "$directory" "$ScriptDirectory"/simulation.sh
+
+``simulation.sh`` then runs the actual simulation on a long term node with lots of resources.
+
+.. code-block:: bash
+
+    ///File: simulation.sh
+    #!/bin/bash
+
+    #SBATCH --job-name=tsunami_simulation
+    #SBATCH --output=simulation.out
+    #SBATCH --partition=s_hadoop
+    #SBATCH --nodes=1
+    #SBATCH --ntasks=1
+    #SBATCH --time=120:00:00
+    #SBATCH --cpus-per-task=72
+    #SBATCH --mem=128G
+
+    echo "Start executing 'simulation 5000 5000 -B -w 100 -t 1600 -c 1':"
+
+    ./simulation 5000 5000 -B -w 100 -t 1600 -c 1
+
+
 2. Verification
 ^^^^^^^^^^^^^^^
 
@@ -143,12 +220,35 @@ The data shows that the local machine is more than **twice as fast** as the ARA 
 1. Support for generic compilers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. note::
+To change the compiler on the **ARA cluster** we have to specify the path in the ``launchSimulation.sh``
 
-    When compiling locally and there is the need to use the INTEL ICC/ICPC compiler specify this by running
-    **cmake .. -D CMAKE_C_COMPILER...**
+.. code-block:: bash
+    :emphasize-lines: 7-8
 
-2. 
+    ///File: launchSimulation.sh
+    [ ... ]
+    # Setting up cmake
+    echo "Setting up cmake"
+    cd "$BuildDirectory"
+    # intel compiler can only be used without io
+    CC="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icc" \
+    CXX="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icpc" \
+    cmake .. -D DISABLE_IO=ON
+    [ ... ]
+
+If you are compiling on your local machine or on another server, you can pass the path of your compiler to **cmake** via
+
+.. code-block:: bash
+
+    CC=path/to/c/compiler CXX=path/to/c++/compiler cmake ..
+
+or with
+
+.. code-block:: bash
+
+    cmake -D CMAKE_C_COMPILER=path/to/c/compiler -D CMAKE_CXX_COMPILER=path/to/c++/compiler ..
+
+
 
 
 8.3 Instrumentation and Performance Counters
