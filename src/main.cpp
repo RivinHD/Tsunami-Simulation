@@ -18,11 +18,7 @@
 #include "../include/setups/CircularDamBreak2d.h"
 #include "../include/setups/ArtificialTsunami2d.h"
 #include "../include/setups/TsunamiEvent2d.h"
-#include "../include/setups/CheckPoint.h"
-#include "../include/io/Csv.h"
-#include "../include/io/NetCdf.h"
 #include "../include/io/ArgSetup.h"
-#include "../include/io/Stations.h"
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
@@ -31,6 +27,10 @@
 #include <string>
 #include <chrono>
 #ifndef TSUNAMI_SIMULATION_DISABLE_IO
+#include "../include/setups/CheckPoint.h"
+#include "../include/io/Csv.h"
+#include "../include/io/NetCdf.h"
+#include "../include/io/Stations.h"
 #include <filesystem> // requieres C++17 and up
 namespace fs = std::filesystem;
 #endif // !TSUNAMI_SIMULATION_DISABLE_IO
@@ -725,8 +725,8 @@ int main( int   i_argc,
     const auto minutes = std::chrono::duration_cast<std::chrono::minutes>( duration - hours );
     const auto seconds = std::chrono::duration_cast<std::chrono::seconds>( duration - hours - minutes );
     std::cout << "The Simulation took " << green << hours.count() << " h " << minutes.count() << " min " << seconds.count() << " sec" << reset << " to finish." << std::endl;
-    std::cout << "Time per iteration: " << green << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() / l_cellUpdates << reset << " milliseconds." << std::endl;
-    std::cout << "Time per cell:      " << green << std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count() / l_cellUpdates / l_nx / l_ny << reset << " nanoseconds." << std::endl;
+    std::cout << "Time per iteration: " << green << std::chrono::duration_cast<std::chrono::milliseconds>( duration ).count() / l_cellUpdates << reset << " milliseconds." << std::endl;
+    std::cout << "Time per cell:      " << green << std::chrono::duration_cast<std::chrono::nanoseconds>( duration ).count() / l_cellUpdates / l_nx / l_ny << reset << " nanoseconds." << std::endl;
 
     std::cout << "finished, exiting" << std::endl;
     return EXIT_SUCCESS;

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.10.0)
 project(TsunamiSimulation VERSION 0.1.0 LANGUAGES C CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
@@ -19,12 +19,6 @@ if(DISABLE_IO)
     message(STATUS "Disabling IO")
 endif(DISABLE_IO)
 
-option(INTEL_COMPILER "Compiles with the intel compiler")
-# Choose Compiler
-if(INTEL_COMPILER)
-    set(CMAKE_C_COMPILER icc)
-    set(CMAKE_CXX_COMPILER icpc)
-endif(INTEL_COMPILER)
 
 # Setup compile Flags
 if(MSVC)
@@ -58,9 +52,11 @@ set(SRC_FILES
     setups/CircularDamBreak2d
     setups/ArtificialTsunami2d
     setups/TsunamiEvent2d
-    setups/CheckPoint
     patches/WavePropagation1d
     patches/WavePropagation2d
+)
+set(SRC_FILES_IO
+    setups/CheckPoint
     io/Csv
     io/Stations
     io/NetCdf
@@ -106,6 +102,17 @@ foreach(file ${SRC_FILES})
         ${PROJECT_SOURCE_DIR}/${file}.test.cpp
     )
 endforeach()
+if(NOT DISABLE_IO)
+    foreach(file ${SRC_FILES_IO})
+        list(APPEND SOURCE_FILES
+            ${PROJECT_SOURCE_DIR}/${file}.cpp
+            ${PROJECT_INCLUDE_DIR}/${file}.h
+        )
+        list(APPEND TEST_FILES
+            ${PROJECT_SOURCE_DIR}/${file}.test.cpp
+        )
+    endforeach()
+endif(NOT DISABLE_IO)
 foreach(file ${SRC_FILES_NO_TEST})
     list(APPEND SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/${file}.cpp
@@ -138,10 +145,12 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 add_subdirectory(submodules/Catch2)
 include_directories(SYSTEM submodules/Catch2/single_include)
 
-# Linking the json libary
-add_subdirectory(submodules/json)
-include_directories(SYSTEM submodules/json/single_include)
-link_libraries(nlohmann_json::nlohmann_json)
+if(NOT DISABLE_IO)
+    # Linking the json libary
+    add_subdirectory(submodules/json)
+    include_directories(SYSTEM submodules/json/single_include)
+    link_libraries(nlohmann_json::nlohmann_json)
+endif(NOT DISABLE_IO)
 
 
 # Setup Testing
