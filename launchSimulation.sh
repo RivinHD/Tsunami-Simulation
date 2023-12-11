@@ -3,8 +3,8 @@
 #SBATCH --job-name=launch_simulation
 #SBATCH --output=launch_simulation.out
 
-BuildDirectory="/home/ga65gig/tsunami/Tsunami-Simulation/build"
-ScriptDirectory="/home/ga65gig/tsunami"
+BuildDirectory="/home/$USER/tsunami/Tsunami-Simulation/build"
+ScriptDirectory="/home/$USER/tsunami"
 
 # Loading cmake to launch this task
 echo "Loading needed modules"
@@ -28,7 +28,7 @@ echo "Building the project"
 cmake --build . --config Release --target simulation
 
 #creating ouput directory
-directory=/beegfs/ga65gig/$(date +"%F_%H-%M")
+directory=/beegfs/$USER/$(date +"%F_%H-%M")
 mkdir $directory
 
 # Coping requiered resources for this job
