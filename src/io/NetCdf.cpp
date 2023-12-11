@@ -82,7 +82,7 @@ void tsunami_lab::io::NetCdf::_read( const char* filepath,
         l_err = nc_inq_varid( ncID, name, &varID );
         if( l_err == NC_ENOTVAR ) // skip not found variables with WARNING
         {
-            std::cerr << "WARNING: Could not find a variable with name: " << name << ". Writing nothing at index" << i << std::endl;
+            std::cerr << "WARNING: Could not find a variable with name: " << name << ". Writing nothing at index " << i << std::endl;
             continue;
         }
         checkNcErr( l_err, "readVarID" );
@@ -340,7 +340,7 @@ tsunami_lab::io::NetCdf::NetCdf( t_idx writeStep,
     m_nx = l_nx / l_k;
     m_ny = l_ny / l_k;
     m_k = l_k;
-    m_divideK2 = 1 / (m_k * m_k);
+    m_divideK2 = 1 / ( m_k * m_k );
     m_scaleX = l_scaleX;
     m_scaleY = l_scaleY;
     m_singleCellStride = l_stride;
@@ -442,7 +442,7 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     m_nx = l_nx / l_k;
     m_ny = l_ny / l_k;
     m_k = l_k;
-    m_divideK2 = 1 / (m_k * m_k);
+    m_divideK2 = 1 / ( m_k * m_k );
     m_scaleX = l_scaleX;
     m_scaleY = l_scaleY;
     m_singleCellStride = l_stride;
@@ -766,7 +766,7 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                                  bool useMomenta )
     : NetCdf( filePath, l_nx, l_ny, l_k, l_scaleX, l_scaleY, l_stride, bathymetry, useSpherical, useMomenta, "", 1 )
 {
-    m_divideK2 = 1 / (m_k * m_k);
+    m_divideK2 = 1 / ( m_k * m_k );
 }
 
 tsunami_lab::io::NetCdf::NetCdf( std::string filePath,

@@ -3,6 +3,10 @@
  *
  * Entry-point for simulations.
  **/
+
+ // #define SKIP_ARGUMENTS
+ // #define TSUNAMI_SIMULATION_DISABLE_IO
+
 #include "../include/patches/WavePropagation1d.h"
 #include "../include/patches/WavePropagation2d.h"
 #include "../include/setups/DamBreak1d.h"
@@ -25,12 +29,11 @@
 #include <fstream>
 #include <limits>
 #include <string>
-#include <filesystem> // requieres C++17 and up
 #include <chrono>
-
- // #define SKIP_ARGUMENTS
-
+#ifndef TSUNAMI_SIMULATION_DISABLE_IO
+#include <filesystem> // requieres C++17 and up
 namespace fs = std::filesystem;
+#endif // !TSUNAMI_SIMULATION_DISABLE_IO
 
 const std::string SOLUTION_FOLDER = "solutions";
 
@@ -138,11 +141,12 @@ int main( int   i_argc,
     tsunami_lab::t_real l_scaleY = 10000;
     bool useCheckpoint = false;
     tsunami_lab::t_real l_simTime = 0;
-    tsunami_lab::t_idx l_writeCount = 0;
     tsunami_lab::t_real checkpointHMax = 0;
 
     std::cout << "Checking for Checkpoints: ";
 
+#ifndef TSUNAMI_SIMULATION_DISABLE_IO
+    tsunami_lab::t_idx l_writeCount = 0;
     std::string checkpointPath = SOLUTION_FOLDER + "/checkpoint.nc";
     std::vector<char*> parsedArgv;
     if( fs::exists( checkpointPath ) )
@@ -161,6 +165,10 @@ int main( int   i_argc,
     {
         std::cout << green << "No checkpoint found!" << reset << std::endl;
     }
+#endif // !TSUNAMI_SIMULATION_DISABLE_IO
+#ifdef TSUNAMI_SIMULATION_DISABLE_IO
+    std::cout << green << "File IO is disabled!" << reset << std::endl;
+#endif // TSUNAMI_SIMULATION_DISABLE_IO
 
     // compact the inputs to one string for the checkpoint
     std::string commandLine = i_argv[0];
@@ -480,13 +488,6 @@ int main( int   i_argc,
         l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx );
     }
 
-    // initialize stations
-    tsunami_lab::io::Stations l_stations = tsunami_lab::io::Stations( l_nx,
-                                                                      l_ny,
-                                                                      l_waveProp->getStride(),
-                                                                      l_scaleX,
-                                                                      l_scaleY );
-
     // set the solver to use
     l_waveProp->setSolver( solver );
 
@@ -562,6 +563,14 @@ int main( int   i_argc,
     // derive scaling for a time step
     tsunami_lab::t_real l_scaling = l_dt / l_dxy;
 
+#ifndef TSUNAMI_SIMULATION_DISABLE_IO
+
+    // initialize stations
+    tsunami_lab::io::Stations l_stations = tsunami_lab::io::Stations( l_nx,
+                                                                      l_ny,
+                                                                      l_waveProp->getStride(),
+                                                                      l_scaleX,
+                                                                      l_scaleY );
     if( !useCheckpoint )
     {
         // create simulation folder inside solution folder
@@ -609,9 +618,10 @@ int main( int   i_argc,
 
     // var to check if it's time to write stations
     tsunami_lab::t_real l_timeCount = 0.0;
+    auto checkpointTime = std::chrono::high_resolution_clock::now();
+#endif // !TSUNAMI_SIMULATION_DISABLE_IO
 
     const auto startTime = std::chrono::high_resolution_clock::now();
-    auto checkpointTime = std::chrono::high_resolution_clock::now();
 
     std::cout << "entering time loop" << std::endl;
 
@@ -703,7 +713,9 @@ int main( int   i_argc,
     std::cout << "freeing memory" << std::endl;
     delete l_setup;
     delete l_waveProp;
+#ifndef TSUNAMI_SIMULATION_DISABLE_IO
     delete netCdfWriter;
+#endif // !TSUNAMI_SIMULATION_DISABLE_IO
 
     // Print the calculation time
     const auto duration = std::chrono::high_resolution_clock::now() - startTime;
@@ -711,7 +723,6 @@ int main( int   i_argc,
     const auto minutes = std::chrono::duration_cast<std::chrono::minutes>( duration - hours );
     const auto seconds = std::chrono::duration_cast<std::chrono::seconds>( duration - hours - minutes );
     std::cout << "The Simulation took " << green << hours.count() << " h " << minutes.count() << " min " << seconds.count() << " sec" << reset << " to finish." << std::endl;
-
     std::cout << "finished, exiting" << std::endl;
     return EXIT_SUCCESS;
 }
