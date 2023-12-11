@@ -461,9 +461,9 @@ int main( int   i_argc,
     if( l_setup == nullptr )
     {
         const char* variables[3]{ "x", "y", "z" };
-        l_setup = new tsunami_lab::setups::TsunamiEvent2d( "resources/artificialtsunami_bathymetry_1000.nc",
+        l_setup = new tsunami_lab::setups::TsunamiEvent2d( "resources/gebco20/tohoku_gebco20_usgs_250m_bath.nc",
                                                            variables,
-                                                           "resources/artificialtsunami_displ_1000.nc",
+                                                           "resources/gebco20/tohoku_gebco20_usgs_250m_displ.nc",
                                                            variables,
                                                            l_scaleX,
                                                            l_scaleY );
@@ -618,6 +618,8 @@ int main( int   i_argc,
     // iterate over time
     while( l_simTime < l_endTime )
     {
+#ifndef TSUNAMI_SIMULATION_DISABLE_IO
+
         if( l_timeCount / l_stations.getOutputFrequency() >= 1.0 )
         {
             l_stations.write( l_simTime,
@@ -688,6 +690,7 @@ int main( int   i_argc,
             fs::rename( tempCheckpointPath, checkpointPath );
             checkpointTime = std::chrono::high_resolution_clock::now();
         }
+#endif // !TSUNAMI_SIMULATION_DISABLE_IO
 
         l_waveProp->setGhostOutflow();
         l_waveProp->timeStep( l_scaling );

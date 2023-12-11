@@ -10,8 +10,21 @@ link_libraries(NetCDF::NetCDF)
 option(ENABLE_TESTMODE "Adds the Test defintion to any build")
 if(ENABLE_TESTMODE)
     add_compile_definitions(TSUNAMI_SIMULATION_TEST)
-    message("-- Starting in Test Mode")
+    message(STATUS "Starting in Test Mode")
 endif(ENABLE_TESTMODE)
+
+option(DISABLE_IO "Disable the io of the simulation")
+if(DISABLE_IO)
+    add_compile_definitions(TSUNAMI_SIMULATION_DISABLE_IO)
+    message(STATUS "Disabling IO")
+endif(DISABLE_IO)
+
+option(INTEL_COMPILER "Compiles with the intel compiler")
+# Choose Compiler
+if(INTEL_COMPILER)
+    set(CMAKE_C_COMPILER icc)
+    set(CMAKE_CXX_COMPILER icpc)
+endif(INTEL_COMPILER)
 
 # Setup compile Flags
 if(MSVC)
