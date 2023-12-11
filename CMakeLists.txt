@@ -55,10 +55,10 @@ set(SRC_FILES
     patches/WavePropagation1d
     patches/WavePropagation2d
     io/NetCdf
+    io/Csv
 )
 set(SRC_FILES_IO
     setups/CheckPoint
-    io/Csv
     io/Stations
 )
 set(SRC_FILES_NO_TEST
