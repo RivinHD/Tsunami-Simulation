@@ -332,6 +332,23 @@ or with
 |                                                                    |                                                                     |
 +--------------------------------------------------------------------+---------------------------------------------------------------------+
 
+As we can observe, the Intel compiler is a big step ahead of the GNU compiler.
+
+3. INTEL vs GNU flags
+^^^^^^^^^^^^^^^^^^^^^
+
+**Numerical accuracy**
+
+An increase in numerical inaccuracy in the ``GNU`` compiler begins with the flag -Ofast. It enables all -O3 optimizations
+and turns on -ffast-math. This option can result in incorrect output for programs that depend on an exact implementation
+of IEEE or ISO rules/specifications for math functions.
+
+Increasing numerical inaccuracy in the **INTEL icpc** compiler also starts with using the -Ofast flag. It sets the
+compiler options -O3, -no-prec-div and -fp-model fast=2. -no-prec-div improves the precision of floating-point division.
+It has a small impact on speed. -fp-model fast=2 tells the compiler to use more aggressive optimisations when implementing
+floating-point calculations.  These optimisations increase speed, but may reduce the accuracy or reproducibility of
+floating-point calculations. floating-point calculations.
+
 
 8.3 Instrumentation and Performance Counters
 --------------------------------------------
