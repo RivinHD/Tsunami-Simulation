@@ -143,6 +143,29 @@ Building
         .. code-block:: bash
 
             cmake .. -G "MinGW Makefiles"
+    
+    .. note::
+
+        With the Option ``-D`` options can be activated supported only by this ``CMakeLists.txt``.
+        Available options are:
+
+        +--------------------+--------------------------------------------------------------------------------------------------------------------+
+        | Option             |  Description                                                                                                       |
+        +====================+====================================================================================================================+
+        | DISABLE_IO         | Completely disable any file IO i.e. Solutions, Stations and Checkpoints                                            |
+        +--------------------+--------------------------------------------------------------------------------------------------------------------+
+
+        To enable an option the it as to be written:
+
+        .. code-block:: bash
+
+            cmake .. -D <Option>=ON
+
+        For Example:
+
+        .. code-block:: bash
+
+            cmake .. -D DISABLE_IO=ON
 
     Now our make files are being build from the ``CMakeLists.txt`` that are used to build the project.
 

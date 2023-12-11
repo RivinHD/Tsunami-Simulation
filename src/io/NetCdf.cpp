@@ -129,22 +129,22 @@ void tsunami_lab::io::NetCdf::_read( const char* filepath,
         size_t* count = new size_t[varDimCount];
         std::fill_n( count, varDimCount, 1 );
 
-        for( int i = 0; i < varDimCount - 1; i++ )
+        for( int j = 0; j < varDimCount - 1; j++ )
         {
-            int varDim = varDims[i];
+            int varDim = varDims[j];
             if( varDim == timeID )
             {
-                start[i] = timeStep;
+                start[j] = timeStep;
                 continue;
             }
 
             size_t dimLength = 1;
             l_err = nc_inq_dimlen( ncID,
-                                   varDims[i],
+                                   varDims[j],
                                    &dimLength );
             checkNcErr( l_err, "getDimLen" );
             length *= dimLength;
-            count[i] = dimLength;
+            count[j] = dimLength;
         }
         if( varDimCount >= 1 )
         {
