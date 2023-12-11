@@ -472,7 +472,7 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     l_err = nc_def_dim( m_ncId,                           // ncid
                         useSpherical ? "latitude" : "Y",  // name
                         m_ny,                             // len
-                        &m_dimYId );                      // idp            
+                        &m_dimYId );                      // idp
     checkNcErr( l_err, "dimY" );
 
     int strDimID = -1;
