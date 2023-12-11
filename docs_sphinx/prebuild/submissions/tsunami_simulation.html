@@ -26,7 +26,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tsunami_lab" href="../api/tsunami_lab.html" />
+    <link rel="next" title="7. Checkpointing and Coarse Output" href="checkpoint_coarse_output.html" />
     <link rel="prev" title="5. Large Data Input and Output" href="large_data_input_output.html" />
     <link href="../_static/style.css" rel="stylesheet" type="text/css">
 
@@ -77,6 +77,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#contribution">Contribution</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="checkpoint_coarse_output.html">7. Checkpointing and Coarse Output</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -127,21 +128,21 @@ we use the calculated value only as an order of magnitude and add a generous tim
 The bottom line is that we use 15000 seconds.</p>
 <p>Cell size: <strong>1000m</strong></p>
 <p>Required cells in x-direction: <span class="math notranslate nohighlight">\(\frac{3500000}{1000}=3500\)</span> <span class="raw-html"><br></span>
-Required cells in x-direction: <span class="math notranslate nohighlight">\(\frac{3000000}{1000}=3000\)</span></p>
+Required cells in y-direction: <span class="math notranslate nohighlight">\(\frac{3000000}{1000}=3000\)</span></p>
 <center>
     <video width="700" controls>
         <source src="../_static/videos/chile_1000.mp4" type="video/mp4">
     </video>
 </center><p>Cell size: <strong>500m</strong></p>
 <p>Required cells in x-direction: <span class="math notranslate nohighlight">\(\frac{3500000}{500}=7000\)</span> <span class="raw-html"><br></span>
-Required cells in x-direction: <span class="math notranslate nohighlight">\(\frac{3000000}{500}=6000\)</span></p>
+Required cells in y-direction: <span class="math notranslate nohighlight">\(\frac{3000000}{500}=6000\)</span></p>
 <center>
     <video width="700" controls>
         <source src="../_static/videos/chile_500.mp4" type="video/mp4">
     </video>
 </center><p>Cell size: <strong>250m</strong></p>
 <p>Required cells in x-direction: <span class="math notranslate nohighlight">\(\frac{3500000}{250}=14000\)</span> <span class="raw-html"><br></span>
-Required cells in x-direction: <span class="math notranslate nohighlight">\(\frac{3000000}{250}=12000\)</span></p>
+Required cells in y-direction: <span class="math notranslate nohighlight">\(\frac{3000000}{250}=12000\)</span></p>
 <center>
     <video width="700" controls>
         <source src="../_static/videos/chile_250.mp4" type="video/mp4">
@@ -161,21 +162,21 @@ we use the calculated value only as an order of magnitude and add a generous tim
 The bottom line is that we use 13000 seconds.</p>
 <p>Cell size: <strong>2000m</strong></p>
 <p>Required cells in x-direction: <span class="math notranslate nohighlight">\(\frac{2700000}{2000}=1350\)</span> <span class="raw-html"><br></span>
-Required cells in x-direction: <span class="math notranslate nohighlight">\(\frac{2700000}{2000}=750\)</span></p>
+Required cells in y-direction: <span class="math notranslate nohighlight">\(\frac{2700000}{2000}=750\)</span></p>
 <center>
     <video width="700" controls>
         <source src="../_static/videos/tohoku_2000.mp4" type="video/mp4">
     </video>
 </center><p>Cell size: <strong>1000m</strong></p>
 <p>Required cells in x-direction: <span class="math notranslate nohighlight">\(\frac{2700000}{1000}=2700\)</span> <span class="raw-html"><br></span>
-Required cells in x-direction: <span class="math notranslate nohighlight">\(\frac{2700000}{1000}=1500\)</span></p>
+Required cells in y-direction: <span class="math notranslate nohighlight">\(\frac{2700000}{1000}=1500\)</span></p>
 <center>
     <video width="700" controls>
         <source src="../_static/videos/tohoku_1000.mp4" type="video/mp4">
     </video>
 </center><p>Cell size: <strong>500m</strong></p>
 <p>Required cells in x-direction: <span class="math notranslate nohighlight">\(\frac{2700000}{500}=5400\)</span> <span class="raw-html"><br></span>
-Required cells in x-direction: <span class="math notranslate nohighlight">\(\frac{2700000}{500}=3000\)</span></p>
+Required cells in y-direction: <span class="math notranslate nohighlight">\(\frac{2700000}{500}=3000\)</span></p>
 <center>
     <video width="700" controls>
         <source src="../_static/videos/tohoku_500.mp4" type="video/mp4">
@@ -426,7 +427,7 @@ approximate maximum of the water height, we can use our 50 minutes as the arriva
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="large_data_input_output.html" class="btn btn-neutral float-left" title="5. Large Data Input and Output" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../api/tsunami_lab.html" class="btn btn-neutral float-right" title="tsunami_lab" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="checkpoint_coarse_output.html" class="btn btn-neutral float-right" title="7. Checkpointing and Coarse Output" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
