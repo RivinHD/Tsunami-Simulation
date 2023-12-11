@@ -134,8 +134,8 @@ int main( int   i_argc,
 
     // setup the variables
     tsunami_lab::setups::Setup* l_setup = nullptr;
-    tsunami_lab::t_real l_scaleX = 10000;
-    tsunami_lab::t_real l_scaleY = 10000;
+    tsunami_lab::t_real l_scaleX = 2700000;
+    tsunami_lab::t_real l_scaleY = 1500000;
     bool useCheckpoint = false;
     tsunami_lab::t_real l_simTime = 0;
     tsunami_lab::t_idx l_writeCount = 0;
@@ -614,6 +614,7 @@ int main( int   i_argc,
     auto checkpointTime = std::chrono::high_resolution_clock::now();
 
     std::cout << "entering time loop" << std::endl;
+    tsunami_lab::t_idx l_cellUpdates = 0;
 
     // iterate over time
     while( l_simTime < l_endTime )
@@ -696,6 +697,7 @@ int main( int   i_argc,
         l_waveProp->timeStep( l_scaling );
 
         l_simTime += l_dt;
+        l_cellUpdates++;
     }
     std::cout << "finished time loop" << std::endl;
 
@@ -711,6 +713,8 @@ int main( int   i_argc,
     const auto minutes = std::chrono::duration_cast<std::chrono::minutes>( duration - hours );
     const auto seconds = std::chrono::duration_cast<std::chrono::seconds>( duration - hours - minutes );
     std::cout << "The Simulation took " << green << hours.count() << " h " << minutes.count() << " min " << seconds.count() << " sec" << reset << " to finish." << std::endl;
+    std::cout << "Time per iteration: " << green << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() / l_cellUpdates << reset << " milliseconds." << std::endl;
+    std::cout << "Time per cell:      " << green << std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count() / l_cellUpdates / l_nx / l_ny << reset << " nanoseconds." << std::endl;
 
     std::cout << "finished, exiting" << std::endl;
     return EXIT_SUCCESS;
