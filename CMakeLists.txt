@@ -54,12 +54,12 @@ set(SRC_FILES
     setups/TsunamiEvent2d
     patches/WavePropagation1d
     patches/WavePropagation2d
+    io/NetCdf
 )
 set(SRC_FILES_IO
     setups/CheckPoint
     io/Csv
     io/Stations
-    io/NetCdf
 )
 set(SRC_FILES_NO_TEST
 
