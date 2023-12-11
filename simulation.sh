@@ -14,6 +14,6 @@
 module load libs/netcdf/4.6.1-gcc-7.3.0
 module load compiler/gcc/11.2.0
 
-echo "Start executing 'simulation 5000 5000 -B -w 100 -t 1600 -c 1':"
+echo "Start executing 'simulation 2700 1500 -B -w 60 -t 13000 -c 5':"
 
-./simulation 5000 5000 -B -w 100 -t 1600 -c 1
+./simulation 2700 1500 -B -w 60 -t 13000 -c 5

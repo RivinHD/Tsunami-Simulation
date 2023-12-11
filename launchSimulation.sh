@@ -18,13 +18,19 @@ module load tools/cmake/3.22.2
 module load libs/netcdf/4.6.1-gcc-7.3.0
 module load compiler/gcc/11.2.0
 module load compiler/intel/2020-Update2
+#module load compiler/intel/2018-Update3
 module load libs/netcdf/4.6.1-intel-2018
 
 
 # Setting up cmake
 echo "Setting up cmake"
 cd "$BuildDirectory"
-cmake ..
+# intel compiler can only be used without io
+CC="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icc" \
+CXX="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icpc" \
+#CC="/cluster/intel/parallel_studio_xe_2018.3.051/compilers_and_libraries_2018/linux/bin/intel64/icc" \
+#CXX="/cluster/intel/parallel_studio_xe_2018.3.051/compilers_and_libraries_2018/linux/bin/intel64/icpc" \
+cmake .. -D DISABLE_IO=ON
 
 # Compiling c++
 # Options:
