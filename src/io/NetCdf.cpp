@@ -855,9 +855,9 @@ void tsunami_lab::io::NetCdf::averageSeveral( const t_real simulationTime,
                 }
             }
             // write combined cell to arrays
-            l_totalHeight[l_index] = l_avgHeight / l_divideK2;
-            l_momentumX[l_index] = l_avgMomentumX / l_divideK2;
-            l_momentumY[l_index] = l_avgMomentumY / l_divideK2;
+            l_totalHeight[l_index] = l_avgHeight * m_divideK2;
+            l_momentumX[l_index] = l_avgMomentumX * m_divideK2;
+            l_momentumY[l_index] = l_avgMomentumY * m_divideK2;
             l_index++;
             // reset average values
             l_avgHeight = 0;
