@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=launch_simulation
 #SBATCH --output=launch_simulation.out
-#SBATCH --partition=s_hadoop
+#SBATCH --partition=s_standard
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --time=00:10:00
@@ -23,7 +23,8 @@ module load compiler/intel/2020-Update2
 # Cleaning up Build Directory
 echo "Cleaning up Build Directory"
 cd "$BuildDirectory"
-rm -rf *
+rm -rf "$BuildDirectory"
+mkdir "$BuildDirectory"
 
 # Setting up cmake
 echo "Setting up cmake"
