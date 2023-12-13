@@ -24,9 +24,9 @@ module load compiler/intel/2020-Update2
 
 # Cleaning up Build Directory
 echo "Cleaning up Build Directory"
-cd "$BuildDirectory"
 rm -rf "$BuildDirectory"
 mkdir "$BuildDirectory"
+cd "$BuildDirectory"
 
 # Setting up cmake
 echo "Setting up cmake"

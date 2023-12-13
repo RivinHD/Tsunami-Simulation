@@ -10,7 +10,7 @@ else()
     message(NOTICE "Using single-config generator. Generate with: cmake .. -DCMAKE_BUILD_TYPE=[Debug|Release]")
     if(NOT CMAKE_BUILD_TYPE)
         set(CMAKE_BUILD_TYPE "Release")
-        message(WARNING "No Build type is set using Release!")
+        message(WARNING "No Build type is set. Using Release!")
     endif()
 endif()
 
@@ -39,7 +39,7 @@ if(REPORT)
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsave-optimization-record")
     endif()
-    message(STATUS "Disabling IO")
+    message(STATUS "Activeted Report")
 endif()
 
 # Setup compile Flags
