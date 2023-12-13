@@ -3,6 +3,19 @@ project(TsunamiSimulation VERSION 0.1.0 LANGUAGES C CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 
+get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(IS_MULTI_CONFIG)
+    message(NOTICE "Using multi-config generator. Compile with: cmake --build . --config [Debug|Release] --target <target>")
+else()
+    message(NOTICE "Using single-config generator. Generate with: cmake .. -DCMAKE_BUILD_TYPE=[Debug|Release]")
+    if(NOT CMAKE_BUILD_TYPE)
+        set(CMAKE_BUILD_TYPE "Release")
+        message(WARNING "No Build type is set using Release!")
+    endif()
+endif()
+
+message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
+
 # find packages
 find_package(NetCDF REQUIRED)
 link_libraries(NetCDF::NetCDF)
@@ -11,13 +24,13 @@ option(ENABLE_TESTMODE "Adds the Test defintion to any build")
 if(ENABLE_TESTMODE)
     add_compile_definitions(TSUNAMI_SIMULATION_TEST)
     message(STATUS "Starting in Test Mode")
-endif(ENABLE_TESTMODE)
+endif()
 
 option(DISABLE_IO "Disable the io of the simulation")
 if(DISABLE_IO)
     add_compile_definitions(TSUNAMI_SIMULATION_DISABLE_IO)
     message(STATUS "Disabling IO")
-endif(DISABLE_IO)
+endif()
 
 option(REPORT "Generate a report if enabled")
 if(REPORT)
@@ -27,7 +40,7 @@ if(REPORT)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsave-optimization-record")
     endif()
     message(STATUS "Disabling IO")
-endif(REPORT)
+endif()
 
 # Setup compile Flags
 if(MSVC)

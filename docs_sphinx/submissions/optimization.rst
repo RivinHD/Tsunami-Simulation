@@ -48,14 +48,14 @@ compiles our code and is a wrapper to start the actually script ``simulation.sh`
     # Setting up cmake
     echo "Setting up cmake"
     cd "$BuildDirectory"
-    cmake ..
+    cmake .. -DCMAKE_BUILD_TYPE=Release
 
     # Compiling c++
     # Options:
     #   --config: Release, Debug
     #   --target: simulation, sanitize, test, sanitize_test, test_middle_states
     echo "Building the project"
-    cmake --build . --config Release --target simulation
+    cmake --build . --target simulation
 
     #creating ouput directory
     directory=/beegfs/$USER/$(date +"%F_%H-%M")
@@ -110,7 +110,7 @@ Required cells in y-direction: :math:`\frac{2700000}{2000}=750`
 
     <center>
         <video width="700" controls>
-            <source src="../_static/videos/tohoku_2000.mp4" type="video/mp4">
+            <source src="../_static/videos/tohoku_2000_ara.mp4" type="video/mp4">
         </video>
     </center>
 
@@ -123,7 +123,7 @@ Required cells in y-direction: :math:`\frac{2700000}{1000}=1500`
 
     <center>
         <video width="700" controls>
-            <source src="../_static/videos/tohoku_1000.mp4" type="video/mp4">
+            <source src="../_static/videos/tohoku_1000_ara.mp4" type="video/mp4">
         </video>
     </center>
 
@@ -233,7 +233,7 @@ To change the compiler on the **ARA cluster** we have to specify the path in the
     # intel compiler can only be used without io
     CC="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icc" \
     CXX="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icpc" \
-    cmake .. -D DISABLE_IO=ON
+    cmake .. -DCMAKE_BUILD_TYPE=Debug -D DISABLE_IO=ON
     [ ... ]
 
 If you are compiling on your local machine or on another server, you can pass the path of your compiler to **cmake** via

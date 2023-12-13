@@ -18,26 +18,26 @@ module load tools/cmake/3.22.2
 module load libs/netcdf/4.6.1-gcc-7.3.0
 module load compiler/gcc/11.2.0
 module load compiler/intel/2020-Update2
-#module load compiler/intel/2018-Update3
-module load libs/netcdf/4.6.1-intel-2018
 
+
+# Cleaning up Build Directory
+echo "Cleaning up Build Directory"
+cd "$BuildDirectory"
+rm -rf *
 
 # Setting up cmake
 echo "Setting up cmake"
-cd "$BuildDirectory"
 # intel compiler can only be used without io
 CC="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icc" \
 CXX="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icpc" \
-#CC="/cluster/intel/parallel_studio_xe_2018.3.051/compilers_and_libraries_2018/linux/bin/intel64/icc" \
-#CXX="/cluster/intel/parallel_studio_xe_2018.3.051/compilers_and_libraries_2018/linux/bin/intel64/icpc" \
-cmake .. -D DISABLE_IO=ON
+cmake .. -DCMAKE_BUILD_TYPE=Release -D DISABLE_IO=ON
 
 # Compiling c++
 # Options:
 #   --config: Release, Debug
 #   --target: simulation, sanitize, test, sanitize_test, test_middle_states
 echo "Building the project"
-cmake --build . --config Release --target simulation
+cmake --build . --target simulation
 
 #creating ouput directory
 directory=/beegfs/$USER/$(date +"%F_%H-%M")
