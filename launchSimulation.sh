@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 #SBATCH --job-name=launch_simulation
 #SBATCH --output=launch_simulation.out
@@ -9,6 +8,8 @@ set -e
 #SBATCH --time=00:10:00
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=4G
+
+set -e
 
 BuildDirectory="/home/$USER/tsunami/Tsunami-Simulation/build"
 ScriptDirectory="/home/$USER/tsunami"

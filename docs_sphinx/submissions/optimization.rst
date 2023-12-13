@@ -25,7 +25,6 @@ compiles our code and is a wrapper to start the actually script ``simulation.sh`
 
     ///File: launchSimulation.sh
     #!/bin/bash
-    set -e
     #SBATCH --job-name=launch_simulation
     #SBATCH --output=launch_simulation.out
     #SBATCH --partition=s_standard
@@ -34,6 +33,8 @@ compiles our code and is a wrapper to start the actually script ``simulation.sh`
     #SBATCH --time=00:10:00
     #SBATCH --cpus-per-task=2
     #SBATCH --mem=4G
+    
+    set -e
 
     BuildDirectory="/home/$USER/tsunami/Tsunami-Simulation/build"
     ScriptDirectory="/home/$USER/tsunami"
