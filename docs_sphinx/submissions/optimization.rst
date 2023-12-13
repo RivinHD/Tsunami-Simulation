@@ -24,9 +24,11 @@ compiles our code and is a wrapper to start the actually script ``simulation.sh`
 .. code-block:: bash
 
     ///File: launchSimulation.sh
+    #!/bin/bash
+    set -e
     #SBATCH --job-name=launch_simulation
     #SBATCH --output=launch_simulation.out
-    #SBATCH --partition=s_hadoop
+    #SBATCH --partition=s_standard
     #SBATCH --nodes=1
     #SBATCH --ntasks=1
     #SBATCH --time=00:10:00
@@ -42,13 +44,20 @@ compiles our code and is a wrapper to start the actually script ``simulation.sh`
     module load libs/netcdf/4.6.1-gcc-7.3.0
     module load compiler/gcc/11.2.0
     module load compiler/intel/2020-Update2
-    module load libs/netcdf/4.6.1-intel-2018
 
+
+    # Cleaning up Build Directory
+    echo "Cleaning up Build Directory"
+    cd "$BuildDirectory"
+    rm -rf "$BuildDirectory"
+    mkdir "$BuildDirectory"
 
     # Setting up cmake
     echo "Setting up cmake"
-    cd "$BuildDirectory"
-    cmake .. -DCMAKE_BUILD_TYPE=Release
+    # intel compiler can only be used without io
+    CC="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icc" \
+    CXX="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icpc" \
+    cmake .. -DCMAKE_BUILD_TYPE=Release -D DISABLE_IO=ON
 
     # Compiling c++
     # Options:
@@ -70,13 +79,13 @@ compiles our code and is a wrapper to start the actually script ``simulation.sh`
     echo "Launching the job"
     sbatch -D "$directory" "$ScriptDirectory"/simulation.sh
 
+
 ``simulation.sh`` then runs the actual simulation on a long term node with lots of resources.
 
 .. code-block:: bash
 
     ///File: simulation.sh
     #!/bin/bash
-
     #SBATCH --job-name=tsunami_simulation
     #SBATCH --output=simulation.out
     #SBATCH --partition=s_hadoop
@@ -86,9 +95,9 @@ compiles our code and is a wrapper to start the actually script ``simulation.sh`
     #SBATCH --cpus-per-task=72
     #SBATCH --mem=128G
 
-    echo "Start executing 'simulation 5000 5000 -B -w 100 -t 1600 -c 1':"
+    echo "Start executing 'simulation 2700 1500 -B -w 60 -t 13000 -c 5':"
 
-    ./simulation 5000 5000 -B -w 100 -t 1600 -c 1
+    ./simulation 2700 1500 -B -w 60 -t 13000 -c 5
 
 
 2. Verification
@@ -101,10 +110,6 @@ Cell size: **2000m**
 
 Required cells in x-direction: :math:`\frac{2700000}{2000}=1350` :raw-html:`<br>`
 Required cells in y-direction: :math:`\frac{2700000}{2000}=750`
-
-.. warning::
-
-    Change videos!
 
 .. raw:: html
 
@@ -127,7 +132,7 @@ Required cells in y-direction: :math:`\frac{2700000}{1000}=1500`
         </video>
     </center>
 
-As we can see, the results of both simulations match those in :ref:`submissions_tsunami_simulation`.
+As we can see, the results of both simulations match those in :ref:`submissions_tsunami_simulation_tohoku`.
 
 3. Comparison
 ^^^^^^^^^^^^^
@@ -212,7 +217,7 @@ As we can see, the results of both simulations match those in :ref:`submissions_
 |                                                               |                                                                     |
 +---------------------------------------------------------------+---------------------------------------------------------------------+
 
-The data shows that the local machine is more than **twice as fast** as the ARA cluster.
+The data shows that the local machine is more than **twice as fast** as the ARA cluster (with ``-O0``).
 
 8.2 Compilers
 -------------
@@ -233,20 +238,20 @@ To change the compiler on the **ARA cluster** we have to specify the path in the
     # intel compiler can only be used without io
     CC="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icc" \
     CXX="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icpc" \
-    cmake .. -DCMAKE_BUILD_TYPE=Debug -D DISABLE_IO=ON
+    cmake .. -DCMAKE_BUILD_TYPE=Release -D DISABLE_IO=ON
     [ ... ]
 
 If you are compiling on your local machine or on another server, you can pass the path of your compiler to **cmake** via
 
 .. code-block:: bash
 
-    CC=path/to/c/compiler CXX=path/to/c++/compiler cmake ..
+    CC=path/to/c/compiler CXX=path/to/c++/compiler cmake .. -DCMAKE_BUILD_TYPE=Release
 
 or with
 
 .. code-block:: bash
 
-    cmake -D CMAKE_C_COMPILER=path/to/c/compiler -D CMAKE_CXX_COMPILER=path/to/c++/compiler ..
+    cmake -D CMAKE_C_COMPILER=path/to/c/compiler -D CMAKE_CXX_COMPILER=path/to/c++/compiler .. -DCMAKE_BUILD_TYPE=Release
 
 
 2. INTEL vs GNU compiler
@@ -287,9 +292,9 @@ or with
 |       entering time loop                                            |       entering time loop                                            |
 |       finished time loop                                            |       finished time loop                                            |
 |       freeing memory                                                |       freeing memory                                                |
-|       The Simulation took 0 h 2 min 58 sec to finish.               |       The Simulation took 0 h 10 min 37 sec to finish.              |
-|       Time per iteration: 40 milliseconds.                          |       Time per iteration: 143 milliseconds.                         |
-|       Time per cell:      39 nanoseconds.                           |       Time per cell:      142 nanoseconds.                          |
+|       The Simulation took 0 h 2 min 55 sec to finish.               |       The Simulation took 0 h 3 min 33 sec to finish.               |
+|       Time per iteration: 39 milliseconds.                          |       Time per iteration: 48 milliseconds.                          |
+|       Time per cell:      39 nanoseconds.                           |       Time per cell:      47 nanoseconds.                           |
 |       finished, exiting                                             |       finished, exiting                                             |
 |                                                                     |                                                                     |
 +---------------------------------------------------------------------+---------------------------------------------------------------------+
@@ -325,14 +330,14 @@ or with
 |       entering time loop                                            |       entering time loop                                            |
 |       finished time loop                                            |       finished time loop                                            |
 |       freeing memory                                                |       freeing memory                                                |
-|       The Simulation took 0 h 24 min 32 sec to finish.              |       The Simulation took 1 h 28 min 28 sec to finish.              |
-|       Time per iteration: 165 milliseconds.                         |       Time per iteration: 597 milliseconds.                         |
-|       Time per cell:      40 nanoseconds.                           |       Time per cell:      147 nanoseconds.                          |
+|       The Simulation took 0 h 24 min 30 sec to finish.              |       The Simulation took 0 h 30 min 17 sec to finish.              |
+|       Time per iteration: 165 milliseconds.                         |       Time per iteration: 204 milliseconds.                         |
+|       Time per cell:      40 nanoseconds.                           |       Time per cell:      50 nanoseconds.                           |
 |       finished, exiting                                             |       finished, exiting                                             |
 |                                                                     |                                                                     |
 +---------------------------------------------------------------------+---------------------------------------------------------------------+
 
-As we can observe, the Intel compiler is a big step ahead of the GNU compiler.
+As we can observe, the Intel compiler is a big step ahead of the GNU compiler (with ``-O2``).
 
 3. INTEL vs GNU flags
 ^^^^^^^^^^^^^^^^^^^^^
@@ -386,9 +391,9 @@ floating-point calculations. floating-point calculations.
 |       entering time loop                                            |       entering time loop                                            |
 |       finished time loop                                            |       finished time loop                                            |
 |       freeing memory                                                |       freeing memory                                                |
-|       The Simulation took 0 h 24 min 32 sec to finish.              |       The Simulation took 1 h 28 min 28 sec to finish.              |
-|       Time per iteration: 165 milliseconds.                         |       Time per iteration: 597 milliseconds.                         |
-|       Time per cell:      40 nanoseconds.                           |       Time per cell:      147 nanoseconds.                          |
+|       The Simulation took 0 h 24 min 30 sec to finish.              |       The Simulation took 0 h 30 min 17 sec to finish.              |
+|       Time per iteration: 165 milliseconds.                         |       Time per iteration: 204 milliseconds.                         |
+|       Time per cell:      40 nanoseconds.                           |       Time per cell:      50 nanoseconds.                           |
 |       finished, exiting                                             |       finished, exiting                                             |
 |                                                                     |                                                                     |
 +---------------------------------------------------------------------+---------------------------------------------------------------------+
@@ -424,9 +429,9 @@ floating-point calculations. floating-point calculations.
 |       entering time loop                                            |       entering time loop                                            |
 |       finished time loop                                            |       finished time loop                                            |
 |       freeing memory                                                |       freeing memory                                                |
-|       The Simulation took 0 h 24 min 36 sec to finish.              |       The Simulation took 1 h 26 min 44 sec to finish.              |
-|       Time per iteration: 166 milliseconds.                         |       Time per iteration: 585 milliseconds.                         |
-|       Time per cell:      41 nanoseconds.                           |       Time per cell:      144 nanoseconds.                          |
+|       The Simulation took 0 h 24 min 53 sec to finish.              |       The Simulation took 0 h 30 min 20 sec to finish.              |
+|       Time per iteration: 168 milliseconds.                         |       Time per iteration: 204 milliseconds.                         |
+|       Time per cell:      41 nanoseconds.                           |       Time per cell:      50 nanoseconds.                           |
 |       finished, exiting                                             |       finished, exiting                                             |
 |                                                                     |                                                                     |
 +---------------------------------------------------------------------+---------------------------------------------------------------------+
@@ -462,9 +467,9 @@ floating-point calculations. floating-point calculations.
 |       entering time loop                                            |       entering time loop                                            |
 |       finished time loop                                            |       finished time loop                                            |
 |       freeing memory                                                |       freeing memory                                                |
-|       The Simulation took 0 h 24 min 29 sec to finish.              |       The Simulation took 1 h 26 min 17 sec to finish.              |
-|       Time per iteration: 165 milliseconds.                         |       Time per iteration: 582 milliseconds.                         |
-|       Time per cell:      40 nanoseconds.                           |       Time per cell:      143 nanoseconds.                          |
+|       The Simulation took 0 h 24 min 41 sec to finish.              |       The Simulation took 0 h 27 min 39 sec to finish.              |
+|       Time per iteration: 166 milliseconds.                         |       Time per iteration: 186 milliseconds.                         |
+|       Time per cell:      41 nanoseconds.                           |       Time per cell:      46 nanoseconds.                           |
 |       finished, exiting                                             |       finished, exiting                                             |
 |                                                                     |                                                                     |
 +---------------------------------------------------------------------+---------------------------------------------------------------------+

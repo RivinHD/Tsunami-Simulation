@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 #SBATCH --job-name=launch_simulation
 #SBATCH --output=launch_simulation.out

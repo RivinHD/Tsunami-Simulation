@@ -78,6 +78,8 @@ Required cells in y-direction: :math:`\frac{3000000}{250}=12000`
 6.2. 2011 M 9.1 Tohoku Event
 ----------------------------
 
+.. _submissions_tsunami_simulation_tohoku:
+
 1. Simulation of the tsunami event (Tohoku)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
