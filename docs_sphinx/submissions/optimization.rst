@@ -475,6 +475,17 @@ floating-point calculations. floating-point calculations.
 |                                                                     |                                                                     |
 +---------------------------------------------------------------------+---------------------------------------------------------------------+
 
+The Intel compiler is the fastest overall, with the fastest optimization being O2.
+With the GNU compiler, the fastest time is Ofast, whereas O2 and O3 are almost the same in terms of speed.
+
+3. Optimization Report
+^^^^^^^^^^^^^^^^^^^^^^
+
+The GNU compiler generates an optimization report with the option ``-fopt-info-optimized=opt_gnu.optrpt`` and creates this :download:`Optimization Report <../_static/resources/opt_gnu_O2.optrpt>`.
+Mostly it inline ``functions`` and ``constexpr`` inside the same object and from the imported libraries.
+It also unrolled small loops and distributed some loops into library calls.
+Furthermore it sinks common stores with same value.
+
 8.3 Instrumentation and Performance Counters
 --------------------------------------------
 

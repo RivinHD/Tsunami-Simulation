@@ -33,6 +33,7 @@ echo "Setting up cmake"
 # intel compiler can only be used without io
 CC="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icc" \
 CXX="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icpc" \
+# Options: -D DISABLE_IO=ON; -D REPORT=ON
 cmake .. -DCMAKE_BUILD_TYPE=Release -D DISABLE_IO=ON
 
 # Compiling c++
