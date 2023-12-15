@@ -485,6 +485,7 @@ The GNU compiler generates an optimization report with the option ``-fopt-info-o
 Mostly it inline ``functions`` and ``constexpr`` inside the same object and from the imported libraries.
 It also unrolled small loops and distributed some loops into library calls.
 Furthermore it sinks common stores with same value.
+Unfortunately the compiler does not vectorize the code, but at least inlined the F-Wave solver.
 
 8.3 Instrumentation and Performance Counters
 --------------------------------------------
