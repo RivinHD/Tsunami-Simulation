@@ -104,8 +104,8 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                                                          heightRight,
                                                          momentumLeft,
                                                          momentumRight,
-                                                         bathymetryRight,
                                                          bathymetryLeft,
+                                                         bathymetryRight,
                                                          l_netUpdates[0],
                                                          l_netUpdates[1] );
 
@@ -251,8 +251,8 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                                                              heightRight,
                                                              momentumLeft,
                                                              momentumRight,
-                                                             bathymetryRight,
                                                              bathymetryLeft,
+                                                             bathymetryRight,
                                                              l_netUpdates[0],
                                                              l_netUpdates[1] );
 

@@ -478,10 +478,11 @@ floating-point calculations. floating-point calculations.
 The Intel compiler is the fastest overall, with the fastest optimization being O2.
 With the GNU compiler, the fastest time is Ofast, whereas O2 and O3 are almost the same in terms of speed.
 
-3. Optimization Report
+4. Optimization Report
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The GNU compiler generates an optimization report with the option ``-fopt-info-optimized=opt_gnu.optrpt`` and creates this :download:`Optimization Report <../_static/resources/opt_gnu_O2.optrpt>`.
+The GNU compiler generates an optimization report with the option ``-fopt-info-optimized=opt_gnu.optrpt`` and creates
+a report, for example this :download:`Optimization Report <../_static/resources/opt_gnu_O2.optrpt>`.
 Mostly it inline ``functions`` and ``constexpr`` inside the same object and from the imported libraries.
 It also unrolled small loops and distributed some loops into library calls.
 Furthermore it sinks common stores with same value.
@@ -493,21 +494,100 @@ Unfortunately the compiler does not vectorize the code, but at least inlined the
 1. X-forwarding and start the VTune GUI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1. Login to the cluster with enabled X-forwarding :code:`ssh -X <username>@ara-login01.rz.uni-jena.de`.
+1. Login to the cluster with enabled X-forwarding :code:`ssh -X <username>@ara-login01.rz.uni-jena.de`
 
-2. Load required module :code:`module load compiler/intel/2020-Update2`.
+2. Load required module :code:`module load compiler/intel/2020-Update2`
 
-3. Start VTUne GUI :code:`vtune-gui &`.
+3. Start VTUne GUI :code:`vtune-gui &`
 
-4. Create a new project for your application and add an analysis to the project.
+4. Create a new project for your application and add an analysis to the project
 
-5. Copy the [Command] from your configuration in VTune.
+5. Copy the [Command] from your configuration in VTune
 
-5. Allocate a node.
+5. Allocate a node:
 
-- salloc -p s_hadoop --time=4:00:00 -n 72 -N 1 --mem=32G
+- :code:`salloc -p s_hadoop --time=4:00:00 -n 72 -N 1 --mem=32G`
 
 6. Run your copied command it in the terminal on your allocated node :code:`srun [COMMAND]`
+
+
+2. Running analysis in a batch job
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+First we created our batch job ``runVTuneAnalysis.sh``:
+
+.. code-block:: bash
+    :emphasize-lines: 27-28
+
+    #!/bin/bash
+
+    #SBATCH --job-name=run_vtune_analysis
+    #SBATCH --output=vtune_analysis.out
+    #SBATCH --partition=b_standard
+    #SBATCH --nodes=1
+    #SBATCH --ntasks=1
+    #SBATCH --time=04:00:00
+    #SBATCH --cpus-per-task=36
+    #SBATCH --mem=64G
+
+    set -e
+
+    OutputDirectory=/home/$USER/tsunami/analysis_$(date +"%F_%H-%M")
+    ScriptDirectory=/home/$USER/tsunami
+
+    # Loading cmake to launch this task
+    echo "Loading needed modules"
+    module load compiler/intel/2020-Update2
+    module load compiler/gcc/11.2.0
+
+    mkdir $OutputDirectory
+    cd $OutputDirectory
+    echo $OutputDirectory
+
+    echo "Start VTune analysis."
+    # replace the line below with your configured VTune project command
+    /cluster/intel/vtune_profiler_2020.2.0.610396/bin64/vtune -collect hotspots -app-working-dir /beegfs/ho62zoq/tsunami/Tsunami-Simulation/build -- /beegfs/ho62zoq/tsunami/Tsunami-Simulation/build/simulation 1350 750 -B -w 60 -t 13000 -c 5
+    printf "Finished analysis.\nResults in directory '$OutputDirectory'.\n"
+
+Afterwards we can start the batch job with :code:`sbatch runVTuneAnalysis.sh`.
+
+
+3. Visualization of the result in the GUI
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Used debug symbols: ``-g`` and ``-fno-inline``.
+
+**Overview**
+
+.. image:: ../_static/photos/task_8_3_overview.png
+    :align: center
+    :width: 1000
+
+**Bottom-up**
+
+.. image:: ../_static/photos/task_8_3_top_down_tree.png
+    :align: center
+    :width: 700
+
+4. Compute-intensive parts
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Our total elapsed time is around 395 seconds.
+
+The most time consuming function is ``WavePropagation2d::timeStep`` as we expected thus this is the simulating function
+of our computation with 100 seconds. The second most time consuming function is ``FWave::netUpdates`` with around 92
+seconds.
+
+Unexpectedly, the timeStep function takes longer than the netUpdate function, although the primary calculations are
+carried out in the netUpdate function. It can therefore be assumed that the function calls of netUpdates and
+calculateReflection in timeStep require a lot of time.
+
+The third place ``FWave::computeEigenvalues`` takes nearly 81 seconds. We did not expected that due to the fact that we
+aren't computing much in this method besides three calls of ``std::sqrt`` which is only 8% of the time.
+
+
+
+
 
 
 Contribution
