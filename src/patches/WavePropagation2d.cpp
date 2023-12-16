@@ -6,6 +6,8 @@
 #include "../../include/patches/WavePropagation2d.h"
 #include "../../include/solvers/Roe.h"
 #include "../../include/solvers/FWave.h"
+#include <iostream>
+
 
 tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells,
                                                             t_idx i_yCells )
@@ -18,24 +20,30 @@ tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells,
     // allocate memory including a single ghost cell on each side
     for( unsigned short l_st = 0; l_st < 2; l_st++ )
     {
-        m_h[l_st] = new t_real[totalCells]{ 0 };
-        m_hu[l_st] = new t_real[totalCells]{ 0 };
-        m_hv[l_st] = new t_real[totalCells]{ 0 };
+        m_h[l_st] = new( std::align_val_t{ 128 } ) t_real[totalCells]{ 0 };
+        m_hu[l_st] = new( std::align_val_t{ 128 } ) t_real[totalCells]{ 0 };
+        m_hv[l_st] = new( std::align_val_t{ 128 } ) t_real[totalCells]{ 0 };
     }
-    m_bathymetry = new t_real[totalCells]{ 0 };
-    m_totalHeight = new t_real[totalCells]{ 0 };
+    m_bathymetry = new( std::align_val_t{ 128 } ) t_real[totalCells]{ 0 };
+    m_totalHeight = new( std::align_val_t{ 128 } ) t_real[totalCells]{ 0 };
+    for( unsigned short l_st = 0; l_st < 2; l_st++ )
+    {
+        std::cout << "Aligment m_h: " << m_h[l_st] << std::endl;
+        std::cout << "Aligment m_hu: " << m_hu[l_st] << std::endl;
+        std::cout << "Aligment m_hv: " << m_hv[l_st] << std::endl;
+    }
 }
 
 tsunami_lab::patches::WavePropagation2d::~WavePropagation2d()
 {
     for( unsigned short l_st = 0; l_st < 2; l_st++ )
     {
-        delete[] m_h[l_st];
-        delete[] m_hu[l_st];
-        delete[] m_hv[l_st];
+        ::operator delete[]( m_h[l_st], std::align_val_t{ 128 } );
+        ::operator delete[]( m_hu[l_st], std::align_val_t{ 128 } );
+        ::operator delete[]( m_hv[l_st], std::align_val_t{ 128 } );
     }
-    delete[] m_bathymetry;
-    delete[] m_totalHeight;
+    ::operator delete[]( m_bathymetry, std::align_val_t{ 128 } );
+    ::operator delete[]( m_totalHeight, std::align_val_t{ 128 } );
 }
 
 void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
@@ -104,8 +112,8 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                                                          heightRight,
                                                          momentumLeft,
                                                          momentumRight,
-                                                         bathymetryRight,
                                                          bathymetryLeft,
+                                                         bathymetryRight,
                                                          l_netUpdates[0],
                                                          l_netUpdates[1] );
 
@@ -251,8 +259,8 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                                                              heightRight,
                                                              momentumLeft,
                                                              momentumRight,
-                                                             bathymetryRight,
                                                              bathymetryLeft,
+                                                             bathymetryRight,
                                                              l_netUpdates[0],
                                                              l_netUpdates[1] );
 
@@ -308,8 +316,8 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                                                          heightRight,
                                                          momentumLeft,
                                                          momentumRight,
-                                                         bathymetryRight,
                                                          bathymetryLeft,
+                                                         bathymetryRight,
                                                          l_netUpdates[0],
                                                          l_netUpdates[1] );
 

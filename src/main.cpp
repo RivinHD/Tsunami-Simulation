@@ -4,7 +4,7 @@
  * Entry-point for simulations.
  **/
 
- // #define SKIP_ARGUMENTS
+#define SKIP_ARGUMENTS
  // #define TSUNAMI_SIMULATION_DISABLE_IO
 
 #include "../include/patches/WavePropagation1d.h"
@@ -392,15 +392,15 @@ int main( int   i_argc,
     }
 #endif // !SKIP_ARGUMENTS
 #ifdef SKIP_ARGUMENTS
-    l_nx = 3500;
-    l_ny = 3000;
+    l_nx = 2700;
+    l_ny = 1500;
     reflectLeft = false;
     reflectRight = false;
     reflectBottom = false;
     reflectTop = false;
     useBathymetry = true;
     use2D = true;
-    useAxisSpherical = true;
+    useAxisSpherical = false;
     l_endTime = 13000;
     std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
