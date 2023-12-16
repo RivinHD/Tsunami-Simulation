@@ -490,6 +490,25 @@ Unfortunately the compiler does not vectorize the code, but at least inlined the
 8.3 Instrumentation and Performance Counters
 --------------------------------------------
 
+1. X-forwarding and start the VTune GUI
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+1. Login to the cluster with enabled X-forwarding :code:`ssh -X <username>@ara-login01.rz.uni-jena.de`.
+
+2. Load required module :code:`module load compiler/intel/2020-Update2`.
+
+3. Start VTUne GUI :code:`vtune-gui &`.
+
+4. Create a new project for your application and add an analysis to the project.
+
+5. Copy the [Command] from your configuration in VTune.
+
+5. Allocate a node.
+
+- salloc -p s_hadoop --time=4:00:00 -n 72 -N 1 --mem=32G
+
+6. Run your copied command it in the terminal on your allocated node :code:`srun [COMMAND]`
+
 
 Contribution
 ------------
