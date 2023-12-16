@@ -13,7 +13,7 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The writer for a checkpoint must be extended by the following variables:
-``commandLine``, ``writeCount`` and ``hMax``.
+``commandLine``, ``writeCount`` and in addition to simplify things by ``hMax``.
 
 The variable ``commandLine`` stores the user input that is to be reapplied from a checkpoint when the simulation is started.
 
