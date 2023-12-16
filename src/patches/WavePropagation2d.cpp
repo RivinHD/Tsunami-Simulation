@@ -104,8 +104,8 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                                                          heightRight,
                                                          momentumLeft,
                                                          momentumRight,
-                                                         bathymetryRight,
                                                          bathymetryLeft,
+                                                         bathymetryRight,
                                                          l_netUpdates[0],
                                                          l_netUpdates[1] );
 
@@ -199,82 +199,18 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
         l_hvNew[l_ce] = l_hvOld[l_ce];
     }
 
-    // calculates xCells dividable by ITERATIONS_CACHE and remaining cells
-    t_idx full_xCells = ( m_xCells / ITERATIONS_CACHE ) * ITERATIONS_CACHE;
-    t_idx remaining_xCells = m_xCells % ITERATIONS_CACHE;
-
     // only possible for f-wave solver
     if( hasBathymetry )
     {
         //  iterates over the x direction
-        for( t_idx i = 1; i < full_xCells; i += ITERATIONS_CACHE )
+        for( t_idx i = 1; i < m_xCells; i++ )
         {
             // iterate over the rows i.e. y-coordinates
             for( t_idx j = 0; j < m_yCells + 1; j++ )
             {
-                // iterations for more efficient cache usage
-                for( t_idx k = 0; k < ITERATIONS_CACHE; k++ )
-                {
-                    // determine left and right cell-id
-                    t_idx l_ceT = stride * j + i + k;
-                    t_idx l_ceB = stride * ( j + 1 ) + i + k;
-
-                    // noting to compute both shore cells
-                    if( l_hOld[l_ceT] == 0 && l_hOld[l_ceB] == 0 )
-                    {
-                        continue;
-                    }
-
-                    // compute reflection
-                    t_real heightLeft;
-                    t_real heightRight;
-                    t_real momentumLeft;
-                    t_real momentumRight;
-                    t_real bathymetryLeft;
-                    t_real bathymetryRight;
-
-                    Reflection reflection = calculateReflection( l_hOld,
-                                                                 l_hvOld,
-                                                                 l_ceT,
-                                                                 l_ceB,
-                                                                 heightLeft,
-                                                                 heightRight,
-                                                                 momentumLeft,
-                                                                 momentumRight,
-                                                                 bathymetryLeft,
-                                                                 bathymetryRight );
-
-                    // compute net-updates
-                    t_real l_netUpdates[2][2];
-
-                    tsunami_lab::solvers::FWave::netUpdates( heightLeft,
-                                                             heightRight,
-                                                             momentumLeft,
-                                                             momentumRight,
-                                                             bathymetryRight,
-                                                             bathymetryLeft,
-                                                             l_netUpdates[0],
-                                                             l_netUpdates[1] );
-
-                    // update the cells' quantities
-                    l_hNew[l_ceT] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
-                    l_hvNew[l_ceT] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
-
-                    l_hNew[l_ceB] -= i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
-                    l_hvNew[l_ceB] -= i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
-                }
-            }
-        }
-
-        // iterate over the rows i.e. y-coordinates
-        for( t_idx j = 0; j < m_yCells + 1; j++ )
-        {
-            // remaining iterations for more efficient cache usage
-            for( t_idx k = 0; k < remaining_xCells; k++ )
-            {
                 // determine left and right cell-id
-                t_idx l_ceT = stride * j + full_xCells + k;
-                t_idx l_ceB = stride * ( j + 1 ) + full_xCells + k;
+                t_idx l_ceT = stride * j + i;
+                t_idx l_ceB = stride * ( j + 1 ) + i;
 
                 // noting to compute both shore cells
                 if( l_hOld[l_ceT] == 0 && l_hOld[l_ceB] == 0 )
@@ -308,8 +244,8 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                                                          heightRight,
                                                          momentumLeft,
                                                          momentumRight,
-                                                         bathymetryRight,
                                                          bathymetryLeft,
+                                                         bathymetryRight,
                                                          l_netUpdates[0],
                                                          l_netUpdates[1] );
 
@@ -332,68 +268,14 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
         }
 
         //  iterates over the x direction
-        for( t_idx i = 1; i < full_xCells; i += ITERATIONS_CACHE )
+        for( t_idx i = 1; i < m_xCells; i++ )
         {
             // iterate over the rows i.e. y-coordinates
             for( t_idx j = 1; j < m_yCells + 1; j++ )
             {
-                // iterations for more efficient cache usage
-                for( t_idx k = 0; k < ITERATIONS_CACHE; k++ )
-                {
-                    // determine left and right cell-id
-                    t_idx l_ceT = stride * j + i + k;
-                    t_idx l_ceB = stride * ( j + 1 ) + i + k;
-
-                    // noting to compute both shore cells
-                    if( l_hOld[l_ceT] == 0 && l_hOld[l_ceB] == 0 )
-                    {
-                        continue;
-                    }
-
-                    // compute reflection
-                    t_real heightLeft;
-                    t_real heightRight;
-                    t_real momentumLeft;
-                    t_real momentumRight;
-
-                    Reflection reflection = calculateReflection( l_hOld,
-                                                                 l_hvOld,
-                                                                 l_ceT,
-                                                                 l_ceB,
-                                                                 heightLeft,
-                                                                 heightRight,
-                                                                 momentumLeft,
-                                                                 momentumRight );
-
-                    // compute net-updates
-                    t_real l_netUpdates[2][2];
-
-                    netUpdates( heightLeft,
-                                heightRight,
-                                momentumLeft,
-                                momentumRight,
-                                l_netUpdates[0],
-                                l_netUpdates[1] );
-
-                    // update the cells' quantities
-                    l_hNew[l_ceT] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
-                    l_hvNew[l_ceT] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
-
-                    l_hNew[l_ceB] -= i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
-                    l_hvNew[l_ceB] -= i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
-                }
-            }
-        }
-
-        // iterate over the rows i.e. y-coordinates
-        for( t_idx j = 1; j < m_yCells + 1; j++ )
-        {
-            // remaining iterations for more efficient cache usage
-            for( t_idx k = 0; k < remaining_xCells; k++ )
-            {
                 // determine left and right cell-id
-                t_idx l_ceT = stride * j + full_xCells + k;
-                t_idx l_ceB = stride * ( j + 1 ) + full_xCells + k;
+                t_idx l_ceT = stride * j + i;
+                t_idx l_ceB = stride * ( j + 1 ) + i;
 
                 // noting to compute both shore cells
                 if( l_hOld[l_ceT] == 0 && l_hOld[l_ceB] == 0 )
