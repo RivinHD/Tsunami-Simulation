@@ -51,9 +51,7 @@ endif()
 
 # Setup compile Flags
 if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /W3 /WL /EHsc")
-    set(CMAKE_CXX_FLAGS_RELEASE "/O2" CACHE STRING "" FORCE)
-    set(CMAKE_CXX_FLAGS_DEBUG "/Od" CACHE STRING "" FORCE)
+    message(FATAL_ERROR "This project cannot be compiled with MSVC due to https://developercommunity.visualstudio.com/t/using-c17-new-stdalign-val-tn-syntax-results-in-er/528320")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -pthread")
     set(CMAKE_CXX_FLAGS_RELEASE "-O2" CACHE STRING "" FORCE)
@@ -208,28 +206,16 @@ add_executable(sanitize ${SOURCE_FILES})
 target_sources(sanitize PRIVATE ${MAIN_FILE})
 
 # Init sanitizer
-if (MSVC)
-    # MSVC only has address sanitizer
-    set_target_properties(sanitize
-        PROPERTIES
-        COMPILE_FLAGS "/fsanitize=address /Zi"
-    )
-    set_target_properties(sanitize_test
-        PROPERTIES
-        COMPILE_FLAGS "/fsanitize=address /Zi"
-    )
-else()
-    set_target_properties(sanitize
-        PROPERTIES
-        COMPILE_FLAGS "-g -fsanitize=float-divide-by-zero -fsanitize=bounds -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer"
-        LINK_FLAGS "-g -fsanitize=address -fsanitize=undefined"
-    )
-    set_target_properties(sanitize_test
-        PROPERTIES
-        COMPILE_FLAGS "-g -fsanitize=float-divide-by-zero -fsanitize=bounds -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer"
-        LINK_FLAGS "-g -fsanitize=address -fsanitize=undefined"
-    )
-endif()
+set_target_properties(sanitize
+    PROPERTIES
+    COMPILE_FLAGS "-g -fsanitize=float-divide-by-zero -fsanitize=bounds -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer"
+    LINK_FLAGS "-g -fsanitize=address -fsanitize=undefined"
+)
+set_target_properties(sanitize_test
+    PROPERTIES
+    COMPILE_FLAGS "-g -fsanitize=float-divide-by-zero -fsanitize=bounds -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer"
+    LINK_FLAGS "-g -fsanitize=address -fsanitize=undefined"
+)
 
 if(CMAKE_COMPILER_IS_GNUCC AND WIN32)
     message(AUTHOR_WARNING "MingW (aka g++ on Windows) has no sanitizers :/")

@@ -6,6 +6,7 @@
 #include "../../include/patches/WavePropagation2d.h"
 #include "../../include/solvers/Roe.h"
 #include "../../include/solvers/FWave.h"
+#include <iostream>
 
 tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells,
                                                             t_idx i_yCells )
@@ -15,27 +16,32 @@ tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells,
     stride = i_xCells + 2;
     totalCells = ( i_xCells + 2 ) * ( i_yCells + 2 );
 
+    // calculates xCells dividable by ITERATIONS_CACHE and remaining cells
+    remaining_xCells = m_xCells % ITERATIONS_CACHE;
+    full_xCells = m_xCells - remaining_xCells;
+
     // allocate memory including a single ghost cell on each side
+    size_t alignment = ITERATIONS_CACHE * sizeof( t_real );
     for( unsigned short l_st = 0; l_st < 2; l_st++ )
     {
-        m_h[l_st] = new t_real[totalCells]{ 0 };
-        m_hu[l_st] = new t_real[totalCells]{ 0 };
-        m_hv[l_st] = new t_real[totalCells]{ 0 };
+        m_h[l_st] = aligned_alloc<t_real>( m_hPtr[l_st], totalCells, alignment );
+        m_hu[l_st] = aligned_alloc<t_real>( m_huPtr[l_st], totalCells, alignment );
+        m_hv[l_st] = aligned_alloc<t_real>( m_hvPtr[l_st], totalCells, alignment );
     }
-    m_bathymetry = new t_real[totalCells]{ 0 };
-    m_totalHeight = new t_real[totalCells]{ 0 };
+    m_bathymetry = aligned_alloc<t_real>( m_bathymetryPtr, totalCells, alignment );
+    m_totalHeight = aligned_alloc<t_real>( m_totalHeightPtr, totalCells, alignment );
 }
 
 tsunami_lab::patches::WavePropagation2d::~WavePropagation2d()
 {
     for( unsigned short l_st = 0; l_st < 2; l_st++ )
     {
-        delete[] m_h[l_st];
-        delete[] m_hu[l_st];
-        delete[] m_hv[l_st];
+        delete[] m_hPtr[l_st];
+        delete[] m_huPtr[l_st];
+        delete[] m_hvPtr[l_st];
     }
-    delete[] m_bathymetry;
-    delete[] m_totalHeight;
+    delete[] m_bathymetryPtr;
+    delete[] m_totalHeightPtr;
 }
 
 void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
@@ -46,7 +52,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
     t_real* l_hOld = m_h[m_step];
     t_real* l_huOld = m_hu[m_step];
 
-    m_step = ( m_step + 1 ) % 2;
+    m_step = ( m_step + 1 ) & 1;  // & 1 is alias for % 2
     t_real* l_hNew = m_h[m_step];
     t_real* l_huNew = m_hu[m_step];
 
@@ -181,14 +187,14 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
     }
     //swapping the h buffer new and old to write new data in previous old
     m_h[m_step] = l_hOld;
-    m_step = ( m_step + 1 ) % 2;
+    m_step = ( m_step + 1 ) & 1;  // & 1 is alias for % 2
     m_h[m_step] = l_hNew;
 
     // pointers to old and new data
     t_real* l_hvOld = m_hv[m_step];
     l_hOld = m_h[m_step];
 
-    m_step = ( m_step + 1 ) % 2;
+    m_step = ( m_step + 1 ) & 1;  // & 1 is alias for % 2
     t_real* l_hvNew = m_hv[m_step];
     l_hNew = m_h[m_step];
 
@@ -198,10 +204,6 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
         l_hNew[l_ce] = l_hOld[l_ce];
         l_hvNew[l_ce] = l_hvOld[l_ce];
     }
-
-    // calculates xCells dividable by ITERATIONS_CACHE and remaining cells
-    t_idx full_xCells = ( m_xCells / ITERATIONS_CACHE ) * ITERATIONS_CACHE;
-    t_idx remaining_xCells = m_xCells % ITERATIONS_CACHE;
 
     // only possible for f-wave solver
     if( hasBathymetry )
@@ -308,8 +310,8 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                                                          heightRight,
                                                          momentumLeft,
                                                          momentumRight,
-                                                         bathymetryRight,
                                                          bathymetryLeft,
+                                                         bathymetryRight,
                                                          l_netUpdates[0],
                                                          l_netUpdates[1] );
 

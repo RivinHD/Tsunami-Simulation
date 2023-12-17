@@ -181,8 +181,8 @@ Building
         | REPORT             | Enables the report out for the used compiler                                                                       |
         +--------------------+--------------------------------------------------------------------------------------------------------------------+
 
-        To enable an option the it as to be written:
-
+        To activate an option, the following must be written:
+        
         .. code-block:: bash
 
             cmake .. -D <Option>=ON
