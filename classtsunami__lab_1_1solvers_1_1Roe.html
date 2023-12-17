@@ -77,14 +77,14 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:afd6790dc03b4a684728ccdea0661c0eb"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtsunami__lab_1_1solvers_1_1Roe.html#afd6790dc03b4a684728ccdea0661c0eb">netUpdates</a> (<a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_hL, <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_hR, <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_huL, <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_huR, <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> o_netUpdateL[2], <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> o_netUpdateR[2])</td></tr>
-<tr class="separator:afd6790dc03b4a684728ccdea0661c0eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0a87a9d8cb0a207ab23bcf4d28839d1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtsunami__lab_1_1solvers_1_1Roe.html#aa0a87a9d8cb0a207ab23bcf4d28839d1">netUpdates</a> (<a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_hL, <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_hR, <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_huL, <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_huR, <a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> o_netUpdate[2][2])</td></tr>
+<tr class="separator:aa0a87a9d8cb0a207ab23bcf4d28839d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classtsunami__lab_1_1solvers_1_1Roe.html">Roe</a> Riemann solver for the one-dimensional shallow water equations. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="afd6790dc03b4a684728ccdea0661c0eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afd6790dc03b4a684728ccdea0661c0eb">&#9670;&nbsp;</a></span>netUpdates()</h2>
+<a id="aa0a87a9d8cb0a207ab23bcf4d28839d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0a87a9d8cb0a207ab23bcf4d28839d1">&#9670;&nbsp;</a></span>netUpdates()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -120,13 +120,7 @@ Static Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a>&#160;</td>
-          <td class="paramname"><em>o_netUpdateL</em>[2], </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a>&#160;</td>
-          <td class="paramname"><em>o_netUpdateR</em>[2]&#160;</td>
+          <td class="paramname"><em>o_netUpdate</em>[2][2]&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -147,8 +141,7 @@ Static Public Member Functions</h2></td></tr>
     <tr><td class="paramname">i_hR</td><td>height of the right side. </td></tr>
     <tr><td class="paramname">i_huL</td><td>momentum of the left side. </td></tr>
     <tr><td class="paramname">i_huR</td><td>momentum of the right side. </td></tr>
-    <tr><td class="paramname">o_netUpdateL</td><td>will be set to the net-updates for the left side; 0: height, 1: momentum. </td></tr>
-    <tr><td class="paramname">o_netUpdateR</td><td>will be set to the net-updates for the right side; 0: height, 1: momentum. </td></tr>
+    <tr><td class="paramname">o_netUpdateL</td><td>will be set to the net-updates for the 0: left, 1: right side; 0: height, 1: momentum. </td></tr>
   </table>
   </dd>
 </dl>
