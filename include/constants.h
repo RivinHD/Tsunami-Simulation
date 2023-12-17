@@ -30,11 +30,18 @@ namespace tsunami_lab
     template<typename T>
     T* aligned_alloc( T*& rawPtr, size_t size, size_t alignment = alignof( T ) )
     {
+        // calculates size of array with overhead for alignment
         size_t alignedSize = size + ( alignment / sizeof( T ) ) - 1;
+
+        // init the array
         void* data = new T[alignedSize]{ 0 };
         rawPtr = static_cast<T*>( data );
+
+        // prepare for align and align the array
         alignedSize *= sizeof( T ); // std::align works with size in bytes
         std::align( alignment, sizeof( T ), data, alignedSize );
+
+        // convert the result T* and check if the array is large enough
         T* result = static_cast<T*>( data );
         if( alignedSize < ( size * sizeof( T ) ) )
         {

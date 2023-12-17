@@ -53,6 +53,8 @@ TEST_CASE( "Test the computation of the delta flux.", "[FWaveDeltaFlux]" )
                                                    9,
                                                    -3,
                                                    3,
+                                                   10 * -3,
+                                                   9 * 3,
                                                    l_deltaFlux );
     REQUIRE( l_deltaFlux[0] == Approx( 57 ) );
     REQUIRE( l_deltaFlux[1] == Approx( -102.163175 ) );
@@ -132,21 +134,20 @@ TEST_CASE( "Test the derivation of the F-Wave net-updates.", "[FWaveUpdate]" )
      * update #2: s2 * a2 * |    | = |                           |
      *                      | s2 |   | 224.403141905910928927533 |
      */
-    float l_netUpdatesL[2] = { -5, 3 };
-    float l_netUpdatesR[2] = { 4, 7 };
+    float l_netUpdates[2][2] = { -5, 3,
+                                  4, 7 };
 
     tsunami_lab::solvers::FWave::netUpdates( 10,
                                              9,
                                              -30,
                                              27,
-                                             l_netUpdatesL,
-                                             l_netUpdatesR );
+                                             l_netUpdates );
 
-    REQUIRE( l_netUpdatesL[0] == Approx( 33.5590017014261447899292 ) );
-    REQUIRE( l_netUpdatesL[1] == Approx( -326.56631690591093200508 ) );
+    REQUIRE( l_netUpdates[0][0] == Approx( 33.5590017014261447899292 ) );
+    REQUIRE( l_netUpdates[0][1] == Approx( -326.56631690591093200508 ) );
 
-    REQUIRE( l_netUpdatesR[0] == Approx( 23.4409982985738561366777 ) );
-    REQUIRE( l_netUpdatesR[1] == Approx( 224.403141905910928927533 ) );
+    REQUIRE( l_netUpdates[1][0] == Approx( 23.4409982985738561366777 ) );
+    REQUIRE( l_netUpdates[1][1] == Approx( 224.403141905910928927533 ) );
 
     /*
      * Test case (dam break):
@@ -188,14 +189,15 @@ TEST_CASE( "Test the derivation of the F-Wave net-updates.", "[FWaveUpdate]" )
                                              8,
                                              0,
                                              0,
-                                             l_netUpdatesL,
-                                             l_netUpdatesR );
+                                             0,
+                                             0,
+                                             l_netUpdates );
 
-    REQUIRE( l_netUpdatesL[0] == Approx( 9.394671362 ) );
-    REQUIRE( l_netUpdatesL[1] == -Approx( 88.25985 ) );
+    REQUIRE( l_netUpdates[0][0] == Approx( 9.394671362 ) );
+    REQUIRE( l_netUpdates[0][1] == -Approx( 88.25985 ) );
 
-    REQUIRE( l_netUpdatesR[0] == -Approx( 9.394671362 ) );
-    REQUIRE( l_netUpdatesR[1] == -Approx( 88.25985 ) );
+    REQUIRE( l_netUpdates[1][0] == -Approx( 9.394671362 ) );
+    REQUIRE( l_netUpdates[1][1] == -Approx( 88.25985 ) );
 
     /*
     * Test case (dam break):
@@ -229,14 +231,13 @@ TEST_CASE( "Test the derivation of the F-Wave net-updates.", "[FWaveUpdate]" )
                                              1,
                                              -100,
                                              0,
-                                             l_netUpdatesL,
-                                             l_netUpdatesR );
+                                             l_netUpdates );
 
-    REQUIRE( l_netUpdatesL[0] == Approx( 100 ) );
-    REQUIRE( l_netUpdatesL[1] == Approx( -1485.4292 ) );
+    REQUIRE( l_netUpdates[0][0] == Approx( 100 ) );
+    REQUIRE( l_netUpdates[0][1] == Approx( -1485.4292 ) );
 
-    REQUIRE( l_netUpdatesR[0] == Approx( 0 ) );
-    REQUIRE( l_netUpdatesR[1] == Approx( 0 ) );
+    REQUIRE( l_netUpdates[1][0] == Approx( 0 ) );
+    REQUIRE( l_netUpdates[1][1] == Approx( 0 ) );
 
     /*
      * Test case (trivial steady state):
@@ -249,12 +250,11 @@ TEST_CASE( "Test the derivation of the F-Wave net-updates.", "[FWaveUpdate]" )
                                              10,
                                              0,
                                              0,
-                                             l_netUpdatesL,
-                                             l_netUpdatesR );
+                                             l_netUpdates );
 
-    REQUIRE( l_netUpdatesL[0] == Approx( 0 ) );
-    REQUIRE( l_netUpdatesL[1] == Approx( 0 ) );
+    REQUIRE( l_netUpdates[0][0] == Approx( 0 ) );
+    REQUIRE( l_netUpdates[0][1] == Approx( 0 ) );
 
-    REQUIRE( l_netUpdatesR[0] == Approx( 0 ) );
-    REQUIRE( l_netUpdatesR[1] == Approx( 0 ) );
+    REQUIRE( l_netUpdates[1][0] == Approx( 0 ) );
+    REQUIRE( l_netUpdates[1][1] == Approx( 0 ) );
 }

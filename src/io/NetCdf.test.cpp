@@ -10,6 +10,7 @@
 #include <fstream>
 #include <iostream>
 #include <filesystem>
+#include <cstdlib>
 #include "../../include/patches/WavePropagation2d.h"
 
 #define private public
@@ -872,7 +873,8 @@ TEST_CASE( "The write method for netCDF", "[netCDF]" )
 
     delete netCdfWriter;
 
-    system( "ncdump solutions/simulation/WriteNetCDF.test.nc > tmp_file.txt" );
+    int result = std::system( "ncdump solutions/simulation/WriteNetCDF.test.nc > tmp_file.txt" );
+    REQUIRE( result == 0 );
 
     std::ifstream file1;
     std::ifstream file2;
@@ -919,7 +921,8 @@ TEST_CASE( "The write method for netCDF", "[netCDF]" )
 
     delete netCdfWriter;
 
-    system( "ncdump solutions/simulation/WriteNetCDF.test.nc > tmp_file.txt" );
+    result = std::system( "ncdump solutions/simulation/WriteNetCDF.test.nc > tmp_file.txt" );
+    REQUIRE( result == 0 );
 
     file1.open( "tmp_file.txt" );
     file2.open( "resources/WriteNetCDF_M.test.txt" );
@@ -1040,11 +1043,11 @@ TEST_CASE( "The averageSeveral method for netCDF", "[netCDF]" )
     // create simulation folder inside solution folder
     if( !fs::exists( SOLUTION_FOLDER ) )
     {
-    fs::create_directory( SOLUTION_FOLDER );
+        fs::create_directory( SOLUTION_FOLDER );
     }
     if( fs::exists( SOLUTION_FOLDER + "/simulation" ) )
     {
-    fs::remove_all( SOLUTION_FOLDER + "/simulation" );
+        fs::remove_all( SOLUTION_FOLDER + "/simulation" );
     }
     fs::create_directory( SOLUTION_FOLDER + "/simulation" );
 
@@ -1060,15 +1063,16 @@ TEST_CASE( "The averageSeveral method for netCDF", "[netCDF]" )
                                                                          true );
     for( size_t i = 0; i < 20; i++ )
     {
-    netCdfWriter->averageSeveral( l_time[i],
-                                  totalHeight + ( i * 100 ),
-                                  momentumX + ( i * 100 ),
-                                  momentumY + ( i * 100 ) );
+        netCdfWriter->averageSeveral( l_time[i],
+                                      totalHeight + ( i * 100 ),
+                                      momentumX + ( i * 100 ),
+                                      momentumY + ( i * 100 ) );
     }
 
     delete netCdfWriter;
 
-    system( "ncdump solutions/simulation/AverageSeveralNetCDF.test.nc > tmp_file.txt" );
+    int result = std::system( "ncdump solutions/simulation/AverageSeveralNetCDF.test.nc > tmp_file.txt" );
+    REQUIRE( result == 0 );
 
     std::ifstream file1;
     std::ifstream file2;
@@ -1079,7 +1083,7 @@ TEST_CASE( "The averageSeveral method for netCDF", "[netCDF]" )
 
     while( std::getline( file1, line1 ) && std::getline( file2, line2 ) )
     {
-    REQUIRE( line1 == line2 );
+        REQUIRE( line1 == line2 );
     }
 
     std::remove( "tmp_file.txt" );

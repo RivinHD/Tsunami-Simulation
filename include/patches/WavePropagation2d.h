@@ -81,7 +81,7 @@ private:
     bool hasReflection[4] = { false, false, false, false };
 
     //! Iteration that should be performed to use the cache more efficiently e.g. 32 -> 32 * sizeof(t_real) = 32 * 4 byte = 128 byte Cacheline
-    static constexpr t_idx ITERATIONS_CACHE = 32;
+    static constexpr t_idx ITERATIONS_CACHE = 16;
 
     //! The amount of cell dividable by ITERATIONS_CACHE
     t_idx full_xCells = 1;
