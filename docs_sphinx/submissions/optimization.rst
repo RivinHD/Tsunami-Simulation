@@ -479,9 +479,9 @@ With the GNU compiler, the fastest time is Ofast, whereas O2 and O3 are almost t
 
 **Option: Generating Report**
 
-An option was added to the ``CMakeLists.txt``, where the report will be generated if the option 
-``REPORT`` is enabled for the generation process of cmake.
-To enable the report add `-D REPORT=ON`.
+An option has been added to ``CMakeLists.txt`` to generate the report if the option 
+REPORT`` is activated during the cmake generation process.
+To activate the report, add ``-D REPORT=ON``.
 E.g.:
 
 .. code-block:: bash
@@ -602,11 +602,11 @@ aren't computing much in this method besides three calls of ``std::sqrt`` which 
 
 We have made some minor adjustments by moving all calculations that can be calculated during initialization in the constructors.
 We have also adjusted some mathematical expressions to avoid the calculation of duplicates and divisions.
-With these optimizations we have achieved an improvement of about 0.5%.
+With these optimizations we have achieved an improvement of about 0.2%.
 
-The biggest improvement results from an additional loop for to ensure that we use all values loaded into the cache.
+The biggest improvement results from an additional loop that ensures that all values loaded into the cache are used.
 We have also ensured the alignment of the array using the ``aligned_alloc`` function.
-This optimization leads to an improvement of 14.5 %.
+This optimization leads to an improvement of 14.8 %.
 
 .. code-block:: cpp
 
@@ -635,7 +635,7 @@ This optimization leads to an improvement of 14.5 %.
         return result;
     }
 
-Will the improvement mentioned above we get a total improvement of 15%.
+The above-mentioned improvements result in an overall improvement of **15 %**.
 
 
 Contribution

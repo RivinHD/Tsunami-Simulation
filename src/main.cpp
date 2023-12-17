@@ -4,7 +4,7 @@
  * Entry-point for simulations.
  **/
 
-#define SKIP_ARGUMENTS
+ // #define SKIP_ARGUMENTS
  // #define TSUNAMI_SIMULATION_DISABLE_IO
 
 #include "../include/patches/WavePropagation1d.h"
