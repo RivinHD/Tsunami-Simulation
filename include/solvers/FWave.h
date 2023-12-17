@@ -50,12 +50,16 @@ private:
      * @param i_hR height of the right side.
      * @param i_uL particle velocity of the left side.
      * @param i_uR particles velocity of the right side.
+     * @param i_huL momentum of the left side.
+     * @param i_huR momentum of the right side.
      * @param o_deltaFlux output: difference of left and right quantities
      */
     static void computeDeltaFlux( t_real i_hL,
                                   t_real i_hR,
                                   t_real i_uL,
                                   t_real i_uR,
+                                  t_real i_huL,
+                                  t_real i_huR,
                                   t_real o_deltaFlux[2] );
 
     /**

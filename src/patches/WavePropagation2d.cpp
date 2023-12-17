@@ -46,7 +46,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
     t_real* l_hOld = m_h[m_step];
     t_real* l_huOld = m_hu[m_step];
 
-    m_step = ( m_step + 1 ) % 2;
+    m_step = ( m_step + 1 ) & 1;  // & 1 is alias for % 2
     t_real* l_hNew = m_h[m_step];
     t_real* l_huNew = m_hu[m_step];
 
@@ -181,14 +181,14 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
     }
     //swapping the h buffer new and old to write new data in previous old
     m_h[m_step] = l_hOld;
-    m_step = ( m_step + 1 ) % 2;
+    m_step = ( m_step + 1 ) & 1;  // & 1 is alias for % 2
     m_h[m_step] = l_hNew;
 
     // pointers to old and new data
     t_real* l_hvOld = m_hv[m_step];
     l_hOld = m_h[m_step];
 
-    m_step = ( m_step + 1 ) % 2;
+    m_step = ( m_step + 1 ) & 1;  // & 1 is alias for % 2
     t_real* l_hvNew = m_hv[m_step];
     l_hNew = m_h[m_step];
 

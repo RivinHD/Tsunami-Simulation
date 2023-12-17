@@ -17,10 +17,6 @@ Follow the instructions off :ref:`getting_started_building_project`.
 To simplify matters, we have created two Slurm scripts for running our simulations. The first one ``launchSimulation.sh``
 compiles our code and is a wrapper to start the actually script ``simulation.sh`` in the right direction.
 
-.. warning::
-
-    Change to final scrips!
-
 .. code-block:: bash
 
     ///File: launchSimulation.sh
@@ -481,12 +477,27 @@ With the GNU compiler, the fastest time is Ofast, whereas O2 and O3 are almost t
 4. Optimization Report
 ^^^^^^^^^^^^^^^^^^^^^^
 
+**Option: Generating Report**
+
+An option was added to the ``CMakeLists.txt``, where the report will be generated if the option 
+``REPORT`` is enabled for the generation process of cmake.
+To enable the report add `-D REPORT=ON`.
+E.g.:
+
+.. code-block:: bash
+
+    cmake .. -D REPORT=ON
+    
+
+**Results**
+
 The GNU compiler generates an optimization report with the option ``-fopt-info-optimized=opt_gnu.optrpt`` and creates
 a report, for example this :download:`Optimization Report <../_static/resources/opt_gnu_O2.optrpt>`.
-Mostly it inline ``functions`` and ``constexpr`` inside the same object and from the imported libraries.
+Mostly it inlines ``functions`` and ``constexpr`` inside the same object and from the imported libraries.
 It also unrolled small loops and distributed some loops into library calls.
 Furthermore it sinks common stores with same value.
-Unfortunately the compiler does not vectorize the code, but at least inlined the F-Wave solver.
+The most time-consuming part is the function ``netUpdates``.
+Unfortunately the compiler does not vectorizes the code, but at least inlines the F-Wave solver into ``netUpdates``.
 
 8.3 Instrumentation and Performance Counters
 --------------------------------------------

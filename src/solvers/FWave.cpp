@@ -32,14 +32,13 @@ void tsunami_lab::solvers::FWave::computeDeltaFlux( t_real i_hL,
                                                     t_real i_hR,
                                                     t_real i_uL,
                                                     t_real i_uR,
+                                                    t_real i_huL,
+                                                    t_real i_huR,
                                                     t_real o_deltaFlux[2] )
 {
-    t_real i_huL = i_hL * i_uL;
-    t_real i_huR = i_hR * i_uR;
-
     o_deltaFlux[0] = i_huR - i_huL;
-    o_deltaFlux[1] = ( i_hR * i_uR * i_uR + 0.5f * m_g * i_hR * i_hR )
-        - ( i_hL * i_uL * i_uL + 0.5f * m_g * i_hL * i_hL );
+    o_deltaFlux[1] = ( i_huR * i_uR + 0.5f * m_g * i_hR * i_hR )
+        - ( i_huL * i_uL + 0.5f * m_g * i_hL * i_hL );
 }
 
 void tsunami_lab::solvers::FWave::computeEigencoefficients( t_real i_eigenvalue1,
@@ -50,14 +49,13 @@ void tsunami_lab::solvers::FWave::computeEigencoefficients( t_real i_eigenvalue1
 {
     // compute inverse matrix
     t_real denominator = 1 / ( i_eigenvalue2 - i_eigenvalue1 );
-    t_real invertedMatrix[2][2] = {
-            {i_eigenvalue2 * denominator, -1 * denominator},
-            {-i_eigenvalue1 * denominator, 1 * denominator}
-    };
+    // inverted Matrix:
+    // {i_eigenvalue2 * denominator , -1 * denominator},
+    // {-i_eigenvalue1 * denominator,  1 * denominator}
 
     // compute eigencoefficients
-    o_eigencoefficient1 = invertedMatrix[0][0] * i_deltaFlux[0] + invertedMatrix[0][1] * i_deltaFlux[1];
-    o_eigencoefficient2 = invertedMatrix[1][0] * i_deltaFlux[0] + invertedMatrix[1][1] * i_deltaFlux[1];
+    o_eigencoefficient1 = i_eigenvalue2 * denominator * i_deltaFlux[0] - denominator * i_deltaFlux[1];
+    o_eigencoefficient2 = -i_eigenvalue1 * denominator * i_deltaFlux[0] + denominator * i_deltaFlux[1];
 }
 
 void tsunami_lab::solvers::FWave::computeBathymetryEffects( t_real i_hL, t_real i_hR,
@@ -65,7 +63,7 @@ void tsunami_lab::solvers::FWave::computeBathymetryEffects( t_real i_hL, t_real 
                                                             t_real o_bathymetryEffect[2] )
 {
     o_bathymetryEffect[0] = 0;
-    o_bathymetryEffect[1] = -m_g * ( i_bR - i_bL ) * ( t_real( 0.5 ) * ( i_hL + i_hR ) );
+    o_bathymetryEffect[1] = -m_g * ( i_bR - i_bL ) * t_real( 0.5 ) * ( i_hL + i_hR );
 }
 
 // net update without bathymetry
@@ -92,40 +90,26 @@ void tsunami_lab::solvers::FWave::netUpdates( t_real i_hL,
 
     // compute delta flux
     t_real deltaFlux[2];
-    computeDeltaFlux( i_hL, i_hR, l_uL, l_uR, deltaFlux );
+    computeDeltaFlux( i_hL, i_hR, l_uL, l_uR, i_huL, i_huR, deltaFlux );
 
     // compute eigencoefficients
     t_real eigencoefficient1 = 0;
     t_real eigencoefficient2 = 0;
     computeEigencoefficients( eigenvalue1, eigenvalue2, deltaFlux, eigencoefficient1, eigencoefficient2 );
 
+    // 0 is Left, 1 is Right
+    t_real netUpdate[2][2]{ 0 };
+
     // compute waves / net updates
     for( unsigned short l_qt = 0; l_qt < 2; l_qt++ )
     {
-        // init
-        o_netUpdateL[l_qt] = 0;
-        o_netUpdateR[l_qt] = 0;
-
-        // 1st wave
-        if( eigenvalue1 < 0 )
-        {
-            o_netUpdateL[l_qt] += eigencoefficient1 * eigenvector1[l_qt];
-        }
-        else
-        {
-            o_netUpdateR[l_qt] += eigencoefficient1 * eigenvector1[l_qt];
-        }
-
-        // 2nd wave
-        if( eigenvalue2 < 0 )
-        {
-            o_netUpdateL[l_qt] += eigencoefficient2 * eigenvector2[l_qt];
-        }
-        else
-        {
-            o_netUpdateR[l_qt] += eigencoefficient2 * eigenvector2[l_qt];
-        }
+        netUpdate[eigenvalue1 >= 0][l_qt] += eigencoefficient1 * eigenvector1[l_qt];
+        netUpdate[eigenvalue2 >= 0][l_qt] += eigencoefficient2 * eigenvector2[l_qt];
     }
+
+    // sets the ouput
+    o_netUpdateL = netUpdate[0];
+    o_netUpdateR = netUpdate[1];
 }
 
 // net update with bathymetry
@@ -154,7 +138,7 @@ void tsunami_lab::solvers::FWave::netUpdates( t_real i_hL,
 
     // compute delta flux
     t_real deltaFlux[2];
-    computeDeltaFlux( i_hL, i_hR, l_uL, l_uR, deltaFlux );
+    computeDeltaFlux( i_hL, i_hR, l_uL, l_uR, i_huL, i_huR, deltaFlux );
 
     //compute bathymetry
     t_real bathymetry[2];
@@ -169,32 +153,18 @@ void tsunami_lab::solvers::FWave::netUpdates( t_real i_hL,
     t_real eigencoefficient2 = 0;
     computeEigencoefficients( eigenvalue1, eigenvalue2, bathymetryDeltaFlux, eigencoefficient1, eigencoefficient2 );
 
+    // 0 is Left, 1 is Right
+    t_real netUpdate[2][2]{ 0 };
+
     // compute waves / net updates
     for( unsigned short l_qt = 0; l_qt < 2; l_qt++ )
     {
-        // init
-        o_netUpdateL[l_qt] = 0;
-        o_netUpdateR[l_qt] = 0;
-
-        // 1st wave
-        if( eigenvalue1 < 0 )
-        {
-            o_netUpdateL[l_qt] += eigencoefficient1 * eigenvector1[l_qt];
-        }
-        else
-        {
-            o_netUpdateR[l_qt] += eigencoefficient1 * eigenvector1[l_qt];
-        }
-
-        // 2nd wave
-        if( eigenvalue2 < 0 )
-        {
-            o_netUpdateL[l_qt] += eigencoefficient2 * eigenvector2[l_qt];
-        }
-        else
-        {
-            o_netUpdateR[l_qt] += eigencoefficient2 * eigenvector2[l_qt];
-        }
+        netUpdate[eigenvalue1 >= 0][l_qt] += eigencoefficient1 * eigenvector1[l_qt];
+        netUpdate[eigenvalue2 >= 0][l_qt] += eigencoefficient2 * eigenvector2[l_qt];
     }
+
+    // sets the ouput
+    o_netUpdateL = netUpdate[0];
+    o_netUpdateR = netUpdate[1];
 }
 
