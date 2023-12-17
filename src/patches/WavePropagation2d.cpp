@@ -8,7 +8,6 @@
 #include "../../include/solvers/FWave.h"
 #include <iostream>
 
-
 tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells,
                                                             t_idx i_yCells )
 {
@@ -24,24 +23,24 @@ tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells,
     // allocate memory including a single ghost cell on each side
     for( unsigned short l_st = 0; l_st < 2; l_st++ )
     {
-        m_h[l_st] = new( std::align_val_t{ 128 } ) t_real[totalCells]{ 0 };
-        m_hu[l_st] = new( std::align_val_t{ 128 } ) t_real[totalCells]{ 0 };
-        m_hv[l_st] = new( std::align_val_t{ 128 } ) t_real[totalCells]{ 0 };
+        m_h[l_st] = aligned_alloc<t_real>( totalCells, 128 );
+        m_hu[l_st] = aligned_alloc<t_real>( totalCells, 128 );
+        m_hv[l_st] = aligned_alloc<t_real>( totalCells, 128 );
     }
-    m_bathymetry = new( std::align_val_t{ 128 } ) t_real[totalCells]{ 0 };
-    m_totalHeight = new( std::align_val_t{ 128 } ) t_real[totalCells]{ 0 };
+    m_bathymetry = aligned_alloc<t_real>( totalCells, 128 );
+    m_totalHeight = aligned_alloc<t_real>( totalCells, 128 );
 }
 
 tsunami_lab::patches::WavePropagation2d::~WavePropagation2d()
 {
     for( unsigned short l_st = 0; l_st < 2; l_st++ )
     {
-        ::operator delete[]( m_h[l_st], std::align_val_t{ 128 } );
-        ::operator delete[]( m_hu[l_st], std::align_val_t{ 128 } );
-        ::operator delete[]( m_hv[l_st], std::align_val_t{ 128 } );
+        delete[] m_h[l_st];
+        delete[] m_hu[l_st];
+        delete[] m_hv[l_st];
     }
-    ::operator delete[]( m_bathymetry, std::align_val_t{ 128 } );
-    ::operator delete[]( m_totalHeight, std::align_val_t{ 128 } );
+    delete[] m_bathymetry;
+    delete[] m_totalHeight;
 }
 
 void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
