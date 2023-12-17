@@ -597,8 +597,45 @@ The third place ``FWave::computeEigenvalues`` takes nearly 81 seconds. We did no
 aren't computing much in this method besides three calls of ``std::sqrt`` which is only 8% of the time.
 
 
+5. Optimization
+^^^^^^^^^^^^^^^
 
+We have made some minor adjustments by moving all calculations that can be calculated during initialization in the constructors.
+We have also adjusted some mathematical expressions to avoid the calculation of duplicates and divisions.
+With these optimizations we have achieved an improvement of about 1%.
 
+The biggest improvement results from an additional loop for to ensure that we use all values loaded into the cache.
+We have also ensured the alignment of the array using the ``aligned_alloc`` function.
+This optimization leads to an improvement of 15 %.
+
+.. code-block:: cpp
+
+    /// File: constants.h
+    template<typename T>
+    T* aligned_alloc( T*& rawPtr, size_t size, size_t alignment = alignof( T ) )
+    {
+        // calculates size of array with overhead for alignment
+        size_t alignedSize = size + ( alignment / sizeof( T ) ) - 1;
+
+        // init the array
+        void* data = new T[alignedSize]{ 0 };
+        rawPtr = static_cast<T*>( data );
+
+        // prepare for align and align the array
+        alignedSize *= sizeof( T ); // std::align works with size in bytes
+        std::align( alignment, sizeof( T ), data, alignedSize );
+
+        // convert the result T* and check if the array is large enough
+        T* result = static_cast<T*>( data );
+        if( alignedSize < ( size * sizeof( T ) ) )
+        {
+            delete[] result;
+            return nullptr;
+        }
+        return result;
+    }
+
+Will the improvement mentioned above we get a total improvement of 16%.
 
 
 Contribution

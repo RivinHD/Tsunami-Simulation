@@ -24,7 +24,7 @@ class tsunami_lab::patches::WavePropagation2d : public WavePropagation
 {
 private:
     //! current step which indicates the active values in the arrays below
-    unsigned short m_step = 0;
+    bool m_step = 0;
 
     //! number of total cells including water and ghost cells
     t_idx totalCells = 1;
