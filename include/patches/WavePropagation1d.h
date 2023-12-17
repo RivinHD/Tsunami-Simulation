@@ -29,23 +29,35 @@ private:
     //! number of cells discretizing the computational domain
     t_idx m_nCells = 0;
 
-    //! water heights for the current and next time step for all cells
+    //! aligned water heights for the current and next time step for all cells
     t_real* m_h[2] = { nullptr, nullptr };
 
-    //! momenta for the current and next time step for all cells
+    //! nonaligned water heights for the current and next time step for all cells
+    t_real* m_hPtr[2] = { nullptr, nullptr };
+
+    //! aligned momenta for the current and next time step for all cells
     t_real* m_hu[2] = { nullptr, nullptr };
+
+    //! nonaligned momenta for the current and next time step for all cells
+    t_real* m_huPtr[2] = { nullptr, nullptr };
 
     //! the solver used for the netUpdates
     Solver solver = Solver::FWAVE;
 
-    //! bathymetry for the current an next time step for all cells
+    //! nonaligned bathymetry for the current an next time step for all cells
     t_real* m_bathymetry = nullptr;
+
+    //! aligned bathymetry for the current an next time step for all cells
+    t_real* m_bathymetryPtr = nullptr;
 
     //! check if bathymetry exists
     bool hasBathymetry = false;
 
-    //! total height of water height + bathymetry
+    //! aligned total height of water height + bathymetry
     t_real* m_totalHeight = nullptr;
+
+    //! nonaligned total height of water height + bathymetry
+    t_real* m_totalHeightPtr = nullptr;
 
     //! is true if the total height need to be updated
     bool isDirtyTotalHeight = true;

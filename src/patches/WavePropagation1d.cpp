@@ -14,22 +14,22 @@ tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells )
     // allocate memory including a single ghost cell on each side
     for( unsigned short l_st = 0; l_st < 2; l_st++ )
     {
-        m_h[l_st] = aligned_alloc<t_real>( m_nCells + 2, 128 );
-        m_hu[l_st] = aligned_alloc<t_real>( m_nCells + 2, 128 );
+        m_h[l_st] = aligned_alloc<t_real>( m_hPtr[l_st], m_nCells + 2, 128 );
+        m_hu[l_st] = aligned_alloc<t_real>( m_huPtr[l_st], m_nCells + 2, 128 );
     }
-    m_bathymetry = aligned_alloc<t_real>( m_nCells + 2, 128 );
-    m_totalHeight = aligned_alloc<t_real>( m_nCells + 2, 128 );
+    m_bathymetry = aligned_alloc<t_real>( m_bathymetryPtr, m_nCells + 2, 128 );
+    m_totalHeight = aligned_alloc<t_real>( m_totalHeightPtr, m_nCells + 2, 128 );
 }
 
 tsunami_lab::patches::WavePropagation1d::~WavePropagation1d()
 {
     for( unsigned short l_st = 0; l_st < 2; l_st++ )
     {
-        delete[] m_h[l_st];
-        delete[] m_hu[l_st];
+        delete[] m_hPtr[l_st];
+        delete[] m_huPtr[l_st];
     }
-    delete[] m_bathymetry;
-    delete[] m_totalHeight;
+    delete[] m_bathymetryPtr;
+    delete[] m_totalHeightPtr;
 }
 
 void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
