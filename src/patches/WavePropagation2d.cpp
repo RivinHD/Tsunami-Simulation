@@ -30,12 +30,6 @@ tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells,
     }
     m_bathymetry = new( std::align_val_t{ 128 } ) t_real[totalCells]{ 0 };
     m_totalHeight = new( std::align_val_t{ 128 } ) t_real[totalCells]{ 0 };
-    for( unsigned short l_st = 0; l_st < 2; l_st++ )
-    {
-        std::cout << "Aligment m_h: " << m_h[l_st] << std::endl;
-        std::cout << "Aligment m_hu: " << m_hu[l_st] << std::endl;
-        std::cout << "Aligment m_hv: " << m_hv[l_st] << std::endl;
-    }
 }
 
 tsunami_lab::patches::WavePropagation2d::~WavePropagation2d()
