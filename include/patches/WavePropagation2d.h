@@ -68,6 +68,12 @@ private:
     //! Iteration that should be performed to use the cache more efficiently e.g. 32 -> 32 * sizeof(t_real) = 32 * 4 byte = 128 byte Cacheline
     static constexpr t_idx ITERATIONS_CACHE = 32;
 
+    //! The amount of cell dividable by ITERATIONS_CACHE
+    t_idx full_xCells = 1;
+
+    //! The amount of cell remain from calculation of full_xCells
+    t_idx remaining_xCells = 1;
+
     /*
     * The Sides on which the reflection appears
     * LEFT and RIGHT can be added to obtain BOTH

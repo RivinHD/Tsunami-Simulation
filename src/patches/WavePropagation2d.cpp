@@ -17,6 +17,10 @@ tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells,
     stride = i_xCells + 2;
     totalCells = ( i_xCells + 2 ) * ( i_yCells + 2 );
 
+    // calculates xCells dividable by ITERATIONS_CACHE and remaining cells
+    remaining_xCells = m_xCells % ITERATIONS_CACHE;
+    full_xCells = m_xCells - remaining_xCells;
+
     // allocate memory including a single ghost cell on each side
     for( unsigned short l_st = 0; l_st < 2; l_st++ )
     {
@@ -206,10 +210,6 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
         l_hNew[l_ce] = l_hOld[l_ce];
         l_hvNew[l_ce] = l_hvOld[l_ce];
     }
-
-    // calculates xCells dividable by ITERATIONS_CACHE and remaining cells
-    t_idx full_xCells = ( m_xCells / ITERATIONS_CACHE ) * ITERATIONS_CACHE;
-    t_idx remaining_xCells = m_xCells % ITERATIONS_CACHE;
 
     // only possible for f-wave solver
     if( hasBathymetry )
