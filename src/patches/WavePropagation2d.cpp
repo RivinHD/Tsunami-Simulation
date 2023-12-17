@@ -21,14 +21,15 @@ tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells,
     full_xCells = m_xCells - remaining_xCells;
 
     // allocate memory including a single ghost cell on each side
+    size_t alignment = ITERATIONS_CACHE * sizeof( t_real );
     for( unsigned short l_st = 0; l_st < 2; l_st++ )
     {
-        m_h[l_st] = aligned_alloc<t_real>( m_hPtr[l_st], totalCells, 128 );
-        m_hu[l_st] = aligned_alloc<t_real>( m_huPtr[l_st], totalCells, 128 );
-        m_hv[l_st] = aligned_alloc<t_real>( m_hvPtr[l_st], totalCells, 128 );
+        m_h[l_st] = aligned_alloc<t_real>( m_hPtr[l_st], totalCells, alignment );
+        m_hu[l_st] = aligned_alloc<t_real>( m_huPtr[l_st], totalCells, alignment );
+        m_hv[l_st] = aligned_alloc<t_real>( m_hvPtr[l_st], totalCells, alignment );
     }
-    m_bathymetry = aligned_alloc<t_real>( m_bathymetryPtr, totalCells, 128 );
-    m_totalHeight = aligned_alloc<t_real>( m_totalHeightPtr, totalCells, 128 );
+    m_bathymetry = aligned_alloc<t_real>( m_bathymetryPtr, totalCells, alignment );
+    m_totalHeight = aligned_alloc<t_real>( m_totalHeightPtr, totalCells, alignment );
 }
 
 tsunami_lab::patches::WavePropagation2d::~WavePropagation2d()
