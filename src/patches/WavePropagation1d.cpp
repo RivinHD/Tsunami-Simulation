@@ -92,8 +92,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
                                                      momentumRight,
                                                      bathymetryRight,
                                                      bathymetryLeft,
-                                                     l_netUpdates[0],
-                                                     l_netUpdates[1] );
+                                                     l_netUpdates );
 
             // update the cells' quantities
             l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
@@ -106,7 +105,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
     else
     {
         // uses a function pointer to choose between the solvers
-        void ( *netUpdates )( t_real, t_real, t_real, t_real, t_real*, t_real* ) = solvers::FWave::netUpdates;
+        void ( *netUpdates )( t_real, t_real, t_real, t_real, t_real[2][2] ) = solvers::FWave::netUpdates;
         if( solver == Solver::ROE )
         {
             netUpdates = solvers::Roe::netUpdates;
@@ -145,8 +144,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling )
                         heightRight,
                         momentumLeft,
                         momentumRight,
-                        l_netUpdates[0],
-                        l_netUpdates[1] );
+                        l_netUpdates );
 
             // update the cells' quantities
             l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );

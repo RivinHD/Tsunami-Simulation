@@ -71,8 +71,7 @@ void tsunami_lab::solvers::FWave::netUpdates( t_real i_hL,
                                               t_real i_hR,
                                               t_real i_huL,
                                               t_real i_huR,
-                                              t_real o_netUpdateL[2],
-                                              t_real o_netUpdateR[2] )
+                                              t_real o_netUpdate[2][2] )
 {
 
     // compute particle velocities
@@ -97,19 +96,14 @@ void tsunami_lab::solvers::FWave::netUpdates( t_real i_hL,
     t_real eigencoefficient2 = 0;
     computeEigencoefficients( eigenvalue1, eigenvalue2, deltaFlux, eigencoefficient1, eigencoefficient2 );
 
-    // 0 is Left, 1 is Right
-    t_real netUpdate[2][2]{ 0 };
-
     // compute waves / net updates
     for( unsigned short l_qt = 0; l_qt < 2; l_qt++ )
     {
-        netUpdate[eigenvalue1 >= 0][l_qt] += eigencoefficient1 * eigenvector1[l_qt];
-        netUpdate[eigenvalue2 >= 0][l_qt] += eigencoefficient2 * eigenvector2[l_qt];
+        o_netUpdate[0][l_qt] = 0;
+        o_netUpdate[1][l_qt] = 0;
+        o_netUpdate[eigenvalue1 >= 0][l_qt] += eigencoefficient1 * eigenvector1[l_qt];
+        o_netUpdate[eigenvalue2 >= 0][l_qt] += eigencoefficient2 * eigenvector2[l_qt];
     }
-
-    // sets the ouput
-    o_netUpdateL = netUpdate[0];
-    o_netUpdateR = netUpdate[1];
 }
 
 // net update with bathymetry
@@ -119,8 +113,7 @@ void tsunami_lab::solvers::FWave::netUpdates( t_real i_hL,
                                               t_real i_huR,
                                               t_real i_bL,
                                               t_real i_bR,
-                                              t_real o_netUpdateL[2],
-                                              t_real o_netUpdateR[2] )
+                                              t_real o_netUpdate[2][2] )
 {
 
     // compute particle velocities
@@ -153,18 +146,13 @@ void tsunami_lab::solvers::FWave::netUpdates( t_real i_hL,
     t_real eigencoefficient2 = 0;
     computeEigencoefficients( eigenvalue1, eigenvalue2, bathymetryDeltaFlux, eigencoefficient1, eigencoefficient2 );
 
-    // 0 is Left, 1 is Right
-    t_real netUpdate[2][2]{ 0 };
-
     // compute waves / net updates
     for( unsigned short l_qt = 0; l_qt < 2; l_qt++ )
     {
-        netUpdate[eigenvalue1 >= 0][l_qt] += eigencoefficient1 * eigenvector1[l_qt];
-        netUpdate[eigenvalue2 >= 0][l_qt] += eigencoefficient2 * eigenvector2[l_qt];
+        o_netUpdate[0][l_qt] = 0;
+        o_netUpdate[1][l_qt] = 0;
+        o_netUpdate[eigenvalue1 >= 0][l_qt] += eigencoefficient1 * eigenvector1[l_qt];
+        o_netUpdate[eigenvalue2 >= 0][l_qt] += eigencoefficient2 * eigenvector2[l_qt];
     }
-
-    // sets the ouput
-    o_netUpdateL = netUpdate[0];
-    o_netUpdateR = netUpdate[1];
 }
 

@@ -73,6 +73,7 @@ tsunami_lab::io::Stations::Stations( t_idx i_nx,
             std::ofstream l_fileStation;
             l_fileStation.open( l_path, std::ios::app );
             l_fileStation << "simulationTime,totalHeight,momentumX,momentumY" << std::endl;
+            l_fileStation.close();
 
             // map station index to cell index
             t_idx l_cellIndexX = roundf( ( m_nx / m_scaleX ) * l_x );
