@@ -68,6 +68,12 @@ private:
     //! Iteration that should be performed to use the cache more efficiently e.g. 32 -> 32 * sizeof(t_real) = 32 * 4 byte = 128 byte Cacheline
     static constexpr t_idx ITERATIONS_CACHE = 16;
 
+    // number of cells that can be utilized by a vector
+    t_idx m_xCells_vec_full = 1;
+
+    // number of cells that remain from a vector usage
+    t_idx m_xCells_vec_remaining = 1;
+
     /*
     * The Sides on which the reflection appears
     * LEFT and RIGHT can be added to obtain BOTH

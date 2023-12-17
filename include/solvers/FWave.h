@@ -125,6 +125,114 @@ public:
                             t_real i_bR,
                             t_real o_netUpdateL[2],
                             t_real o_netUpdateR[2] );
+
+    /**
+     * Computes the net-updates with bathymetry.
+     *
+
+     **/
+
+     /**
+      * Computes the net-updates with bathymetry for the next N values in the array.
+      *
+      * @tparam N must be a number between 1 and 4.
+      * @param i_hL height of the left side.
+      * @param i_hR height of the right side.
+      * @param i_huL momentum of the left side.
+      * @param i_huR momentum of the right side.
+      * @param i_bL height of bathymetry of the left side.
+      * @param i_bR height of bathymetry of the right side.
+      * @param o_netUpdateL will be set to the net-updates for the left side; 0: height, 1: momentum.
+      * @param o_netUpdateR will be set to the net-updates for the right side; 0: height, 1: momentum.
+     */
+    template <unsigned short N>
+    static void netUpdates( t_real i_hL[N],
+                            t_real i_hR[N],
+                            t_real i_huL[N],
+                            t_real i_huR[N],
+                            t_real i_bL[N],
+                            t_real i_bR[N],
+                            t_real o_netUpdateL[2 * N],
+                            t_real o_netUpdateR[2 * N] );
 };
 
 #endif //TSUNAMISIMULATION_FWAVE_H
+
+template<unsigned short N>
+inline void tsunami_lab::solvers::FWave::netUpdates( t_real i_hL[N],
+                                                     t_real i_hR[N],
+                                                     t_real i_huL[N],
+                                                     t_real i_huR[N],
+                                                     t_real i_bL[N],
+                                                     t_real i_bR[N],
+                                                     t_real o_netUpdateL[2 * N],
+                                                     t_real o_netUpdateR[2 * N] )
+{
+    for( unsigned short i = 0; i < N; i++ )
+    {
+        t_real hL = i_hL[i];
+        t_real hR = i_hR[i];
+        t_real huL = i_huL[i];
+        t_real huR = i_huR[i];
+        t_real bL = i_bL[i];
+        t_real bR = i_bR[i];
+
+        // compute particle velocities
+        t_real uL = huL / hL;
+        t_real uR = huR / hR;
+
+        // compute eigenvalues
+        t_real eigenvalue1 = 0;
+        t_real eigenvalue2 = 0;
+        computeEigenvalues( hL, hR, uL, uR, eigenvalue1, eigenvalue2 );
+
+        // create eigenvectors
+        t_real eigenvector1[2] = { 1, eigenvalue1 };
+        t_real eigenvector2[2] = { 1, eigenvalue2 };
+
+        // compute delta flux
+        t_real deltaFlux[2];
+        computeDeltaFlux( hL, hR, uL, uR, deltaFlux );
+
+        //compute bathymetry
+        t_real bathymetry[2];
+        computeBathymetryEffects( hL, hR, bL, bR, bathymetry );
+        t_real bathymetryDeltaFlux[2] = {
+            deltaFlux[0] + bathymetry[0],
+            deltaFlux[1] + bathymetry[1]
+        };
+
+        // compute eigencoefficients
+        t_real eigencoefficient1 = 0;
+        t_real eigencoefficient2 = 0;
+        computeEigencoefficients( eigenvalue1, eigenvalue2, bathymetryDeltaFlux, eigencoefficient1, eigencoefficient2 );
+
+        // compute waves / net updates
+        for( unsigned short l_qt = 2 * i; l_qt < ( 2 * i + 2 ); l_qt++ )
+        {
+            // init
+            o_netUpdateL[l_qt] = 0;
+            o_netUpdateR[l_qt] = 0;
+
+            // 1st wave
+            if( eigenvalue1 < 0 )
+            {
+                o_netUpdateL[l_qt] += eigencoefficient1 * eigenvector1[l_qt];
+            }
+            else
+            {
+                o_netUpdateR[l_qt] += eigencoefficient1 * eigenvector1[l_qt];
+            }
+
+            // 2nd wave
+            if( eigenvalue2 < 0 )
+            {
+                o_netUpdateL[l_qt] += eigencoefficient2 * eigenvector2[l_qt];
+            }
+            else
+            {
+                o_netUpdateR[l_qt] += eigencoefficient2 * eigenvector2[l_qt];
+            }
+        }
+    }
+}

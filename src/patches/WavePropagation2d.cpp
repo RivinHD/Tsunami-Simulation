@@ -15,6 +15,9 @@ tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells,
     stride = i_xCells + 2;
     totalCells = ( i_xCells + 2 ) * ( i_yCells + 2 );
 
+    m_xCells_vec_remaining = ( m_xCells + 1 ) % 4;
+    m_xCells_vec_full = m_xCells + 1 - m_xCells_vec_remaining;
+
     // allocate memory including a single ghost cell on each side
     for( unsigned short l_st = 0; l_st < 2; l_st++ )
     {
@@ -64,7 +67,72 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
         for( t_idx i = 0; i < m_yCells + 1; i++ )
         {
             // iterates along the row
-            for( t_idx j = 0; j < m_xCells + 1; j++ )
+            for( t_idx j = 0; j < m_xCells_vec_full; j += 4 )
+            {
+                // store reflection
+                t_real heightLeft[4];
+                t_real heightRight[4];
+                t_real momentumLeft[4];
+                t_real momentumRight[4];
+                t_real bathymetryLeft[4];
+                t_real bathymetryRight[4];
+                Reflection reflection[4];
+
+                // loop for vectorization
+                for( t_idx k = 0; k < 4; k++ )
+                {
+                    t_idx index = stride * i + j + k;
+
+                    // determine left and right cell-id
+                    t_idx l_ceL = index;
+                    t_idx l_ceR = index + 1;
+
+                    // compute reflection
+                    reflection[k] = calculateReflection( l_hOld,
+                                                         l_huOld,
+                                                         l_ceL,
+                                                         l_ceR,
+                                                         heightLeft[k],
+                                                         heightRight[k],
+                                                         momentumLeft[k],
+                                                         momentumRight[k],
+                                                         bathymetryLeft[k],
+                                                         bathymetryRight[k] );
+                }
+
+                // compute net-updates
+                t_real l_netUpdates[2][8];
+
+                tsunami_lab::solvers::FWave::netUpdates<4>( heightLeft,
+                                                            heightRight,
+                                                            momentumLeft,
+                                                            momentumRight,
+                                                            bathymetryLeft,
+                                                            bathymetryRight,
+                                                            l_netUpdates[0],
+                                                            l_netUpdates[1] );
+
+                // loop for vectorization
+                for( t_idx k = 0; k < 4; k++ )
+                {
+                    t_idx k2 = k * 2;
+                    t_idx index = stride * i + j + k;
+
+                    // determine left and right cell-id
+                    t_idx l_ceL = index;
+                    t_idx l_ceR = index + 1;
+
+                    // update the cells' quantities
+                    l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][k2] * ( Reflection::LEFT == reflection[k] );
+                    l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][k2 + 1] * ( Reflection::LEFT == reflection[k] );
+
+                    l_hNew[l_ceR] -= i_scaling * l_netUpdates[1][k2] * ( Reflection::RIGHT == reflection[k] );
+                    l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][k2 + 1] * ( Reflection::RIGHT == reflection[k] );
+                }
+            }
+
+            // computes the remaining cells left without vectorization loop
+            for( t_idx j = 0; j < m_xCells_vec_remaining; j++ )
             {
                 t_idx k = stride * i + j;
 
@@ -110,11 +178,11 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                                                          l_netUpdates[1] );
 
                 // update the cells' quantities
-                l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
-                l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
+                l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::LEFT == reflection );
+                l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1] * ( Reflection::LEFT == reflection );
 
-                l_hNew[l_ceR] -= i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
-                l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
+                l_hNew[l_ceR] -= i_scaling * l_netUpdates[1][0] * ( Reflection::RIGHT == reflection );
+                l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1] * ( Reflection::RIGHT == reflection );
             }
         }
     }
@@ -133,11 +201,11 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
             // iterates over along the row
             for( t_idx j = 0; j < m_xCells + 1; j++ )
             {
-                t_idx k = stride * i + j;
+                t_idx index = stride * i + j;
 
                 // determine left and right cell-id
-                t_idx l_ceL = k;
-                t_idx l_ceR = k + 1;
+                t_idx l_ceL = index;
+                t_idx l_ceR = index + 1;
 
                 // noting to compute both shore cells
                 if( l_hOld[l_ceL] == 0 && l_hOld[l_ceR] == 0 )
@@ -171,11 +239,11 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                             l_netUpdates[1] );
 
                 // update the cells' quantities
-                l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
-                l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
+                l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::LEFT == reflection );
+                l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1] * ( Reflection::LEFT == reflection );
 
-                l_hNew[l_ceR] -= i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
-                l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
+                l_hNew[l_ceR] -= i_scaling * l_netUpdates[1][0] * ( Reflection::RIGHT == reflection );
+                l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1] * ( Reflection::RIGHT == reflection );
             }
         }
     }
@@ -203,16 +271,88 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
     if( hasBathymetry )
     {
         //  iterates over the x direction
-        for( t_idx i = 1; i < m_xCells; i++ )
+        for( t_idx i = 1; i < m_xCells_vec_full; i += 4 )
         {
             // iterate over the rows i.e. y-coordinates
             for( t_idx j = 0; j < m_yCells + 1; j++ )
             {
-                // determine left and right cell-id
-                t_idx l_ceT = stride * j + i;
-                t_idx l_ceB = stride * ( j + 1 ) + i;
+                // store reflection
+                t_real heightLeft[4];
+                t_real heightRight[4];
+                t_real momentumLeft[4];
+                t_real momentumRight[4];
+                t_real bathymetryLeft[4];
+                t_real bathymetryRight[4];
+                Reflection reflection[4];
 
-                // noting to compute both shore cells
+                // loop for vectorization
+                for( t_idx k = 0; k < 4; k++ )
+                {
+                    t_idx index = stride * j + i + k;
+
+                    // determine top and bottom cell-id
+                    t_idx l_ceT = index;
+                    t_idx l_ceB = index + stride;
+
+                    // compute reflection
+                    reflection[k] = calculateReflection( l_hOld,
+                                                         l_huOld,
+                                                         l_ceT,
+                                                         l_ceB,
+                                                         heightLeft[k],
+                                                         heightRight[k],
+                                                         momentumLeft[k],
+                                                         momentumRight[k],
+                                                         bathymetryLeft[k],
+                                                         bathymetryRight[k] );
+                }
+
+                // compute net-updates
+                t_real l_netUpdates[2][8];
+
+                tsunami_lab::solvers::FWave::netUpdates<4>( heightLeft,
+                                                            heightRight,
+                                                            momentumLeft,
+                                                            momentumRight,
+                                                            bathymetryLeft,
+                                                            bathymetryRight,
+                                                            l_netUpdates[0],
+                                                            l_netUpdates[1] );
+
+                // loop for vectorization
+                for( t_idx k = 0; k < 2; k++ )
+                {
+                    t_idx k2 = k * 2;
+                    t_idx index = stride * j + i + k;
+
+                    // determine top and bottom cell-id
+                    t_idx l_ceT = index;
+                    t_idx l_ceB = index + stride;
+
+                    // update the cells' quantities
+                    l_hNew[l_ceT] -= i_scaling * l_netUpdates[0][k2] * ( Reflection::LEFT == reflection[k] );
+                    l_hvNew[l_ceT] -= i_scaling * l_netUpdates[0][k2 + 1] * ( Reflection::LEFT == reflection[k] );
+
+                    l_hNew[l_ceB] -= i_scaling * l_netUpdates[1][k2] * ( Reflection::RIGHT == reflection[k] );
+                    l_hvNew[l_ceB] -= i_scaling * l_netUpdates[1][k2 + 1] * ( Reflection::RIGHT == reflection[k] );
+                }
+            }
+        }
+
+
+        // computes the remaining cells left without vectorization loop
+        for( t_idx j = 0; j < m_xCells_vec_remaining; j++ )
+        {
+            // iterate over the rows i.e. y-coordinates
+            for( t_idx i = 0; i < m_yCells + 1; i++ )
+            {
+                t_idx k = stride * i + j;
+
+                // determine left and right cell-id
+                t_idx l_ceT = k;
+                t_idx l_ceB = k + stride;
+
+                // noting to compute top and bottom cell-id
                 if( l_hOld[l_ceT] == 0 && l_hOld[l_ceB] == 0 )
                 {
                     continue;
@@ -227,7 +367,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                 t_real bathymetryRight;
 
                 Reflection reflection = calculateReflection( l_hOld,
-                                                             l_hvOld,
+                                                             l_huOld,
                                                              l_ceT,
                                                              l_ceB,
                                                              heightLeft,
@@ -250,11 +390,11 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                                                          l_netUpdates[1] );
 
                 // update the cells' quantities
-                l_hNew[l_ceT] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
-                l_hvNew[l_ceT] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
+                l_hNew[l_ceT] -= i_scaling * l_netUpdates[0][0] * ( Reflection::LEFT == reflection );
+                l_hvNew[l_ceT] -= i_scaling * l_netUpdates[0][1] * ( Reflection::LEFT == reflection );
 
-                l_hNew[l_ceB] -= i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
-                l_hvNew[l_ceB] -= i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
+                l_hNew[l_ceB] -= i_scaling * l_netUpdates[1][0] * ( Reflection::RIGHT == reflection );
+                l_hvNew[l_ceB] -= i_scaling * l_netUpdates[1][1] * ( Reflection::RIGHT == reflection );
             }
         }
     }
@@ -309,11 +449,11 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                             l_netUpdates[1] );
 
                 // update the cells' quantities
-                l_hNew[l_ceT] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
-                l_hvNew[l_ceT] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
+                l_hNew[l_ceT] -= i_scaling * l_netUpdates[0][0] * ( Reflection::LEFT == reflection );
+                l_hvNew[l_ceT] -= i_scaling * l_netUpdates[0][1] * ( Reflection::LEFT == reflection );
 
-                l_hNew[l_ceB] -= i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
-                l_hvNew[l_ceB] -= i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
+                l_hNew[l_ceB] -= i_scaling * l_netUpdates[1][0] * ( Reflection::RIGHT == reflection );
+                l_hvNew[l_ceB] -= i_scaling * l_netUpdates[1][1] * ( Reflection::RIGHT == reflection );
             }
         }
     }
