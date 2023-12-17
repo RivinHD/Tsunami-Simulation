@@ -132,7 +132,16 @@ Building
 
     .. code-block:: bash
 
-        cmake ..
+        cmake .. -DCMAKE_BUILD_TYPE=<Type>
+
+    Supported values for ``<Type>`` are **Release** and **Debug**.
+    If only ``cmake ..`` is used the Release build is selected.
+
+    The most desired command might be:
+
+    .. code-block:: bash
+
+        cmake .. -DCMAKE_BUILD_TYPE=Release
 
     .. note::
 
@@ -144,19 +153,53 @@ Building
 
             cmake .. -G "MinGW Makefiles"
 
+        
+    .. important::
+
+        When using a multi-config Generator, i.e. Ninja Multi-Config, Visual Studio Generators, Xcode, 
+        ``-DCMAKE_BUILD_TYPE=<Type>`` is not needed, and the build type is configured on compilation.
+        
+        Therefore, this cmake build command is used:
+
+        .. code-block:: 
+
+            cmake cmake --build . --config Release --target simulation
+
+        Options for ``--config`` are **Release** and **Debug**. :raw-html:`</br>`
+        Options for ``--target`` are **simulation**, **sanitize**, **test**, **sanitize_test** and **test_middle_states**.
+
+    .. note::
+
+        With the Option ``-D`` toggle options can be activated supported only by this ``CMakeLists.txt``.
+        Available options are:
+
+        +--------------------+--------------------------------------------------------------------------------------------------------------------+
+        | Option             |  Description                                                                                                       |
+        +====================+====================================================================================================================+
+        | DISABLE_IO         | Completely disable any file IO i.e. Solutions, Stations and Checkpoints                                            |
+        +--------------------+--------------------------------------------------------------------------------------------------------------------+
+        | REPORT             | Enables the report out for the used compiler                                                                       |
+        +--------------------+--------------------------------------------------------------------------------------------------------------------+
+
+        To activate an option, the following must be written:
+        
+        .. code-block:: bash
+
+            cmake .. -D <Option>=ON
+
+        For Example:
+
+        .. code-block:: bash
+
+            cmake .. -D DISABLE_IO=ON
+
     Now our make files are being build from the ``CMakeLists.txt`` that are used to build the project.
 
 7. Now we can build the project. The most desired command might be
 
     .. code-block:: bash
 
-        cmake --build . --config Release --target simulation
-
-    Which build the project with the Optimization turned on.
-
-    Options for ``--config`` are **Release** and **Debug**
-
-    Where **Release** enable the Optimization flags and **Debug** disable the Optimization flags.
+        cmake --build . --target simulation
 
     Options for ``--target`` are **simulation**, **sanitize**, **test**, **sanitize_test** and **test_middle_states**.
 

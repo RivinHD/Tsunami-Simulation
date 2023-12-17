@@ -78,6 +78,8 @@ Required cells in y-direction: :math:`\frac{3000000}{250}=12000`
 6.2. 2011 M 9.1 Tohoku Event
 ----------------------------
 
+.. _submissions_tsunami_simulation_tohoku:
+
 1. Simulation of the tsunami event (Tohoku)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -192,7 +194,7 @@ approximate maximum of the water height, we can use our 50 minutes as the arriva
     </center>
 
 .. csv-table:: snippet of Sõma station output
-   :header: timestep, totalHeight, momentumX, momentumY
+   :header: simulationTime, totalHeight, momentumX, momentumY
 
     2042.8,-0.282932,-0.547347,-0.00366778
     2101.51,-0.247034,-0.593376,-0.00786692

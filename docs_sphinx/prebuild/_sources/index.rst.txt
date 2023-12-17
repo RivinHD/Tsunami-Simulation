@@ -18,6 +18,8 @@
    submissions/large_data_input_output.rst
    submissions/tsunami_simulation.rst
    submissions/checkpoint_coarse_output.rst
+   submissions/optimization.rst
+   submissions/individual_phase.rst
 
 .. toctree::
    :maxdepth: 4

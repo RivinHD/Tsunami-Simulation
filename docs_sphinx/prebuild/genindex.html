@@ -61,6 +61,8 @@
 <li class="toctree-l1"><a class="reference internal" href="submissions/large_data_input_output.html">5. Large Data Input and Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="submissions/tsunami_simulation.html">6. Tsunami Simulations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="submissions/checkpoint_coarse_output.html">7. Checkpointing and Coarse Output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="submissions/optimization.html">8. Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="submissions/individual_phase.html">10. Individual Phase</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -100,6 +102,8 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/tsunami_lab.html#_CPPv4I0EN11tsunami_lab13aligned_allocEP1TRP1T6size_t6size_t">tsunami_lab::aligned_alloc (C++ function)</a>
+</li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io3CsvE">tsunami_lab::io::tsunami_lab::io::Csv (C++ class)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io3Csv18next_middle_statesERNSt8ifstreamER6t_realR6t_realR6t_realR6t_realR6t_real">tsunami_lab::io::tsunami_lab::io::Csv::next_middle_states (C++ function)</a>
@@ -131,6 +135,8 @@
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_dimXIdE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_dimXId (C++ member)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf8m_dimYIdE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_dimYId (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10m_divideK2E">tsunami_lab::io::tsunami_lab::io::NetCdf::m_divideK2 (C++ member)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdf10m_filePathE">tsunami_lab::io::tsunami_lab::io::NetCdf::m_filePath (C++ member)</a>
 </li>
@@ -334,6 +340,8 @@
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16enableBathymetryEb">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::enableBathymetry (C++ function)</a>
 </li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d11full_xCellsE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::full_xCells (C++ member)</a>
+</li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d13getBathymetryEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::getBathymetry (C++ function)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d9getHeightEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::getHeight (C++ function)</a>
@@ -356,15 +364,25 @@
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d12m_bathymetryE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_bathymetry (C++ member)</a>
 </li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d15m_bathymetryPtrE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_bathymetryPtr (C++ member)</a>
+</li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d3m_hE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_h (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d6m_hPtrE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_hPtr (C++ member)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d4m_huE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_hu (C++ member)</a>
 </li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d7m_huPtrE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_huPtr (C++ member)</a>
+</li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d4m_hvE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_hv (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d7m_hvPtrE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_hvPtr (C++ member)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d6m_stepE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_step (C++ member)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d13m_totalHeightE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_totalHeight (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16m_totalHeightPtrE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_totalHeightPtr (C++ member)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d8m_xCellsE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_xCells (C++ member)</a>
 </li>
@@ -379,6 +397,8 @@
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d10Reflection4NONEE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::Reflection::NONE (C++ enumerator)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d10Reflection5RIGHTE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::Reflection::RIGHT (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16remaining_xCellsE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::remaining_xCells (C++ member)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d13setBathymetryE5t_idx5t_idx6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::setBathymetry (C++ function)</a>
 </li>
@@ -408,6 +428,8 @@
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2dD0Ev">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::~WavePropagation2d (C++ function)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation16enableBathymetryEb">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::enableBathymetry (C++ function)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation13getBathymetryEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::getBathymetry (C++ function)</a>
@@ -416,8 +438,6 @@
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation12getMomentumXEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::getMomentumX (C++ function)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation12getMomentumYEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::getMomentumY (C++ function)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation9getStrideEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::getStride (C++ function)</a>
@@ -710,7 +730,7 @@
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave24computeBathymetryEffectsE6t_real6t_real6t_real6t_realAL2E_6t_real">tsunami_lab::solvers::tsunami_lab::solvers::FWave::computeBathymetryEffects (C++ function)</a>
 </li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave16computeDeltaFluxE6t_real6t_real6t_real6t_realAL2E_6t_real">tsunami_lab::solvers::tsunami_lab::solvers::FWave::computeDeltaFlux (C++ function)</a>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave16computeDeltaFluxE6t_real6t_real6t_real6t_real6t_real6t_realAL2E_6t_real">tsunami_lab::solvers::tsunami_lab::solvers::FWave::computeDeltaFlux (C++ function)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave24computeEigencoefficientsE6t_real6t_realAL2E_6t_realR6t_realR6t_real">tsunami_lab::solvers::tsunami_lab::solvers::FWave::computeEigencoefficients (C++ function)</a>
 </li>
@@ -720,13 +740,13 @@
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave7m_gSqrtE">tsunami_lab::solvers::tsunami_lab::solvers::FWave::m_gSqrt (C++ member)</a>
 </li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave10netUpdatesE6t_real6t_real6t_real6t_real6t_real6t_realAL2E_6t_realAL2E_6t_real">tsunami_lab::solvers::tsunami_lab::solvers::FWave::netUpdates (C++ function)</a>, <a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave10netUpdatesE6t_real6t_real6t_real6t_realAL2E_6t_realAL2E_6t_real">[1]</a>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave10netUpdatesE6t_real6t_real6t_real6t_real6t_real6t_realAL2E_AL2E_6t_real">tsunami_lab::solvers::tsunami_lab::solvers::FWave::netUpdates (C++ function)</a>, <a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave10netUpdatesE6t_real6t_real6t_real6t_realAL2E_AL2E_6t_real">[1]</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers3RoeE">tsunami_lab::solvers::tsunami_lab::solvers::Roe (C++ class)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers3Roe7m_gSqrtE">tsunami_lab::solvers::tsunami_lab::solvers::Roe::m_gSqrt (C++ member)</a>
 </li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers3Roe10netUpdatesE6t_real6t_real6t_real6t_realAL2E_6t_realAL2E_6t_real">tsunami_lab::solvers::tsunami_lab::solvers::Roe::netUpdates (C++ function)</a>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers3Roe10netUpdatesE6t_real6t_real6t_real6t_realAL2E_AL2E_6t_real">tsunami_lab::solvers::tsunami_lab::solvers::Roe::netUpdates (C++ function)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers3Roe10waveSpeedsE6t_real6t_real6t_real6t_realR6t_realR6t_real">tsunami_lab::solvers::tsunami_lab::solvers::Roe::waveSpeeds (C++ function)</a>
 </li>
