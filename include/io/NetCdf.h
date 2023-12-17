@@ -49,6 +49,9 @@ private:
     //! number of cells to average several neighboring cells of the computational grid into one cell
     t_idx m_k = 1;
 
+    //! number of cells to divide after summation
+    t_idx m_divideK2 = 1;
+
     //! scale in x dimension in meters
     t_idx m_scaleX = 1;
 

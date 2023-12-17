@@ -82,7 +82,7 @@ void tsunami_lab::io::NetCdf::_read( const char* filepath,
         l_err = nc_inq_varid( ncID, name, &varID );
         if( l_err == NC_ENOTVAR ) // skip not found variables with WARNING
         {
-            std::cerr << "WARNING: Could not find a variable with name: " << name << ". Writing nothing at index" << i << std::endl;
+            std::cerr << "WARNING: Could not find a variable with name: " << name << ". Writing nothing at index " << i << std::endl;
             continue;
         }
         checkNcErr( l_err, "readVarID" );
@@ -129,22 +129,22 @@ void tsunami_lab::io::NetCdf::_read( const char* filepath,
         size_t* count = new size_t[varDimCount];
         std::fill_n( count, varDimCount, 1 );
 
-        for( int i = 0; i < varDimCount - 1; i++ )
+        for( int j = 0; j < varDimCount - 1; j++ )
         {
-            int varDim = varDims[i];
+            int varDim = varDims[j];
             if( varDim == timeID )
             {
-                start[i] = timeStep;
+                start[j] = timeStep;
                 continue;
             }
 
             size_t dimLength = 1;
             l_err = nc_inq_dimlen( ncID,
-                                   varDims[i],
+                                   varDims[j],
                                    &dimLength );
             checkNcErr( l_err, "getDimLen" );
             length *= dimLength;
-            count[i] = dimLength;
+            count[j] = dimLength;
         }
         if( varDimCount >= 1 )
         {
@@ -288,11 +288,11 @@ void tsunami_lab::io::NetCdf::_write( const t_real simulationTime,
     if( m_writeCountId >= 0 )
     {
         indexNC[0] = 0;
-        unsigned long long ullWriteCount = static_cast<unsigned long long>( writeCount );
-        l_err = nc_put_var1_ulonglong( m_ncId,
-                                       m_writeCountId,
-                                       indexNC,
-                                       &ullWriteCount );
+        int intWriteCount = static_cast<int>( writeCount );
+        l_err = nc_put_var1_int( m_ncId,
+                                 m_writeCountId,
+                                 indexNC,
+                                 &intWriteCount );
         checkNcErr( l_err, "putWriteCount" );
     }
 
@@ -340,6 +340,7 @@ tsunami_lab::io::NetCdf::NetCdf( t_idx writeStep,
     m_nx = l_nx / l_k;
     m_ny = l_ny / l_k;
     m_k = l_k;
+    m_divideK2 = 1 / ( m_k * m_k );
     m_scaleX = l_scaleX;
     m_scaleY = l_scaleY;
     m_singleCellStride = l_stride;
@@ -441,6 +442,7 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     m_nx = l_nx / l_k;
     m_ny = l_ny / l_k;
     m_k = l_k;
+    m_divideK2 = 1 / ( m_k * m_k );
     m_scaleX = l_scaleX;
     m_scaleY = l_scaleY;
     m_singleCellStride = l_stride;
@@ -470,7 +472,7 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     l_err = nc_def_dim( m_ncId,                           // ncid
                         useSpherical ? "latitude" : "Y",  // name
                         m_ny,                             // len
-                        &m_dimYId );                      // idp            
+                        &m_dimYId );                      // idp
     checkNcErr( l_err, "dimY" );
 
     int strDimID = -1;
@@ -764,6 +766,7 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                                  bool useMomenta )
     : NetCdf( filePath, l_nx, l_ny, l_k, l_scaleX, l_scaleY, l_stride, bathymetry, useSpherical, useMomenta, "", 1 )
 {
+    m_divideK2 = 1 / ( m_k * m_k );
 }
 
 tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
@@ -829,7 +832,6 @@ void tsunami_lab::io::NetCdf::averageSeveral( const t_real simulationTime,
 {
     t_idx l_size = m_nx * m_ny;
     t_idx l_index = 0;
-    t_idx l_k2 = m_k * m_k;
 
     t_real l_avgHeight = 0;
     t_real l_avgMomentumX = 0;
@@ -853,9 +855,9 @@ void tsunami_lab::io::NetCdf::averageSeveral( const t_real simulationTime,
                 }
             }
             // write combined cell to arrays
-            l_totalHeight[l_index] = l_avgHeight / l_k2;
-            l_momentumX[l_index] = l_avgMomentumX / l_k2;
-            l_momentumY[l_index] = l_avgMomentumY / l_k2;
+            l_totalHeight[l_index] = l_avgHeight * m_divideK2;
+            l_momentumX[l_index] = l_avgMomentumX * m_divideK2;
+            l_momentumY[l_index] = l_avgMomentumY * m_divideK2;
             l_index++;
             // reset average values
             l_avgHeight = 0;

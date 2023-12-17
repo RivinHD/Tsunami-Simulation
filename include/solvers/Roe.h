@@ -71,15 +71,13 @@ public:
      * @param i_hR height of the right side.
      * @param i_huL momentum of the left side.
      * @param i_huR momentum of the right side.
-     * @param o_netUpdateL will be set to the net-updates for the left side; 0: height, 1: momentum.
-     * @param o_netUpdateR will be set to the net-updates for the right side; 0: height, 1: momentum.
+     * @param o_netUpdateL will be set to the net-updates for the 0: left, 1: right side; 0: height, 1: momentum.
      **/
     static void netUpdates( t_real i_hL,
                             t_real i_hR,
                             t_real i_huL,
                             t_real i_huR,
-                            t_real o_netUpdateL[2],
-                            t_real o_netUpdateR[2] );
+                            t_real o_netUpdate[2][2] );
 };
 
 #endif

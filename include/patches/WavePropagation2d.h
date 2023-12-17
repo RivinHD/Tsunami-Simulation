@@ -24,7 +24,7 @@ class tsunami_lab::patches::WavePropagation2d : public WavePropagation
 {
 private:
     //! current step which indicates the active values in the arrays below
-    unsigned short m_step = 0;
+    bool m_step = 0;
 
     //! number of total cells including water and ghost cells
     t_idx totalCells = 1;
@@ -38,26 +38,41 @@ private:
     //! the size in x-direction of the cells
     t_idx stride = 1;
 
-    //! water heights for the current and next time step for all cells
+    //! aligned water heights for the current and next time step for all cells
     t_real* m_h[2] = { nullptr, nullptr };
 
-    //! momenta for the current and next time step for all cells
+    //! nonaligned water heights for the current and next time step for all cells
+    t_real* m_hPtr[2] = { nullptr, nullptr };
+
+    //! aligned momenta for the current and next time step for all cells
     t_real* m_hu[2] = { nullptr, nullptr };
 
-    //! momenta for the current and next time step for all cells
+    //! nonaligned momenta for the current and next time step for all cells
+    t_real* m_huPtr[2] = { nullptr, nullptr };
+
+    //! aligned momenta for the current and next time step for all cells
     t_real* m_hv[2] = { nullptr, nullptr };
+
+    //! nonaligned momenta for the current and next time step for all cells
+    t_real* m_hvPtr[2] = { nullptr, nullptr };
 
     //! the solver used for the netUpdates
     Solver solver = Solver::FWAVE;
 
-    //! bathymetry for the current an next time step for all cells
+    //! aligned bathymetry for the current an next time step for all cells
     t_real* m_bathymetry = nullptr;
+
+    //! nonaligned bathymetry for the current an next time step for all cells
+    t_real* m_bathymetryPtr = nullptr;
 
     //! check if bathymetry exists
     bool hasBathymetry = false;
 
-    //! total height of water height + bathymetry
+    //! aligned total height of water height + bathymetry
     t_real* m_totalHeight = nullptr;
+
+    //! nonaligned total height of water height + bathymetry
+    t_real* m_totalHeightPtr = nullptr;
 
     //! is true if the total needs to be updated
     bool isDirtyTotalHeight = true;
@@ -67,6 +82,12 @@ private:
 
     //! Iteration that should be performed to use the cache more efficiently e.g. 32 -> 32 * sizeof(t_real) = 32 * 4 byte = 128 byte Cacheline
     static constexpr t_idx ITERATIONS_CACHE = 16;
+
+    //! The amount of cell dividable by ITERATIONS_CACHE
+    t_idx full_xCells = 1;
+
+    //! The amount of cell remain from calculation of full_xCells
+    t_idx remaining_xCells = 1;
 
     /*
     * The Sides on which the reflection appears

@@ -3,6 +3,10 @@
  *
  * Entry-point for simulations.
  **/
+
+ // #define SKIP_ARGUMENTS
+ // #define TSUNAMI_SIMULATION_DISABLE_IO
+
 #include "../include/patches/WavePropagation1d.h"
 #include "../include/patches/WavePropagation2d.h"
 #include "../include/setups/DamBreak1d.h"
@@ -14,23 +18,22 @@
 #include "../include/setups/CircularDamBreak2d.h"
 #include "../include/setups/ArtificialTsunami2d.h"
 #include "../include/setups/TsunamiEvent2d.h"
-#include "../include/setups/CheckPoint.h"
-#include "../include/io/Csv.h"
-#include "../include/io/NetCdf.h"
 #include "../include/io/ArgSetup.h"
-#include "../include/io/Stations.h"
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
 #include <fstream>
 #include <limits>
 #include <string>
-#include <filesystem> // requieres C++17 and up
 #include <chrono>
-
- // #define SKIP_ARGUMENTS
-
+#ifndef TSUNAMI_SIMULATION_DISABLE_IO
+#include "../include/setups/CheckPoint.h"
+#include "../include/io/Csv.h"
+#include "../include/io/NetCdf.h"
+#include "../include/io/Stations.h"
+#include <filesystem> // requieres C++17 and up
 namespace fs = std::filesystem;
+#endif // !TSUNAMI_SIMULATION_DISABLE_IO
 
 const std::string SOLUTION_FOLDER = "solutions";
 
@@ -134,15 +137,16 @@ int main( int   i_argc,
 
     // setup the variables
     tsunami_lab::setups::Setup* l_setup = nullptr;
-    tsunami_lab::t_real l_scaleX = 10000;
-    tsunami_lab::t_real l_scaleY = 10000;
+    tsunami_lab::t_real l_scaleX = 2700000;
+    tsunami_lab::t_real l_scaleY = 1500000;
     bool useCheckpoint = false;
     tsunami_lab::t_real l_simTime = 0;
-    tsunami_lab::t_idx l_writeCount = 0;
     tsunami_lab::t_real checkpointHMax = 0;
 
     std::cout << "Checking for Checkpoints: ";
 
+#ifndef TSUNAMI_SIMULATION_DISABLE_IO
+    tsunami_lab::t_idx l_writeCount = 0;
     std::string checkpointPath = SOLUTION_FOLDER + "/checkpoint.nc";
     std::vector<char*> parsedArgv;
     if( fs::exists( checkpointPath ) )
@@ -161,6 +165,10 @@ int main( int   i_argc,
     {
         std::cout << green << "No checkpoint found!" << reset << std::endl;
     }
+#endif // !TSUNAMI_SIMULATION_DISABLE_IO
+#ifdef TSUNAMI_SIMULATION_DISABLE_IO
+    std::cout << green << "File IO is disabled!" << reset << std::endl;
+#endif // TSUNAMI_SIMULATION_DISABLE_IO
 
     // compact the inputs to one string for the checkpoint
     std::string commandLine = i_argv[0];
@@ -384,15 +392,15 @@ int main( int   i_argc,
     }
 #endif // !SKIP_ARGUMENTS
 #ifdef SKIP_ARGUMENTS
-    l_nx = 3500;
-    l_ny = 3000;
+    l_nx = 2700;
+    l_ny = 1500;
     reflectLeft = false;
     reflectRight = false;
     reflectBottom = false;
     reflectTop = false;
     useBathymetry = true;
     use2D = true;
-    useAxisSpherical = true;
+    useAxisSpherical = false;
     l_endTime = 13000;
     std::cout << i_argv[i_argc - 1] << std::endl;
 #endif // SKIP_ARGUMENTS
@@ -480,13 +488,6 @@ int main( int   i_argc,
         l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx );
     }
 
-    // initialize stations
-    tsunami_lab::io::Stations l_stations = tsunami_lab::io::Stations( l_nx,
-                                                                      l_ny,
-                                                                      l_waveProp->getStride(),
-                                                                      l_scaleX,
-                                                                      l_scaleY );
-
     // set the solver to use
     l_waveProp->setSolver( solver );
 
@@ -552,6 +553,9 @@ int main( int   i_argc,
         l_hMax = checkpointHMax;
     }
 
+    // free no longer needed setup
+    delete l_setup;
+
     // derive maximum wave speed in setup; the momentum is ignored
     tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
     std::cout << "Max speed " << l_speedMax << std::endl;
@@ -562,6 +566,14 @@ int main( int   i_argc,
     // derive scaling for a time step
     tsunami_lab::t_real l_scaling = l_dt / l_dxy;
 
+#ifndef TSUNAMI_SIMULATION_DISABLE_IO
+
+    // initialize stations
+    tsunami_lab::io::Stations l_stations = tsunami_lab::io::Stations( l_nx,
+                                                                      l_ny,
+                                                                      l_waveProp->getStride(),
+                                                                      l_scaleX,
+                                                                      l_scaleY );
     if( !useCheckpoint )
     {
         // create simulation folder inside solution folder
@@ -609,15 +621,19 @@ int main( int   i_argc,
 
     // var to check if it's time to write stations
     tsunami_lab::t_real l_timeCount = 0.0;
+    auto checkpointTime = std::chrono::high_resolution_clock::now();
+#endif // !TSUNAMI_SIMULATION_DISABLE_IO
 
     const auto startTime = std::chrono::high_resolution_clock::now();
-    auto checkpointTime = std::chrono::high_resolution_clock::now();
 
     std::cout << "entering time loop" << std::endl;
+    tsunami_lab::t_idx l_cellUpdates = 0;
 
     // iterate over time
     while( l_simTime < l_endTime )
     {
+#ifndef TSUNAMI_SIMULATION_DISABLE_IO
+
         if( l_timeCount / l_stations.getOutputFrequency() >= 1.0 )
         {
             l_stations.write( l_simTime,
@@ -688,19 +704,22 @@ int main( int   i_argc,
             fs::rename( tempCheckpointPath, checkpointPath );
             checkpointTime = std::chrono::high_resolution_clock::now();
         }
+#endif // !TSUNAMI_SIMULATION_DISABLE_IO
 
         l_waveProp->setGhostOutflow();
         l_waveProp->timeStep( l_scaling );
 
         l_simTime += l_dt;
+        l_cellUpdates++;
     }
     std::cout << "finished time loop" << std::endl;
 
     // free memory
     std::cout << "freeing memory" << std::endl;
-    delete l_setup;
     delete l_waveProp;
+#ifndef TSUNAMI_SIMULATION_DISABLE_IO
     delete netCdfWriter;
+#endif // !TSUNAMI_SIMULATION_DISABLE_IO
 
     // Print the calculation time
     const auto duration = std::chrono::high_resolution_clock::now() - startTime;
@@ -708,6 +727,8 @@ int main( int   i_argc,
     const auto minutes = std::chrono::duration_cast<std::chrono::minutes>( duration - hours );
     const auto seconds = std::chrono::duration_cast<std::chrono::seconds>( duration - hours - minutes );
     std::cout << "The Simulation took " << green << hours.count() << " h " << minutes.count() << " min " << seconds.count() << " sec" << reset << " to finish." << std::endl;
+    std::cout << "Time per iteration: " << green << std::chrono::duration_cast<std::chrono::milliseconds>( duration ).count() / l_cellUpdates << reset << " milliseconds." << std::endl;
+    std::cout << "Time per cell:      " << green << std::chrono::duration_cast<std::chrono::nanoseconds>( duration ).count() / l_cellUpdates / l_nx / l_ny << reset << " nanoseconds." << std::endl;
 
     std::cout << "finished, exiting" << std::endl;
     return EXIT_SUCCESS;

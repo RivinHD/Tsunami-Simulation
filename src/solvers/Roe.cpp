@@ -62,8 +62,7 @@ void tsunami_lab::solvers::Roe::netUpdates( t_real i_hL,
                                             t_real i_hR,
                                             t_real i_huL,
                                             t_real i_huR,
-                                            t_real o_netUpdateL[2],
-                                            t_real o_netUpdateR[2] )
+                                            t_real o_netUpdate[2][2] )
 {
     // compute particle velocities
     t_real l_uL = i_huL / i_hL;
@@ -107,27 +106,27 @@ void tsunami_lab::solvers::Roe::netUpdates( t_real i_hL,
     for( unsigned short l_qt = 0; l_qt < 2; l_qt++ )
     {
         // init
-        o_netUpdateL[l_qt] = 0;
-        o_netUpdateR[l_qt] = 0;
+        o_netUpdate[0][l_qt] = 0;
+        o_netUpdate[1][l_qt] = 0;
 
         // 1st wave
         if( l_sL < 0 )
         {
-            o_netUpdateL[l_qt] = l_waveL[l_qt];
+            o_netUpdate[0][l_qt] = l_waveL[l_qt];
         }
         else
         {
-            o_netUpdateR[l_qt] = l_waveL[l_qt];
+            o_netUpdate[1][l_qt] = l_waveL[l_qt];
         }
 
         // 2nd wave
         if( l_sR > 0 )
         {
-            o_netUpdateR[l_qt] = l_waveR[l_qt];
+            o_netUpdate[1][l_qt] = l_waveR[l_qt];
         }
         else
         {
-            o_netUpdateL[l_qt] = l_waveR[l_qt];
+            o_netUpdate[0][l_qt] = l_waveR[l_qt];
         }
     }
 }
