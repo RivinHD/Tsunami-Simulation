@@ -602,11 +602,11 @@ aren't computing much in this method besides three calls of ``std::sqrt`` which 
 
 We have made some minor adjustments by moving all calculations that can be calculated during initialization in the constructors.
 We have also adjusted some mathematical expressions to avoid the calculation of duplicates and divisions.
-With these optimizations we have achieved an improvement of about 1%.
+With these optimizations we have achieved an improvement of about 0.5%.
 
 The biggest improvement results from an additional loop for to ensure that we use all values loaded into the cache.
 We have also ensured the alignment of the array using the ``aligned_alloc`` function.
-This optimization leads to an improvement of 15 %.
+This optimization leads to an improvement of 14.5 %.
 
 .. code-block:: cpp
 
@@ -635,7 +635,7 @@ This optimization leads to an improvement of 15 %.
         return result;
     }
 
-Will the improvement mentioned above we get a total improvement of 16%.
+Will the improvement mentioned above we get a total improvement of 15%.
 
 
 Contribution

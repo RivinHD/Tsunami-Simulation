@@ -553,6 +553,9 @@ int main( int   i_argc,
         l_hMax = checkpointHMax;
     }
 
+    // free no longer needed setup
+    delete l_setup;
+
     // derive maximum wave speed in setup; the momentum is ignored
     tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
     std::cout << "Max speed " << l_speedMax << std::endl;
@@ -713,7 +716,6 @@ int main( int   i_argc,
 
     // free memory
     std::cout << "freeing memory" << std::endl;
-    delete l_setup;
     delete l_waveProp;
 #ifndef TSUNAMI_SIMULATION_DISABLE_IO
     delete netCdfWriter;

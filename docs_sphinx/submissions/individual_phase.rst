@@ -17,7 +17,11 @@
     - support multi-resolution grids
 
     - data structures and algorithms that efficiently handle varying resolutions in different parts
-      of the simulation domain.
+      of the simulation domain
+
+- Grid masking
+    - Optimization of the calculation by applying a mask to the changing part of the simulation 
+      i.e. cells that have no influence on the wave simulation are skipped, e.g. bathymetry, standing water
 
 - Real-time Visualization
     - real-time visualization using C++ graphics libraries like (OpenGL, SFML or SDL)
@@ -27,7 +31,8 @@
     - simulation algorithms to take advantage of parallel processing on compatible NVIDIA GPUs,
       enhancing the performance
 
-
+- Friction
+    - Adding a friction adjustment to the implementation to obtain more accurate simulation results
 
 Contribution
 ------------
