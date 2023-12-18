@@ -510,6 +510,7 @@ int main( int   i_argc,
         cellSize = 1;
     }
     // set up solver
+#pragma omp parallel for collapse(2) reduction(max: l_hMax)
     for( tsunami_lab::t_idx l_cy = 0; l_cy < l_ny; l_cy++ )
     {
         tsunami_lab::t_real l_y = l_cy * cellSize;
