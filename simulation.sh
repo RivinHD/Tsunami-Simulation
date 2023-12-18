@@ -11,4 +11,4 @@
 
 echo "Start executing 'simulation 2700 1500 -B -w 60 -t 13000 -c 5':"
 
-./simulation 2700 1500 -B -w 60 -t 13000 -c 5
+OMP_NUM_THREADS=1 OMP_PLACES={0}:1:1 ./simulation 2700 1500 -B -w 60 -t 13000 -c 5

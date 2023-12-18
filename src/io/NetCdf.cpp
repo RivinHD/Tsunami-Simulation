@@ -841,6 +841,7 @@ void tsunami_lab::io::NetCdf::averageSeveral( const t_real simulationTime,
     t_real* l_momentumX = new t_real[l_size]{ 0 };
     t_real* l_momentumY = new t_real[l_size]{ 0 };
 
+#pragma omp parallel for collapse(2) shared(l_totalHeight, totalHeight, l_momentumX, momentumX, l_momentumY, momentumY) private(l_avgHeight, l_avgMomentumX, l_avgMomentumY)
     for( t_idx y = 0; y < m_singleCellny; y += m_k )
     {
         for( t_idx x = 0; x < m_singleCellnx; x += m_k )

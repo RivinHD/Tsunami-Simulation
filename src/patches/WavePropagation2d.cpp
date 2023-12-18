@@ -57,7 +57,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
     t_real* l_huNew = m_hu[m_step];
 
     // init new cell quantities
-#pragma omp parallel for
+#pragma omp parallel for shared(l_hNew, l_hOld, l_huNew, l_huOld)
     for( t_idx l_ce = 0; l_ce < totalCells; l_ce++ )
     {
         l_hNew[l_ce] = l_hOld[l_ce];
@@ -68,7 +68,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
     if( hasBathymetry )
     {
         // iterates through the row
-#pragma omp parallel for collapse(2) private(i, j, k, heightLeft, heightRight, momentumLeft, momentumRight, bathymetryLeft, bathymetryRight, reflection, l_netUpdates, l_ceL, l_ceR)
+#pragma omp parallel for collapse(2) shared(l_hNew, l_hOld, l_huNew, l_huOld)
         for( t_idx i = 0; i < m_yCells + 1; i++ )
         {
             // iterates along the row
@@ -117,14 +117,21 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                                                          l_netUpdates );
 
                 // update the cells' quantities
-#pragma omp critical
-                {
-                l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
-                l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
+                t_real tmp0 = i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
+                t_real tmp1 =  i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
 
-                l_hNew[l_ceR] -= i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
-                l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
-                }
+                t_real tmp2 = i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
+                t_real tmp3 = i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
+
+#pragma omp atomic update
+                l_hNew[l_ceL] -= tmp0;
+#pragma omp atomic update
+                l_huNew[l_ceL] -= tmp1;
+
+#pragma omp atomic update
+                l_hNew[l_ceR] -= tmp2;
+#pragma omp atomic update
+                l_huNew[l_ceR] -= tmp3;
             }
         }
     }
@@ -138,7 +145,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
         }
 
         // iterates through the row
-#pragma omp parallel for collapse(2) private(i, j, k, heightLeft, heightRight, momentumLeft, momentumRight, bathymetryLeft, bathymetryRight, reflection, l_netUpdates, l_ceL, l_ceR)
+#pragma omp parallel for collapse(2) shared(l_hNew, l_hOld, l_huNew, l_huOld)
         for( t_idx i = 0; i < m_yCells + 1; i++ )
         {
             // iterates over along the row
@@ -182,14 +189,21 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
 
                 // update the cells' quantities
                 // TODO computation before critical section (everywhere else also)
-#pragma omp critical
-                {
-                l_hNew[l_ceL] -= i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
-                l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
+                t_real tmp0 = i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
+                t_real tmp1 =  i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
 
-                l_hNew[l_ceR] -= i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
-                l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
-                }
+                t_real tmp2 = i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
+                t_real tmp3 = i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
+
+#pragma omp atomic update
+                l_hNew[l_ceL] -= tmp0;
+#pragma omp atomic update
+                l_huNew[l_ceL] -= tmp1;
+
+#pragma omp atomic update
+                l_hNew[l_ceR] -= tmp2;
+#pragma omp atomic update
+                l_huNew[l_ceR] -= tmp3;
             }
         }
     }
@@ -217,7 +231,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
     if( hasBathymetry )
     {
         //  iterates over the x direction
-#pragma omp parallel for collapse(2) private(i, j, k, heightLeft, heightRight, momentumLeft, momentumRight, bathymetryLeft, bathymetryRight, reflection, l_netUpdates, l_ceT, l_ceB)
+#pragma omp parallel for collapse(2) shared(l_hNew, l_hOld, l_huNew, l_huOld)
         for( t_idx i = 1; i < full_xCells; i += ITERATIONS_CACHE )
         {
             // iterate over the rows i.e. y-coordinates
@@ -265,20 +279,27 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                                                             l_netUpdates);
 
                     // update the cells' quantities
-#pragma omp critical
-                    {
-                        l_hNew[l_ceT] -= i_scaling * l_netUpdates[0][0] * (Reflection::RIGHT != reflection);
-                        l_hvNew[l_ceT] -= i_scaling * l_netUpdates[0][1] * (Reflection::RIGHT != reflection);
+                    t_real tmp0 = i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
+                    t_real tmp1 =  i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
 
-                        l_hNew[l_ceB] -= i_scaling * l_netUpdates[1][0] * (Reflection::LEFT != reflection);
-                        l_hvNew[l_ceB] -= i_scaling * l_netUpdates[1][1] * (Reflection::LEFT != reflection);
-                    }
+                    t_real tmp2 = i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
+                    t_real tmp3 = i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
+
+#pragma omp atomic update
+                    l_hNew[l_ceT] -= tmp0;
+#pragma omp atomic update
+                    l_huNew[l_ceT] -= tmp1;
+
+#pragma omp atomic update
+                    l_hNew[l_ceB] -= tmp2;
+#pragma omp atomic update
+                    l_huNew[l_ceB] -= tmp3;
                 }
             }
         }
 
         // iterate over the rows i.e. y-coordinates
-#pragma omp parallel for private(j, k, heightLeft, heightRight, momentumLeft, momentumRight, bathymetryLeft, bathymetryRight, reflection, l_netUpdates, l_ceT, l_ceB)
+#pragma omp parallel for shared(l_hNew, l_hOld, l_huNew, l_huOld)
         for( t_idx j = 0; j < m_yCells + 1; j++ )
         {
             // remaining iterations for more efficient cache usage
@@ -325,14 +346,21 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                                                          l_netUpdates );
 
                 // update the cells' quantities
-#pragma omp critical
-                {
-                    l_hNew[l_ceT] -= i_scaling * l_netUpdates[0][0] * (Reflection::RIGHT != reflection);
-                    l_hvNew[l_ceT] -= i_scaling * l_netUpdates[0][1] * (Reflection::RIGHT != reflection);
+                t_real tmp0 = i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
+                t_real tmp1 =  i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
 
-                    l_hNew[l_ceB] -= i_scaling * l_netUpdates[1][0] * (Reflection::LEFT != reflection);
-                    l_hvNew[l_ceB] -= i_scaling * l_netUpdates[1][1] * (Reflection::LEFT != reflection);
-                }
+                t_real tmp2 = i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
+                t_real tmp3 = i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
+
+#pragma omp atomic update
+                l_hNew[l_ceT] -= tmp0;
+#pragma omp atomic update
+                l_huNew[l_ceT] -= tmp1;
+
+#pragma omp atomic update
+                l_hNew[l_ceB] -= tmp2;
+#pragma omp atomic update
+                l_huNew[l_ceB] -= tmp3;
             }
         }
     }
@@ -346,7 +374,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
         }
 
         //  iterates over the x direction
-#pragma omp parallel for collapse(2) private(i, j, k, heightLeft, heightRight, momentumLeft, momentumRight, bathymetryLeft, bathymetryRight, reflection, l_netUpdates, l_ceT, l_ceB)
+#pragma omp parallel for collapse(2) shared(l_hNew, l_hOld, l_huNew, l_huOld)
         for( t_idx i = 1; i < full_xCells; i += ITERATIONS_CACHE )
         {
             // iterate over the rows i.e. y-coordinates
@@ -390,20 +418,27 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                                 l_netUpdates );
 
                     // update the cells' quantities
-#pragma omp critical
-                    {
-                        l_hNew[l_ceT] -= i_scaling * l_netUpdates[0][0] * (Reflection::RIGHT != reflection);
-                        l_hvNew[l_ceT] -= i_scaling * l_netUpdates[0][1] * (Reflection::RIGHT != reflection);
+                    t_real tmp0 = i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
+                    t_real tmp1 =  i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
 
-                        l_hNew[l_ceB] -= i_scaling * l_netUpdates[1][0] * (Reflection::LEFT != reflection);
-                        l_hvNew[l_ceB] -= i_scaling * l_netUpdates[1][1] * (Reflection::LEFT != reflection);
-                    }
+                    t_real tmp2 = i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
+                    t_real tmp3 = i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
+
+#pragma omp atomic update
+                    l_hNew[l_ceT] -= tmp0;
+#pragma omp atomic update
+                    l_huNew[l_ceT] -= tmp1;
+
+#pragma omp atomic update
+                    l_hNew[l_ceB] -= tmp2;
+#pragma omp atomic update
+                    l_huNew[l_ceB] -= tmp3;
                 }
             }
         }
 
         // iterate over the rows i.e. y-coordinates
-#pragma omp parallel for private(j, k, heightLeft, heightRight, momentumLeft, momentumRight, bathymetryLeft, bathymetryRight, reflection, l_netUpdates, l_ceT, l_ceB)
+#pragma omp parallel for shared(l_hNew, l_hOld, l_huNew, l_huOld)
         for( t_idx j = 1; j < m_yCells + 1; j++ )
         {
             // remaining iterations for more efficient cache usage
@@ -444,14 +479,21 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
                             l_netUpdates );
 
                 // update the cells' quantities
-#pragma omp critical
-                {
-                    l_hNew[l_ceT] -= i_scaling * l_netUpdates[0][0] * (Reflection::RIGHT != reflection);
-                    l_hvNew[l_ceT] -= i_scaling * l_netUpdates[0][1] * (Reflection::RIGHT != reflection);
+                t_real tmp0 = i_scaling * l_netUpdates[0][0] * ( Reflection::RIGHT != reflection );
+                t_real tmp1 =  i_scaling * l_netUpdates[0][1] * ( Reflection::RIGHT != reflection );
 
-                    l_hNew[l_ceB] -= i_scaling * l_netUpdates[1][0] * (Reflection::LEFT != reflection);
-                    l_hvNew[l_ceB] -= i_scaling * l_netUpdates[1][1] * (Reflection::LEFT != reflection);
-                }
+                t_real tmp2 = i_scaling * l_netUpdates[1][0] * ( Reflection::LEFT != reflection );
+                t_real tmp3 = i_scaling * l_netUpdates[1][1] * ( Reflection::LEFT != reflection );
+
+#pragma omp atomic update
+                l_hNew[l_ceT] -= tmp0;
+#pragma omp atomic update
+                l_huNew[l_ceT] -= tmp1;
+
+#pragma omp atomic update
+                l_hNew[l_ceB] -= tmp2;
+#pragma omp atomic update
+                l_huNew[l_ceB] -= tmp3;
             }
         }
     }
@@ -463,7 +505,7 @@ void tsunami_lab::patches::WavePropagation2d::setGhostOutflow()
     t_real* l_hu = m_hu[m_step];
     t_real* l_hv = m_hv[m_step];
 
-#pragma omp parallel for private(i, y)
+#pragma omp parallel for shared(l_h, l_hu, l_hv, m_bathymetry, hasReflection)
     for( t_idx i = 1; i < m_yCells + 1; i++ )
     {
         t_idx y = stride * i;
@@ -481,7 +523,7 @@ void tsunami_lab::patches::WavePropagation2d::setGhostOutflow()
         m_bathymetry[y + m_xCells + 1] = m_bathymetry[y + m_xCells];
     }
 
-#pragma omp parallel for private(i, y)
+#pragma omp parallel for shared(l_h, l_hu, l_hv, m_bathymetry, hasReflection)
     for( size_t i = 0; i < stride; i++ )
     {
         // set top complete row of ghost cells

@@ -99,6 +99,7 @@ void tsunami_lab::io::Stations::write( t_real time,
                                        const t_real* momentumX,
                                        const t_real* momentumY ) const
 {
+#pragma omp parallel for shared(i_totalHeight, momentumX, momentumY)
     for( const Station& station : m_stations )
     {
 
