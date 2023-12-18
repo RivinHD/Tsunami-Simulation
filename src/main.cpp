@@ -673,7 +673,7 @@ int main( int   i_argc,
             }
             else
             {
-                if(k > 1)
+                if(l_averageCellNumber > 1)
                 {
                     netCdfWriter->averageSeveral( l_simTime,
                                                   l_waveProp->getTotalHeight(),
