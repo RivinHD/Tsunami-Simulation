@@ -21,7 +21,7 @@
 
 - Grid masking
     - Optimization of the calculation by applying a mask to the changing part of the simulation 
-      i.e. cells that have no influence on the wave simulation are skipped, e.g. bathymetry, standing water
+      i.e. cells that have no influence on the wave simulation are skipped, e.g. dry cells, standing water
 
 - Real-time Visualization
     - real-time visualization using C++ graphics libraries like (OpenGL, SFML or SDL)
