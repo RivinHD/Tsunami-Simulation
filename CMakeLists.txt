@@ -169,38 +169,51 @@ endforeach()
 # Set up such that your IDE organizes the files correctly
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
+# Include embedded Libararies
+
+# Catch2
 add_subdirectory(submodules/Catch2)
 
+# nlohmann_json
+option(USE_EXTERNAL_JSON "Use an external JSON library" OFF)
 if(NOT DISABLE_IO)
-    # Linking the json libary
-    add_subdirectory(submodules/json)
-    link_libraries(nlohmann_json::nlohmann_json)
+    if(USE_EXTERNAL_JSON)
+        find_package(nlohmann_json REQUIRED)
+    else()
+        set(JSON_BuildTests OFF CACHE INTERNAL "")
+        add_subdirectory(submodules/json)
+    endif()
 endif(NOT DISABLE_IO)
 
 
 # Setup Testing
 add_executable(test ${SOURCE_FILES})
 target_link_libraries(test PRIVATE Catch2::Catch2)
+target_link_libraries(test PRIVATE nlohmann_json::nlohmann_json)
 target_sources(test PRIVATE ${TEST_FILES})
 target_compile_definitions(test PRIVATE TSUNAMI_SIMULATION_TEST)
 
 # Setup Testing + Sanitizer
 add_executable(sanitize_test ${SOURCE_FILES})
 target_link_libraries(sanitize_test PRIVATE Catch2::Catch2)
+target_link_libraries(sanitize_test PRIVATE nlohmann_json::nlohmann_json)
 target_sources(sanitize_test PRIVATE ${TEST_FILES})
 target_compile_definitions(sanitize_test PRIVATE TSUNAMI_SIMULATION_TEST)
 
 # Setup Testing for middle states
 add_executable(test_middle_states ${SOURCE_FILES})
 target_sources(test_middle_states PRIVATE ${MIDDLE_STATE_FILE})
+target_link_libraries(test_middle_states PRIVATE nlohmann_json::nlohmann_json)
 
 # Setup Simulation
 add_executable(simulation ${SOURCE_FILES})
 target_sources(simulation PRIVATE ${MAIN_FILE})
+target_link_libraries(simulation PRIVATE nlohmann_json::nlohmann_json)
 
 # Setup Simulation + Sanitizer
 add_executable(sanitize ${SOURCE_FILES})
 target_sources(sanitize PRIVATE ${MAIN_FILE})
+target_link_libraries(simulation PRIVATE nlohmann_json::nlohmann_json)
 
 # Init sanitizer
 set_target_properties(sanitize
