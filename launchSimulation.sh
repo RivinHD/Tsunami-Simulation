@@ -12,7 +12,7 @@
 set -e
 
 BuildDirectory="/home/$USER/tsunami/Tsunami-Simulation/build"
-ScriptDirectory="/home/$USER/tsunami"
+ScriptDirectory="/home/$USER/tsunami/Tsunami-Simulation"
 
 # Loading cmake to launch this task
 echo "Loading needed modules"
