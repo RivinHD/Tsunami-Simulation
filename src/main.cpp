@@ -6,6 +6,7 @@
 
  // #define SKIP_ARGUMENTS
  // #define TSUNAMI_SIMULATION_DISABLE_IO
+// #define TSUNAMI_SIMULATION_DISABLE_STATION_IO
 
 #include "../include/patches/WavePropagation1d.h"
 #include "../include/patches/WavePropagation2d.h"
@@ -27,10 +28,12 @@
 #include <string>
 #include <chrono>
 #ifndef TSUNAMI_SIMULATION_DISABLE_IO
+#ifndef TSUNAMI_SIMULATION_DISABLE_STATION_IO
+#include "../include/io/Stations.h"
+#endif // !TSUNAMI_SIMULATION_DISABLE_STATION_IO
 #include "../include/setups/CheckPoint.h"
 #include "../include/io/Csv.h"
 #include "../include/io/NetCdf.h"
-#include "../include/io/Stations.h"
 #include <filesystem> // requieres C++17 and up
 namespace fs = std::filesystem;
 #endif // !TSUNAMI_SIMULATION_DISABLE_IO
@@ -567,6 +570,7 @@ int main( int   i_argc,
     tsunami_lab::t_real l_scaling = l_dt / l_dxy;
 
 #ifndef TSUNAMI_SIMULATION_DISABLE_IO
+#ifndef TSUNAMI_SIMULATION_DISABLE_STATION_IO
 
     // initialize stations
     tsunami_lab::io::Stations l_stations = tsunami_lab::io::Stations( l_nx,
@@ -574,6 +578,12 @@ int main( int   i_argc,
                                                                       l_waveProp->getStride(),
                                                                       l_scaleX,
                                                                       l_scaleY );
+
+    // var to check if it's time to write stations
+    tsunami_lab::t_real l_timeCount = 0.0;
+
+#endif // !TSUNAMI_SIMULATION_DISABLE_STATION_IO
+
     if( !useCheckpoint )
     {
         // create simulation folder inside solution folder
@@ -618,10 +628,9 @@ int main( int   i_argc,
                                                         true );
         }
     }
-
-    // var to check if it's time to write stations
-    tsunami_lab::t_real l_timeCount = 0.0;
+    // var to determine when to write a checkpoint
     auto checkpointTime = std::chrono::high_resolution_clock::now();
+
 #endif // !TSUNAMI_SIMULATION_DISABLE_IO
 
     const auto startTime = std::chrono::high_resolution_clock::now();
@@ -633,6 +642,7 @@ int main( int   i_argc,
     while( l_simTime < l_endTime )
     {
 #ifndef TSUNAMI_SIMULATION_DISABLE_IO
+#ifndef TSUNAMI_SIMULATION_DISABLE_STATION_IO
 
         if( l_timeCount / l_stations.getOutputFrequency() >= 1.0 )
         {
@@ -643,6 +653,8 @@ int main( int   i_argc,
             l_timeCount -= l_stations.getOutputFrequency();
         }
         l_timeCount += l_dt;
+
+#endif // !TSUNAMI_SIMULATION_DISABLE_STATION_IO
 
         if( l_simTime >= ( l_writeTime * l_writeCount ) )
         {

@@ -4,10 +4,12 @@ project(TsunamiSimulation VERSION 0.1.0 LANGUAGES C CXX)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 
 get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+
 if(IS_MULTI_CONFIG)
     message(NOTICE "Using multi-config generator. Compile with: cmake --build . --config [Debug|Release] --target <target>")
 else()
     message(NOTICE "Using single-config generator. Generate with: cmake .. -DCMAKE_BUILD_TYPE=[Debug|Release]")
+
     if(NOT CMAKE_BUILD_TYPE)
         set(CMAKE_BUILD_TYPE "Release")
         message(WARNING "No Build type is set. Using Release!")
@@ -22,19 +24,29 @@ link_libraries(NetCDF::NetCDF)
 
 # Options
 option(ENABLE_TESTMODE "Adds the Test defintion to any build")
+
 if(ENABLE_TESTMODE)
     add_compile_definitions(TSUNAMI_SIMULATION_TEST)
     message(STATUS "Starting in Test Mode")
 endif()
 
 option(DISABLE_IO "Disable the io of the simulation")
+
 if(DISABLE_IO)
     add_compile_definitions(TSUNAMI_SIMULATION_DISABLE_IO)
     message(STATUS "Disabling IO")
 endif()
 
+option(DISABLE_STATIONS "Disable the io of the stations but keep the simulation io")
+
+if(DISABLE_STATIONS)
+    add_compile_definitions(TSUNAMI_SIMULATION_DISABLE_STATION_IO)
+    message(STATUS "Disabling Station IO")
+endif()
+
 option(REPORT "Generate a report if enabled")
 message("Compiler: ${CMAKE_CXX_COMPILER_ID}")
+
 if(REPORT)
     if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
         if(WIN32)
@@ -42,8 +54,9 @@ if(REPORT)
         else()
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -qopt-report=5")
         endif()
+
         message(STATUS "Activeted Report")
-    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopt-info-optimized=opt_gnu.optrpt")
         message(STATUS "Activeted Report")
     endif()
@@ -51,7 +64,9 @@ endif()
 
 # Setup compile Flags
 if(MSVC)
-    message(FATAL_ERROR "This project cannot be compiled with MSVC due to https://developercommunity.visualstudio.com/t/using-c17-new-stdalign-val-tn-syntax-results-in-er/528320")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /W3 /WL /EHsc")
+    set(CMAKE_CXX_FLAGS_RELEASE "/O2" CACHE STRING "" FORCE)
+    set(CMAKE_CXX_FLAGS_DEBUG "/Od" CACHE STRING "" FORCE)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -pthread")
     set(CMAKE_CXX_FLAGS_RELEASE "-O2" CACHE STRING "" FORCE)
@@ -61,6 +76,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS_RELEASE "-O2" CACHE STRING "" FORCE)
     set(CMAKE_CXX_FLAGS_DEBUG "-g -O0" CACHE STRING "" FORCE)
 endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 set(CMAKE_VERBOSE_MAKEFILE on)
@@ -87,10 +103,18 @@ set(SRC_FILES
     io/NetCdf
     io/Csv
 )
-set(SRC_FILES_IO
-    setups/CheckPoint
-    io/Stations
-)
+
+if(NOT DISABLE_IO)
+    set(SRC_FILES_IO
+        setups/CheckPoint
+        io/Stations
+    )
+elseif(NOT DISABLE_STATIONS)
+    set(SRC_FILES_IO
+        setups/CheckPoint
+    )
+endif()
+
 set(SRC_FILES_NO_TEST
 
 )
@@ -129,6 +153,7 @@ foreach(file ${SRC_FILES})
         ${PROJECT_SOURCE_DIR}/${file}.test.cpp
     )
 endforeach()
+
 if(NOT DISABLE_IO)
     foreach(file ${SRC_FILES_IO})
         list(APPEND SOURCE_FILES
@@ -140,12 +165,14 @@ if(NOT DISABLE_IO)
         )
     endforeach()
 endif(NOT DISABLE_IO)
+
 foreach(file ${SRC_FILES_NO_TEST})
     list(APPEND SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/${file}.cpp
         ${PROJECT_INCLUDE_DIR}/${file}.h
     )
 endforeach()
+
 foreach(file ${SRC_FILES_HEADER_ONLY})
     list(APPEND SOURCE_FILES
         ${PROJECT_INCLUDE_DIR}/${file}.h
@@ -154,6 +181,7 @@ foreach(file ${SRC_FILES_HEADER_ONLY})
         ${PROJECT_INCLUDE_DIR}/${file}.test.h
     )
 endforeach()
+
 foreach(file ${SRC_FILES_HEADER_ONLY_NO_TEST})
     list(APPEND SOURCE_FILES
         ${PROJECT_INCLUDE_DIR}/${file}.h
@@ -165,26 +193,14 @@ foreach(file ${RESOURCE_FILES})
     configure_file(${PROJECT_RESOURCE_DIR}/${file} ${PROJECT_RESOURCE_DIR}/${file} COPYONLY)
 endforeach()
 
-
 # Set up such that your IDE organizes the files correctly
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
 # Include embedded Libararies
-
 # Catch2
 add_subdirectory(submodules/Catch2)
-
 # nlohmann_json
-option(USE_EXTERNAL_JSON "Use an external JSON library" OFF)
-if(NOT DISABLE_IO)
-    if(USE_EXTERNAL_JSON)
-        find_package(nlohmann_json REQUIRED)
-    else()
-        set(JSON_BuildTests OFF CACHE INTERNAL "")
-        add_subdirectory(submodules/json)
-    endif()
-endif(NOT DISABLE_IO)
-
+add_subdirectory(submodules/json)
 
 # Setup Testing
 add_executable(test ${SOURCE_FILES})
@@ -216,24 +232,36 @@ target_sources(sanitize PRIVATE ${MAIN_FILE})
 target_link_libraries(simulation PRIVATE nlohmann_json::nlohmann_json)
 
 # Init sanitizer
-set_target_properties(sanitize
-    PROPERTIES
-    COMPILE_FLAGS "-g -fsanitize=float-divide-by-zero -fsanitize=bounds -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer"
-    LINK_FLAGS "-g -fsanitize=address -fsanitize=undefined"
-)
-set_target_properties(sanitize_test
-    PROPERTIES
-    COMPILE_FLAGS "-g -fsanitize=float-divide-by-zero -fsanitize=bounds -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer"
-    LINK_FLAGS "-g -fsanitize=address -fsanitize=undefined"
-)
+if(MSVC)
+    # MSVC only has address sanitizer
+    set_target_properties(sanitize
+        PROPERTIES
+        COMPILE_FLAGS "/fsanitize=address /Zi"
+    )
+    set_target_properties(sanitize_test
+        PROPERTIES
+        COMPILE_FLAGS "/fsanitize=address /Zi"
+    )
+else()
+    set_target_properties(sanitize
+        PROPERTIES
+        COMPILE_FLAGS "-g -fsanitize=float-divide-by-zero -fsanitize=bounds -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer"
+        LINK_FLAGS "-g -fsanitize=address -fsanitize=undefined"
+    )
+    set_target_properties(sanitize_test
+        PROPERTIES
+        COMPILE_FLAGS "-g -fsanitize=float-divide-by-zero -fsanitize=bounds -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer"
+        LINK_FLAGS "-g -fsanitize=address -fsanitize=undefined"
+    )
+endif()
 
 if(CMAKE_COMPILER_IS_GNUCC AND WIN32)
     message(AUTHOR_WARNING "MingW (aka g++ on Windows) has no sanitizers :/")
 endif()
+
 if(MSVC)
     message(AUTHOR_WARNING "Test with Catch2 does not work because of linking error :(")
 endif()
-
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
