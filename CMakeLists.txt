@@ -200,6 +200,9 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 # Catch2
 add_subdirectory(submodules/Catch2)
 # nlohmann_json
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+set(JSON_Install OFF CACHE INTERNAL "")
+set(JSON_MultipleHeaders OFF CACHE INTERNAL "")
 add_subdirectory(submodules/json)
 
 # Setup Testing
