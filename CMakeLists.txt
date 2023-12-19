@@ -188,42 +188,38 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
 # Include embedded Libararies
 # Catch2
-add_subdirectory(submodules/Catch2 SYSTEM)
+add_subdirectory(submodules/Catch2)
 # nlohmann_json
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 set(JSON_Install OFF CACHE INTERNAL "")
 set(JSON_MultipleHeaders OFF CACHE INTERNAL "")
 set(JSON_SystemInclude ON CACHE INTERNAL "")
-add_subdirectory(submodules/json SYSTEM)
+add_subdirectory(submodules/json)
+link_libraries(nlohmann_json::nlohmann_json)
 
 # Setup Testing
 add_executable(test ${SOURCE_FILES})
 target_link_libraries(test PRIVATE Catch2::Catch2)
-target_link_libraries(test PRIVATE nlohmann_json::nlohmann_json)
 target_sources(test PRIVATE ${TEST_FILES})
 target_compile_definitions(test PRIVATE TSUNAMI_SIMULATION_TEST)
 
 # Setup Testing + Sanitizer
 add_executable(sanitize_test ${SOURCE_FILES})
 target_link_libraries(sanitize_test PRIVATE Catch2::Catch2)
-target_link_libraries(sanitize_test PRIVATE nlohmann_json::nlohmann_json)
 target_sources(sanitize_test PRIVATE ${TEST_FILES})
 target_compile_definitions(sanitize_test PRIVATE TSUNAMI_SIMULATION_TEST)
 
 # Setup Testing for middle states
 add_executable(test_middle_states ${SOURCE_FILES})
 target_sources(test_middle_states PRIVATE ${MIDDLE_STATE_FILE})
-target_link_libraries(test_middle_states PRIVATE nlohmann_json::nlohmann_json)
 
 # Setup Simulation
 add_executable(simulation ${SOURCE_FILES})
 target_sources(simulation PRIVATE ${MAIN_FILE})
-target_link_libraries(simulation PRIVATE nlohmann_json::nlohmann_json)
 
 # Setup Simulation + Sanitizer
 add_executable(sanitize ${SOURCE_FILES})
 target_sources(sanitize PRIVATE ${MAIN_FILE})
-target_link_libraries(simulation PRIVATE nlohmann_json::nlohmann_json)
 
 # Init sanitizer
 if(MSVC)
