@@ -188,12 +188,13 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
 # Include embedded Libararies
 # Catch2
-add_subdirectory(submodules/Catch2)
+add_subdirectory(submodules/Catch2 SYSTEM)
 # nlohmann_json
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 set(JSON_Install OFF CACHE INTERNAL "")
 set(JSON_MultipleHeaders OFF CACHE INTERNAL "")
-add_subdirectory(submodules/json)
+set(JSON_SystemInclude ON CHACHE INTERNAL "")
+add_subdirectory(submodules/json SYSTEM)
 
 # Setup Testing
 add_executable(test ${SOURCE_FILES})
