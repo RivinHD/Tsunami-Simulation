@@ -27,6 +27,7 @@ option(ENABLE_TESTMODE "Adds the Test defintion to any build")
 
 if(ENABLE_TESTMODE)
     add_compile_definitions(TSUNAMI_SIMULATION_TEST)
+    add_compile_definitions(TSUNAMI_SIMULATION_DISABLE_IO)
     message(STATUS "Starting in Test Mode")
 endif()
 
@@ -108,7 +109,7 @@ if(NOT DISABLE_STATIONS)
     set(SRC_FILES_IO
         setups/CheckPoint
     )
-ellseif(NOT DISABLE_IO)
+elseif(NOT DISABLE_IO)
     set(SRC_FILES_IO
         setups/CheckPoint
         io/Stations

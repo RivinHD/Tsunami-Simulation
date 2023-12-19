@@ -28,15 +28,15 @@
 #include <string>
 #include <chrono>
 #ifndef TSUNAMI_SIMULATION_DISABLE_IO
-#ifndef TSUNAMI_SIMULATION_DISABLE_STATION_IO
-#include "../include/io/Stations.h"
-#endif // !TSUNAMI_SIMULATION_DISABLE_STATION_IO
 #include "../include/setups/CheckPoint.h"
 #include "../include/io/Csv.h"
 #include "../include/io/NetCdf.h"
 #include <filesystem> // requieres C++17 and up
 namespace fs = std::filesystem;
 #endif // !TSUNAMI_SIMULATION_DISABLE_IO
+#ifndef TSUNAMI_SIMULATION_DISABLE_STATION_IO
+#include "../include/io/Stations.h"
+#endif // !TSUNAMI_SIMULATION_DISABLE_STATION_IO
 
 const std::string SOLUTION_FOLDER = "solutions";
 
@@ -569,7 +569,6 @@ int main( int   i_argc,
     // derive scaling for a time step
     tsunami_lab::t_real l_scaling = l_dt / l_dxy;
 
-#ifndef TSUNAMI_SIMULATION_DISABLE_IO
 #ifndef TSUNAMI_SIMULATION_DISABLE_STATION_IO
 
     // initialize stations
@@ -583,6 +582,7 @@ int main( int   i_argc,
     tsunami_lab::t_real l_timeCount = 0.0;
 
 #endif // !TSUNAMI_SIMULATION_DISABLE_STATION_IO
+#ifndef TSUNAMI_SIMULATION_DISABLE_IO
 
     if( !useCheckpoint )
     {
@@ -641,7 +641,6 @@ int main( int   i_argc,
     // iterate over time
     while( l_simTime < l_endTime )
     {
-#ifndef TSUNAMI_SIMULATION_DISABLE_IO
 #ifndef TSUNAMI_SIMULATION_DISABLE_STATION_IO
 
         if( l_timeCount / l_stations.getOutputFrequency() >= 1.0 )
@@ -655,6 +654,7 @@ int main( int   i_argc,
         l_timeCount += l_dt;
 
 #endif // !TSUNAMI_SIMULATION_DISABLE_STATION_IO
+#ifndef TSUNAMI_SIMULATION_DISABLE_IO
 
         if( l_simTime >= ( l_writeTime * l_writeCount ) )
         {
