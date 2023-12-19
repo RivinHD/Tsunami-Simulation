@@ -105,14 +105,15 @@ set(SRC_FILES
     io/Csv
 )
 
-if(NOT DISABLE_STATIONS)
-    set(SRC_FILES_IO
+
+if(NOT DISABLE_IO)
+    set(SRC_FILES ${SRC_FILES}
         setups/CheckPoint
     )
-elseif(NOT DISABLE_IO)
-    set(SRC_FILES_IO
+endif()
+if(NOT DISABLE_STATIONS)
+    set(SRC_FILES ${SRC_FILES}
         setups/CheckPoint
-        io/Stations
     )
 endif()
 
@@ -154,18 +155,6 @@ foreach(file ${SRC_FILES})
         ${PROJECT_SOURCE_DIR}/${file}.test.cpp
     )
 endforeach()
-
-if(NOT DISABLE_IO)
-    foreach(file ${SRC_FILES_IO})
-        list(APPEND SOURCE_FILES
-            ${PROJECT_SOURCE_DIR}/${file}.cpp
-            ${PROJECT_INCLUDE_DIR}/${file}.h
-        )
-        list(APPEND TEST_FILES
-            ${PROJECT_SOURCE_DIR}/${file}.test.cpp
-        )
-    endforeach()
-endif(NOT DISABLE_IO)
 
 foreach(file ${SRC_FILES_NO_TEST})
     list(APPEND SOURCE_FILES
