@@ -193,7 +193,7 @@ add_subdirectory(submodules/Catch2 SYSTEM)
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 set(JSON_Install OFF CACHE INTERNAL "")
 set(JSON_MultipleHeaders OFF CACHE INTERNAL "")
-set(JSON_SystemInclude ON CHACHE INTERNAL "")
+set(JSON_SystemInclude ON CACHE INTERNAL "")
 add_subdirectory(submodules/json SYSTEM)
 
 # Setup Testing
