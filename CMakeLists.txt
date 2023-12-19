@@ -104,14 +104,14 @@ set(SRC_FILES
     io/Csv
 )
 
-if(NOT DISABLE_IO)
+if(NOT DISABLE_STATIONS)
+    set(SRC_FILES_IO
+        setups/CheckPoint
+    )
+ellseif(NOT DISABLE_IO)
     set(SRC_FILES_IO
         setups/CheckPoint
         io/Stations
-    )
-elseif(NOT DISABLE_STATIONS)
-    set(SRC_FILES_IO
-        setups/CheckPoint
     )
 endif()
 
