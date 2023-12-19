@@ -113,7 +113,7 @@ if(NOT DISABLE_IO)
 endif()
 if(NOT DISABLE_STATIONS)
     set(SRC_FILES ${SRC_FILES}
-        io/Station
+        io/Stations
     )
 endif()
 
