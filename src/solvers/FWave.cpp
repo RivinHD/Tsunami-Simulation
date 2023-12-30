@@ -63,7 +63,7 @@ void tsunami_lab::solvers::FWave::computeBathymetryEffects( t_real i_hL, t_real 
                                                             t_real o_bathymetryEffect[2] )
 {
     o_bathymetryEffect[0] = 0;
-    o_bathymetryEffect[1] = -m_g * ( i_bR - i_bL ) * t_real( 0.5 ) * ( i_hL + i_hR );
+    o_bathymetryEffect[1] = -m_g * ( i_bL - i_bR ) * t_real( 0.5 ) * ( i_hL + i_hR );
 }
 
 // net update without bathymetry
