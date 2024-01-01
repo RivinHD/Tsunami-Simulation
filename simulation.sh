@@ -9,6 +9,6 @@
 #SBATCH --cpus-per-task=72
 #SBATCH --mem=128G
 
-echo "Start executing 'simulation 2700 1500 -B -w 60 -t 13000 -c 5':"
+echo "Start executing 'OMP_NUM_THREADS=36 OMP_PLACES={0}:36:1 ./simulation 2700 1500 -B -w 60 -t 13000 -c 5':"
 
-OMP_NUM_THREADS=1 OMP_PLACES={0}:1:1 ./simulation 2700 1500 -B -w 60 -t 13000 -c 5
+OMP_NUM_THREADS=36 OMP_PLACES={0}:36:1 ./simulation 2700 1500 -B -w 60 -t 13000 -c 5

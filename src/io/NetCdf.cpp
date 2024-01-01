@@ -830,24 +830,31 @@ void tsunami_lab::io::NetCdf::averageSeveral( const t_real simulationTime,
                                               const t_real* momentumX,
                                               const t_real* momentumY )
 {
+    if( m_k == 1 )
+    {
+        _write( simulationTime, totalHeight, momentumX, momentumY, m_singleCellnx, m_singleCellny, m_singleCellStride, 0 );
+        return;
+    }
+
     t_idx l_size = m_nx * m_ny;
     t_idx l_index = 0;
-
-    t_real l_avgHeight = 0;
-    t_real l_avgMomentumX = 0;
-    t_real l_avgMomentumY = 0;
 
     t_real* l_totalHeight = new t_real[l_size]{ 0 };
     t_real* l_momentumX = new t_real[l_size]{ 0 };
     t_real* l_momentumY = new t_real[l_size]{ 0 };
 
-#pragma omp parallel for collapse(2) shared(l_totalHeight, totalHeight, l_momentumX, momentumX, l_momentumY, momentumY) private(l_avgHeight, l_avgMomentumX, l_avgMomentumY)
+    //#pragma omp parallel for
     for( t_idx y = 0; y < m_singleCellny; y += m_k )
     {
         for( t_idx x = 0; x < m_singleCellnx; x += m_k )
         {
+            t_real l_avgHeight = 0;
+            t_real l_avgMomentumX = 0;
+            t_real l_avgMomentumY = 0;
+
             for( t_idx i_y = y; i_y < y + m_k; i_y++ )
             {
+                //#pragma omp simd
                 for( t_idx i_x = x; i_x < x + m_k; i_x++ )
                 {
                     l_avgHeight += totalHeight[( i_y * m_singleCellStride ) + i_x];
@@ -860,10 +867,6 @@ void tsunami_lab::io::NetCdf::averageSeveral( const t_real simulationTime,
             l_momentumX[l_index] = l_avgMomentumX * m_divideK2;
             l_momentumY[l_index] = l_avgMomentumY * m_divideK2;
             l_index++;
-            // reset average values
-            l_avgHeight = 0;
-            l_avgMomentumX = 0;
-            l_avgMomentumY = 0;
         }
     }
 
