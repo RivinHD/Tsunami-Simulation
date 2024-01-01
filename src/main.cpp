@@ -77,7 +77,7 @@ void printHelp()
         << green << "-c" << cyan << " <minutes>" << reset << "] ["
         << green << "-f" << cyan << " <csv|netCDF>" << reset << "] ["
         << green << "-r " << cyan << "<left|right|top|bottom|x|y|all>" << reset << "] ["
-        << green << "-k" << cyan << "<NUMBER>" << reset << "] ["
+        << green << "-k" << cyan << " <NUMBER>" << reset << "] ["
         << green << "-s " << cyan << "<fwave|roe>" << reset << "] ["
         << green << "-t" << cyan << " <seconds>" << reset << "] ["
         << green << "-w" << cyan << " <seconds>" << reset << "]"
