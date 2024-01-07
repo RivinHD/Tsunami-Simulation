@@ -469,9 +469,9 @@ int main( int   i_argc,
     if( l_setup == nullptr )
     {
         const char* variables[3]{ "x", "y", "z" };
-        l_setup = new tsunami_lab::setups::TsunamiEvent2d( "resources/gebco20/tohoku_gebco20_usgs_250m_bath.nc",
+        l_setup = new tsunami_lab::setups::TsunamiEvent2d( "resources/artificialtsunami_bathymetry_1000.nc",
                                                            variables,
-                                                           "resources/gebco20/tohoku_gebco20_usgs_250m_displ.nc",
+                                                           "resources/artificialtsunami_displ_1000.nc",
                                                            variables,
                                                            l_scaleX,
                                                            l_scaleY );
