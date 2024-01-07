@@ -9,9 +9,288 @@
 1. Parallelization using OpenMP
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. warning::
+.. note::
 
-    Add two example code fragments of parallelization
+    We are using the following OpenMP directives:
+
+    - ``#pragma omp parallel for`` : "The **omp parallel** directive explicitly instructs the compiler to parallelize the chosen block of code"[1]_.
+
+    - ``#pragma omp parallel for reduction( reduction-identifier:list )`` : "Performs a **reduction** on each data variable in list using the specified reduction-identifier"[1]_.
+
+    - ``#pragma omp declare simd`` : "The **omp declare simd** directive is applied to a function to create one or more versions for being called in a SIMD loop"[2]_.
+
+    - ``#pragma omp simd`` : "The **omp simd** directive is applied to a loop to indicate that multiple iterations of the loop can be executed concurrently by using SIMD instructions"[3]_.
+
+In the ``main.cpp`` file we are using a reduction to determine the value of ``l_hMax``.and
+
+.. code-block:: cpp
+    :emphasize-lines: 4, 16
+
+    /// File: main.cpp
+    [ ... ]
+    // set up solver
+    #pragma omp parallel for reduction(max: l_hMax)
+    for( tsunami_lab::t_idx l_cy = 0; l_cy < l_ny; l_cy++ )
+    {
+        tsunami_lab::t_real l_y = l_cy * cellSize;
+
+        for( tsunami_lab::t_idx l_cx = 0; l_cx < l_nx; l_cx++ )
+        {
+            tsunami_lab::t_real l_x = l_cx * cellSize;
+
+            // get initial values of the setup
+            tsunami_lab::t_real l_h = l_setup->getHeight( l_x,
+                                                          l_y );
+            l_hMax = std::max( l_h, l_hMax );
+        [ ... ]
+        }
+    }
+
+In ``NetCdf.cpp`` we parallelized the ``averageSeveral`` function to increase the performance when using coarse output.
+
+.. code-block:: cpp
+    :emphasize-lines: 5, 9
+
+    /// File: NetCdf.cpp
+    void tsunami_lab::io::NetCdf::averageSeveral( [ ... ] )
+    {
+        [ ... ]
+    #pragma omp parallel for
+        for( t_idx y = 0; y < m_ny; y++ )
+        {
+            t_idx singleY = y * m_k;
+    #pragma omp simd
+            for( t_idx x = 0; x < m_nx; x++ )
+            {
+                [ ... ]
+            }
+        }
+
+We used the **omp declare simd directive** for our functions in the ``FWave.cpp`` to create one or more versions when
+being called in a SIMD loop. These methods are called in ``WavePropagation2d.cpp``.
+
+.. code-block:: cpp
+    :emphasize-lines: 2, 8, 14, 20, 27, 40
+
+    /// File: FWave.cpp
+    #pragma omp declare simd
+    void tsunami_lab::solvers::FWave::computeEigenvalues( [ ... ] )
+    {
+        [ ... ]
+    }
+
+    #pragma omp declare simd
+    void tsunami_lab::solvers::FWave::computeDeltaFlux( [ ... ] )
+    {
+        [ ... ]
+    }
+
+    #pragma omp declare simd
+    void tsunami_lab::solvers::FWave::computeEigencoefficients( [ ... ] )
+    {
+        [ ... ]
+    }
+
+    #pragma omp declare simd
+    void tsunami_lab::solvers::FWave::computeBathymetryEffects( [ ... ] )
+    {
+        [ ... ]
+    }
+
+    // net update without bathymetry
+    #pragma omp declare simd
+    void tsunami_lab::solvers::FWave::netUpdates( [ ... ] )
+    {
+        [ ... ]
+        computeEigenvalues( i_hL, i_hR, l_uL, l_uR, eigenvalue1, eigenvalue2 );
+        [ ... ]
+        computeDeltaFlux( i_hL, i_hR, l_uL, l_uR, i_huL, i_huR, deltaFlux );
+        [ ... ]
+        computeEigencoefficients( eigenvalue1, eigenvalue2, deltaFlux, eigencoefficient1, eigencoefficient2 );
+        [ ... ]
+    }
+
+    // net update with bathymetry
+    #pragma omp declare simd
+    void tsunami_lab::solvers::FWave::netUpdates( [ ... ] )
+    {
+        [ ... ]
+        computeEigenvalues( i_hL, i_hR, l_uL, l_uR, eigenvalue1, eigenvalue2 );
+        [ ... ]
+        computeDeltaFlux( i_hL, i_hR, l_uL, l_uR, i_huL, i_huR, deltaFlux );
+        [ ... ]
+        computeBathymetryEffects( i_hL, i_hR, i_bL, i_bR, bathymetry );
+        [ ... ]
+        computeEigencoefficients( eigenvalue1, eigenvalue2, bathymetryDeltaFlux, eigencoefficient1, eigencoefficient2 );
+        [ ... ]
+    }
+
+However, most of the parallelization takes place in ``WavePropagation2d.cpp``.
+
+.. code-block:: cpp
+    :emphasize-lines: 3, 9, 13, 24, 28, 37, 47, 54, 66, 77, 84, 96, 108, 114, 121, 127, 137, 140, 157
+
+    /// File: WavePropagation2d.cpp
+        // init new cell quantities
+    #pragma omp parallel for
+        for( t_idx l_ce = 0; l_ce < totalCells; l_ce++ )
+        {
+            [ ... ]
+        }
+        [ ... ]
+    #pragma omp parallel for
+            for( t_idx i = 0; i < m_yCells + 1; i++ )
+            {
+                // iterates along the row
+    #pragma omp simd
+                for( t_idx j = 0; j < m_xCells + 1; j++ )
+                {
+                    [ ... ]
+                }
+            }
+        }
+        else
+        {
+            [ ... ]
+            // iterates through the row
+    #pragma omp parallel for
+            for( t_idx i = 0; i < m_yCells + 1; i++ )
+            {
+                // iterates over along the row
+    #pragma omp simd
+                for( t_idx j = 0; j < m_xCells + 1; j++ )
+                {
+                    [ ... ]
+                }
+            }
+        }
+        [ ... ]
+        // copy the calculated cell quantities
+    #pragma omp parallel for
+        for( t_idx l_ce = 0; l_ce < totalCells; l_ce++ )
+        {
+            [ ... ]
+        }
+
+        // only possible for f-wave solver
+        if( hasBathymetry )
+        {
+            //  iterates over the x direction
+    #pragma omp parallel for
+            for( t_idx i = 1; i < full_xCells; i += ITERATIONS_CACHE )
+            {
+                // iterate over the rows i.e. y-coordinates
+                for( t_idx j = 0; j < m_yCells + 1; j++ )
+                {
+                    // iterations for more efficient cache usage
+    #pragma omp simd
+                    for( t_idx k = 0; k < ITERATIONS_CACHE; k++ )
+                    {
+                        [ ... ]
+                    }
+                }
+            }
+
+            // iterate over the rows i.e. y-coordinates
+            for( t_idx j = 0; j < m_yCells + 1; j++ )
+            {
+                // remaining iterations for more efficient cache usage
+    #pragma omp simd
+                for( t_idx k = 0; k < remaining_xCells; k++ )
+                {
+                    [ ... ]
+                }
+            }
+        }
+        else
+        {
+            [ ... ]
+            //  iterates over the x direction
+    #pragma omp parallel for
+            for( t_idx i = 1; i < full_xCells; i += ITERATIONS_CACHE )
+            {
+                // iterate over the rows i.e. y-coordinates
+                for( t_idx j = 1; j < m_yCells + 1; j++ )
+                {
+                    // iterations for more efficient cache usage
+    #pragma omp simd
+                    for( t_idx k = 0; k < ITERATIONS_CACHE; k++ )
+                    {
+                        [ ... ]
+                    }
+                }
+            }
+
+            // iterate over the rows i.e. y-coordinates
+            for( t_idx j = 1; j < m_yCells + 1; j++ )
+            {
+                // remaining iterations for more efficient cache usage
+    #pragma omp simd
+                for( t_idx k = 0; k < remaining_xCells; k++ )
+                {
+                    [ ... ]
+                }
+            }
+        }
+    }
+
+    void tsunami_lab::patches::WavePropagation2d::setGhostOutflow()
+    {
+        [ ... ]
+    #pragma omp parallel for
+        for( t_idx i = 1; i < m_yCells + 1; i++ )
+        {
+            [ ... ]
+        }
+
+    #pragma omp parallel for
+        for( size_t i = 0; i < stride; i++ )
+        {
+            [ ... ]
+        }
+    }
+
+    #pragma omp declare simd
+    tsunami_lab::patches::WavePropagation2d::Reflection tsunami_lab::patches::WavePropagation2d::calculateReflection( [ ... ] )
+    {
+        [ ... ]
+    }
+
+    #pragma omp declare simd
+    tsunami_lab::patches::WavePropagation2d::Reflection tsunami_lab::patches::WavePropagation2d::calculateReflection( [ ... ] )
+    {
+        [ ... ]
+    }
+
+    const tsunami_lab::t_real* tsunami_lab::patches::WavePropagation2d::getTotalHeight()
+    {
+        if( isDirtyTotalHeight )
+        {
+    #pragma omp parallel for
+            for( t_idx i = 1; i < m_yCells + 1; i++ )
+            {
+    #pragma omp simd
+                for( t_idx j = 1; j < m_xCells + 1; j++ )
+                {
+                    [ ... ]
+                }
+            }
+        }
+        [ ... ]
+    }
+
+    void tsunami_lab::patches::WavePropagation2d::updateWaterHeight()
+    {
+        if( !hasBathymetry )
+        {
+            return;
+        }
+
+    #pragma omp parallel for
+        for( t_idx i = 1; i < m_yCells + 1; i++ )
+        {
+            [ ... ]
+        }
 
 2. Comparison serial and parallelized solver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -134,3 +413,14 @@ time goes up the less cores and threads are used. The reason for a faster run ti
 first one is not easy to clarify. Indeed their is a maximum of parallelization which goes down with more and more communication
 between the threads. Also the cores can handle more load when not using their second thread if there is to much data to
 swap between them.
+
+Contribution
+------------
+
+All team members contributed equally to the tasks.
+
+.. [1] From https://www.ibm.com/docs/en/xl-c-and-cpp-linux/16.1.1?topic=parallelization-pragma-omp-parallel (07.01.2024)
+
+.. [2] From https://www.ibm.com/docs/it/xl-c-and-cpp-linux/16.1.0?topic=parallelization-pragma-omp-declare-simd (07.01.2024)
+
+.. [3] From https://www.ibm.com/docs/en/xl-c-and-cpp-linux/16.1.0?topic=pdop-pragma-omp-simd (07.01.2024)
