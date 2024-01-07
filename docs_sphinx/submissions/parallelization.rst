@@ -343,8 +343,9 @@ However, most of the parallelization takes place in ``WavePropagation2d.cpp``.
     Time per cell:      6 nanoseconds.
     finished, exiting
 
-You can see that we have a run time of around 1 h 28 min without parallelization and a run time of just 3 min 39 sec with
-parallelization. This results in a speedup of :math:`S_{72} = \frac{5308 \text{ sec}}{219 \text{ sec}} \approx 24.237`.
+You can see that we have a run time of around 1 h 28 min **without parallelization and disabled file io** and a run time
+of just 3 min 39 sec **with parallelization and enabled file io**. This results in a speedup of
+:math:`S_{72} = \frac{5308 \text{ sec}}{219 \text{ sec}} \approx 24.237`.
 
 
 3. Parallelization of the outer vs. the inner loops
