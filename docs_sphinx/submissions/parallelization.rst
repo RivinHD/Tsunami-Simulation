@@ -344,15 +344,13 @@ However, most of the parallelization takes place in ``WavePropagation2d.cpp``.
     finished, exiting
 
 You can see that we have a run time of around 1 h 28 min without parallelization and a run time of just 3 min 39 sec with
-parallelization. That's 24 times faster in comparison to the serial solver.
-
-This results in a speedup of :math:`S_{72} = \frac{(1 \cdot 24 + 28) \cdot 60 + 28}{3 \cdot 60 + 39} = \frac{3148}{219} \approx 14.375`.
+parallelization. This results in a speedup of :math:`S_{72} = \frac{5308 \text{ sec}}{219 \text{ sec}} \approx 24.237`.
 
 
 3. Parallelization of the outer vs. the inner loops
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The **outer loop** can be easily parallelized, as there are no dependencies between the individual cells. 
+The **outer loop** can be easily parallelized, as there are no dependencies between the individual cells.
 An X sweep is parallelized in the Y direction and a Y sweep in the X direction, so the direction of parallelism remains independent of each other.
 It is also more advantageous for the X sweep as the data locality is utilized.
 
