@@ -21,7 +21,7 @@
 
     - ``#pragma omp simd`` : "The **omp simd** directive is applied to a loop to indicate that multiple iterations of the loop can be executed concurrently by using SIMD instructions"[3]_.
 
-In the ``main.cpp`` file we are using a reduction to determine the value of ``l_hMax``.and
+In the ``main.cpp`` file we are using a reduction to determine the value of ``l_hMax``.
 
 .. code-block:: cpp
     :emphasize-lines: 4, 16
@@ -346,12 +346,22 @@ However, most of the parallelization takes place in ``WavePropagation2d.cpp``.
 You can see that we have a run time of around 1 h 28 min without parallelization and a run time of just 3 min 39 sec with
 parallelization. That's 24 times faster in comparison to the serial solver.
 
+This results in a seedup of :math:`S_{72} = \frac{(1 \cdot 24 + 28) \cdot 60 + 28}{3 \cdot 60 + 39} = \frac{3148}{219} \approx 14.375`.
+
+
 3. Parallelization of the outer vs. the inner loops
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. warning::
+The **outer loop** can be easily parallelized, as there are no dependencies between the individual cells. 
+An X sweep is parallelized in the Y direction and a Y sweep in the X direction, so the direction of parallelism remains independent of each other.
+It is also more advantageous for the X sweep as the data locality is utilized.
 
-    Did we test this?
+When the **inner loop** is parallelized, there are dependencies when updating the cells, as the current and the next iteration access the same cell.
+For this, critical sections [4]_ must be introduced, which significantly slows down the calculation, as processes have to wait.
+
+In **conclusion**, the parallelization of the outer loop is better, as no dependencies arise, data locality is utilized and deadlocks are completely excluded.
+The parallelization of the outer loop is also sufficient as there are significantly more cells in x and y direction than processors.
+The parallelization of the two loops would reintroduce the cell dependency which slows down the computation.
 
 4. Different scheduling and pinning strategies
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -361,7 +371,7 @@ parallelization. That's 24 times faster in comparison to the serial solver.
 .. code-block:: bash
     :emphasize-lines: 3-5
 
-    start executing 'MP_NUM_THREADS=72 ./simulation 2700 1500 -B -w 60 -t 13000 -c 5':
+    Start executing 'MP_NUM_THREADS=72 ./simulation 2700 1500 -B -w 60 -t 13000 -c 5':
     finished writing to 'solutions/simulation/solution.nc'. Use ncdump to view its contents.
     The Simulation took 0 h 3 min 39 sec to finish.
     Time per iteration: 24 milliseconds.
@@ -404,15 +414,16 @@ parallelization. That's 24 times faster in comparison to the serial solver.
     Time per cell:      6 nanoseconds.
     finished, exiting
 
-.. warning::
-
-    Just a first approach
-
-You can see that the second strategy is the best one in respect to the run time. It makes also sense that the simulation
-time goes up the less cores and threads are used. The reason for a faster run time of the second run in comparison to the
-first one is not easy to clarify. Indeed their is a maximum of parallelization which goes down with more and more communication
-between the threads. Also the cores can handle more load when not using their second thread if there is to much data to
-swap between them.
+You can see that the second strategy is the best in terms of runtime. It also makes sense that the simulation
+simulation time increases the fewer cores and threads are used.
+The reason for the faster runtime of the second run compared to the
+first run is not easy to clarify.
+It could be that when using both threads, switching between them causes an overhead, and since the simulation requires much more computing power than loading data, the time deteriorates.
+It is very unlikely but possible that when using both threads, one thread overwrites the cached data of the other thread.
+Communication only takes place when writing to the file system.
+This could explain why the third pass is faster than the first, where one more socket is used.
+Therefore, some communication must take place via NUMA during the first run when writing to a file.
+In the fourth configuration, half of the cores are used, which reduces the parallel performance and increases the runtime.
 
 Contribution
 ------------
@@ -424,3 +435,5 @@ All team members contributed equally to the tasks.
 .. [2] From https://www.ibm.com/docs/it/xl-c-and-cpp-linux/16.1.0?topic=parallelization-pragma-omp-declare-simd (07.01.2024)
 
 .. [3] From https://www.ibm.com/docs/en/xl-c-and-cpp-linux/16.1.0?topic=pdop-pragma-omp-simd (07.01.2024)
+
+.. [4] From https://www.ibm.com/docs/en/xl-c-and-cpp-linux/16.1.0?topic=parallelization-pragma-omp-critical (07.01.2024)
