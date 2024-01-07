@@ -26,7 +26,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="tsunami_lab" href="../api/tsunami_lab.html" />
-    <link rel="prev" title="8. Optimization" href="optimization.html" />
+    <link rel="prev" title="9. Parallelization" href="parallelization.html" />
     <link href="../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -65,8 +65,17 @@
 <li class="toctree-l1"><a class="reference internal" href="tsunami_simulation.html">6. Tsunami Simulations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="checkpoint_coarse_output.html">7. Checkpointing and Coarse Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimization.html">8. Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallelization.html">9. Parallelization</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">10. Individual Phase</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#draft">10.1 Draft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#proposal">10.2 Proposal</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#project-goals">Project Goals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#approaches">Approaches</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementation-outline">Implementation Outline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#contribution">Contribution</a></li>
 </ul>
 </li>
@@ -155,6 +164,93 @@ enhancing the performance</p></li>
 </li>
 </ul>
 </section>
+<section id="proposal">
+<h2>10.2 Proposal<a class="headerlink" href="#proposal" title="Link to this heading"></a></h2>
+<section id="introduction">
+<h3>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h3>
+<p>Tsunami simulations require accurate and efficient numerical methods to capture complex wave propagation dynamics.
+Adaptive Mesh Refinement (AMR) is a powerful technique that enhances simulation accuracy by dynamically adjusting the
+mesh resolution based on the evolving wave features.
+In addition, masking improves performance by only updating relevant cells.
+This proposal outlines the goal of implementing AMR in our existing C++ tsunami simulation, using open-source tools, within a four-week timeframe.</p>
+</section>
+<section id="project-goals">
+<h3>Project Goals<a class="headerlink" href="#project-goals" title="Link to this heading"></a></h3>
+<p>The primary goal of this project is to integrate Adaptive Mesh Refinement into our existing tsunami simulation.
+The objectives include:</p>
+<ol class="arabic">
+<li><p>Dynamic Mesh Resolution:</p>
+<blockquote>
+<div><p>Implement a hierarchical mesh structure that allows dynamic refinement and coarsening based on the local wave characteristics.</p>
+</div></blockquote>
+</li>
+<li><p>Error Estimation:</p>
+<blockquote>
+<div><p>Develop a method to estimate error metrics at each mesh cell, guiding the adaptive refinement process.</p>
+</div></blockquote>
+</li>
+<li><p>Efficient Data Handling:</p>
+<blockquote>
+<div><p>Design strategies to efficiently manage data structures for adaptive grids while minimizing computational overhead.</p>
+</div></blockquote>
+</li>
+<li><p>Verification and Validation:</p>
+<blockquote>
+<div><p>Ensure the accuracy of the simulation results by validating against our earlier simulations.</p>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="approaches">
+<h3>Approaches<a class="headerlink" href="#approaches" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p>Adaptive Mesh Structure:</p>
+<blockquote>
+<div><p>Utilize the <a class="reference external" href="https://amrex-codes.github.io/amrex/">AMReX</a> library to implement adaptive mesh structures efficiently.
+AMReX is an open-source framework designed for AMR applications and is well-suited for scientific simulations.</p>
+</div></blockquote>
+</li>
+<li><p>Error Estimation:</p>
+<blockquote>
+<div><p>Implement error estimation algorithms to assess the accuracy of the simulation at different mesh resolutions.
+Develop interpolation methods for smooth data transfer between mesh levels.</p>
+</div></blockquote>
+</li>
+<li><p>Data Management:</p>
+<blockquote>
+<div><p>Utilize the AMReX data structures to efficiently handle adaptive grids.
+Explore strategies such as block-structured AMR to optimize memory usage and computational performance.</p>
+</div></blockquote>
+</li>
+<li><p>Visualization:</p>
+<blockquote>
+<div><p>Enhance visualization capabilities by integrating ParaView with AMReX, ensuring proper representation of refined
+meshes and visualizing adaptive grid structures.</p>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="implementation-outline">
+<h3>Implementation Outline<a class="headerlink" href="#implementation-outline" title="Link to this heading"></a></h3>
+<p><strong>Week 1-2: Familiarization and Setup</strong></p>
+<p>Familiarize ourself with the AMReX library, exploring its capabilities and documentation.
+Integrate AMReX into our existing C++ tsunami simulation codebase.
+Develop a prototype with a static adaptive mesh to verify compatibility and setup.</p>
+<p><strong>Week 3: Error Estimation and Refinement</strong></p>
+<p>Implement error estimation techniques to guide adaptive mesh refinement.
+Integrate error estimation into the simulation loop.
+Verify the correctness of error estimation by comparing results with non-adaptive simulations.</p>
+<p><strong>Week 4: Optimization and Validation</strong></p>
+<p>Optimize data structures and computation for efficiency and apply masking.
+Validate the simulation results with established benchmarks.
+Implement ParaView integration for visualization of adaptive meshes.</p>
+</section>
+<section id="conclusion">
+<h3>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading"></a></h3>
+<p>The successful implementation of Adaptive Mesh Refinement will enhance the accuracy and efficiency of our tsunami simulation.
+Utilizing the AMReX library and following the outlined steps, this project aims to achieve these goals within a four-week timeframe.</p>
+</section>
+</section>
 <section id="contribution">
 <h2>Contribution<a class="headerlink" href="#contribution" title="Link to this heading"></a></h2>
 <p>All team members contributed equally to the tasks.</p>
@@ -165,14 +261,14 @@ enhancing the performance</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="optimization.html" class="btn btn-neutral float-left" title="8. Optimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="parallelization.html" class="btn btn-neutral float-left" title="9. Parallelization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../api/tsunami_lab.html" class="btn btn-neutral float-right" title="tsunami_lab" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Fabian Hofer, Vincent Gerlach.</p>
+    <p>&#169; Copyright 2024, Fabian Hofer, Vincent Gerlach.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
