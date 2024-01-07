@@ -57,6 +57,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
     t_real* l_huNew = m_hu[m_step];
 
     // init new cell quantities
+#pragma omp parallel for
     for( t_idx l_ce = 0; l_ce < totalCells; l_ce++ )
     {
         l_hNew[l_ce] = l_hOld[l_ce];
@@ -67,16 +68,16 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
     if( hasBathymetry )
     {
         // iterates through the row
+#pragma omp parallel for
         for( t_idx i = 0; i < m_yCells + 1; i++ )
         {
             // iterates along the row
+#pragma omp simd
             for( t_idx j = 0; j < m_xCells + 1; j++ )
             {
-                t_idx k = stride * i + j;
-
                 // determine left and right cell-id
-                t_idx l_ceL = k;
-                t_idx l_ceR = k + 1;
+                t_idx l_ceL = stride * i + j;
+                t_idx l_ceR = l_ceL + 1;
 
                 // noting to compute both shore cells
                 if( l_hOld[l_ceL] == 0 && l_hOld[l_ceR] == 0 )
@@ -133,16 +134,16 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
         }
 
         // iterates through the row
+#pragma omp parallel for
         for( t_idx i = 0; i < m_yCells + 1; i++ )
         {
             // iterates over along the row
+#pragma omp simd
             for( t_idx j = 0; j < m_xCells + 1; j++ )
             {
-                t_idx k = stride * i + j;
-
                 // determine left and right cell-id
-                t_idx l_ceL = k;
-                t_idx l_ceR = k + 1;
+                t_idx l_ceL = stride * i + j;
+                t_idx l_ceR = l_ceL + 1;
 
                 // noting to compute both shore cells
                 if( l_hOld[l_ceL] == 0 && l_hOld[l_ceR] == 0 )
@@ -183,6 +184,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
             }
         }
     }
+
     //swapping the h buffer new and old to write new data in previous old
     m_h[m_step] = l_hOld;
     m_step = !m_step;
@@ -197,6 +199,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
     l_hNew = m_h[m_step];
 
     // copy the calculated cell quantities
+#pragma omp parallel for
     for( t_idx l_ce = 0; l_ce < totalCells; l_ce++ )
     {
         l_hNew[l_ce] = l_hOld[l_ce];
@@ -207,12 +210,14 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
     if( hasBathymetry )
     {
         //  iterates over the x direction
+#pragma omp parallel for
         for( t_idx i = 1; i < full_xCells; i += ITERATIONS_CACHE )
         {
             // iterate over the rows i.e. y-coordinates
             for( t_idx j = 0; j < m_yCells + 1; j++ )
             {
                 // iterations for more efficient cache usage
+#pragma omp simd
                 for( t_idx k = 0; k < ITERATIONS_CACHE; k++ )
                 {
                     // determine left and right cell-id
@@ -269,6 +274,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
         for( t_idx j = 0; j < m_yCells + 1; j++ )
         {
             // remaining iterations for more efficient cache usage
+#pragma omp simd
             for( t_idx k = 0; k < remaining_xCells; k++ )
             {
                 // determine left and right cell-id
@@ -330,12 +336,14 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
         }
 
         //  iterates over the x direction
+#pragma omp parallel for
         for( t_idx i = 1; i < full_xCells; i += ITERATIONS_CACHE )
         {
             // iterate over the rows i.e. y-coordinates
             for( t_idx j = 1; j < m_yCells + 1; j++ )
             {
                 // iterations for more efficient cache usage
+#pragma omp simd
                 for( t_idx k = 0; k < ITERATIONS_CACHE; k++ )
                 {
                     // determine left and right cell-id
@@ -386,6 +394,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling )
         for( t_idx j = 1; j < m_yCells + 1; j++ )
         {
             // remaining iterations for more efficient cache usage
+#pragma omp simd
             for( t_idx k = 0; k < remaining_xCells; k++ )
             {
                 // determine left and right cell-id
@@ -439,6 +448,7 @@ void tsunami_lab::patches::WavePropagation2d::setGhostOutflow()
     t_real* l_hu = m_hu[m_step];
     t_real* l_hv = m_hv[m_step];
 
+#pragma omp parallel for
     for( t_idx i = 1; i < m_yCells + 1; i++ )
     {
         t_idx y = stride * i;
@@ -456,6 +466,7 @@ void tsunami_lab::patches::WavePropagation2d::setGhostOutflow()
         m_bathymetry[y + m_xCells + 1] = m_bathymetry[y + m_xCells];
     }
 
+#pragma omp parallel for
     for( size_t i = 0; i < stride; i++ )
     {
         // set top complete row of ghost cells
@@ -475,6 +486,7 @@ void tsunami_lab::patches::WavePropagation2d::setGhostOutflow()
     }
 }
 
+#pragma omp declare simd
 tsunami_lab::patches::WavePropagation2d::Reflection tsunami_lab::patches::WavePropagation2d::calculateReflection( t_real* i_h,
                                                                                                                   t_real* i_hu,
                                                                                                                   t_idx i_ceL,
@@ -495,6 +507,7 @@ tsunami_lab::patches::WavePropagation2d::Reflection tsunami_lab::patches::WavePr
     return static_cast<Reflection>( leftReflection * Reflection::LEFT + rightReflection * Reflection::RIGHT );
 }
 
+#pragma omp declare simd
 tsunami_lab::patches::WavePropagation2d::Reflection tsunami_lab::patches::WavePropagation2d::calculateReflection( t_real* i_h,
                                                                                                                   t_real* i_hu,
                                                                                                                   t_idx i_ceL,
@@ -523,8 +536,10 @@ const tsunami_lab::t_real* tsunami_lab::patches::WavePropagation2d::getTotalHeig
 {
     if( isDirtyTotalHeight )
     {
+#pragma omp parallel for
         for( t_idx i = 1; i < m_yCells + 1; i++ )
         {
+#pragma omp simd
             for( t_idx j = 1; j < m_xCells + 1; j++ )
             {
                 t_idx k = stride * i + j;
@@ -534,4 +549,24 @@ const tsunami_lab::t_real* tsunami_lab::patches::WavePropagation2d::getTotalHeig
     }
     isDirtyTotalHeight = false;
     return m_totalHeight + 1 + stride;
+}
+
+void tsunami_lab::patches::WavePropagation2d::updateWaterHeight()
+{
+    if( !hasBathymetry )
+    {
+        return;
+    }
+
+#pragma omp parallel for
+    for( t_idx i = 1; i < m_yCells + 1; i++ )
+    {
+        for( t_idx j = 1; j < m_xCells + 1; j++ )
+        {
+            t_idx k = stride * i + j;
+
+            m_h[m_step][k] -= m_bathymetry[k];
+            m_h[m_step][k] *= ( m_h[m_step][k] > 0 );  // sets water with bathymetry higher than water to zero
+        }
+    }
 }

@@ -6,6 +6,7 @@
 #include "../../include/solvers/FWave.h"
 #include <cmath>
 
+#pragma omp declare simd
 void tsunami_lab::solvers::FWave::computeEigenvalues( t_real   i_hL,
                                                       t_real   i_hR,
                                                       t_real   i_uL,
@@ -28,6 +29,7 @@ void tsunami_lab::solvers::FWave::computeEigenvalues( t_real   i_hL,
     o_eigenvalue2 = l_u + l_ghSqrtRoe;
 }
 
+#pragma omp declare simd
 void tsunami_lab::solvers::FWave::computeDeltaFlux( t_real i_hL,
                                                     t_real i_hR,
                                                     t_real i_uL,
@@ -41,6 +43,7 @@ void tsunami_lab::solvers::FWave::computeDeltaFlux( t_real i_hL,
         - ( i_huL * i_uL + 0.5f * m_g * i_hL * i_hL );
 }
 
+#pragma omp declare simd
 void tsunami_lab::solvers::FWave::computeEigencoefficients( t_real i_eigenvalue1,
                                                             t_real i_eigenvalue2,
                                                             t_real i_deltaFlux[2],
@@ -58,15 +61,17 @@ void tsunami_lab::solvers::FWave::computeEigencoefficients( t_real i_eigenvalue1
     o_eigencoefficient2 = -i_eigenvalue1 * denominator * i_deltaFlux[0] + denominator * i_deltaFlux[1];
 }
 
+#pragma omp declare simd
 void tsunami_lab::solvers::FWave::computeBathymetryEffects( t_real i_hL, t_real i_hR,
                                                             t_real i_bL, t_real i_bR,
                                                             t_real o_bathymetryEffect[2] )
 {
     o_bathymetryEffect[0] = 0;
-    o_bathymetryEffect[1] = -m_g * ( i_bR - i_bL ) * t_real( 0.5 ) * ( i_hL + i_hR );
+    o_bathymetryEffect[1] = -m_g * ( i_bL - i_bR ) * t_real( 0.5 ) * ( i_hL + i_hR );
 }
 
 // net update without bathymetry
+#pragma omp declare simd
 void tsunami_lab::solvers::FWave::netUpdates( t_real i_hL,
                                               t_real i_hR,
                                               t_real i_huL,
@@ -107,6 +112,7 @@ void tsunami_lab::solvers::FWave::netUpdates( t_real i_hL,
 }
 
 // net update with bathymetry
+#pragma omp declare simd
 void tsunami_lab::solvers::FWave::netUpdates( t_real i_hL,
                                               t_real i_hR,
                                               t_real i_huL,

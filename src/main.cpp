@@ -53,15 +53,15 @@ enum Arguments
 const int requiredArguments = 1;
 const int optionalArguments = 1;
 const std::vector<ArgSetup> optionalFlags = {
-    ArgSetup( Arguments::SOLVER, 1, 1 ),
-    ArgSetup( Arguments::USE_BATHYMETRY, 0, 0 ),
-    ArgSetup( Arguments::REFLECTION, 1, 4 ),
-    ArgSetup( Arguments::TIME, 1, 1 ),
-    ArgSetup( Arguments::IO_FORMAT, 1, 1 ),
-    ArgSetup( Arguments::USE_AXIS_SPHERICAL, 0, 0 ),
-    ArgSetup( Arguments::WRITE_INTERVALL, 1, 1 ),
-    ArgSetup( Arguments::AVERAGE_SEVERAL, 1, 1 ),
-    ArgSetup( Arguments::CHECKPOINT_INTERVALL, 1, 1 )
+        ArgSetup( Arguments::SOLVER, 1, 1 ),
+        ArgSetup( Arguments::USE_BATHYMETRY, 0, 0 ),
+        ArgSetup( Arguments::REFLECTION, 1, 4 ),
+        ArgSetup( Arguments::TIME, 1, 1 ),
+        ArgSetup( Arguments::IO_FORMAT, 1, 1 ),
+        ArgSetup( Arguments::USE_AXIS_SPHERICAL, 0, 0 ),
+        ArgSetup( Arguments::WRITE_INTERVALL, 1, 1 ),
+        ArgSetup( Arguments::AVERAGE_SEVERAL, 1, 1 ),
+        ArgSetup( Arguments::CHECKPOINT_INTERVALL, 1, 1 )
 };
 
 void printHelp()
@@ -77,7 +77,7 @@ void printHelp()
         << green << "-c" << cyan << " <minutes>" << reset << "] ["
         << green << "-f" << cyan << " <csv|netCDF>" << reset << "] ["
         << green << "-r " << cyan << "<left|right|top|bottom|x|y|all>" << reset << "] ["
-        << green << "-k" << cyan << "<NUMBER>" << reset << "] ["
+        << green << "-k" << cyan << " <NUMBER>" << reset << "] ["
         << green << "-s " << cyan << "<fwave|roe>" << reset << "] ["
         << green << "-t" << cyan << " <seconds>" << reset << "] ["
         << green << "-w" << cyan << " <seconds>" << reset << "]"
@@ -510,6 +510,7 @@ int main( int   i_argc,
         cellSize = 1;
     }
     // set up solver
+#pragma omp parallel for reduction(max: l_hMax)
     for( tsunami_lab::t_idx l_cy = 0; l_cy < l_ny; l_cy++ )
     {
         tsunami_lab::t_real l_y = l_cy * cellSize;
@@ -672,10 +673,21 @@ int main( int   i_argc,
             }
             else
             {
-                netCdfWriter->averageSeveral( l_simTime,
-                                              l_waveProp->getTotalHeight(),
-                                              l_waveProp->getMomentumX(),
-                                              l_waveProp->getMomentumY() );
+                if( l_averageCellNumber > 1 )
+                {
+                    netCdfWriter->averageSeveral( l_simTime,
+                                                  l_waveProp->getTotalHeight(),
+                                                  l_waveProp->getMomentumX(),
+                                                  l_waveProp->getMomentumY() );
+                }
+                else
+                {
+                    netCdfWriter->write( l_simTime,
+                                         l_waveProp->getTotalHeight(),
+                                         l_waveProp->getMomentumX(),
+                                         l_waveProp->getMomentumY() );
+                }
+
             }
         }
 

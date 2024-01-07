@@ -115,6 +115,7 @@ private:
      * @param o_momentumRight ouput of the momentum right that should be used for the calculations
      * @return the side where the reflection hits the shore cell e.g. the left cell is water and right is shore than the reflection hits the left side
     */
+#pragma omp declare simd
     Reflection calculateReflection( t_real* i_h,
                                     t_real* i_hu,
                                     t_idx i_ceL,
@@ -140,6 +141,7 @@ private:
      * @param o_bathymetryRight ouput of the bathymetry right that should be used for the calculations
      * @return the side where the reflection hits the shore cell e.g. the left cell is water and right is shore than the reflection hits the left side
     */
+#pragma omp declare simd
     Reflection calculateReflection( t_real* i_h,
                                     t_real* i_hu,
                                     t_idx i_ceL,
@@ -313,24 +315,7 @@ public:
      * updates the water height with respect to the bathymetry.
      * If the bathymetry is higher than the water height than the water is set to zero.
     */
-    void updateWaterHeight()
-    {
-        if( !hasBathymetry )
-        {
-            return;
-        }
-
-        for( t_idx i = 1; i < m_yCells + 1; i++ )
-        {
-            for( t_idx j = 1; j < m_xCells + 1; j++ )
-            {
-                t_idx k = stride * i + j;
-
-                m_h[m_step][k] -= m_bathymetry[k];
-                m_h[m_step][k] *= ( m_h[m_step][k] > 0 );  // sets water with bathymetry higher than water to zero
-            }
-        }
-    }
+    void updateWaterHeight();
 
     /**
      * enables or disable the reflection of one side

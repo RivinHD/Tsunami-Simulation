@@ -34,6 +34,90 @@
 - Friction
     - Adding a friction adjustment to the implementation to obtain more accurate simulation results
 
+10.2 Proposal
+-------------
+
+Introduction
+^^^^^^^^^^^^
+
+Tsunami simulations require accurate and efficient numerical methods to capture complex wave propagation dynamics.
+Adaptive Mesh Refinement (AMR) is a powerful technique that enhances simulation accuracy by dynamically adjusting the
+mesh resolution based on the evolving wave features.
+In addition, masking improves performance by only updating relevant cells.
+This proposal outlines the goal of implementing AMR in our existing C++ tsunami simulation, using open-source tools, within a four-week timeframe.
+
+Project Goals
+^^^^^^^^^^^^^
+
+The primary goal of this project is to integrate Adaptive Mesh Refinement into our existing tsunami simulation.
+The objectives include:
+
+1. Dynamic Mesh Resolution:
+
+    Implement a hierarchical mesh structure that allows dynamic refinement and coarsening based on the local wave characteristics.
+
+2. Error Estimation:
+
+    Develop a method to estimate error metrics at each mesh cell, guiding the adaptive refinement process.
+
+3. Efficient Data Handling:
+
+    Design strategies to efficiently manage data structures for adaptive grids while minimizing computational overhead.
+
+4. Verification and Validation:
+
+    Ensure the accuracy of the simulation results by validating against our earlier simulations.
+
+Approaches
+^^^^^^^^^^
+
+1. Adaptive Mesh Structure:
+
+    Utilize the `AMReX <https://amrex-codes.github.io/amrex/>`_ library to implement adaptive mesh structures efficiently.
+    AMReX is an open-source framework designed for AMR applications and is well-suited for scientific simulations.
+
+2. Error Estimation:
+
+    Implement error estimation algorithms to assess the accuracy of the simulation at different mesh resolutions.
+    Develop interpolation methods for smooth data transfer between mesh levels.
+
+3. Data Management:
+
+    Utilize the AMReX data structures to efficiently handle adaptive grids.
+    Explore strategies such as block-structured AMR to optimize memory usage and computational performance.
+
+4. Visualization:
+
+    Enhance visualization capabilities by integrating ParaView with AMReX, ensuring proper representation of refined
+    meshes and visualizing adaptive grid structures.
+
+Implementation Outline
+^^^^^^^^^^^^^^^^^^^^^^^
+
+**Week 1-2: Familiarization and Setup**
+
+Familiarize ourself with the AMReX library, exploring its capabilities and documentation.
+Integrate AMReX into our existing C++ tsunami simulation codebase.
+Develop a prototype with a static adaptive mesh to verify compatibility and setup.
+
+**Week 3: Error Estimation and Refinement**
+
+Implement error estimation techniques to guide adaptive mesh refinement.
+Integrate error estimation into the simulation loop.
+Verify the correctness of error estimation by comparing results with non-adaptive simulations.
+
+**Week 4: Optimization and Validation**
+
+Optimize data structures and computation for efficiency and apply masking.
+Validate the simulation results with established benchmarks.
+Implement ParaView integration for visualization of adaptive meshes.
+
+Conclusion
+^^^^^^^^^^
+
+The successful implementation of Adaptive Mesh Refinement will enhance the accuracy and efficiency of our tsunami simulation.
+Utilizing the AMReX library and following the outlined steps, this project aims to achieve these goals within a four-week timeframe.
+
 Contribution
 ------------
 

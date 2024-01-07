@@ -19,6 +19,7 @@
    submissions/tsunami_simulation.rst
    submissions/checkpoint_coarse_output.rst
    submissions/optimization.rst
+   submissions/parallelization.rst
    submissions/individual_phase.rst
 
 .. toctree::

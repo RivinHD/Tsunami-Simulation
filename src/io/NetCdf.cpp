@@ -340,7 +340,7 @@ tsunami_lab::io::NetCdf::NetCdf( t_idx writeStep,
     m_nx = l_nx / l_k;
     m_ny = l_ny / l_k;
     m_k = l_k;
-    m_divideK2 = 1 / ( m_k * m_k );
+    m_divideK2 = t_real( 1 ) / ( m_k * m_k );
     m_scaleX = l_scaleX;
     m_scaleY = l_scaleY;
     m_singleCellStride = l_stride;
@@ -442,7 +442,7 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
     m_nx = l_nx / l_k;
     m_ny = l_ny / l_k;
     m_k = l_k;
-    m_divideK2 = 1 / ( m_k * m_k );
+    m_divideK2 = t_real( 1 ) / ( m_k * m_k );
     m_scaleX = l_scaleX;
     m_scaleY = l_scaleY;
     m_singleCellStride = l_stride;
@@ -766,7 +766,6 @@ tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
                                  bool useMomenta )
     : NetCdf( filePath, l_nx, l_ny, l_k, l_scaleX, l_scaleY, l_stride, bathymetry, useSpherical, useMomenta, "", 1 )
 {
-    m_divideK2 = 1 / ( m_k * m_k );
 }
 
 tsunami_lab::io::NetCdf::NetCdf( std::string filePath,
@@ -830,24 +829,33 @@ void tsunami_lab::io::NetCdf::averageSeveral( const t_real simulationTime,
                                               const t_real* momentumX,
                                               const t_real* momentumY )
 {
-    t_idx l_size = m_nx * m_ny;
-    t_idx l_index = 0;
+    if( m_k == 1 )
+    {
+        _write( simulationTime, totalHeight, momentumX, momentumY, m_singleCellnx, m_singleCellny, m_singleCellStride, 0 );
+        return;
+    }
 
-    t_real l_avgHeight = 0;
-    t_real l_avgMomentumX = 0;
-    t_real l_avgMomentumY = 0;
+    t_idx l_size = m_nx * m_ny;
 
     t_real* l_totalHeight = new t_real[l_size]{ 0 };
     t_real* l_momentumX = new t_real[l_size]{ 0 };
     t_real* l_momentumY = new t_real[l_size]{ 0 };
 
-    for( t_idx y = 0; y < m_singleCellny; y += m_k )
+#pragma omp parallel for
+    for( t_idx y = 0; y < m_ny; y++ )
     {
-        for( t_idx x = 0; x < m_singleCellnx; x += m_k )
+        t_idx singleY = y * m_k;
+#pragma omp simd
+        for( t_idx x = 0; x < m_nx; x++ )
         {
-            for( t_idx i_y = y; i_y < y + m_k; i_y++ )
+            t_idx singleX = x * m_k;
+            t_idx l_index = y * m_stride + x;
+            t_real l_avgHeight = 0;
+            t_real l_avgMomentumX = 0;
+            t_real l_avgMomentumY = 0;
+            for( t_idx i_y = singleY; i_y < singleY + m_k; i_y++ )
             {
-                for( t_idx i_x = x; i_x < x + m_k; i_x++ )
+                for( t_idx i_x = singleX; i_x < singleX + m_k; i_x++ )
                 {
                     l_avgHeight += totalHeight[( i_y * m_singleCellStride ) + i_x];
                     l_avgMomentumX += momentumX[( i_y * m_singleCellStride ) + i_x];
@@ -858,11 +866,6 @@ void tsunami_lab::io::NetCdf::averageSeveral( const t_real simulationTime,
             l_totalHeight[l_index] = l_avgHeight * m_divideK2;
             l_momentumX[l_index] = l_avgMomentumX * m_divideK2;
             l_momentumY[l_index] = l_avgMomentumY * m_divideK2;
-            l_index++;
-            // reset average values
-            l_avgHeight = 0;
-            l_avgMomentumX = 0;
-            l_avgMomentumY = 0;
         }
     }
 

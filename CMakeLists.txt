@@ -53,11 +53,11 @@ endif()
 if(MSVC)
     message(FATAL_ERROR "This project cannot be compiled with MSVC due to https://developercommunity.visualstudio.com/t/using-c17-new-stdalign-val-tn-syntax-results-in-er/528320")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -pthread")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -pthread -qopenmp")
     set(CMAKE_CXX_FLAGS_RELEASE "-O2" CACHE STRING "" FORCE)
     set(CMAKE_CXX_FLAGS_DEBUG "-g -O0" CACHE STRING "" FORCE)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror -pthread")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror -pthread -fopenmp")
     set(CMAKE_CXX_FLAGS_RELEASE "-O2" CACHE STRING "" FORCE)
     set(CMAKE_CXX_FLAGS_DEBUG "-g -O0" CACHE STRING "" FORCE)
 endif()
@@ -70,32 +70,32 @@ set(PROJECT_SOURCE_DIR "src")
 set(PROJECT_INCLUDE_DIR "include")
 
 set(SRC_FILES
-    solvers/FWave
-    solvers/Roe
-    setups/MiddleStates1d
-    setups/DamBreak1d
-    setups/ShockShock1d
-    setups/RareRare1d
-    setups/SubcriticalFlow1d
-    setups/SupercriticalFlow1d
-    setups/TsunamiEvent1d
-    setups/CircularDamBreak2d
-    setups/ArtificialTsunami2d
-    setups/TsunamiEvent2d
-    patches/WavePropagation1d
-    patches/WavePropagation2d
-    io/NetCdf
-    io/Csv
+        solvers/FWave
+        solvers/Roe
+        setups/MiddleStates1d
+        setups/DamBreak1d
+        setups/ShockShock1d
+        setups/RareRare1d
+        setups/SubcriticalFlow1d
+        setups/SupercriticalFlow1d
+        setups/TsunamiEvent1d
+        setups/CircularDamBreak2d
+        setups/ArtificialTsunami2d
+        setups/TsunamiEvent2d
+        patches/WavePropagation1d
+        patches/WavePropagation2d
+        io/NetCdf
+        io/Csv
 )
 set(SRC_FILES_IO
-    setups/CheckPoint
-    io/Stations
+        setups/CheckPoint
+        io/Stations
 )
 set(SRC_FILES_NO_TEST
 
 )
 set(SRC_FILES_HEADER_ONLY
-    io/ArgSetup
+        io/ArgSetup
 )
 set(SRC_FILES_HEADER_ONLY_NO_TEST
 
@@ -107,56 +107,56 @@ set(MIDDLE_STATE_FILE ${PROJECT_SOURCE_DIR}/test_middle_states.cpp)
 # Add the Resources. Added resources can be accessed relatively as if they were in the project directory.
 set(PROJECT_RESOURCE_DIR "resources")
 set(RESOURCE_FILES
-    middle_states.csv
-    middle_states.test.csv
-    bathy_profile.csv
-    config.json
-    config.test.json
-    ReadNetCDF.test.nc
-    WriteNetCDF_S.test.txt
-    WriteNetCDF_M.test.txt
-    artificialtsunami_displ_1000.nc
-    artificialtsunami_bathymetry_1000.nc
+        middle_states.csv
+        middle_states.test.csv
+        bathy_profile.csv
+        config.json
+        config.test.json
+        ReadNetCDF.test.nc
+        WriteNetCDF_S.test.txt
+        WriteNetCDF_M.test.txt
+        artificialtsunami_displ_1000.nc
+        artificialtsunami_bathymetry_1000.nc
 )
 
 # Create SOURCE_FILES
 foreach(file ${SRC_FILES})
     list(APPEND SOURCE_FILES
-        ${PROJECT_SOURCE_DIR}/${file}.cpp
-        ${PROJECT_INCLUDE_DIR}/${file}.h
+            ${PROJECT_SOURCE_DIR}/${file}.cpp
+            ${PROJECT_INCLUDE_DIR}/${file}.h
     )
     list(APPEND TEST_FILES
-        ${PROJECT_SOURCE_DIR}/${file}.test.cpp
+            ${PROJECT_SOURCE_DIR}/${file}.test.cpp
     )
 endforeach()
 if(NOT DISABLE_IO)
     foreach(file ${SRC_FILES_IO})
         list(APPEND SOURCE_FILES
-            ${PROJECT_SOURCE_DIR}/${file}.cpp
-            ${PROJECT_INCLUDE_DIR}/${file}.h
+                ${PROJECT_SOURCE_DIR}/${file}.cpp
+                ${PROJECT_INCLUDE_DIR}/${file}.h
         )
         list(APPEND TEST_FILES
-            ${PROJECT_SOURCE_DIR}/${file}.test.cpp
+                ${PROJECT_SOURCE_DIR}/${file}.test.cpp
         )
     endforeach()
 endif(NOT DISABLE_IO)
 foreach(file ${SRC_FILES_NO_TEST})
     list(APPEND SOURCE_FILES
-        ${PROJECT_SOURCE_DIR}/${file}.cpp
-        ${PROJECT_INCLUDE_DIR}/${file}.h
+            ${PROJECT_SOURCE_DIR}/${file}.cpp
+            ${PROJECT_INCLUDE_DIR}/${file}.h
     )
 endforeach()
 foreach(file ${SRC_FILES_HEADER_ONLY})
     list(APPEND SOURCE_FILES
-        ${PROJECT_INCLUDE_DIR}/${file}.h
+            ${PROJECT_INCLUDE_DIR}/${file}.h
     )
     list(APPEND TEST_FILES
-        ${PROJECT_INCLUDE_DIR}/${file}.test.h
+            ${PROJECT_INCLUDE_DIR}/${file}.test.h
     )
 endforeach()
 foreach(file ${SRC_FILES_HEADER_ONLY_NO_TEST})
     list(APPEND SOURCE_FILES
-        ${PROJECT_INCLUDE_DIR}/${file}.h
+            ${PROJECT_INCLUDE_DIR}/${file}.h
     )
 endforeach()
 
@@ -204,14 +204,14 @@ target_sources(sanitize PRIVATE ${MAIN_FILE})
 
 # Init sanitizer
 set_target_properties(sanitize
-    PROPERTIES
-    COMPILE_FLAGS "-g -fsanitize=float-divide-by-zero -fsanitize=bounds -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer"
-    LINK_FLAGS "-g -fsanitize=address -fsanitize=undefined"
+        PROPERTIES
+        COMPILE_FLAGS "-g -fsanitize=float-divide-by-zero -fsanitize=bounds -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer"
+        LINK_FLAGS "-g -fsanitize=address -fsanitize=undefined"
 )
 set_target_properties(sanitize_test
-    PROPERTIES
-    COMPILE_FLAGS "-g -fsanitize=float-divide-by-zero -fsanitize=bounds -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer"
-    LINK_FLAGS "-g -fsanitize=address -fsanitize=undefined"
+        PROPERTIES
+        COMPILE_FLAGS "-g -fsanitize=float-divide-by-zero -fsanitize=bounds -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer"
+        LINK_FLAGS "-g -fsanitize=address -fsanitize=undefined"
 )
 
 if(CMAKE_COMPILER_IS_GNUCC AND WIN32)

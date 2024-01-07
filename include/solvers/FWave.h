@@ -36,6 +36,7 @@ private:
      * @param o_eigenvalue1 output: Roe eigenvalue one.
      * @param o_eigenvalue2 output: Roe eigenvalue two.
      **/
+#pragma omp declare simd
     static void computeEigenvalues( t_real i_hL,
                                     t_real i_hR,
                                     t_real i_uL,
@@ -54,6 +55,7 @@ private:
      * @param i_huR momentum of the right side.
      * @param o_deltaFlux output: difference of left and right quantities
      */
+#pragma omp declare simd
     static void computeDeltaFlux( t_real i_hL,
                                   t_real i_hR,
                                   t_real i_uL,
@@ -71,6 +73,7 @@ private:
      * @param o_eigencoefficient1 ouput: the eigencoefficient ot eigenvalue one.
      * @param o_eigencoefficient2 ouput: the eigencoefficient ot eigenvalue two.
      */
+#pragma omp declare simd
     static void computeEigencoefficients( t_real i_eigenvalue1,
                                           t_real i_eigenvalue2,
                                           t_real i_deltaFlux[2],
@@ -85,6 +88,7 @@ private:
      * @param i_bR height of bathymetry of the right side.
      * @param o_bathymetryEffect output: effect of the bathymetry
      */
+#pragma omp declare simd
     static void computeBathymetryEffects( t_real i_hL,
                                           t_real i_hR,
                                           t_real i_bL,
@@ -101,6 +105,7 @@ public:
      * @param i_huR momentum of the right side.
      * @param o_netUpdate will be set to the net-updates for the 0: left 1: right side; 0: height, 1: momentum.
      **/
+#pragma omp declare simd
     static void netUpdates( t_real i_hL,
                             t_real i_hR,
                             t_real i_huL,
@@ -118,6 +123,7 @@ public:
      * @param i_bR height of bathymetry of the right side.
      * @param o_netUpdate will be set to the net-updates for the 0: left 1: right side; 0: height, 1: momentum.
      **/
+#pragma omp declare simd
     static void netUpdates( t_real i_hL,
                             t_real i_hR,
                             t_real i_huL,
