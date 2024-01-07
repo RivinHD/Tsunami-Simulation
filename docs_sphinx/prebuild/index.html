@@ -64,6 +64,7 @@
 <li class="toctree-l1"><a class="reference internal" href="submissions/tsunami_simulation.html">6. Tsunami Simulations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="submissions/checkpoint_coarse_output.html">7. Checkpointing and Coarse Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="submissions/optimization.html">8. Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="submissions/parallelization.html">9. Parallelization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="submissions/individual_phase.html">10. Individual Phase</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
@@ -262,8 +263,26 @@
 <li class="toctree-l2"><a class="reference internal" href="submissions/optimization.html#contribution">Contribution</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="submissions/parallelization.html">9. Parallelization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="submissions/parallelization.html#parallelization-using-openmp">1. Parallelization using OpenMP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="submissions/parallelization.html#comparison-serial-and-parallelized-solver">2. Comparison serial and parallelized solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="submissions/parallelization.html#parallelization-of-the-outer-vs-the-inner-loops">3. Parallelization of the outer vs. the inner loops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="submissions/parallelization.html#different-scheduling-and-pinning-strategies">4. Different scheduling and pinning strategies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="submissions/parallelization.html#contribution">Contribution</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="submissions/individual_phase.html">10. Individual Phase</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="submissions/individual_phase.html#draft">10.1 Draft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="submissions/individual_phase.html#proposal">10.2 Proposal</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="submissions/individual_phase.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/individual_phase.html#project-goals">Project Goals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/individual_phase.html#approaches">Approaches</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/individual_phase.html#implementation-outline">Implementation Outline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="submissions/individual_phase.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="submissions/individual_phase.html#contribution">Contribution</a></li>
 </ul>
 </li>
@@ -653,7 +672,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Fabian Hofer, Vincent Gerlach.</p>
+    <p>&#169; Copyright 2024, Fabian Hofer, Vincent Gerlach.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
