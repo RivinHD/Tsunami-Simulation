@@ -42,8 +42,9 @@ Introduction
 
 Tsunami simulations require accurate and efficient numerical methods to capture complex wave propagation dynamics.
 Adaptive Mesh Refinement (AMR) is a powerful technique that enhances simulation accuracy by dynamically adjusting the
-mesh resolution based on the evolving wave features. This proposal outlines the goal of implementing AMR in our
-existing C++ tsunami simulation, using open-source tools, within a four-week timeframe.
+mesh resolution based on the evolving wave features.
+In addition, masking improves performance by only updating relevant cells.
+This proposal outlines the goal of implementing AMR in our existing C++ tsunami simulation, using open-source tools, within a four-week timeframe.
 
 Project Goals
 ^^^^^^^^^^^^^
@@ -82,8 +83,8 @@ Approaches
 
 3. Data Management:
 
-    Utilize the AMReX data structures to efficiently handle adaptive grids. Explore strategies such as block-structured
-    AMR to optimize memory usage and computational performance.
+    Utilize the AMReX data structures to efficiently handle adaptive grids.
+    Explore strategies such as block-structured AMR to optimize memory usage and computational performance.
 
 4. Visualization:
 
@@ -107,7 +108,7 @@ Verify the correctness of error estimation by comparing results with non-adaptiv
 
 **Week 4: Optimization and Validation**
 
-Optimize data structures and computation for efficiency.
+Optimize data structures and computation for efficiency and apply masking.
 Validate the simulation results with established benchmarks.
 Implement ParaView integration for visualization of adaptive meshes.
 
