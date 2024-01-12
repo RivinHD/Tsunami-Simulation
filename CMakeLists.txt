@@ -165,28 +165,20 @@ foreach(file ${RESOURCE_FILES})
     configure_file(${PROJECT_RESOURCE_DIR}/${file} ${PROJECT_RESOURCE_DIR}/${file} COPYONLY)
 endforeach()
 
-
 # Set up such that your IDE organizes the files correctly
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
-add_subdirectory(submodules/Catch2)
-
-if(NOT DISABLE_IO)
-    # Linking the json libary
-    add_subdirectory(submodules/json)
-    link_libraries(nlohmann_json::nlohmann_json)
-endif(NOT DISABLE_IO)
-
+###################
+##### Targets #####
+###################
 
 # Setup Testing
 add_executable(test ${SOURCE_FILES})
-target_link_libraries(test PRIVATE Catch2::Catch2)
 target_sources(test PRIVATE ${TEST_FILES})
 target_compile_definitions(test PRIVATE TSUNAMI_SIMULATION_TEST)
 
 # Setup Testing + Sanitizer
 add_executable(sanitize_test ${SOURCE_FILES})
-target_link_libraries(sanitize_test PRIVATE Catch2::Catch2)
 target_sources(sanitize_test PRIVATE ${TEST_FILES})
 target_compile_definitions(sanitize_test PRIVATE TSUNAMI_SIMULATION_TEST)
 
@@ -201,6 +193,43 @@ target_sources(simulation PRIVATE ${MAIN_FILE})
 # Setup Simulation + Sanitizer
 add_executable(sanitize ${SOURCE_FILES})
 target_sources(sanitize PRIVATE ${MAIN_FILE})
+
+################################
+##### Including submodules #####
+################################
+
+# Add Catch2
+add_subdirectory(submodules/Catch2)
+target_link_libraries(test PRIVATE Catch2::Catch2)
+target_link_libraries(sanitize_test PRIVATE Catch2::Catch2)
+
+# Add nlohmann
+if(NOT DISABLE_IO)
+    # Linking the json libary
+    add_subdirectory(submodules/json)
+    target_link_libraries(test PRIVATE nlohmann_json::nlohmann_json)
+    target_link_libraries(sanitize_test PRIVATE nlohmann_json::nlohmann_json)
+    target_link_libraries(test_middle_states PRIVATE nlohmann_json::nlohmann_json)
+    target_link_libraries(simulation PRIVATE nlohmann_json::nlohmann_json)
+    target_link_libraries(sanitize PRIVATE nlohmann_json::nlohmann_json)
+endif(NOT DISABLE_IO)
+
+# Add AMReX
+set(AMReX_SPACEDIM 2)
+set(AMReX_MPI NO)
+set(AMReX_OMP YES)
+set(AMReX_PRECISION SINGLE)
+add_subdirectory(submodules/amrex)
+target_link_libraries(test PRIVATE AMReX::amrex_2d)
+target_link_libraries(sanitize_test PRIVATE AMReX::amrex_2d)
+target_link_libraries(test_middle_states PRIVATE AMReX::amrex_2d)
+target_link_libraries(simulation PRIVATE AMReX::amrex_2d)
+target_link_libraries(sanitize PRIVATE AMReX::amrex_2d)
+
+# Add mpi
+# find_package(MPI REQUIRED)
+# target_link_libraries(AMReX::amrex INTERFACE ${MPI_LIBRARIES})
+
 
 # Init sanitizer
 set_target_properties(sanitize
