@@ -1,7 +1,7 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * One-dimensional wave propagation patch.
+ * Two-dimensional wave propagation patch.
  **/
 #include "../../include/patches/WavePropagation2d.h"
 #include "../../include/solvers/Roe.h"
