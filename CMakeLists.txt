@@ -86,6 +86,7 @@ set(SRC_FILES
         patches/WavePropagation2d
         io/NetCdf
         io/Csv
+        amr/AMRCoreWavePropagation2d
 )
 set(SRC_FILES_IO
         setups/CheckPoint
