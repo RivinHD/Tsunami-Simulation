@@ -7,6 +7,10 @@
 #ifndef TSUNAMI_SIMULATION_AMRCOREWAVEPROPAGATION2D_H
 #define TSUNAMI_SIMULATION_AMRCOREWAVEPROPAGATION2D_H
 
+#ifdef AMREX_USE_OMP
+#include <omp.h>
+#endif
+
 #include <AMReX_AmrCore.H>
 #include <AMReX_BCRec.H>
 #include <AMReX_FluxRegister.H>
@@ -24,8 +28,97 @@ namespace tsunami_lab
 
 class tsunami_lab::amr::AMRCoreWavePropagation2d : public amrex::AmrCore, public tsunami_lab::patches::WavePropagation
 {
-    AMRCoreWavePropagation2d( tsunami_lab::t_real nx,
-                              tsunami_lab::t_real ny );
+private:
+    enum Component
+    {
+        HEIGHT = 0,
+        MOMENTUM_X = 1,
+        MOMENTUM_Y = 2,
+        BATHYMERTRY = 3
+    };
+
+    //! number of components i.e. Height, MomentumX, MomentumY, Bathymetry
+    const int nComponents = 4;
+
+    //! number of ghost cell around the boundary of the domain
+    const int nGhostRow = 1;
+
+    // interpolator going from coarse to fine
+    const amrex::Interpolater* interpolator = &lincc_interp;
+
+    //! which step?
+    amrex::Vector<amrex::Real> step;
+
+    //! how many substeps on each level?
+    amrex::Vector<int> nSubSteps;
+
+    //! keep track of new time step at each level
+    amrex::Vector<amrex::Real> tNew;
+
+    //! keep track of old time step at each level
+    amrex::Vector<amrex::Real> tOld;
+
+    //! keep track of time step at each level
+    amrex::Vector<amrex::Real> dt;
+
+    //! array of multifabs to store the solution at each level of refinement
+    //! after advancing a level we use "swap"
+    amrex::Vector<amrex::MultiFab> gridNew;
+
+    //! array of multifabs to store the solution at each level of refinement
+    //! after advancing a level we use "swap"
+    amrex::Vector<amrex::MultiFab> gridOld;
+
+    //! this is essentially a 2*DIM integer array storing the physical boundary
+    //! condition types at the lo/hi walls in each direction
+    //! 4-components: Height, MomentumX, MomentumY, Bathymetry
+    amrex::Vector<amrex::BCRec> physicalBoundary;
+
+    // stores fluxes at coarse-fine interface for synchronization
+    // this will be sized "nlevs_max+1"
+    // NOTE: the flux register associated with flux_reg[lev] is associated
+    // with the lev/lev-1 interface (and has grid spacing associated with lev-1)
+    // therefore flux_reg[0] and flux_reg[nlevs_max] are never actually
+    // used in the reflux operation
+    amrex::Vector<std::unique_ptr<amrex::FluxRegister>> fluxRegister;
+
+    //! time to simulate
+    amrex::Real simulationTime = std::numeric_limits<amrex::Real>::max();
+
+    // how often each level regrids the higher levels of refinement
+    // (after a level advances that many time steps)
+    int regridFrequency = 2;
+
+    //! frequency to write the output
+    int writeFrequency = -1;
+
+    // fill an entire multifab by interpolating from the coarser level
+    // this comes into play when a new level of refinement appears
+    void FillCoarsePatch( int lev,
+                          amrex::Real time,
+                          amrex::MultiFab& mf,
+                          int icomp,
+                          int ncomp );
+
+    // utility to copy in data from gridOld and/or gridNew into another multifab
+    void GetData( int lev, amrex::Real time, amrex::Vector<amrex::MultiFab*>& data,
+                  amrex::Vector<amrex::Real>& datatime );
+
+    // compute a new multifab by coping in phi from valid region and filling ghost cells
+    // works for single level and 2-level cases (fill fine grid ghost by interpolating from coarse)
+    void FillPatch( int lev, amrex::Real time, amrex::MultiFab& mf, int icomp, int ncomp );
+
+    void setGlobalValue( amrex::MultiFab& mf,
+                         t_idx x,
+                         t_idx y,
+                         t_idx z,
+                         int comp,
+                         amrex::Real value );
+
+public:
+    AMRCoreWavePropagation2d( t_idx nx,
+                              t_idx ny,
+                              amrex::Real timeStep );
 
     //! Tag cells for refinement. TagBoxArray tags is built on level lev grids.
     void ErrorEst( int lev, amrex::TagBoxArray& tags,
