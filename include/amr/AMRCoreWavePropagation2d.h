@@ -12,9 +12,9 @@
 #endif
 
 #include <AMReX_AmrCore.H>
-#include <AMReX_BCRec.H>
 #include <AMReX_FluxRegister.H>
-#include <AMReX_FillPatcher.H>
+#include <AMReX_BCRec.H>
+#include <AMReX_Interpolater.H>
 
 #include "../../include/patches/WavePropagation.h"
 
@@ -43,8 +43,9 @@ private:
     //! number of ghost cell around the boundary of the domain
     const int nGhostRow = 1;
 
-    // interpolator going from coarse to fine
-    const amrex::Interpolater* interpolator = &lincc_interp;
+    //! interpolator going from coarse to fine
+    // this should never be const
+    amrex::Interpolater* interpolator = &amrex::lincc_interp;
 
     //! which step?
     amrex::Vector<amrex::Real> step;
@@ -109,9 +110,9 @@ private:
     void FillPatch( int lev, amrex::Real time, amrex::MultiFab& mf, int icomp, int ncomp );
 
     void setGlobalValue( amrex::MultiFab& mf,
-                         t_idx x,
-                         t_idx y,
-                         t_idx z,
+                         int x,
+                         int y,
+                         int z,
                          int comp,
                          amrex::Real value );
 

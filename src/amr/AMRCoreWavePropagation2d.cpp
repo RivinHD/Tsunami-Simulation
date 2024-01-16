@@ -7,6 +7,10 @@
 #include "../../include/amr/AMRCoreWavePropagation2d.h"
 #include "../../include/amr/Kernels.h"
 
+#include <AMReX_MultiFabUtil.H>
+#include <AMReX_FillPatchUtil.H>
+#include <AMReX_PhysBCFunct.H>
+
 using namespace amrex;
 
 void tsunami_lab::amr::AMRCoreWavePropagation2d::FillCoarsePatch( int lev,
@@ -96,9 +100,9 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::FillPatch( int lev, amrex::Real
 }
 
 void tsunami_lab::amr::AMRCoreWavePropagation2d::setGlobalValue( amrex::MultiFab& mf,
-                                                                 t_idx x,
-                                                                 t_idx y,
-                                                                 t_idx z,
+                                                                 int x,
+                                                                 int y,
+                                                                 int z,
                                                                  int comp,
                                                                  amrex::Real value )
 {
