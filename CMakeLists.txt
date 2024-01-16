@@ -95,12 +95,6 @@ set(SRC_FILES_IO
 set(SRC_FILES_NO_TEST
 
 )
-set(SRC_FILES_HEADER_ONLY
-        io/ArgSetup
-)
-set(SRC_FILES_HEADER_ONLY_NO_TEST
-        amr/Kernels
-)
 set(TEST_FILES ${PROJECT_SOURCE_DIR}/tests.cpp)
 set(MAIN_FILE ${PROJECT_SOURCE_DIR}/main.cpp)
 set(MIDDLE_STATE_FILE ${PROJECT_SOURCE_DIR}/test_middle_states.cpp)
@@ -144,19 +138,6 @@ endif(NOT DISABLE_IO)
 foreach(file ${SRC_FILES_NO_TEST})
     list(APPEND SOURCE_FILES
             ${PROJECT_SOURCE_DIR}/${file}.cpp
-            ${PROJECT_INCLUDE_DIR}/${file}.h
-    )
-endforeach()
-foreach(file ${SRC_FILES_HEADER_ONLY})
-    list(APPEND SOURCE_FILES
-            ${PROJECT_INCLUDE_DIR}/${file}.h
-    )
-    list(APPEND TEST_FILES
-            ${PROJECT_INCLUDE_DIR}/${file}.test.h
-    )
-endforeach()
-foreach(file ${SRC_FILES_HEADER_ONLY_NO_TEST})
-    list(APPEND SOURCE_FILES
             ${PROJECT_INCLUDE_DIR}/${file}.h
     )
 endforeach()
