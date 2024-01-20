@@ -112,6 +112,7 @@ set(RESOURCE_FILES
         WriteNetCDF_M.test.txt
         artificialtsunami_displ_1000.nc
         artificialtsunami_bathymetry_1000.nc
+        inputs.amrex
 )
 
 # Create SOURCE_FILES

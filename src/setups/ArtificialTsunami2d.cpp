@@ -5,7 +5,7 @@
  **/
 
 #include "../../include/setups/ArtificialTsunami2d.h"
-#include <cmath>
+#include <math.h>
 
 tsunami_lab::setups::ArtificialTsunami2d::ArtificialTsunami2d()
     : bathymetryHeight( -100 ), centerOffset( 5000 )

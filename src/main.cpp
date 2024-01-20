@@ -9,6 +9,7 @@
 
 #include "../include/patches/WavePropagation1d.h"
 #include "../include/patches/WavePropagation2d.h"
+#include "../include/amr/AMRCoreWavePropagation2d.h"
 #include "../include/setups/DamBreak1d.h"
 #include "../include/setups/RareRare1d.h"
 #include "../include/setups/ShockShock1d.h"
@@ -34,6 +35,8 @@
 #include <filesystem> // requieres C++17 and up
 namespace fs = std::filesystem;
 #endif // !TSUNAMI_SIMULATION_DISABLE_IO
+
+#define SKIP_ARGUMENTS
 
 const std::string SOLUTION_FOLDER = "solutions";
 
@@ -137,263 +140,14 @@ int main( int   i_argc,
 
     // setup the variables
     tsunami_lab::setups::Setup* l_setup = nullptr;
-    tsunami_lab::t_real l_scaleX = 2700000;
-    tsunami_lab::t_real l_scaleY = 1500000;
+    tsunami_lab::t_real l_scaleX = 10000;
+    tsunami_lab::t_real l_scaleY = 10000;
     bool useCheckpoint = false;
     tsunami_lab::t_real l_simTime = 0;
     tsunami_lab::t_real checkpointHMax = 0;
 
-    std::cout << "Checking for Checkpoints: ";
-
-#ifndef TSUNAMI_SIMULATION_DISABLE_IO
-    tsunami_lab::t_idx l_writeCount = 0;
-    std::string checkpointPath = SOLUTION_FOLDER + "/checkpoint.nc";
-    std::vector<char*> parsedArgv;
-    if( fs::exists( checkpointPath ) )
-    {
-        std::cout << green << "Loading checkpoint!" << reset << std::endl;
-        l_setup = new tsunami_lab::setups::Checkpoint( checkpointPath.c_str(),
-                                                       l_writeCount,
-                                                       l_simTime,
-                                                       checkpointHMax,
-                                                       parsedArgv );
-        i_argc = parsedArgv.size();
-        i_argv = parsedArgv.data();
-        useCheckpoint = true;
-    }
-    else
-    {
-        std::cout << green << "No checkpoint found!" << reset << std::endl;
-    }
-#endif // !TSUNAMI_SIMULATION_DISABLE_IO
-#ifdef TSUNAMI_SIMULATION_DISABLE_IO
-    std::cout << green << "File IO is disabled!" << reset << std::endl;
-#endif // TSUNAMI_SIMULATION_DISABLE_IO
-
-    // compact the inputs to one string for the checkpoint
-    std::string commandLine = i_argv[0];
-    for( int i = 1; i < i_argc; i++ )
-    {
-        commandLine += " ";
-        commandLine += i_argv[i];
-    }
-
-#ifndef SKIP_ARGUMENTS
-    // error: wrong number of arguments.
-    int minArgLength = 1 + requiredArguments;
-    int maxArgLength = minArgLength + optionalArguments + ArgSetup::getArgumentsLength( optionalFlags );
-    if( i_argc < minArgLength || i_argc > maxArgLength )
-    {
-        std::cerr << "invalid number of arguments, usage:" << std::endl;
-        printHelp();
-        return EXIT_FAILURE;
-    }
-
-    // parse required Argumentes
-    // Argument 1: N_CELLS_X
-    l_nx = atoi( i_argv[1] );
-    if( l_nx < 1 )
-    {
-        std::cerr << "N_CELLS_X: invalid number of cells" << std::endl;
-        printHelp();
-        return EXIT_FAILURE;
-    }
-    // Argument 2 (optional): N_CELLS_Y
-    if( i_argc > 2 && i_argv[2][0] != '-' )
-    {
-        use2D = true;
-        l_ny = atoi( i_argv[2] );
-        ++minArgLength;
-    }
-    if( use2D && l_ny < 1 )
-    {
-        std::cerr << "N_CELLS_Y: invalid number of cells" << std::endl;
-        printHelp();
-        return EXIT_FAILURE;
-    }
-
-    // parse optional Argumentes
-    int argMapParameterCount[ArgSetup::LENGTH_ARG_CHAR] = { 0 };
-    ArgSetup::generateCountMap( optionalFlags, argMapParameterCount );
-    for( int i = minArgLength; i < i_argc; i++ )
-    {
-        char* arg = i_argv[i];
-        if( arg[0] == '\0' || ( arg[0] == '-' && arg[1] == '\0' ) )
-        {
-            printHelp();
-            return EXIT_FAILURE;
-        }
-
-        unsigned int argI = 0;
-        std::string stringParameter;
-        int intParameter;
-        float floatParameter;
-        int startIndex;
-        while( arg[++argI] != '\0' )  // starts with argI = 1
-        {
-            if( arg[argI] < START_ARG_CHAR || arg[argI] > END_ARG_CHAR )
-            {
-                std::cerr << "The Flag: " << green << arg[argI] << reset << " is not a valid flag (Out of Bounds)" << std::endl;
-                return EXIT_FAILURE;
-            }
-            if( i + argMapParameterCount[arg[argI] - START_ARG_CHAR] >= i_argc )
-            {
-                std::cerr << "The Flag: " << green << arg[argI] << reset << " has not enough Inputs" << std::endl;
-                return EXIT_FAILURE;
-            }
-            switch( arg[argI] )
-            {
-                case Arguments::SOLVER:
-                    stringParameter = std::string( i_argv[++i] );
-                    if( "roe" == stringParameter )
-                    {
-                        solver = tsunami_lab::patches::Solver::ROE;
-                    }
-                    else if( "fwave" == stringParameter )
-                    {
-                        solver = tsunami_lab::patches::Solver::FWAVE;
-                    }
-                    else
-                    {
-                        std::cerr << "'" << stringParameter << "' is an unknown argument for flag -s" << std::endl
-                            << "valid arguments are 'fwave', 'roe'" << std::endl;
-                        return EXIT_FAILURE;
-                    }
-                    break;
-
-                case Arguments::USE_BATHYMETRY:
-                    useBathymetry = true;
-                    break;
-
-                case Arguments::REFLECTION:
-                    startIndex = i;
-                    stringParameter = std::string( i_argv[i + 1] );
-                    do
-                    {
-                        i += 1;
-                        if( stringParameter == "left" )
-                        {
-                            reflectLeft = true;
-                        }
-                        else if( stringParameter == "right" )
-                        {
-                            reflectRight = true;
-                        }
-                        else if( stringParameter == "top" )
-                        {
-                            reflectTop = true;
-                        }
-                        else if( stringParameter == "bottom" )
-                        {
-                            reflectBottom = true;
-                        }
-                        else if( stringParameter == "x" )
-                        {
-                            reflectLeft = true;
-                            reflectRight = true;
-                        }
-                        else if( stringParameter == "y" )
-                        {
-                            reflectTop = true;
-                            reflectBottom = true;
-                        }
-                        else if( stringParameter == "all" )
-                        {
-                            reflectLeft = true;
-                            reflectRight = true;
-                            reflectTop = true;
-                            reflectBottom = true;
-                        }
-                        else if( i == startIndex + 1 )
-                        {
-                            std::cerr << "'" << stringParameter << "' is an unknown argument for flag -r" << std::endl
-                                << "valid arguments are 'left', 'right', 'top', 'bottom', 'x', 'y', 'all'" << std::endl
-                                << "the arguments 'top' and 'bottom' only take effect if the simulation is 2d" << std::endl;
-                            return EXIT_FAILURE;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                        if( i + 1 >= i_argc )
-                        {
-                            break;
-                        }
-                        stringParameter = std::string( i_argv[i + 1] );
-                    } while( stringParameter[0] != '-' && i < startIndex + 4 );
-                    break;
-                case Arguments::TIME:
-                    floatParameter = atof( i_argv[++i] );
-                    if( floatParameter <= 0 || std::isnan( floatParameter ) || std::isinf( floatParameter ) )
-                    {
-                        std::cerr << "invalid argument for flag -r" << std::endl
-                            << "the time should be a number larger than 0" << std::endl;
-                        return EXIT_FAILURE;
-                    }
-                    l_endTime = floatParameter;
-                    break;
-                case Arguments::IO_FORMAT:
-                    stringParameter = std::string( i_argv[++i] );
-                    if( stringParameter == "csv" )
-                    {
-                        isCsv = true;
-                    }
-                    else if( stringParameter == "netCDF" )
-                    {
-                        isCsv = false;
-                    }
-                    else
-                    {
-                        std::cerr << "'" << stringParameter << "' is an unknown argument for flag -f" << std::endl
-                            << "valid arguments are 'csv', 'netCDF'" << std::endl;
-                        return EXIT_FAILURE;
-                    }
-                    break;
-                case Arguments::USE_AXIS_SPHERICAL:
-                    useAxisSpherical = true;
-                    break;
-                case Arguments::WRITE_INTERVALL:
-                    floatParameter = atof( i_argv[++i] );
-                    if( floatParameter <= 0 || std::isnan( floatParameter ) || std::isinf( floatParameter ) )
-                    {
-                        std::cerr << "invalid argument for flag -w" << std::endl
-                            << "the time should be a number larger than 0" << std::endl;
-                        return EXIT_FAILURE;
-                    }
-                    l_writeTime = floatParameter;
-                    break;
-                case Arguments::AVERAGE_SEVERAL:
-                    intParameter = atoi( i_argv[++i] );
-                    if( intParameter <= 0 )
-                    {
-                        std::cerr << "invalid argument for flag -k" << std::endl
-                            << "the checkpoint write frequency should be a number larger than 0" << std::endl;
-                        return EXIT_FAILURE;
-                    }
-                    l_averageCellNumber = intParameter;
-                    break;
-                case Arguments::CHECKPOINT_INTERVALL:
-                    floatParameter = atof( i_argv[++i] );
-                    if( floatParameter <= 0 || std::isnan( floatParameter ) || std::isinf( floatParameter ) )
-                    {
-                        std::cerr << "invalid argument for flag -c" << std::endl
-                            << "the time should be a number larger than 0" << std::endl;
-                        return EXIT_FAILURE;
-                    }
-                    checkpointIntervall = floatParameter;
-                    break;
-                default:
-                    std::cerr << "unknown flag: " << arg[argI] << std::endl;
-                    printHelp();
-                    return EXIT_FAILURE;
-                    break;
-            }
-        }
-    }
-#endif // !SKIP_ARGUMENTS
-#ifdef SKIP_ARGUMENTS
-    l_nx = 2700;
-    l_ny = 1500;
+    l_nx = 2000;
+    l_ny = 2000;
     reflectLeft = false;
     reflectRight = false;
     reflectBottom = false;
@@ -403,96 +157,36 @@ int main( int   i_argc,
     useAxisSpherical = false;
     l_endTime = 13000;
     std::cout << i_argv[i_argc - 1] << std::endl;
-#endif // SKIP_ARGUMENTS
-
-    // Print activated Features
-    std::cout << "Simulation is set to " << green << ( use2D ? "2D" : "1D" ) << reset << std::endl
-        << "Bathymetry is " << green << ( useBathymetry ? "Enabled" : "Disabled" ) << reset << std::endl;
-
-    std::cout << "Set Solver: ";
-    if( solver == tsunami_lab::patches::Solver::ROE )
-    {
-        std::cout << green << "Roe" << reset << std::endl;
-    }
-    else
-    {
-        std::cout << green << "FWave" << reset << std::endl;
-    }
-
-    if( ( useBathymetry ) && solver == tsunami_lab::patches::Solver::ROE )
-    {
-        std::cerr << "ERROR: Roe solver does not have options for bathymetry" << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    std::string reflectionsText = "";
-    bool reflectionAppended = false;
-    reflectionsText += reflectLeft ? "Left" : "";
-    reflectionAppended |= reflectLeft;
-    reflectionsText += reflectRight ? ( reflectionAppended ? ", Right" : "Right" ) : "";
-    reflectionAppended |= reflectRight;
-    reflectionsText += reflectTop ? ( reflectionAppended ? ", Top" : "Top" ) : "";
-    reflectionAppended |= reflectTop;
-    reflectionsText += reflectBottom ? ( reflectionAppended ? ", Bottom" : "Bottom" ) : "";
-    reflectionAppended |= reflectBottom;
-    if( reflectionsText != "" )
-    {
-        std::cout << "Activated Reflection on " << green << reflectionsText << reset << " side" << std::endl;
-    }
-    else
-    {
-        std::cout << "Activated Reflection on " << green << "None" << reset << " side" << std::endl;
-    }
-
-    std::cout << "Output format is set to " << green << ( isCsv ? "csv" : "netCDF" ) << reset << std::endl
-        << "Writing the X-/Y-Axis in format " << green << ( useAxisSpherical ? "degrees" : "meters" ) << reset << std::endl
-        << "Simulation Time is set to " << green << l_endTime << " seconds" << reset << std::endl
-        << "Writing to the disk every " << green << l_writeTime << " seconds" << reset << " of simulation time" << std::endl
-        << "Checkpointing every " << green << checkpointIntervall << " minutes" << reset << std::endl;
-    // End print
-    if( use2D )
-    {
-        l_dxy = std::min( l_scaleX / l_nx, l_scaleY / l_ny );
-    }
-    else
-    {
-        l_dxy = l_scaleX / l_nx;
-    }
-
-    std::cout << "runtime configuration" << std::endl;
-    std::cout << "  number of cells in x-direction:       " << l_nx << std::endl;
-    std::cout << "  number of cells in y-direction:       " << l_ny << std::endl;
-    std::cout << "  cell size:                            " << l_dxy << std::endl;
-    std::cout << "  number of cells combined to one cell: " << ( l_averageCellNumber * l_averageCellNumber ) << std::endl;
 
     // construct setup
     if( l_setup == nullptr )
     {
-        const char* variables[3]{ "x", "y", "z" };
+        /*const char* variables[3]{ "x", "y", "z" };
         l_setup = new tsunami_lab::setups::TsunamiEvent2d( "resources/artificialtsunami_bathymetry_1000.nc",
                                                            variables,
                                                            "resources/artificialtsunami_displ_1000.nc",
                                                            variables,
                                                            l_scaleX,
-                                                           l_scaleY );
+                                                           l_scaleY );*/
+        l_setup = new tsunami_lab::setups::CircularDamBreak2d();
     }
+
+    int argc = 2;
+    std::string arg1 = fs::absolute( "resources/inputs.amrex" ).string();
+    char** argv = new char* [argc];
+    argv[0] = i_argv[0];
+    argv[1] = const_cast<char*>( arg1.c_str() );
+    amrex::Initialize( argc, argv );
 
     // construct solver
-    tsunami_lab::patches::WavePropagation* l_waveProp;
-    if( use2D )
-    {
-        l_waveProp = new tsunami_lab::patches::WavePropagation2d( l_nx, l_ny );
-    }
-    else
-    {
-        l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx );
-    }
+    tsunami_lab::amr::AMRCoreWavePropagation2d* l_waveProp = new tsunami_lab::amr::AMRCoreWavePropagation2d( l_setup );
+
 
     // set the solver to use
-    l_waveProp->setSolver( solver );
+    //l_waveProp->setSolver( solver );
 
     // set if bathymetry exists
-    l_waveProp->enableBathymetry( useBathymetry );
+    // l_waveProp->enableBathymetry( useBathymetry );
 
     // set Reflection
     l_waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::LEFT, reflectLeft );
@@ -509,121 +203,11 @@ int main( int   i_argc,
     {
         cellSize = 1;
     }
-    // set up solver
-#pragma omp parallel for reduction(max: l_hMax)
-    for( tsunami_lab::t_idx l_cy = 0; l_cy < l_ny; l_cy++ )
-    {
-        tsunami_lab::t_real l_y = l_cy * cellSize;
-
-        for( tsunami_lab::t_idx l_cx = 0; l_cx < l_nx; l_cx++ )
-        {
-            tsunami_lab::t_real l_x = l_cx * cellSize;
-
-            // get initial values of the setup
-            tsunami_lab::t_real l_h = l_setup->getHeight( l_x,
-                                                          l_y );
-            l_hMax = std::max( l_h, l_hMax );
-
-            tsunami_lab::t_real l_hu = l_setup->getMomentumX( l_x,
-                                                              l_y );
-            tsunami_lab::t_real l_hv = l_setup->getMomentumY( l_x,
-                                                              l_y );
-            tsunami_lab::t_real l_b = l_setup->getBathymetry( l_x,
-                                                              l_y );
-
-            // set initial values in wave propagation solver
-            l_waveProp->setHeight( l_cx,
-                                   l_cy,
-                                   l_h );
-
-            l_waveProp->setMomentumX( l_cx,
-                                      l_cy,
-                                      l_hu );
-
-            l_waveProp->setMomentumY( l_cx,
-                                      l_cy,
-                                      l_hv );
-
-            l_waveProp->setBathymetry( l_cx,
-                                       l_cy,
-                                       l_b );
-        }
-    }
-    if( useCheckpoint )
-    {
-        l_hMax = checkpointHMax;
-    }
 
     // free no longer needed setup
     delete l_setup;
 
-    // derive maximum wave speed in setup; the momentum is ignored
-    tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
-    std::cout << "Max speed " << l_speedMax << std::endl;
-
     // derive constant time step; changes at simulation time are ignored
-    tsunami_lab::t_real l_dt = 0.45 * l_dxy / l_speedMax;
-
-    // derive scaling for a time step
-    tsunami_lab::t_real l_scaling = l_dt / l_dxy;
-
-#ifndef TSUNAMI_SIMULATION_DISABLE_IO
-
-    // initialize stations
-    tsunami_lab::io::Stations l_stations = tsunami_lab::io::Stations( l_nx,
-                                                                      l_ny,
-                                                                      l_waveProp->getStride(),
-                                                                      l_scaleX,
-                                                                      l_scaleY );
-    if( !useCheckpoint )
-    {
-        // create simulation folder inside solution folder
-        if( !fs::exists( SOLUTION_FOLDER ) )
-        {
-            fs::create_directory( SOLUTION_FOLDER );
-        }
-        if( fs::exists( SOLUTION_FOLDER + "/simulation" ) )
-        {
-            fs::remove_all( SOLUTION_FOLDER + "/simulation" );
-        }
-        fs::create_directory( SOLUTION_FOLDER + "/simulation" );
-    }
-
-    tsunami_lab::io::NetCdf* netCdfWriter = nullptr;
-    if( !isCsv )
-    {
-        if( useCheckpoint )
-        {
-            netCdfWriter = new tsunami_lab::io::NetCdf( l_writeCount,
-                                                        SOLUTION_FOLDER + "/simulation/solution.nc",
-                                                        l_nx,
-                                                        l_ny,
-                                                        l_averageCellNumber,
-                                                        l_scaleX,
-                                                        l_scaleY,
-                                                        l_waveProp->getStride(),
-                                                        useBathymetry ? l_waveProp->getBathymetry() : nullptr,
-                                                        useAxisSpherical );
-        }
-        else
-        {
-            netCdfWriter = new tsunami_lab::io::NetCdf( SOLUTION_FOLDER + "/simulation/solution.nc",
-                                                        l_nx,
-                                                        l_ny,
-                                                        l_averageCellNumber,
-                                                        l_scaleX,
-                                                        l_scaleY,
-                                                        l_waveProp->getStride(),
-                                                        useBathymetry ? l_waveProp->getBathymetry() : nullptr,
-                                                        useAxisSpherical,
-                                                        true );
-        }
-    }
-
-    // var to check if it's time to write stations
-    tsunami_lab::t_real l_timeCount = 0.0;
-    auto checkpointTime = std::chrono::high_resolution_clock::now();
-#endif // !TSUNAMI_SIMULATION_DISABLE_IO
 
     const auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -631,107 +215,17 @@ int main( int   i_argc,
     tsunami_lab::t_idx l_cellUpdates = 0;
 
     // iterate over time
-    while( l_simTime < l_endTime )
-    {
-#ifndef TSUNAMI_SIMULATION_DISABLE_IO
+    l_waveProp->Evolve();
 
-        if( l_timeCount / l_stations.getOutputFrequency() >= 1.0 )
-        {
-            l_stations.write( l_simTime,
-                              l_waveProp->getTotalHeight(),
-                              l_waveProp->getMomentumX(),
-                              l_waveProp->getMomentumY() );
-            l_timeCount -= l_stations.getOutputFrequency();
-        }
-        l_timeCount += l_dt;
-
-        if( l_simTime >= ( l_writeTime * l_writeCount ) )
-        {
-            ++l_writeCount;
-            std::cout << "  simulation time / number of writes: "
-                << l_simTime << " / " << l_writeCount << std::endl;
-
-
-            if( isCsv )
-            {
-                std::string l_path = SOLUTION_FOLDER + "/simulation/solution_" + std::to_string( l_writeCount ) + ".csv";
-                std::cout << "  writing wave field to " << l_path << std::endl;
-
-                std::ofstream l_file;
-                l_file.open( l_path );
-                tsunami_lab::io::Csv::write( l_dxy,
-                                             l_nx,
-                                             l_ny,
-                                             l_waveProp->getStride(),
-                                             l_waveProp->getHeight(),
-                                             l_waveProp->getMomentumX(),
-                                             l_waveProp->getMomentumY(),
-                                             l_waveProp->getBathymetry(),
-                                             l_waveProp->getTotalHeight(),
-                                             l_file );
-                l_file.close();
-            }
-            else
-            {
-                if( l_averageCellNumber > 1 )
-                {
-                    netCdfWriter->averageSeveral( l_simTime,
-                                                  l_waveProp->getTotalHeight(),
-                                                  l_waveProp->getMomentumX(),
-                                                  l_waveProp->getMomentumY() );
-                }
-                else
-                {
-                    netCdfWriter->write( l_simTime,
-                                         l_waveProp->getTotalHeight(),
-                                         l_waveProp->getMomentumX(),
-                                         l_waveProp->getMomentumY() );
-                }
-
-            }
-        }
-
-        if( std::chrono::duration_cast<std::chrono::seconds>( std::chrono::high_resolution_clock::now() - checkpointTime ).count() / 60.0f >= checkpointIntervall )
-        {
-            std::string tempCheckpointPath = SOLUTION_FOLDER + "/new_checkpoint";
-            tsunami_lab::io::NetCdf* checkpointWriter = new tsunami_lab::io::NetCdf( tempCheckpointPath,
-                                                                                     l_nx,
-                                                                                     l_ny,
-                                                                                     l_scaleX,
-                                                                                     l_scaleY,
-                                                                                     l_waveProp->getStride(),
-                                                                                     l_waveProp->getBathymetry(),
-                                                                                     commandLine.c_str(),
-                                                                                     l_hMax,
-                                                                                     l_waveProp->getTotalHeight(),
-                                                                                     l_waveProp->getMomentumX(),
-                                                                                     l_waveProp->getMomentumY(),
-                                                                                     l_simTime,
-                                                                                     l_writeCount );
-            delete checkpointWriter;
-            if( fs::exists( checkpointPath ) )
-            {
-                fs::remove( checkpointPath );
-            }
-            fs::rename( tempCheckpointPath, checkpointPath );
-            checkpointTime = std::chrono::high_resolution_clock::now();
-        }
-#endif // !TSUNAMI_SIMULATION_DISABLE_IO
-
-        l_waveProp->setGhostOutflow();
-        l_waveProp->timeStep( l_scaling );
-
-        l_simTime += l_dt;
-        l_cellUpdates++;
-    }
     std::cout << "finished time loop" << std::endl;
 
     // free memory
     std::cout << "freeing memory" << std::endl;
     delete l_waveProp;
-#ifndef TSUNAMI_SIMULATION_DISABLE_IO
-    delete netCdfWriter;
-#endif // !TSUNAMI_SIMULATION_DISABLE_IO
+
+    amrex::Finalize();
+
+    delete[] argv;
 
     // Print the calculation time
     const auto duration = std::chrono::high_resolution_clock::now() - startTime;

@@ -18,7 +18,7 @@ namespace tsunami_lab
 }
 
 /**
-* One-dimensional wave propagation patch.
+* Two-dimensional wave propagation patch.
 */
 class tsunami_lab::patches::WavePropagation2d : public WavePropagation
 {

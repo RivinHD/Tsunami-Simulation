@@ -17,6 +17,7 @@
 #include <AMReX_Interpolater.H>
 
 #include "../../include/patches/WavePropagation.h"
+#include "../../include/setups/Setup.h"
 
 namespace tsunami_lab
 {
@@ -26,17 +27,12 @@ namespace tsunami_lab
     }
 }
 
+/**
+ * Two-dimensional adaptiv multi resolution wave propagation
+*/
 class tsunami_lab::amr::AMRCoreWavePropagation2d : public amrex::AmrCore, public tsunami_lab::patches::WavePropagation
 {
 private:
-    enum Component
-    {
-        HEIGHT = 0,
-        MOMENTUM_X = 1,
-        MOMENTUM_Y = 2,
-        BATHYMERTRY = 3
-    };
-
     //! number of components i.e. Height, MomentumX, MomentumY, Bathymetry
     const int nComponents = 4;
 
@@ -48,7 +44,7 @@ private:
     amrex::Interpolater* interpolator = &amrex::lincc_interp;
 
     //! which step?
-    amrex::Vector<amrex::Real> step;
+    amrex::Vector<int> step;
 
     //! how many substeps on each level?
     amrex::Vector<int> nSubSteps;
@@ -93,21 +89,47 @@ private:
     //! frequency to write the output
     int writeFrequency = -1;
 
-    // fill an entire multifab by interpolating from the coarser level
-    // this comes into play when a new level of refinement appears
-    void FillCoarsePatch( int lev,
+    amrex::Vector<amrex::Real> gridErr;
+
+    /**
+     * fill an entire multifab by interpolating from the coarser level
+     * this comes into play when a new level of refinement appears
+     * @param level the level to fill
+     * @param time the current time
+     * @param mf the multiFab to interpolate to
+     * @param icomp component index to start interpolating
+     * @param ncomp number of components of the multifab
+    */
+    void FillCoarsePatch( int level,
                           amrex::Real time,
                           amrex::MultiFab& mf,
                           int icomp,
                           int ncomp );
 
-    // utility to copy in data from gridOld and/or gridNew into another multifab
-    void GetData( int lev, amrex::Real time, amrex::Vector<amrex::MultiFab*>& data,
+    // 
+
+    /**
+     * utility to copy in data from gridOld and/or gridNew into another multifab
+     * @param level the level to get data from
+     * @param time the current time
+     * @param data
+     * @param datatime
+    */
+    void GetData( int level, amrex::Real time, amrex::Vector<amrex::MultiFab*>& data,
                   amrex::Vector<amrex::Real>& datatime );
 
     // compute a new multifab by coping in phi from valid region and filling ghost cells
     // works for single level and 2-level cases (fill fine grid ghost by interpolating from coarse)
-    void FillPatch( int lev, amrex::Real time, amrex::MultiFab& mf, int icomp, int ncomp );
+
+    /**
+     * Fill a patch with data from the grid
+     * @param level the level to fill
+     * @param time the current time
+     * @param mf the multifab to fill
+     * @param icomp component index to start filling
+     * @param ncomp number of components of the multifab
+    */
+    void FillPatch( int level, amrex::Real time, amrex::MultiFab& mf, int icomp, int ncomp );
 
     void setGlobalValue( amrex::MultiFab& mf,
                          int x,
@@ -116,10 +138,48 @@ private:
                          int comp,
                          amrex::Real value );
 
+    // Advance a level by dt - includes a recursive call for finer levels
+    void timeStepWithSubcycling( int level,
+                                 amrex::Real time,
+                                 int iteration );
+
+    // Advance phi at a single level for a single time step, update flux registers
+    void AdvanceGridAtLevel( int level,
+                             amrex::Real time,
+                             amrex::Real dtLevel,
+                             int iteration,
+                             int nCycle );
+
+    // write plotfile to disk
+    void WritePlotFile() const;
+
+    // more flexible version of AverageDown() that lets you average down across multiple levels
+    void AverageDownTo( int coarse_lev );
+
+    // read in some parameters from inputs file
+    void ReadParameters();
+
+    void InitData( tsunami_lab::setups::Setup* setup );
+
 public:
-    AMRCoreWavePropagation2d( t_idx nx,
-                              t_idx ny,
-                              amrex::Real timeStep );
+    /**
+     * The Components that is stored in the MutliFab grid
+    */
+    enum Component
+    {
+        HEIGHT = 0,
+        MOMENTUM_X = 1,
+        MOMENTUM_Y = 2,
+        BATHYMERTRY = 3
+    };
+
+    AMRCoreWavePropagation2d( tsunami_lab::setups::Setup* setup );
+
+    // set the time step of the simulation
+    void setTimeStep( amrex::Real timeStep );
+
+    // advance solution to final time
+    void Evolve();
 
     //! Tag cells for refinement. TagBoxArray tags is built on level lev grids.
     void ErrorEst( int lev, amrex::TagBoxArray& tags,
