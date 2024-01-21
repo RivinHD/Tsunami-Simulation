@@ -34,7 +34,7 @@ class tsunami_lab::amr::AMRCoreWavePropagation2d : public amrex::AmrCore
 {
 private:
     //! number of components i.e. Height, MomentumX, MomentumY, Bathymetry
-    const int nComponents = 4;
+    const int nComponents = 5;
 
     //! number of ghost cell around the boundary of the domain
     const int nGhostRow = 1;
@@ -97,6 +97,9 @@ private:
 
     //! the error bound for each level
     amrex::Vector<amrex::Real> gridErr;
+
+    //! the setup to init the data with
+    tsunami_lab::setups::Setup* setup;
 
     /**
      * Fill an entire multifab by interpolating from the coarser level
@@ -181,8 +184,10 @@ private:
 
     /**
      * Read the data from the setup into the grid
+     *
+     * @param level the level to setup
     */
-    void InitData( tsunami_lab::setups::Setup* setup );
+    void InitData( int level );
 
 public:
     /**
@@ -193,7 +198,8 @@ public:
         HEIGHT = 0,
         MOMENTUM_X = 1,
         MOMENTUM_Y = 2,
-        BATHYMERTRY = 3
+        BATHYMERTRY = 3,
+        CHANGE = 4
     };
 
     /**
@@ -207,8 +213,9 @@ public:
      * Set the time step of the simulation
      *
      * @param timeStep set the timeStep to step forward
+     * @param level the level to set
     */
-    void setTimeStep( amrex::Real timeStep );
+    void setTimeStep( amrex::Real timeStep, int level );
 
     /**
      * Advance solution to final time

@@ -169,7 +169,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::timeStepWithSubcycling( int lev
         }
 
         // update level based on coarse-fine flux mismatch
-        fluxRegister[level + 1]->Reflux( gridNew[level], 1.0, 0, 0, nComponents, geom[level] );
+        //fluxRegister[level + 1]->Reflux( gridNew[level], 1.0, 0, 0, 3, geom[level] );
 
         AverageDownTo( level ); // average level+1 down to level
     }
@@ -256,7 +256,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::AdvanceGridAtLevel( int level,
         Array4<Real> fluxy = fluxes[1].array( mfi );
 
         // compute the y-sweep and the y fluxes
-        amrex::launch( amrex::grow( bx, Direction::y, 1 ),
+        amrex::launch( amrex::grow( bx, 1 ),
                        [=] AMREX_GPU_DEVICE( const Box & tbx )
         {
             ySweep( tbx, dtdy, height, momentumX, momentumY, bathymetry, gridOut, fluxy );
@@ -296,10 +296,6 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::AdvanceGridAtLevel( int level,
 
 void tsunami_lab::amr::AMRCoreWavePropagation2d::WritePlotFile() const
 {
-
-#ifndef TSUNAMI_SIMULATION_DISABLE_IO
-    return;
-#endif //TSUNAMI_SIMULATION_DISABLE_IO
     const fs::path file( amrex::Concatenate( plotFile, step[0], 5 ) );
     const fs::path dir( plotFolder );
     fs::path fullpath = dir / file;
@@ -309,7 +305,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::WritePlotFile() const
     {
         mf.push_back( &gridNew[i] );
     }
-    Vector<std::string> varnames = { "Height", "MomentumX", "MomentumY", "Bathymetry" };
+    Vector<std::string> varnames = { "Height", "MomentumX", "MomentumY", "Bathymetry", "Change" };
 
     amrex::Print() << "Writing plotfile " << fullpath << std::endl;
 
@@ -319,9 +315,10 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::WritePlotFile() const
 
 void tsunami_lab::amr::AMRCoreWavePropagation2d::AverageDownTo( int coarseLevel )
 {
+    // Average down the first 3 Components: Height, MomentumX, MomentumY
     amrex::average_down( gridNew[coarseLevel + 1], gridNew[coarseLevel],
                          geom[coarseLevel + 1], geom[coarseLevel],
-                         0, nComponents, refRatio( coarseLevel ) );
+                         0, 3, refRatio( coarseLevel ) );
 }
 
 void tsunami_lab::amr::AMRCoreWavePropagation2d::ReadParameters()
@@ -354,29 +351,30 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::ReadParameters()
     }
 }
 
-void tsunami_lab::amr::AMRCoreWavePropagation2d::InitData( tsunami_lab::setups::Setup* setup )
+void tsunami_lab::amr::AMRCoreWavePropagation2d::InitData( int level )
 {
     amrex::Real hMax = std::numeric_limits<amrex::Real>::lowest();
 
 #ifdef AMREX_USE_OMP
 #pragma omp parallel reduction(max: hMax)
 #endif
-    for( MFIter mfi( gridNew[0], true ); mfi.isValid(); ++mfi )
+    for( MFIter mfi( gridNew[level], true ); mfi.isValid(); ++mfi )
     {
-        Box tbx = mfi.tilebox();
+        Box bx = mfi.tilebox();
 
         // size in x & y direction
-        const Real dx = geom[0].CellSize( 0 );
-        const Real dy = geom[0].CellSize( 1 );
+        const Real dx = geom[level].CellSize( 0 );
+        const Real dy = geom[level].CellSize( 1 );
 
-        Array4<amrex::Real> height = gridNew[0].array( mfi, HEIGHT );
-        Array4<amrex::Real> momentumX = gridNew[0].array( mfi, MOMENTUM_X );
-        Array4<amrex::Real> momentumY = gridNew[0].array( mfi, MOMENTUM_Y );
-        Array4<amrex::Real> bathymetry = gridNew[0].array( mfi, BATHYMERTRY );
+        Array4<amrex::Real> height = gridNew[level].array( mfi, HEIGHT );
+        Array4<amrex::Real> momentumX = gridNew[level].array( mfi, MOMENTUM_X );
+        Array4<amrex::Real> momentumY = gridNew[level].array( mfi, MOMENTUM_Y );
+        Array4<amrex::Real> bathymetry = gridNew[level].array( mfi, BATHYMERTRY );
+        Array4<amrex::Real> change = gridNew[level].array( mfi, CHANGE );
 
         amrex::Real* hMaxPtr = &hMax;
 
-        amrex::ParallelFor( tbx,
+        amrex::ParallelFor( bx,
                             [=] AMREX_GPU_DEVICE( int i, int j, int k )
         {
             amrex::Real x = i * dx;
@@ -386,6 +384,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::InitData( tsunami_lab::setups::
             momentumX( i, j, k ) = setup->getMomentumX( x, y );
             momentumY( i, j, k ) = setup->getMomentumY( x, y );
             bathymetry( i, j, k ) = setup->getBathymetry( x, y );
+            change( i, j, k ) = 0;
             *hMaxPtr = std::max( h, *hMaxPtr );
         } );
     }
@@ -393,14 +392,13 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::InitData( tsunami_lab::setups::
     amrex::Real speedMax = std::sqrt( 9.81 * hMax );
     std::cout << "Max speed " << speedMax << std::endl;
 
-    amrex::Real dxy = std::min( geom[0].CellSize( 0 ), geom[0].CellSize( 1 ) );
+    amrex::Real dxy = std::min( geom[level].CellSize( 0 ), geom[level].CellSize( 1 ) );
     amrex::Real dt = 0.45 * dxy / speedMax;
-    setTimeStep( dt );
-
-    gridNew[0].FillBoundary( true );
+    setTimeStep( dt, level );
 }
 
 tsunami_lab::amr::AMRCoreWavePropagation2d::AMRCoreWavePropagation2d( tsunami_lab::setups::Setup* setup )
+    : setup( setup )
 {
     ReadParameters();
 
@@ -434,28 +432,24 @@ tsunami_lab::amr::AMRCoreWavePropagation2d::AMRCoreWavePropagation2d( tsunami_la
 
     // init the domain
     InitFromScratch( 0.0 );
-
-    InitData( setup );
 }
 
-void tsunami_lab::amr::AMRCoreWavePropagation2d::setTimeStep( amrex::Real timeStep )
+void tsunami_lab::amr::AMRCoreWavePropagation2d::setTimeStep( amrex::Real timeStep, int level )
 {
-    int nLevelsMax = max_level + 1;
-    for( int i = 0; i < nLevelsMax; i++ )
-    {
-        tOld[i] = -timeStep;
-        dt[i] = timeStep;
-    }
+    tOld[level] = tNew[level] - timeStep;
+    dt[level] = timeStep;
 }
 
 void tsunami_lab::amr::AMRCoreWavePropagation2d::Evolve()
 {
     Real currentTime = tNew[0];
+    int writes = 0;
 
     for( int iStep = step[0]; currentTime < simulationTime; iStep++ )
     {
-        if( ( iStep ) % writeFrequency == 0 )
+        if( currentTime >= writes * writeFrequency )
         {
+            writes++;
             WritePlotFile();
         }
 
@@ -485,12 +479,10 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::ErrorEst( int level,
                                                            Real /*time*/,
                                                            int /*ngrow*/ )
 {
-    return; // TODO: AMR Remove to enable ErrorEst
-
     if( level >= gridErr.size() ) return;
 
     //    const int clearval = TagBox::CLEAR;
-    const int   tagval = TagBox::SET;
+    const int tagval = TagBox::SET;
 
     const MultiFab& state = gridNew[level];
 
@@ -502,7 +494,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::ErrorEst( int level,
         {
             const Box& bx = mfi.tilebox();
 
-            const auto statefab = state.array( mfi );
+            Array4<Real const> statefab = state.const_array( mfi, CHANGE );
             const auto tagfab = tags.array( mfi );
             Real gridError = gridErr[level];
 
@@ -534,6 +526,8 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromScratch( int le
         // init the flux register
         fluxRegister[level].reset( new FluxRegister( ba, dm, refRatio( level - 1 ), level, nComponents ) );
     }
+
+    InitData( level );
 }
 
 void tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromCoarse( int level,

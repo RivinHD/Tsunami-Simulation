@@ -36,7 +36,7 @@ amr.v              = 1       # verbosity in Amr
 # Resolution and refinement
 # *****************************************************************
 amr.n_cell          = 2704 1504 0 # must be divisible by blocking factor
-amr.max_level       = 0           # maximum level number allowed -- 
+amr.max_level       = 3           # maximum level number allowed -- 
                                     # number of levels = max_level + 1
 
 amr.ref_ratio       = 2 2 2 2    # refinement ratio between levels
@@ -62,15 +62,21 @@ amr.regrid_int      = 2       # how often to regrid should be larger than 0
 #            if err > 1.1  at level 1, then refine 
 #            if err > 1.5  at level 2, then refine 
 # *****************************************************************
-tsunami.griderr = 1.01  1.1  1.5
+tsunami.griderr = 0.01 0.02 100
+
+# *****************************************************************
+# Input Files for Tsunami Simulation
+# *****************************************************************
+tsunami.bathymetry_file   = "resources/gebco20/tohoku_gebco20_usgs_250m_bath.nc"
+tsunami.displacement_file = "resources/gebco20/tohoku_gebco20_usgs_250m_displ.nc"
 
 # *****************************************************************
 # Plotfile name and frequency
 # *****************************************************************
-amr.plot_file  = plt       # root name of plot file
-amr.plot_folder = solution # the folder to plot into
-amr.plot_int   = 10        # number of timesteps between plot files
-                             # if negative then no plot files will be written
+amr.plot_file   = plt       # root name of plot file
+amr.plot_folder = solution  # the folder to plot into
+amr.plot_int    = 50        # number of simulation time between plot files
+                              # if negative then no plot files will be written
 
 # *****************************************************************
 # Checkpoint name and frequency

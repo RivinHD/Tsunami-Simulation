@@ -64,11 +64,17 @@ int main( int   /*i_argc*/,
         amrex::Vector<amrex::Real> scale;
         ppGeometry.getarr( "prob_hi", scale, 0, 2 );
 
+        amrex::ParmParse ppTsunami( "tsunami" );
+        std::string bathymetryFile;
+        std::string displacementFile;
+        ppTsunami.query( "bathymetry_file", bathymetryFile );
+        ppTsunami.query( "displacement_file", displacementFile );
+
         const char* variables[3]{ "x", "y", "z" };
         tsunami_lab::setups::Setup* setup =
-            new tsunami_lab::setups::TsunamiEvent2d( "resources/gebco20/tohoku_gebco20_usgs_250m_bath.nc",
+            new tsunami_lab::setups::TsunamiEvent2d( bathymetryFile.c_str(),
                                                      variables,
-                                                     "resources/gebco20/tohoku_gebco20_usgs_250m_displ.nc",
+                                                     displacementFile.c_str(),
                                                      variables,
                                                      scale[0],
                                                      scale[1] );
@@ -90,9 +96,6 @@ int main( int   /*i_argc*/,
         waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::TOP, reflectTop );
         waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::BOTTOM, reflectBottom );
 
-        // free no longer needed setup
-        delete setup;
-
         // derive constant time step; changes at simulation time are ignored
 
         const auto startTime = std::chrono::high_resolution_clock::now();
@@ -107,6 +110,7 @@ int main( int   /*i_argc*/,
         // free memory
         std::cout << "freeing memory" << std::endl;
         delete waveProp;
+        delete setup;
         delete[] argv;
 
         // Print the calculation time
