@@ -30,7 +30,7 @@ namespace tsunami_lab
 /**
  * Two-dimensional adaptiv multi resolution wave propagation
 */
-class tsunami_lab::amr::AMRCoreWavePropagation2d : public amrex::AmrCore, public tsunami_lab::patches::WavePropagation
+class tsunami_lab::amr::AMRCoreWavePropagation2d : public amrex::AmrCore
 {
 private:
     //! number of components i.e. Height, MomentumX, MomentumY, Bathymetry
@@ -82,9 +82,15 @@ private:
     //! time to simulate
     amrex::Real simulationTime = std::numeric_limits<amrex::Real>::max();
 
-    // how often each level regrids the higher levels of refinement
-    // (after a level advances that many time steps)
+    //! how often each level regrids the higher levels of refinement
+    //! (after a level advances that many time steps)
     int regridFrequency = 2;
+
+    //! root name of plot file
+    std::string plotFile{ "plt" };
+
+    //! folder for plot files
+    std::string plotFolder{ "solution" };
 
     //! frequency to write the output
     int writeFrequency = -1;
@@ -130,13 +136,6 @@ private:
      * @param ncomp number of components of the multifab
     */
     void FillPatch( int level, amrex::Real time, amrex::MultiFab& mf, int icomp, int ncomp );
-
-    void setGlobalValue( amrex::MultiFab& mf,
-                         int x,
-                         int y,
-                         int z,
-                         int comp,
-                         amrex::Real value );
 
     // Advance a level by dt - includes a recursive call for finer levels
     void timeStepWithSubcycling( int level,
@@ -209,32 +208,8 @@ public:
 
     //! Delete level data
     void ClearLevel( int lev );
-
-    void timeStep( t_real i_scaling ) override;
-    void setGhostOutflow() override;
-    t_idx getStride() override;
-    t_real const* getHeight() override;
-    t_real const* getMomentumX() override;
-    t_real const* getTotalHeight() override;
-    t_real const* getMomentumY() override;
-    t_real const* getBathymetry() override;
-    void setHeight( t_idx i_ix,
-                    t_idx i_iy,
-                    t_real i_h ) override;
-    void setMomentumX( t_idx i_ix,
-                       t_idx i_iy,
-                       t_real i_hu ) override;
-    void setMomentumY( t_idx i_ix,
-                       t_idx i_iy,
-                       t_real i_hv ) override;
-    void setSolver( tsunami_lab::patches::Solver solver ) override;
-    void setBathymetry( t_idx i_ix,
-                        t_idx i_iy,
-                        t_real i_b ) override;
-    void enableBathymetry( bool enable ) override;
-    void updateWaterHeight() override;
-    void setReflection( Side side,
-                        bool enable ) override;
+    void setReflection( tsunami_lab::patches::WavePropagation::Side side,
+                        bool enable );
 };
 
 

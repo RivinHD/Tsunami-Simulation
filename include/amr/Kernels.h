@@ -34,9 +34,9 @@ void xSweep( amrex::Box const& bx,
     const auto lo = amrex::lbound( bx );
     const auto hi = amrex::ubound( bx );
 
-    for( int j = lo.y; j <= hi.y; ++j )
+    for( int j = lo.y; j < hi.y; ++j )
     {
-        for( int i = lo.x; i <= hi.x; ++i )
+        for( int i = lo.x; i < hi.x; ++i )
         {
             // noting to compute both shore cells
             if( height( i, j, 0 ) == 0 && height( i + 1, j, 0 ) == 0 )
@@ -66,9 +66,9 @@ void xSweep( amrex::Box const& bx,
                                                      bathymetryRight,
                                                      netUpdates );
 
-            fluxX( i, j, 0, Component::HEIGHT ) = -scaling * netUpdates[0][0] * !rightReflection;
+            fluxX( i, j, 0, Component::HEIGHT ) -= scaling * netUpdates[0][0] * !rightReflection;
             gridOut( i, j, 0, Component::HEIGHT ) -= scaling * netUpdates[0][0] * !rightReflection;
-            fluxX( i, j, 0, Component::MOMENTUM_X ) = -scaling * netUpdates[0][1] * !rightReflection;
+            fluxX( i, j, 0, Component::MOMENTUM_X ) -= scaling * netUpdates[0][1] * !rightReflection;
             gridOut( i, j, 0, Component::MOMENTUM_X ) -= scaling * netUpdates[0][1] * !rightReflection;
 
             fluxX( i + 1, j, 0, Component::HEIGHT ) = -scaling * netUpdates[1][0] * !leftReflection;
@@ -97,9 +97,9 @@ void ySweep( amrex::Box const& bx,
     const auto lo = amrex::lbound( bx );
     const auto hi = amrex::ubound( bx );
 
-    for( int i = lo.x; i <= hi.x; ++i )
+    for( int i = lo.x; i < hi.x; ++i )
     {
-        for( int j = lo.y; j <= hi.y; ++j )
+        for( int j = lo.y; j < hi.y; ++j )
         {
             // noting to compute both shore cells
             if( height( i, j, 0 ) == 0 && height( i, j + 1, 0 ) == 0 )
@@ -129,9 +129,9 @@ void ySweep( amrex::Box const& bx,
                                                      bathymetryRight,
                                                      netUpdates );
 
-            fluxY( i, j, 0, Component::HEIGHT ) = -scaling * netUpdates[0][0] * !rightReflection;
+            fluxY( i, j, 0, Component::HEIGHT ) -= scaling * netUpdates[0][0] * !rightReflection;
             gridOut( i, j, 0, Component::HEIGHT ) -= scaling * netUpdates[0][0] * !rightReflection;
-            fluxY( i, j, 0, Component::MOMENTUM_Y ) = -scaling * netUpdates[0][1] * !rightReflection;
+            fluxY( i, j, 0, Component::MOMENTUM_Y ) -= scaling * netUpdates[0][1] * !rightReflection;
             gridOut( i, j, 0, Component::MOMENTUM_Y ) -= scaling * netUpdates[0][1] * !rightReflection;
 
             fluxY( i, j + 1, 0, Component::HEIGHT ) = -scaling * netUpdates[1][0] * !leftReflection;

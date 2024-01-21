@@ -113,6 +113,8 @@ set(RESOURCE_FILES
         artificialtsunami_displ_1000.nc
         artificialtsunami_bathymetry_1000.nc
         inputs.amrex
+        gebco20/tohoku_gebco20_usgs_250m_displ.nc
+        gebco20/tohoku_gebco20_usgs_250m_bath.nc
 )
 
 # Create SOURCE_FILES
@@ -198,12 +200,12 @@ if(NOT DISABLE_IO)
 endif(NOT DISABLE_IO)
 
 # Add AMReX (https://amrex-codes.github.io/amrex/docs_html/BuildingAMReX.html#customization-options)
-set(AMReX_SPACEDIM 2) # Dimension of AMReX build
-set(AMReX_MPI NO) # Build with MPI support
-set(AMReX_OMP YES) # Build with OpenMP support
-set(AMReX_PRECISION SINGLE) # Set the precision of reals
-set(AMReX_PARTICLES NO) # Build particle classes
-set(AMReX_INSTALL NO) # Generate Install Targets
+set(AMReX_SPACEDIM 2 CACHE STRING "" FORCE) # Dimension of AMReX build
+set(AMReX_MPI NO CACHE STRING "" FORCE) # Build with MPI support
+set(AMReX_OMP YES CACHE STRING "" FORCE) # Build with OpenMP support
+set(AMReX_PRECISION SINGLE CACHE STRING "" FORCE) # Set the precision of reals
+set(AMReX_PARTICLES NO CACHE STRING "" FORCE) # Build particle classes
+set(AMReX_INSTALL NO CACHE STRING "" FORCE) # Generate Install Targets
 add_subdirectory(submodules/amrex)
 target_link_libraries(test PRIVATE AMReX::amrex_2d)
 target_link_libraries(sanitize_test PRIVATE AMReX::amrex_2d)
