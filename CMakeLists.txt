@@ -86,14 +86,13 @@ set(SRC_FILES
         patches/WavePropagation2d
         io/NetCdf
         io/Csv
-        amr/AMRCoreWavePropagation2d
 )
 set(SRC_FILES_IO
         setups/CheckPoint
         io/Stations
 )
 set(SRC_FILES_NO_TEST
-
+        amr/AMRCoreWavePropagation2d
 )
 set(TEST_FILES ${PROJECT_SOURCE_DIR}/tests.cpp)
 set(MAIN_FILE ${PROJECT_SOURCE_DIR}/main.cpp)

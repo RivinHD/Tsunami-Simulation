@@ -35,11 +35,11 @@ amr.v              = 1       # verbosity in Amr
 # *****************************************************************
 # Resolution and refinement
 # *****************************************************************
-amr.n_cell          = 2704 1504 0
-amr.max_level       = 0       # maximum level number allowed -- 
-                              # number of levels = max_level + 1
+amr.n_cell          = 2704 1504 0 # must be divisible by blocking factor
+amr.max_level       = 0           # maximum level number allowed -- 
+                                    # number of levels = max_level + 1
 
-amr.ref_ratio       = 2 2 2 2 # refinement ratio between levels
+amr.ref_ratio       = 2 2 2 2    # refinement ratio between levels
 
 # *****************************************************************
 # Control of grid creation

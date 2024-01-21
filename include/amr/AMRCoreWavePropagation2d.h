@@ -71,12 +71,12 @@ private:
     //! 4-components: Height, MomentumX, MomentumY, Bathymetry
     amrex::Vector<amrex::BCRec> physicalBoundary;
 
-    // stores fluxes at coarse-fine interface for synchronization
-    // this will be sized "nlevs_max+1"
-    // NOTE: the flux register associated with flux_reg[lev] is associated
-    // with the lev/lev-1 interface (and has grid spacing associated with lev-1)
-    // therefore flux_reg[0] and flux_reg[nlevs_max] are never actually
-    // used in the reflux operation
+    //! Stores fluxes at coarse-fine interface for synchronization
+    //! This will be sized "nlevs_max+1"
+    //! NOTE: The flux register associated with flux_reg[level] is associated
+    //! with the level/level-1 interface (and has grid spacing associated with level-1)
+    //! Therefore flux_reg[0] and flux_reg[nlevs_max] are never actually
+    //! used in the reflux operation
     amrex::Vector<std::unique_ptr<amrex::FluxRegister>> fluxRegister;
 
     //! time to simulate
@@ -95,11 +95,13 @@ private:
     //! frequency to write the output
     int writeFrequency = -1;
 
+    //! the error bound for each level
     amrex::Vector<amrex::Real> gridErr;
 
     /**
-     * fill an entire multifab by interpolating from the coarser level
-     * this comes into play when a new level of refinement appears
+     * Fill an entire multifab by interpolating from the coarser level
+     * This comes into play when a new level of refinement appears
+     *
      * @param level the level to fill
      * @param time the current time
      * @param mf the multiFab to interpolate to
@@ -112,23 +114,20 @@ private:
                           int icomp,
                           int ncomp );
 
-    // 
-
     /**
-     * utility to copy in data from gridOld and/or gridNew into another multifab
+     * Utility to copy in data from gridOld and/or gridNew into another multifab
+     *
      * @param level the level to get data from
      * @param time the current time
-     * @param data
-     * @param datatime
+     * @param data the MutliFab to which the data is written
+     * @param datatime the Vector to which the time is written
     */
     void GetData( int level, amrex::Real time, amrex::Vector<amrex::MultiFab*>& data,
                   amrex::Vector<amrex::Real>& datatime );
 
-    // compute a new multifab by coping in phi from valid region and filling ghost cells
-    // works for single level and 2-level cases (fill fine grid ghost by interpolating from coarse)
-
     /**
      * Fill a patch with data from the grid
+     *
      * @param level the level to fill
      * @param time the current time
      * @param mf the multifab to fill
@@ -137,27 +136,52 @@ private:
     */
     void FillPatch( int level, amrex::Real time, amrex::MultiFab& mf, int icomp, int ncomp );
 
-    // Advance a level by dt - includes a recursive call for finer levels
+    /**
+     * Advance a level by dt - includes a recursive call for finer levels
+     *
+     * @param level the level to sub cycle
+     * @param time the current time
+     * @param iteration the current iteration step
+    */
     void timeStepWithSubcycling( int level,
                                  amrex::Real time,
                                  int iteration );
 
-    // Advance phi at a single level for a single time step, update flux registers
+    /**
+    * Advance phi at a single level for a single time step, update flux registers
+    *
+    * @param level the level to advance
+    * @param time the current time
+    * @param dtLevel the time step of this level
+    * @param iteration the current iteration
+    * @param the current cycle step
+    */
     void AdvanceGridAtLevel( int level,
                              amrex::Real time,
                              amrex::Real dtLevel,
                              int iteration,
                              int nCycle );
 
-    // write plotfile to disk
+    /**
+     * Write plotfile to disk
+    */
     void WritePlotFile() const;
 
-    // more flexible version of AverageDown() that lets you average down across multiple levels
-    void AverageDownTo( int coarse_lev );
+    /**
+     * More flexible version of AverageDown() that lets you average down across multiple levels
+     *
+     * @param coarseLevel the level to average down to
+    */
+    void AverageDownTo( int coarseLevel );
 
-    // read in some parameters from inputs file
+    /**
+     * Read in parameters from input file
+    */
     void ReadParameters();
 
+    /**
+     * Read the data from the setup into the grid
+    */
     void InitData( tsunami_lab::setups::Setup* setup );
 
 public:
@@ -172,42 +196,93 @@ public:
         BATHYMERTRY = 3
     };
 
+    /**
+     * Construct Wave Propagation with AMR using the given setup
+     *
+     * @param setup the setup to initialize the data with
+    */
     AMRCoreWavePropagation2d( tsunami_lab::setups::Setup* setup );
 
-    // set the time step of the simulation
+    /**
+     * Set the time step of the simulation
+     *
+     * @param timeStep set the timeStep to step forward
+    */
     void setTimeStep( amrex::Real timeStep );
 
-    // advance solution to final time
+    /**
+     * Advance solution to final time
+    */
     void Evolve();
 
-    //! Tag cells for refinement. TagBoxArray tags is built on level lev grids.
-    void ErrorEst( int lev, amrex::TagBoxArray& tags,
+    /**
+     * Tag cells for refinement. TagBoxArray tags is built on level level grids.
+     *
+     * @param level the level to estimate and tag
+     * @param tags the box that holds the tag values
+     * @param time the current time
+     * @param ngrow the ghost cells need for estimation calculation
+    */
+    void ErrorEst( int level,
+                   amrex::TagBoxArray& tags,
                    amrex::Real time,
                    int ngrow );
 
-    //! Make a new level from scratch using provided BoxArray and DistributionMapping.
-    //! Only used during initialization.
-    void MakeNewLevelFromScratch( int lev,
+    /**
+     * Make a new level from scratch using provided BoxArray and DistributionMapping.
+     * Only used during initialization.
+     *
+     * @param level the level to make from scratch
+     * @param time the current time
+     * @param ba the provided BoxArray
+     * @param dm the provided DistributionMapping
+    */
+    void MakeNewLevelFromScratch( int level,
                                   amrex::Real time,
                                   const amrex::BoxArray& ba,
                                   const amrex::DistributionMapping& dm );
 
-    //! Make a new level using provided BoxArray and DistributionMapping and fill
-    //  with interpolated coarse level data.
-    void MakeNewLevelFromCoarse( int lev,
+    /**
+     * Make a new level using provided BoxArray and DistributionMapping and fill
+     * with interpolated coarse level data.
+     *
+     * @param level the level to make
+     * @param time the current time
+     * @param ba the provided BoxArray
+     * @param dm the provided DistributionMapping
+    */
+    void MakeNewLevelFromCoarse( int level,
                                  amrex::Real time,
                                  const amrex::BoxArray& ba,
                                  const amrex::DistributionMapping& dm );
 
-    //! Remake an existing level using provided BoxArray and DistributionMapping
-    //  and fill with existing fine and coarse data.
-    void RemakeLevel( int lev,
+    /**
+     * Remake an existing level using provided BoxArray and DistributionMapping
+     * and fill with existing fine and coarse data.
+     *
+     * @param level the level to Remake
+     * @param time the current time
+     * @param ba the provided BoxArray
+     * @param dm the provided DistributionMapping
+    */
+    void RemakeLevel( int level,
                       amrex::Real time,
                       const amrex::BoxArray& ba,
                       const amrex::DistributionMapping& dm );
 
-    //! Delete level data
-    void ClearLevel( int lev );
+    /**
+     * Delete level data
+     *
+     * @param level the level to delete
+    */
+    void ClearLevel( int level );
+
+    /**
+     * Set the reflection of the physical boundary of a given side
+     *
+     * @param side the side to set
+     * @param enable true if reflection should be enabled, false for outflow boundary
+    */
     void setReflection( tsunami_lab::patches::WavePropagation::Side side,
                         bool enable );
 };

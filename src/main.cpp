@@ -27,7 +27,7 @@
 #include <filesystem> // requieres C++17 and up
 namespace fs = std::filesystem;
 
-int main( int   i_argc,
+int main( int   /*i_argc*/,
           char* i_argv[] )
 {
 

@@ -111,7 +111,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::timeStepWithSubcycling( int lev
     // from a coarser level call to regrid
     static Vector<int> lastRegridStep( max_level + 1, 0 );
 
-    // regrid changes level "lev+1" so we don't regrid on max_level
+    // regrid changes level "level+1" so we don't regrid on max_level
     // also make sure we don't regrid fine levels again if
     // it was taken care of during a coarser regrid
     if( level < max_level
@@ -280,7 +280,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::AdvanceGridAtLevel( int level,
     {
         for( int i = 0; i < AMREX_SPACEDIM; ++i )
         {
-            // update the lev+1/lev flux register (index lev+1) :)
+            // update the level+1/level flux register (index level+1) :)
             fluxRegister[level + 1]->CrseInit( fluxes[i], i, 0, 0, fluxes[i].nComp(), -1.0 );
         }
     }
@@ -288,7 +288,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::AdvanceGridAtLevel( int level,
     {
         for( int i = 0; i < AMREX_SPACEDIM; ++i )
         {
-            // update the lev/lev-1 flux register (index lev)
+            // update the level/level-1 flux register (index level)
             fluxRegister[level]->FineAdd( fluxes[i], i, 0, 0, fluxes[i].nComp(), 1.0 );
         }
     }
@@ -317,11 +317,11 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::WritePlotFile() const
                                     geom, tNew[0], step, refRatio() );
 }
 
-void tsunami_lab::amr::AMRCoreWavePropagation2d::AverageDownTo( int coarse_lev )
+void tsunami_lab::amr::AMRCoreWavePropagation2d::AverageDownTo( int coarseLevel )
 {
-    amrex::average_down( gridNew[coarse_lev + 1], gridNew[coarse_lev],
-                         geom[coarse_lev + 1], geom[coarse_lev],
-                         0, nComponents, refRatio( coarse_lev ) );
+    amrex::average_down( gridNew[coarseLevel + 1], gridNew[coarseLevel],
+                         geom[coarseLevel + 1], geom[coarseLevel],
+                         0, nComponents, refRatio( coarseLevel ) );
 }
 
 void tsunami_lab::amr::AMRCoreWavePropagation2d::ReadParameters()
@@ -480,19 +480,19 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::Evolve()
     }
 }
 
-void tsunami_lab::amr::AMRCoreWavePropagation2d::ErrorEst( int lev,
+void tsunami_lab::amr::AMRCoreWavePropagation2d::ErrorEst( int level,
                                                            TagBoxArray& tags,
                                                            Real /*time*/,
                                                            int /*ngrow*/ )
 {
     return; // TODO: AMR Remove to enable ErrorEst
 
-    if( lev >= gridErr.size() ) return;
+    if( level >= gridErr.size() ) return;
 
     //    const int clearval = TagBox::CLEAR;
     const int   tagval = TagBox::SET;
 
-    const MultiFab& state = gridNew[lev];
+    const MultiFab& state = gridNew[level];
 
 #ifdef AMREX_USE_OMP
 #pragma omp parallel
@@ -504,7 +504,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::ErrorEst( int lev,
 
             const auto statefab = state.array( mfi );
             const auto tagfab = tags.array( mfi );
-            Real gridError = gridErr[lev];
+            Real gridError = gridErr[level];
 
             amrex::ParallelFor( bx,
                                 [=] AMREX_GPU_DEVICE( int i, int j, int k ) noexcept
@@ -515,50 +515,50 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::ErrorEst( int lev,
     }
 }
 
-void tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromScratch( int lev,
+void tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromScratch( int level,
                                                                           Real time,
                                                                           const BoxArray& ba,
                                                                           const DistributionMapping& dm )
 {
 
     // init the multifab
-    gridNew[lev].define( ba, dm, nComponents, nGhostRow );
-    gridOld[lev].define( ba, dm, nComponents, nGhostRow );
+    gridNew[level].define( ba, dm, nComponents, nGhostRow );
+    gridOld[level].define( ba, dm, nComponents, nGhostRow );
 
     // set the time
-    tNew[lev] = time;
-    tOld[lev] = time - dt[lev];
+    tNew[level] = time;
+    tOld[level] = time - dt[level];
 
-    if( lev > 0 )
+    if( level > 0 )
     {
         // init the flux register
-        fluxRegister[lev].reset( new FluxRegister( ba, dm, refRatio( lev - 1 ), lev, nComponents ) );
+        fluxRegister[level].reset( new FluxRegister( ba, dm, refRatio( level - 1 ), level, nComponents ) );
     }
 }
 
-void tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromCoarse( int lev,
+void tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromCoarse( int level,
                                                                          Real time,
                                                                          const BoxArray& ba,
                                                                          const DistributionMapping& dm )
 {
     // init the multifab
-    gridNew[lev].define( ba, dm, nComponents, nGhostRow );
-    gridOld[lev].define( ba, dm, nComponents, nGhostRow );
+    gridNew[level].define( ba, dm, nComponents, nGhostRow );
+    gridOld[level].define( ba, dm, nComponents, nGhostRow );
 
     // set the time
-    tNew[lev] = time;
-    tOld[lev] = time - dt[lev];
+    tNew[level] = time;
+    tOld[level] = time - dt[level];
 
-    if( lev > 0 )
+    if( level > 0 )
     {
         // init the flux register
-        fluxRegister[lev].reset( new FluxRegister( ba, dm, refRatio( lev - 1 ), lev, nComponents ) );
+        fluxRegister[level].reset( new FluxRegister( ba, dm, refRatio( level - 1 ), level, nComponents ) );
     }
 
-    FillCoarsePatch( lev, time, gridNew[lev], 0, nComponents );
+    FillCoarsePatch( level, time, gridNew[level], 0, nComponents );
 }
 
-void tsunami_lab::amr::AMRCoreWavePropagation2d::RemakeLevel( int lev,
+void tsunami_lab::amr::AMRCoreWavePropagation2d::RemakeLevel( int level,
                                                               Real time,
                                                               const BoxArray& ba,
                                                               const DistributionMapping& dm )
@@ -566,25 +566,25 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::RemakeLevel( int lev,
     MultiFab new_state( ba, dm, nComponents, nGhostRow );
     MultiFab old_state( ba, dm, nComponents, nGhostRow );
 
-    FillPatch( lev, time, new_state, 0, nComponents );
+    FillPatch( level, time, new_state, 0, nComponents );
 
-    std::swap( new_state, gridNew[lev] );
-    std::swap( old_state, gridOld[lev] );
+    std::swap( new_state, gridNew[level] );
+    std::swap( old_state, gridOld[level] );
 
-    tNew[lev] = time;
-    tOld[lev] = time - dt[lev];
+    tNew[level] = time;
+    tOld[level] = time - dt[level];
 
-    if( lev > 0 )
+    if( level > 0 )
     {
-        fluxRegister[lev].reset( new FluxRegister( ba, dm, refRatio( lev - 1 ), lev, nComponents ) );
+        fluxRegister[level].reset( new FluxRegister( ba, dm, refRatio( level - 1 ), level, nComponents ) );
     }
 }
 
-void tsunami_lab::amr::AMRCoreWavePropagation2d::ClearLevel( int lev )
+void tsunami_lab::amr::AMRCoreWavePropagation2d::ClearLevel( int level )
 {
-    gridNew[lev].clear();
-    gridOld[lev].clear();
-    fluxRegister[lev].reset( nullptr );
+    gridNew[level].clear();
+    gridOld[level].clear();
+    fluxRegister[level].reset( nullptr );
 }
 
 void tsunami_lab::amr::AMRCoreWavePropagation2d::setReflection( tsunami_lab::patches::WavePropagation::Side side,
