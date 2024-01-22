@@ -361,10 +361,17 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::ReadParameters()
         pp.query( "plot_file", plotFile );
         pp.query( "plot_folder", plotFolder );
         pp.query( "plot_int", writeFrequency );
+
+        amrex::Vector<int> errorBuf;
         int n = pp.countval( "n_err_buf" );
         if( n > 0 )
         {
-            pp.getarr( "n_err_buf", n_error_buf, 0, n );
+            pp.getarr( "n_err_buf", errorBuf, 0, n );
+        }
+        n_error_buf.resize( n );
+        for( int i = 0; i < n; i++ )
+        {
+            n_error_buf[i] = IntVect( errorBuf[i] );
         }
     }
 

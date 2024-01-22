@@ -42,13 +42,13 @@ int main( int   /*i_argc*/,
         const char* reset = "\033[0m";
         const char* green = "\033[32;49m";
 
-        std::cout << "#####################################################" << std::endl;
-        std::cout << "###                  Tsunami Lab                  ###" << std::endl;
-        std::cout << "###                                               ###" << std::endl;
-        std::cout << "### https://scalable.uni-jena.de                  ###" << std::endl;
-        std::cout << "### https://rivinhd.github.io/Tsunami-Simulation/ ###" << std::endl;
-        std::cout << "#####################################################" << std::endl;
-
+        amrex::Print()
+            << "#####################################################" << std::endl
+            << "###                  Tsunami Lab                  ###" << std::endl
+            << "###                                               ###" << std::endl
+            << "### https://scalable.uni-jena.de                  ###" << std::endl
+            << "### https://rivinhd.github.io/Tsunami-Simulation/ ###" << std::endl
+            << "#####################################################" << std::endl;
         amrex::ParmParse ppAmr( "amr" );
 
         // create plot folder
@@ -69,8 +69,8 @@ int main( int   /*i_argc*/,
         std::string displacementFile;
         ppTsunami.query( "bathymetry_file", bathymetryFile );
         ppTsunami.query( "displacement_file", displacementFile );
-
         const char* variables[3]{ "x", "y", "z" };
+
         tsunami_lab::setups::Setup* setup =
             new tsunami_lab::setups::TsunamiEvent2d( bathymetryFile.c_str(),
                                                      variables,
@@ -78,9 +78,9 @@ int main( int   /*i_argc*/,
                                                      variables,
                                                      scale[0],
                                                      scale[1] );
-
         // construct solver
         tsunami_lab::amr::AMRCoreWavePropagation2d* waveProp = new tsunami_lab::amr::AMRCoreWavePropagation2d( setup );
+
 
         // set Reflection
         bool reflectionLeft;
@@ -100,15 +100,10 @@ int main( int   /*i_argc*/,
 
         const auto startTime = std::chrono::high_resolution_clock::now();
 
-        std::cout << "entering time loop" << std::endl;
-
         // iterate over time
         waveProp->Evolve();
 
-        std::cout << "finished time loop" << std::endl;
-
         // free memory
-        std::cout << "freeing memory" << std::endl;
         delete waveProp;
         delete setup;
         delete[] argv;
@@ -118,10 +113,8 @@ int main( int   /*i_argc*/,
         const auto hours = std::chrono::duration_cast<std::chrono::hours>( duration );
         const auto minutes = std::chrono::duration_cast<std::chrono::minutes>( duration - hours );
         const auto seconds = std::chrono::duration_cast<std::chrono::seconds>( duration - hours - minutes );
-        std::cout << "The Simulation took " << green << hours.count() << " h "
+        amrex::Print() << "The Simulation took " << green << hours.count() << " h "
             << minutes.count() << " min " << seconds.count() << " sec" << reset << " to finish." << std::endl;
-
-        std::cout << "finished, exiting" << std::endl;
     }
     amrex::Finalize();
     return EXIT_SUCCESS;
