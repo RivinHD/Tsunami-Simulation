@@ -61,7 +61,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::FixFinePatch( int level,
         {
             Real value = bathymetry( i, j, k );
             bool ltZero = value < 0;
-            bathymetry( i, j, k ) = ltZero ? std::min( value, -20.f ) : std::max( value, 20.f );
+            bathymetry( i, j, k ) = ltZero ? std::min( value, -bathymetryMinValue ) : std::max( value, bathymetryMinValue );
             height( i, j, k ) *= ltZero;  // Set height on coast to zero
         } );
     }
@@ -361,9 +361,11 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::ReadParameters()
         pp.query( "plot_file", plotFile );
         pp.query( "plot_folder", plotFolder );
         pp.query( "plot_int", writeFrequency );
-        /*pp.query( "chk_file", chk_file );
-        pp.query( "chk_int", chk_int );
-        pp.query( "restart", restart_chkfile ); */
+        int n = pp.countval( "n_err_buf" );
+        if( n > 0 )
+        {
+            pp.getarr( "n_err_buf", n_error_buf, 0, n );
+        }
     }
 
     {
@@ -514,6 +516,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::ErrorEst( int level,
         Array4<const Real> height = state.const_array( mfi, HEIGHT );
         Array4<const Real> momentumX = state.const_array( mfi, MOMENTUM_X );
         Array4<const Real> momentumY = state.const_array( mfi, MOMENTUM_Y );
+        Array4<const Real> bathymetry = state.const_array( mfi, BATHYMERTRY );
         Array4<Real> error = state.array( mfi, ERROR );
         const auto tagfab = tags.array( mfi );
         Real gridError = gridErr[level];
@@ -521,7 +524,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::ErrorEst( int level,
         ParallelFor( bx,
                      [=] AMREX_GPU_DEVICE( int i, int j, int k ) noexcept
         {
-            state_error( i, j, k, tagfab, height, momentumX, momentumY, error, gridError, tagval );
+            state_error( i, j, k, tagfab, height, momentumX, momentumY, bathymetry, error, gridError, tagval );
         } );
     }
 }

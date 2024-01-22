@@ -14,6 +14,7 @@ void state_error( int i, int j, int k,
                   amrex::Array4<const amrex::Real> const& height,
                   amrex::Array4<const amrex::Real> const& momentumX,
                   amrex::Array4<const amrex::Real> const& momentumY,
+                  amrex::Array4<const amrex::Real> const& bathymetry,
                   amrex::Array4<amrex::Real> const& error,
                   amrex::Real gridErr,
                   char tagval )
@@ -21,7 +22,7 @@ void state_error( int i, int j, int k,
     amrex::Real divHeight = 1 / height( i, j, k );
     amrex::Real velocityX = momentumX( i, j, k ) * divHeight;
     amrex::Real velocityY = momentumY( i, j, k ) * divHeight;
-    error( i, j, k ) = std::sqrt( velocityX * velocityX + velocityY * velocityY );
+    error( i, j, k ) = std::sqrt( velocityX * velocityX + velocityY * velocityY ) * std::abs( height( i, j, k ) + bathymetry( i, j, k ) );
     tag( i, j, k ) = ( error( i, j, k ) > gridErr ) * tagval;
 }
 
