@@ -39,9 +39,12 @@ private:
     //! number of ghost cell around the boundary of the domain
     const int nGhostRow = 1;
 
+    //! Minimum Height of the bathymetry
+    const amrex::Real bathymetryMinValue = 20;
+
     //! interpolator going from coarse to fine
     // this should never be const
-    amrex::Interpolater* interpolator = &amrex::lincc_interp;
+    amrex::Interpolater* interpolator = &amrex::protected_interp;
 
     //! which step?
     amrex::Vector<int> step;
@@ -116,6 +119,16 @@ private:
                           amrex::MultiFab& mf,
                           int icomp,
                           int ncomp );
+
+    /**
+     * Fix an entire multifab that was interpolating from the coarser level
+     * This comes into play when FillCoarsePath was called
+     *
+     * @param level the level to fill
+     * @param mf the multiFab to interpolate to
+    */
+    void FixFinePatch( int level,
+                       amrex::MultiFab& mf );
 
     /**
      * Utility to copy in data from gridOld and/or gridNew into another multifab
@@ -199,7 +212,7 @@ public:
         MOMENTUM_X = 1,
         MOMENTUM_Y = 2,
         BATHYMERTRY = 3,
-        CHANGE = 4
+        ERROR = 4
     };
 
     /**

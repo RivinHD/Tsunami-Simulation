@@ -11,12 +11,18 @@ AMREX_GPU_HOST_DEVICE
 AMREX_FORCE_INLINE
 void state_error( int i, int j, int k,
                   amrex::Array4<char> const& tag,
-                  amrex::Array4<amrex::Real const> const& state,
+                  amrex::Array4<const amrex::Real> const& height,
+                  amrex::Array4<const amrex::Real> const& momentumX,
+                  amrex::Array4<const amrex::Real> const& momentumY,
+                  amrex::Array4<amrex::Real> const& error,
                   amrex::Real gridErr,
                   char tagval )
 {
-    amrex::Real err = std::abs( state( i, j, k ) );
-    tag( i, j, k ) = ( err > gridErr ) * tagval;
+    amrex::Real divHeight = 1 / height( i, j, k );
+    amrex::Real velocityX = momentumX( i, j, k ) * divHeight;
+    amrex::Real velocityY = momentumY( i, j, k ) * divHeight;
+    error( i, j, k ) = std::sqrt( velocityX * velocityX + velocityY * velocityY );
+    tag( i, j, k ) = ( error( i, j, k ) > gridErr ) * tagval;
 }
 
 AMREX_GPU_HOST_DEVICE
@@ -78,9 +84,6 @@ void xSweep( amrex::Box const& bx,
             gridOut( i + 1, j, 0, Component::MOMENTUM_X ) -= scaling * netUpdates[1][1] * !leftReflection;
 
             gridOut( i, j, 0, Component::MOMENTUM_Y ) = momentumY( i, j, 0 ); // Copy
-
-            gridOut( i, j, 0, Component::CHANGE ) -= scaling * netUpdates[0][0] * !rightReflection;
-            gridOut( i + 1, j, 0, Component::CHANGE ) = -scaling * netUpdates[1][0] * !leftReflection;
 
         }
     }
@@ -145,9 +148,6 @@ void ySweep( amrex::Box const& bx,
             gridOut( i, j + 1, 0, Component::MOMENTUM_Y ) -= scaling * netUpdates[1][1] * !leftReflection;
 
             gridOut( i, j, 0, Component::MOMENTUM_X ) = momentumX( i, j, 0 ); // Copy
-
-            gridOut( i, j, 0, Component::CHANGE ) -= scaling * netUpdates[0][0] * !rightReflection;
-            gridOut( i, j + 1, 0, Component::CHANGE ) -= scaling * netUpdates[1][0] * !leftReflection;
         }
     }
 }

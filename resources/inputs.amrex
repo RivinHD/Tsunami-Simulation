@@ -36,7 +36,7 @@ amr.v              = 1       # verbosity in Amr
 # Resolution and refinement
 # *****************************************************************
 amr.n_cell          = 2704 1504 0 # must be divisible by blocking factor
-amr.max_level       = 3           # maximum level number allowed -- 
+amr.max_level       = 2           # maximum level number allowed -- 
                                     # number of levels = max_level + 1
 
 amr.ref_ratio       = 2 2 2 2    # refinement ratio between levels
@@ -62,7 +62,7 @@ amr.regrid_int      = 2       # how often to regrid should be larger than 0
 #            if err > 1.1  at level 1, then refine 
 #            if err > 1.5  at level 2, then refine 
 # *****************************************************************
-tsunami.griderr = 0.01 0.02 100
+tsunami.griderr = 0.04 0.06 100
 
 # *****************************************************************
 # Input Files for Tsunami Simulation
