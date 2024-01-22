@@ -353,10 +353,8 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::ReadParameters()
 
 void tsunami_lab::amr::AMRCoreWavePropagation2d::InitData( int level )
 {
-    amrex::Real hMax = std::numeric_limits<amrex::Real>::lowest();
-
 #ifdef AMREX_USE_OMP
-#pragma omp parallel reduction(max: hMax)
+#pragma omp parallel
 #endif
     for( MFIter mfi( gridNew[level], true ); mfi.isValid(); ++mfi )
     {
@@ -372,23 +370,20 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::InitData( int level )
         Array4<amrex::Real> bathymetry = gridNew[level].array( mfi, BATHYMERTRY );
         Array4<amrex::Real> change = gridNew[level].array( mfi, CHANGE );
 
-        amrex::Real* hMaxPtr = &hMax;
-
         amrex::ParallelFor( bx,
                             [=] AMREX_GPU_DEVICE( int i, int j, int k )
         {
             amrex::Real x = i * dx;
             amrex::Real y = j * dy;
-            amrex::Real h = setup->getHeight( x, y );
-            height( i, j, k ) = h;
+            height( i, j, k ) = setup->getHeight( x, y );
             momentumX( i, j, k ) = setup->getMomentumX( x, y );
             momentumY( i, j, k ) = setup->getMomentumY( x, y );
             bathymetry( i, j, k ) = setup->getBathymetry( x, y );
             change( i, j, k ) = 0;
-            *hMaxPtr = std::max( h, *hMaxPtr );
         } );
     }
 
+    amrex::Real hMax = gridNew[level].max( HEIGHT );
     amrex::Real speedMax = std::sqrt( 9.81 * hMax );
     std::cout << "Max speed " << speedMax << std::endl;
 
