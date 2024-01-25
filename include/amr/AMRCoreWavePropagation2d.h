@@ -43,8 +43,9 @@ private:
     const amrex::Real bathymetryMinValue = 20;
 
     //! interpolator going from coarse to fine
-    // this should never be const
-    amrex::Interpolater* interpolator = &amrex::protected_interp;
+    // this type should never be const
+    amrex::Interpolater* interpolator = &amrex::lincc_interp;
+
 
     //! which step?
     amrex::Vector<int> step;
@@ -111,24 +112,20 @@ private:
      * @param level the level to fill
      * @param time the current time
      * @param mf the multiFab to interpolate to
-     * @param icomp component index to start interpolating
-     * @param ncomp number of components of the multifab
     */
-    void FillCoarsePatch( int level,
-                          amrex::Real time,
-                          amrex::MultiFab& mf,
-                          int icomp,
-                          int ncomp );
+    void FillFinePatch( int level,
+                        amrex::Real time,
+                        amrex::MultiFab& mf );
 
     /**
      * Fix an entire multifab that was interpolating from the coarser level
-     * This comes into play when FillCoarsePath was called
+     * This comes into play when the fine level was created or updated
      *
-     * @param level the level to fill
      * @param mf the multiFab to interpolate to
+     * @param cons_mf the multiFab wth constant bathymetry interpolation
     */
-    void FixFinePatch( int level,
-                       amrex::MultiFab& mf );
+    void FixFinePatch( amrex::MultiFab& mf,
+                       const amrex::MultiFab& cons_mf );
 
     /**
      * Utility to copy in data from gridOld and/or gridNew into another multifab
@@ -138,7 +135,9 @@ private:
      * @param data the MutliFab to which the data is written
      * @param datatime the Vector to which the time is written
     */
-    void GetData( int level, amrex::Real time, amrex::Vector<amrex::MultiFab*>& data,
+    void GetData( int level,
+                  amrex::Real time,
+                  amrex::Vector<amrex::MultiFab*>& data,
                   amrex::Vector<amrex::Real>& datatime );
 
     /**
@@ -147,10 +146,10 @@ private:
      * @param level the level to fill
      * @param time the current time
      * @param mf the multifab to fill
-     * @param icomp component index to start filling
-     * @param ncomp number of components of the multifab
     */
-    void FillPatch( int level, amrex::Real time, amrex::MultiFab& mf, int icomp, int ncomp );
+    void FillPatch( int level,
+                    amrex::Real time,
+                    amrex::MultiFab& mf );
 
     /**
      * Advance a level by dt - includes a recursive call for finer levels

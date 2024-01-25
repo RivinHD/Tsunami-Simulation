@@ -22,7 +22,9 @@ void state_error( int i, int j, int k,
     amrex::Real divHeight = 1 / height( i, j, k );
     amrex::Real velocityX = momentumX( i, j, k ) * divHeight;
     amrex::Real velocityY = momentumY( i, j, k ) * divHeight;
-    error( i, j, k ) = std::sqrt( velocityX * velocityX + velocityY * velocityY ) * std::abs( height( i, j, k ) + bathymetry( i, j, k ) );
+    amrex::Real waveHeight = height( i, j, k ) + bathymetry( i, j, k );
+    error( i, j, k ) = ( velocityX * velocityX + velocityY * velocityY ) * waveHeight * waveHeight;
+    // the gridErr is squared therefore we can use the error squared too
     tag( i, j, k ) = ( error( i, j, k ) > gridErr ) * tagval;
 }
 
@@ -44,49 +46,48 @@ void xSweep( amrex::Box const& bx,
 
     for( int j = lo.y; j < hi.y; ++j )
     {
-        for( int i = lo.x; i < hi.x; ++i )
-        {
-            // noting to compute both shore cells
-            if( height( i, j, 0 ) <= 0 && height( i + 1, j, 0 ) <= 0 )
+        AMREX_PRAGMA_SIMD
+            for( int i = lo.x; i < hi.x; ++i )
             {
-                continue;
+                // noting to compute both shore cells
+                if( height( i, j, 0 ) <= 0 && height( i + 1, j, 0 ) <= 0 )
+                {
+                    continue;
+                }
+
+                // calculate the reflection
+                bool leftReflection = ( height( i + 1, j, 0 ) <= amrex::Real( 0.0 ) );
+                amrex::Real heightRight = leftReflection ? height( i, j, 0 ) : height( i + 1, j, 0 );
+                amrex::Real momentumRight = leftReflection ? -momentumX( i, j, 0 ) : momentumX( i + 1, j, 0 );
+                amrex::Real bathymetryRight = leftReflection ? bathymetry( i, j, 0 ) : bathymetry( i + 1, j, 0 );
+
+                bool rightReflection = ( height( i, j, 0 ) <= amrex::Real( 0.0 ) );
+                amrex::Real heightLeft = rightReflection ? height( i + 1, j, 0 ) : height( i, j, 0 );
+                amrex::Real momentumLeft = rightReflection ? -momentumX( i + 1, j, 0 ) : momentumX( i, j, 0 );
+                amrex::Real bathymetryLeft = rightReflection ? bathymetry( i + 1, j, 0 ) : bathymetry( i, j, 0 );
+
+                // compute net-updates
+                tsunami_lab::t_real netUpdates[2][2];
+
+                tsunami_lab::solvers::FWave::netUpdates( heightLeft,
+                                                         heightRight,
+                                                         momentumLeft,
+                                                         momentumRight,
+                                                         bathymetryLeft,
+                                                         bathymetryRight,
+                                                         netUpdates );
+
+                fluxX( i, j, 0, Component::HEIGHT ) -= scaling * netUpdates[0][0] * !rightReflection;
+                gridOut( i, j, 0, Component::HEIGHT ) -= scaling * netUpdates[0][0] * !rightReflection;
+                fluxX( i, j, 0, Component::MOMENTUM_X ) -= scaling * netUpdates[0][1] * !rightReflection;
+                gridOut( i, j, 0, Component::MOMENTUM_X ) -= scaling * netUpdates[0][1] * !rightReflection;
+
+                fluxX( i + 1, j, 0, Component::HEIGHT ) = -scaling * netUpdates[1][0] * !leftReflection;
+                gridOut( i + 1, j, 0, Component::HEIGHT ) -= scaling * netUpdates[1][0] * !leftReflection;
+                fluxX( i + 1, j, 0, Component::MOMENTUM_X ) = -scaling * netUpdates[1][1] * !leftReflection;
+                gridOut( i + 1, j, 0, Component::MOMENTUM_X ) -= scaling * netUpdates[1][1] * !leftReflection;
+
             }
-
-            // calculate the reflection
-            bool leftReflection = ( height( i + 1, j, 0 ) <= amrex::Real( 0.0 ) );
-            amrex::Real heightRight = leftReflection ? height( i, j, 0 ) : height( i + 1, j, 0 );
-            amrex::Real momentumRight = leftReflection ? -momentumX( i, j, 0 ) : momentumX( i + 1, j, 0 );
-            amrex::Real bathymetryRight = leftReflection ? bathymetry( i, j, 0 ) : bathymetry( i + 1, j, 0 );
-
-            bool rightReflection = ( height( i, j, 0 ) <= amrex::Real( 0.0 ) );
-            amrex::Real heightLeft = rightReflection ? height( i + 1, j, 0 ) : height( i, j, 0 );
-            amrex::Real momentumLeft = rightReflection ? -momentumX( i + 1, j, 0 ) : momentumX( i, j, 0 );
-            amrex::Real bathymetryLeft = rightReflection ? bathymetry( i + 1, j, 0 ) : bathymetry( i, j, 0 );
-
-            // compute net-updates
-            tsunami_lab::t_real netUpdates[2][2];
-
-            tsunami_lab::solvers::FWave::netUpdates( heightLeft,
-                                                     heightRight,
-                                                     momentumLeft,
-                                                     momentumRight,
-                                                     bathymetryLeft,
-                                                     bathymetryRight,
-                                                     netUpdates );
-
-            fluxX( i, j, 0, Component::HEIGHT ) -= scaling * netUpdates[0][0] * !rightReflection;
-            gridOut( i, j, 0, Component::HEIGHT ) -= scaling * netUpdates[0][0] * !rightReflection;
-            fluxX( i, j, 0, Component::MOMENTUM_X ) -= scaling * netUpdates[0][1] * !rightReflection;
-            gridOut( i, j, 0, Component::MOMENTUM_X ) -= scaling * netUpdates[0][1] * !rightReflection;
-
-            fluxX( i + 1, j, 0, Component::HEIGHT ) = -scaling * netUpdates[1][0] * !leftReflection;
-            gridOut( i + 1, j, 0, Component::HEIGHT ) -= scaling * netUpdates[1][0] * !leftReflection;
-            fluxX( i + 1, j, 0, Component::MOMENTUM_X ) = -scaling * netUpdates[1][1] * !leftReflection;
-            gridOut( i + 1, j, 0, Component::MOMENTUM_X ) -= scaling * netUpdates[1][1] * !leftReflection;
-
-            gridOut( i, j, 0, Component::MOMENTUM_Y ) = momentumY( i, j, 0 ); // Copy
-
-        }
     }
 }
 
@@ -108,48 +109,47 @@ void ySweep( amrex::Box const& bx,
 
     for( int i = lo.x; i < hi.x; ++i )
     {
-        for( int j = lo.y; j < hi.y; ++j )
-        {
-            // noting to compute both shore cells
-            if( height( i, j, 0 ) <= 0 && height( i, j + 1, 0 ) <= 0 )
+        AMREX_PRAGMA_SIMD
+            for( int j = lo.y; j < hi.y; ++j )
             {
-                continue;
+                // noting to compute both shore cells
+                if( height( i, j, 0 ) <= 0 && height( i, j + 1, 0 ) <= 0 )
+                {
+                    continue;
+                }
+
+                // calculate the reflection
+                bool leftReflection = ( height( i, j + 1, 0 ) <= amrex::Real( 0.0 ) );
+                amrex::Real heightRight = leftReflection ? height( i, j, 0 ) : height( i, j + 1, 0 );
+                amrex::Real momentumRight = leftReflection ? -momentumY( i, j, 0 ) : momentumY( i, j + 1, 0 );
+                amrex::Real bathymetryRight = leftReflection ? bathymetry( i, j, 0 ) : bathymetry( i, j + 1, 0 );
+
+                bool rightReflection = ( height( i, j, 0 ) <= amrex::Real( 0.0 ) );
+                amrex::Real heightLeft = rightReflection ? height( i, j + 1, 0 ) : height( i, j, 0 );
+                amrex::Real momentumLeft = rightReflection ? -momentumY( i, j + 1, 0 ) : momentumY( i, j, 0 );
+                amrex::Real bathymetryLeft = rightReflection ? bathymetry( i, j + 1, 0 ) : bathymetry( i, j, 0 );
+
+                // compute net-updates
+                tsunami_lab::t_real netUpdates[2][2];
+
+                tsunami_lab::solvers::FWave::netUpdates( heightLeft,
+                                                         heightRight,
+                                                         momentumLeft,
+                                                         momentumRight,
+                                                         bathymetryLeft,
+                                                         bathymetryRight,
+                                                         netUpdates );
+
+                fluxY( i, j, 0, Component::HEIGHT ) -= scaling * netUpdates[0][0] * !rightReflection;
+                gridOut( i, j, 0, Component::HEIGHT ) -= scaling * netUpdates[0][0] * !rightReflection;
+                fluxY( i, j, 0, Component::MOMENTUM_Y ) -= scaling * netUpdates[0][1] * !rightReflection;
+                gridOut( i, j, 0, Component::MOMENTUM_Y ) -= scaling * netUpdates[0][1] * !rightReflection;
+
+                fluxY( i, j + 1, 0, Component::HEIGHT ) = -scaling * netUpdates[1][0] * !leftReflection;
+                gridOut( i, j + 1, 0, Component::HEIGHT ) -= scaling * netUpdates[1][0] * !leftReflection;
+                fluxY( i, j + 1, 0, Component::MOMENTUM_Y ) = -scaling * netUpdates[1][1] * !leftReflection;
+                gridOut( i, j + 1, 0, Component::MOMENTUM_Y ) -= scaling * netUpdates[1][1] * !leftReflection;
             }
-
-            // calculate the reflection
-            bool leftReflection = ( height( i, j + 1, 0 ) <= amrex::Real( 0.0 ) );
-            amrex::Real heightRight = leftReflection ? height( i, j, 0 ) : height( i, j + 1, 0 );
-            amrex::Real momentumRight = leftReflection ? -momentumY( i, j, 0 ) : momentumY( i, j + 1, 0 );
-            amrex::Real bathymetryRight = leftReflection ? bathymetry( i, j, 0 ) : bathymetry( i, j + 1, 0 );
-
-            bool rightReflection = ( height( i, j, 0 ) <= amrex::Real( 0.0 ) );
-            amrex::Real heightLeft = rightReflection ? height( i, j + 1, 0 ) : height( i, j, 0 );
-            amrex::Real momentumLeft = rightReflection ? -momentumY( i, j + 1, 0 ) : momentumY( i, j, 0 );
-            amrex::Real bathymetryLeft = rightReflection ? bathymetry( i, j + 1, 0 ) : bathymetry( i, j, 0 );
-
-            // compute net-updates
-            tsunami_lab::t_real netUpdates[2][2];
-
-            tsunami_lab::solvers::FWave::netUpdates( heightLeft,
-                                                     heightRight,
-                                                     momentumLeft,
-                                                     momentumRight,
-                                                     bathymetryLeft,
-                                                     bathymetryRight,
-                                                     netUpdates );
-
-            fluxY( i, j, 0, Component::HEIGHT ) -= scaling * netUpdates[0][0] * !rightReflection;
-            gridOut( i, j, 0, Component::HEIGHT ) -= scaling * netUpdates[0][0] * !rightReflection;
-            fluxY( i, j, 0, Component::MOMENTUM_Y ) -= scaling * netUpdates[0][1] * !rightReflection;
-            gridOut( i, j, 0, Component::MOMENTUM_Y ) -= scaling * netUpdates[0][1] * !rightReflection;
-
-            fluxY( i, j + 1, 0, Component::HEIGHT ) = -scaling * netUpdates[1][0] * !leftReflection;
-            gridOut( i, j + 1, 0, Component::HEIGHT ) -= scaling * netUpdates[1][0] * !leftReflection;
-            fluxY( i, j + 1, 0, Component::MOMENTUM_Y ) = -scaling * netUpdates[1][1] * !leftReflection;
-            gridOut( i, j + 1, 0, Component::MOMENTUM_Y ) -= scaling * netUpdates[1][1] * !leftReflection;
-
-            gridOut( i, j, 0, Component::MOMENTUM_X ) = momentumX( i, j, 0 ); // Copy
-        }
     }
 }
 
