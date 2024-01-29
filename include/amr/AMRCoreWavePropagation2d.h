@@ -111,7 +111,7 @@ private:
     /**
      * Fix an entire multifab that was interpolating from the coarser level.
      * This comes into play when the fine level was created or updated.
-     * This will file the cell near the shore i.e. |bathymetry| < bathymetryMinValue with the values of cons_mf
+     * This will file the cell near the shore i.e. |bathymetry| < bathymetryMinValue with the values of const_mf
      * instead of using the mf and set any height on the coast to zero.
      *
      * @param mf the multiFab to interpolate to
@@ -156,7 +156,7 @@ private:
                                  int iteration );
 
     /**
-    * Advance phi at a single level for a single time step
+    * Advance grid at a single level for a single time step
     *
     * @param level the level to advance
     * @param time the current time

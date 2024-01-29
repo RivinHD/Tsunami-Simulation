@@ -51,7 +51,7 @@ one. The additional dimension is for the number of components."[7]_
 **FabArray**
 
 "``FabArray<FAB>`` is a class template in AMReX_FabArray.H for a collection of FABs on the same AMR level associated
-with a ``BoxArray``. The template parameter ``FAB`` is usually ``BaseFab<T>``".[8]_
+with a ``BoxArray``. The template parameter ``FAB`` is usually ``BaseFab<T>``."[8]_
 
 **MultiFab**
 
@@ -358,8 +358,133 @@ aim to progress through time on a smaller scale. To achieve this, we use the rec
 As we can see, we are calling the subroutines and then using ``AverageDownTo`` to average down across multiple levels.
 We defined this method ourselves to limit the arguments of the ``average_down`` method provided by ``AMReX``.
 
+.. code-block:: cpp
+    :emphasize-lines: 7-9
+
+    /// File:     'root/src/AMRCoreWavePropagation2d.cpp'
+    /// Function: 'AverageDownTo'
+
+    void tsunami_lab::amr::AMRCoreWavePropagation2d::AverageDownTo( int coarseLevel )
+    {
+        // Average down the first 3 Components: Height, MomentumX, MomentumY
+        average_down( gridNew[coarseLevel + 1], gridNew[coarseLevel],
+                      geom[coarseLevel + 1], geom[coarseLevel],
+                      0, 3, refRatio( coarseLevel ) );
+    }
+
 AdvanceGridAtLevel
 ^^^^^^^^^^^^^^^^^^
+
+Let's revisit ``AdvanceGridAtLevel`` and examine it more closely. This is the method to advance the grid by one level
+for one time step. Before performing the x and y sweep, it is necessary to call ``FillPatch``.
+
+.. code-block::
+    :emphasize-lines: 20-21
+
+    /// File:     'root/src/AMRCoreWavePropagation2d.cpp'
+    /// Function: 'AdvanceGridAtLevel'
+
+    [ ... ]
+    // swapping the grid to keep the current time step in gridOld
+    // and advance with the MultiFab in gridNew
+    std::swap( gridOld[level], gridNew[level] );
+
+    MultiFab& state = gridNew[level];
+
+    // size in x & y direction
+    const Real dx = geom[level].CellSize( 0 );
+    const Real dy = geom[level].CellSize( 1 );
+
+    // scaling in each dimension
+    Real dtdx = dtLevel / dx;
+    Real dtdy = dtLevel / dy;
+
+    // State with ghost cells
+    MultiFab stateTemp( grids[level], dmap[level], 4, nGhostRow );
+    FillPatch( level, time, stateTemp );
+    state.ParallelCopy( stateTemp, 0, 0, 4, nGhostRow, nGhostRow );
+    [ ... ]
+
+In ``AdvanceGridAtLevel``, we create a temporary ``MultiFab`` called ``stateTemp``, which is essentially our grid but
+with ghost cells filled in. The valid and ghost cells are filled in from actual valid data at that level, space-time
+interpolated data from the next-coarser level, neighboring grids at the same level, or domain boundary conditions.
+
+**FillPatch**
+
+This method is needed to fill a patch with data. The code includes two functions: ``FillPatchSingleLevel`` and
+``FillPatchTwoLevels``.
+
+1. "``FillPatchSingleLevel`` fills a ``MultiFab`` and its ghost region at a single level of refinement. The routine is flexible enough to interpolate in time between two ``MultiFabs`` associated with different times."[11]_
+
+2. "``FillPatchTwoLevels`` fills a ``MultiFab`` and its ghost region at a single level of refinement, assuming there is an underlying coarse level. This routine is flexible enough to interpolate the coarser level in time first using ``FillPatchSingleLevel``."[11]_
+
+"Note that ``FillPatchSingleLevel`` and ``FillPatchTwoLevels`` call the single-level routines ``MultiFab::FillBoundary``
+and ``FillDomainBoundary`` to fill interior, periodic, and physical boundary ghost cells."[11]_
+
+.. code-block:: cpp
+    :emphasize-lines: 14, 29, 36
+
+    /// File:     'root/src/AMRCoreWavePropagation2d.cpp'
+    /// Function: 'FillPatch'
+
+    [ ... ]
+    if( level == 0 )
+    {
+        Vector<MultiFab*> smf;
+        Vector<Real> stime;
+        GetData( 0, time, smf, stime );
+
+        CpuBndryFuncFab bndry_func( nullptr );  // Without EXT_DIR, we can pass a nullptr.
+        PhysBCFunct<CpuBndryFuncFab> physbc( geom[level], physicalBoundary, bndry_func );
+        // decomp is the starting component of the destination. Therefore scomp = dcomp
+        FillPatchSingleLevel( mf, time, smf, stime, 0, 0, 4,
+                              geom[level], physbc, 0 );
+    }
+    else
+    {
+        Vector<MultiFab*> cmf, fmf;
+        Vector<Real> ctime, ftime;
+        GetData( level - 1, time, cmf, ctime );
+        GetData( level, time, fmf, ftime );
+
+        CpuBndryFuncFab bndry_func( nullptr );  // Without EXT_DIR, we can pass a nullptr.
+        PhysBCFunct<CpuBndryFuncFab> cphysbc( geom[level - 1], physicalBoundary, bndry_func );
+        PhysBCFunct<CpuBndryFuncFab> fphysbc( geom[level], physicalBoundary, bndry_func );
+
+        // decomp is the starting component of the destination. Therefore scomp = dcomp
+        FillPatchTwoLevels( mf, time, cmf, ctime, fmf, ftime,
+                            0, 0, 4, geom[level - 1], geom[level],
+                            cphysbc, 0, fphysbc, 0, refRatio( level - 1 ),
+                            interpolator, physicalBoundary, 0 );
+
+        // do a piecewise constant interpolation to fill cell near the shore i.e. |bathymetry| < bathymetryMinValue
+        MultiFab tmf( mf.boxArray(), mf.DistributionMap(), 4, mf.nGrow() );
+        FillPatchTwoLevels( tmf, time, cmf, ctime, fmf, ftime,
+                            0, 0, 4, geom[level - 1], geom[level],
+                            cphysbc, 0, fphysbc, 0, refRatio( level - 1 ),
+                            &pc_interp, physicalBoundary, 0 );
+
+        FixFinePatch( mf, tmf );
+
+The second instance of ``FillPatchTwoLevels`` is required to fill cells near the coast and prevent the dry-wet problem.
+This is necessary because our simulation is not capable of handling this issue. The last line ``FiXFinePatch`` fixes the
+``MultiFab`` interpolation from the coarser level. This is relevant when the fine level is created or updated. It
+replaces the values of ``mf`` with ``const_mf`` for the cell near the shore where |bathymetry| < ``bathymetryMinValue``
+and set the height on the coast to zero. To prevent the issue of dry-wet, this is also necessary.
+
+A ``FillPatch`` uses an ``Interpolator``. This is largely hidden from application codes. ``AMReX_Interpolater.cpp/H``
+contains the virtual base class ``Interpolater``, which provides an interface for coarse-to-fine spatial interpolation
+operators. The fillpatch routines described above require an ``Interpolater`` for ``FillPatchTwoLevels``. In addition
+to the special case, we are using the ``amrex::lincc_interp`` interpolator.
+
+**CellConservativeLinear lincc_interp**
+
+"Dimension-by-dimension linear interpolation with `MC limiter <https://en.wikipedia.org/wiki/Flux_limiter>`_ for
+cell-centered data. For multi-component data, the strictest limiter is used for all components. For example,
+if one component after its own limiting has a slope of zero, all other components will have zero slopes as well
+eventually. The interpolation is conservative in finite-volume sense for both Cartesian and curvilinear coordinates."[12]_
+
+
 
 
 
@@ -378,4 +503,6 @@ All team members contributed equally to the tasks.
 .. [3] From https://amrex-codes.github.io/amrex/docs_html/IO.html# (28.01.2024)
 .. [9] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#mfiter-and-tiling (29.01.2024)
 .. [10] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#parallelfor (29.01.2024)
+.. [11] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html?highlight=fillpatchtwolevels#fillpatchutil-and-interpolater (29.01.2024)
+.. [12] From https://github.com/AMReX-Codes/amrex/issues/396#issuecomment-455806287 (29.01.2024)
 
