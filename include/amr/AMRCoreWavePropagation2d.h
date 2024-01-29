@@ -16,7 +16,6 @@
 #include <AMReX_BCRec.H>
 #include <AMReX_Interpolater.H>
 
-#include "../../include/patches/WavePropagation.h"
 #include "../../include/setups/Setup.h"
 
 namespace tsunami_lab
@@ -39,9 +38,13 @@ private:
     //! number of ghost cell around the boundary of the domain
     const int nGhostRow = 1;
 
+    //! Minimum Height of the bathymetry
+    const amrex::Real bathymetryMinValue = 20;
+
     //! interpolator going from coarse to fine
-    // this should never be const
+    // this type should never be const
     amrex::Interpolater* interpolator = &amrex::lincc_interp;
+
 
     //! which step?
     amrex::Vector<int> step;
@@ -70,14 +73,6 @@ private:
     //! condition types at the lo/hi walls in each direction
     //! 4-components: Height, MomentumX, MomentumY, Bathymetry
     amrex::Vector<amrex::BCRec> physicalBoundary;
-
-    //! Stores fluxes at coarse-fine interface for synchronization
-    //! This will be sized "nlevs_max+1"
-    //! NOTE: The flux register associated with flux_reg[level] is associated
-    //! with the level/level-1 interface (and has grid spacing associated with level-1)
-    //! Therefore flux_reg[0] and flux_reg[nlevs_max] are never actually
-    //! used in the reflux operation
-    amrex::Vector<std::unique_ptr<amrex::FluxRegister>> fluxRegister;
 
     //! time to simulate
     amrex::Real simulationTime = std::numeric_limits<amrex::Real>::max();
@@ -108,14 +103,22 @@ private:
      * @param level the level to fill
      * @param time the current time
      * @param mf the multiFab to interpolate to
-     * @param icomp component index to start interpolating
-     * @param ncomp number of components of the multifab
     */
-    void FillCoarsePatch( int level,
-                          amrex::Real time,
-                          amrex::MultiFab& mf,
-                          int icomp,
-                          int ncomp );
+    void FillFinePatch( int level,
+                        amrex::Real time,
+                        amrex::MultiFab& mf );
+
+    /**
+     * Fix an entire multifab that was interpolating from the coarser level.
+     * This comes into play when the fine level was created or updated.
+     * This will file the cell near the shore i.e. |bathymetry| < bathymetryMinValue with the values of cons_mf
+     * instead of using the mf and set any height on the coast to zero.
+     *
+     * @param mf the multiFab to interpolate to
+     * @param cons_mf the multiFab wth pairwise constant bathymetry interpolation
+    */
+    void FixFinePatch( amrex::MultiFab& mf,
+                       const amrex::MultiFab& cons_mf );
 
     /**
      * Utility to copy in data from gridOld and/or gridNew into another multifab
@@ -125,7 +128,9 @@ private:
      * @param data the MutliFab to which the data is written
      * @param datatime the Vector to which the time is written
     */
-    void GetData( int level, amrex::Real time, amrex::Vector<amrex::MultiFab*>& data,
+    void GetData( int level,
+                  amrex::Real time,
+                  amrex::Vector<amrex::MultiFab*>& data,
                   amrex::Vector<amrex::Real>& datatime );
 
     /**
@@ -134,10 +139,10 @@ private:
      * @param level the level to fill
      * @param time the current time
      * @param mf the multifab to fill
-     * @param icomp component index to start filling
-     * @param ncomp number of components of the multifab
     */
-    void FillPatch( int level, amrex::Real time, amrex::MultiFab& mf, int icomp, int ncomp );
+    void FillPatch( int level,
+                    amrex::Real time,
+                    amrex::MultiFab& mf );
 
     /**
      * Advance a level by dt - includes a recursive call for finer levels
@@ -151,7 +156,7 @@ private:
                                  int iteration );
 
     /**
-    * Advance phi at a single level for a single time step, update flux registers
+    * Advance phi at a single level for a single time step
     *
     * @param level the level to advance
     * @param time the current time
@@ -199,7 +204,18 @@ public:
         MOMENTUM_X = 1,
         MOMENTUM_Y = 2,
         BATHYMERTRY = 3,
-        CHANGE = 4
+        ERROR = 4
+    };
+
+    /**
+     * Choose a side to which a value is to be applied
+    */
+    enum Side
+    {
+        LEFT = 0,
+        RIGHT = 1,
+        TOP = 2,
+        BOTTOM = 3
     };
 
     /**
@@ -208,6 +224,11 @@ public:
      * @param setup the setup to initialize the data with
     */
     AMRCoreWavePropagation2d( tsunami_lab::setups::Setup* setup );
+
+    /**
+     * Print some parameters to the console
+    */
+    void PrintParameters();
 
     /**
      * Set the time step of the simulation
@@ -290,7 +311,7 @@ public:
      * @param side the side to set
      * @param enable true if reflection should be enabled, false for outflow boundary
     */
-    void setReflection( tsunami_lab::patches::WavePropagation::Side side,
+    void setReflection( Side side,
                         bool enable );
 };
 

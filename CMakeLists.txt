@@ -27,12 +27,6 @@ if(ENABLE_TESTMODE)
     message(STATUS "Starting in Test Mode")
 endif()
 
-option(DISABLE_IO "Disable the io of the simulation")
-if(DISABLE_IO)
-    add_compile_definitions(TSUNAMI_SIMULATION_DISABLE_IO)
-    message(STATUS "Disabling IO")
-endif()
-
 option(REPORT "Generate a report if enabled")
 message("Compiler: ${CMAKE_CXX_COMPILER_ID}")
 if(REPORT)
@@ -71,7 +65,6 @@ set(PROJECT_INCLUDE_DIR "include")
 
 set(SRC_FILES
         solvers/FWave
-        solvers/Roe
         setups/MiddleStates1d
         setups/DamBreak1d
         setups/ShockShock1d
@@ -82,14 +75,8 @@ set(SRC_FILES
         setups/CircularDamBreak2d
         setups/ArtificialTsunami2d
         setups/TsunamiEvent2d
-        patches/WavePropagation1d
-        patches/WavePropagation2d
         io/NetCdf
         io/Csv
-)
-set(SRC_FILES_IO
-        setups/CheckPoint
-        io/Stations
 )
 set(SRC_FILES_NO_TEST
         amr/AMRCoreWavePropagation2d
@@ -126,17 +113,6 @@ foreach(file ${SRC_FILES})
             ${PROJECT_SOURCE_DIR}/${file}.test.cpp
     )
 endforeach()
-if(NOT DISABLE_IO)
-    foreach(file ${SRC_FILES_IO})
-        list(APPEND SOURCE_FILES
-                ${PROJECT_SOURCE_DIR}/${file}.cpp
-                ${PROJECT_INCLUDE_DIR}/${file}.h
-        )
-        list(APPEND TEST_FILES
-                ${PROJECT_SOURCE_DIR}/${file}.test.cpp
-        )
-    endforeach()
-endif(NOT DISABLE_IO)
 foreach(file ${SRC_FILES_NO_TEST})
     list(APPEND SOURCE_FILES
             ${PROJECT_SOURCE_DIR}/${file}.cpp
@@ -186,17 +162,6 @@ target_sources(sanitize PRIVATE ${MAIN_FILE})
 add_subdirectory(submodules/Catch2)
 target_link_libraries(test PRIVATE Catch2::Catch2)
 target_link_libraries(sanitize_test PRIVATE Catch2::Catch2)
-
-# Add nlohmann
-if(NOT DISABLE_IO)
-    # Linking the json libary
-    add_subdirectory(submodules/json)
-    target_link_libraries(test PRIVATE nlohmann_json::nlohmann_json)
-    target_link_libraries(sanitize_test PRIVATE nlohmann_json::nlohmann_json)
-    target_link_libraries(test_middle_states PRIVATE nlohmann_json::nlohmann_json)
-    target_link_libraries(simulation PRIVATE nlohmann_json::nlohmann_json)
-    target_link_libraries(sanitize PRIVATE nlohmann_json::nlohmann_json)
-endif(NOT DISABLE_IO)
 
 # Add AMReX (https://amrex-codes.github.io/amrex/docs_html/BuildingAMReX.html#customization-options)
 set(AMReX_SPACEDIM 2 CACHE STRING "" FORCE) # Dimension of AMReX build
