@@ -42,13 +42,13 @@ int main( int   /*i_argc*/,
         const char* reset = "\033[0m";
         const char* green = "\033[32;49m";
 
-        std::cout << "#####################################################" << std::endl;
-        std::cout << "###                  Tsunami Lab                  ###" << std::endl;
-        std::cout << "###                                               ###" << std::endl;
-        std::cout << "### https://scalable.uni-jena.de                  ###" << std::endl;
-        std::cout << "### https://rivinhd.github.io/Tsunami-Simulation/ ###" << std::endl;
-        std::cout << "#####################################################" << std::endl;
-
+        amrex::Print()
+            << "#####################################################" << std::endl
+            << "###                  Tsunami Lab                  ###" << std::endl
+            << "###                                               ###" << std::endl
+            << "### https://scalable.uni-jena.de                  ###" << std::endl
+            << "### https://rivinhd.github.io/Tsunami-Simulation/ ###" << std::endl
+            << "#####################################################" << std::endl;
         amrex::ParmParse ppAmr( "amr" );
 
         // create plot folder
@@ -67,20 +67,25 @@ int main( int   /*i_argc*/,
         amrex::ParmParse ppTsunami( "tsunami" );
         std::string bathymetryFile;
         std::string displacementFile;
+        amrex::Real bathymetryMinValue;
         ppTsunami.query( "bathymetry_file", bathymetryFile );
         ppTsunami.query( "displacement_file", displacementFile );
-
+        ppTsunami.query( "bathymetry_min_value", bathymetryMinValue );
         const char* variables[3]{ "x", "y", "z" };
+
         tsunami_lab::setups::Setup* setup =
             new tsunami_lab::setups::TsunamiEvent2d( bathymetryFile.c_str(),
                                                      variables,
                                                      displacementFile.c_str(),
                                                      variables,
                                                      scale[0],
-                                                     scale[1] );
-
+                                                     scale[1],
+                                                     bathymetryMinValue );
         // construct solver
         tsunami_lab::amr::AMRCoreWavePropagation2d* waveProp = new tsunami_lab::amr::AMRCoreWavePropagation2d( setup );
+
+
+        waveProp->PrintParameters();
 
         // set Reflection
         bool reflectionLeft;
@@ -91,24 +96,26 @@ int main( int   /*i_argc*/,
         ppGeometry.query( "reflection_right", reflectRight );
         ppGeometry.query( "reflection_top", reflectTop );
         ppGeometry.query( "reflection_bottom", reflectBottom );
-        waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::LEFT, reflectionLeft );
-        waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::RIGHT, reflectRight );
-        waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::TOP, reflectTop );
-        waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::BOTTOM, reflectBottom );
+
+        amrex::Print() << "Activated Reflection: " << green
+            << ( reflectionLeft ? "left, " : "" )
+            << ( reflectRight ? "right, " : "" )
+            << ( reflectTop ? "top, " : "" )
+            << ( reflectBottom ? "bottom" : "" )
+            << reset << std::endl;
+        waveProp->setReflection( tsunami_lab::amr::AMRCoreWavePropagation2d::Side::LEFT, reflectionLeft );
+        waveProp->setReflection( tsunami_lab::amr::AMRCoreWavePropagation2d::Side::RIGHT, reflectRight );
+        waveProp->setReflection( tsunami_lab::amr::AMRCoreWavePropagation2d::Side::TOP, reflectTop );
+        waveProp->setReflection( tsunami_lab::amr::AMRCoreWavePropagation2d::Side::BOTTOM, reflectBottom );
 
         // derive constant time step; changes at simulation time are ignored
 
         const auto startTime = std::chrono::high_resolution_clock::now();
 
-        std::cout << "entering time loop" << std::endl;
-
         // iterate over time
         waveProp->Evolve();
 
-        std::cout << "finished time loop" << std::endl;
-
         // free memory
-        std::cout << "freeing memory" << std::endl;
         delete waveProp;
         delete setup;
         delete[] argv;
@@ -118,10 +125,8 @@ int main( int   /*i_argc*/,
         const auto hours = std::chrono::duration_cast<std::chrono::hours>( duration );
         const auto minutes = std::chrono::duration_cast<std::chrono::minutes>( duration - hours );
         const auto seconds = std::chrono::duration_cast<std::chrono::seconds>( duration - hours - minutes );
-        std::cout << "The Simulation took " << green << hours.count() << " h "
+        amrex::Print() << "The Simulation took " << green << hours.count() << " h "
             << minutes.count() << " min " << seconds.count() << " sec" << reset << " to finish." << std::endl;
-
-        std::cout << "finished, exiting" << std::endl;
     }
     amrex::Finalize();
     return EXIT_SUCCESS;

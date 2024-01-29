@@ -6,7 +6,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --time=00:10:00
-#SBATCH --cpus-per-task=2
+#SBATCH --cpus-per-task=36
 #SBATCH --mem=4G
 
 set -e
@@ -31,17 +31,17 @@ cd "$BuildDirectory"
 # Setting up cmake
 echo "Setting up cmake"
 # intel compiler can only be used without io
-CC="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icc" \
-CXX="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icpc" \
-# Options: -D DISABLE_IO=ON; -D REPORT=ON
-cmake .. -DCMAKE_BUILD_TYPE=Release -D DISABLE_IO=ON
+#CC="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icc" \
+#CXX="/cluster/intel/parallel_studio_xe_2020.2.108/compilers_and_libraries_2020/linux/bin/intel64/icpc" \
+# Options: -D REPORT=ON
+cmake .. -DCMAKE_BUILD_TYPE=Release
 
 # Compiling c++
 # Options:
 #   --config: Release, Debug
 #   --target: simulation, sanitize, test, sanitize_test, test_middle_states
 echo "Building the project"
-cmake --build . --target simulation
+cmake --build . --target simulation -j 36
 
 #creating ouput directory
 directory=/beegfs/$USER/$(date +"%F_%H-%M")
