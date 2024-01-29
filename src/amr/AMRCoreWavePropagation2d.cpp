@@ -456,7 +456,8 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::Evolve()
 
     for( int iStep = step[0]; currentTime < simulationTime; iStep++ )
     {
-        if( currentTime >= writes * writeFrequency )
+        if( currentTime >= writes * writeFrequency
+            && writeFrequency > 0 )
         {
             writes++;
             WritePlotFile();
