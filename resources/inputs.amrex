@@ -2,7 +2,7 @@
 # Run until nsteps == max_step or time == stop_time, 
 #     whichever comes first
 # *****************************************************************
-stop_time = 3000.0
+stop_time = 13000.0
 
 # *****************************************************************
 # Problem size and geometry
@@ -70,5 +70,5 @@ tsunami.displacement_file = "resources/gebco20/tohoku_gebco20_usgs_250m_displ.nc
 # *****************************************************************
 amr.plot_file   = plt       # root name of plot file
 amr.plot_folder = solution  # the folder to plot into
-amr.plot_int    = 50        # number of simulation time between plot files
+amr.plot_int    = 60        # number of simulation time between plot files
                               # if negative then no plot files will be written
