@@ -62,8 +62,10 @@ tsunami.griderr = 0.01 0.04 0.1
 # *****************************************************************
 # Input Files for Tsunami Simulation
 # *****************************************************************
-tsunami.bathymetry_file   = "resources/gebco20/tohoku_gebco20_usgs_250m_bath.nc"
-tsunami.displacement_file = "resources/gebco20/tohoku_gebco20_usgs_250m_displ.nc"
+tsunami.bathymetry_file      = "resources/gebco20/tohoku_gebco20_usgs_250m_bath.nc"
+tsunami.displacement_file    = "resources/gebco20/tohoku_gebco20_usgs_250m_displ.nc"
+tsunami.bathymetry_min_value = 40.0  # The minimum height for bathymetry away from 
+                                        # the water level, i.e. 0, to overcome dry-wet problems
 
 # *****************************************************************
 # Plotfile name and frequency

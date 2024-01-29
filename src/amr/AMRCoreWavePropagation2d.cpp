@@ -352,6 +352,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::ReadParameters()
         {
             pp.getarr( "griderr", gridErr, 0, n );
         }
+        pp.query( "bathymetry_min_value", bathymetryMinValue );
     }
 }
 

@@ -67,8 +67,10 @@ int main( int   /*i_argc*/,
         amrex::ParmParse ppTsunami( "tsunami" );
         std::string bathymetryFile;
         std::string displacementFile;
+        amrex::Real bathymetryMinValue;
         ppTsunami.query( "bathymetry_file", bathymetryFile );
         ppTsunami.query( "displacement_file", displacementFile );
+        ppTsunami.query( "bathymetry_min_value", bathymetryMinValue );
         const char* variables[3]{ "x", "y", "z" };
 
         tsunami_lab::setups::Setup* setup =
@@ -77,7 +79,8 @@ int main( int   /*i_argc*/,
                                                      displacementFile.c_str(),
                                                      variables,
                                                      scale[0],
-                                                     scale[1] );
+                                                     scale[1],
+                                                     bathymetryMinValue );
         // construct solver
         tsunami_lab::amr::AMRCoreWavePropagation2d* waveProp = new tsunami_lab::amr::AMRCoreWavePropagation2d( setup );
 

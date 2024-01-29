@@ -39,7 +39,7 @@ private:
     const int nGhostRow = 1;
 
     //! Minimum Height of the bathymetry
-    const amrex::Real bathymetryMinValue = 20;
+    amrex::Real bathymetryMinValue = 20;
 
     //! interpolator going from coarse to fine
     // this type should never be const
