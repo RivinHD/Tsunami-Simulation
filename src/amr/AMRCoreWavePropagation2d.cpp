@@ -7,11 +7,11 @@
 #include "../../include/amr/AMRCoreWavePropagation2d.h"
 #include "../../include/amr/Kernels.h"
 
-#include <AMReX_MultiFabUtil.H>
 #include <AMReX_FillPatchUtil.H>
+#include <AMReX_MultiFabUtil.H>
+#include <AMReX_ParmParse.H>
 #include <AMReX_PhysBCFunct.H>
 #include <AMReX_PlotFileUtil.H>
-#include <AMReX_ParmParse.H>
 #include <filesystem> // requieres C++17 and up
 namespace fs = std::filesystem;
 
@@ -427,6 +427,20 @@ tsunami_lab::amr::AMRCoreWavePropagation2d::AMRCoreWavePropagation2d( tsunami_la
 
     // init the domain
     InitFromScratch( 0.0 );
+}
+
+void tsunami_lab::amr::AMRCoreWavePropagation2d::PrintParameters()
+{
+    const char* reset = "\033[0m";
+    const char* green = "\033[32;49m";
+
+    amrex::Print()
+        << "Simulation Time set to " << green << simulationTime << " seconds" << reset << std::endl
+        << "Writing to the disk every " << green << writeFrequency << reset << " seconds of simulation time" << std::endl
+        << "Number of max levels: " << green << max_level << reset << std::endl
+        << "Regrid every " << green << regridFrequency << " steps" << reset << std::endl
+        << "Nuber of coarse cells " << green << "X: " << geom[0].Domain().length( 0 ) << " Y: " << geom[0].Domain().length( 1 ) << reset << std::endl
+        << "Coarse cell size: " << green << "X: " << geom[0].CellSize( 0 ) << " Y: " << geom[0].CellSize( 1 ) << reset << std::endl;
 }
 
 void tsunami_lab::amr::AMRCoreWavePropagation2d::setTimeStep( Real timeStep, int level )

@@ -82,6 +82,8 @@ int main( int   /*i_argc*/,
         tsunami_lab::amr::AMRCoreWavePropagation2d* waveProp = new tsunami_lab::amr::AMRCoreWavePropagation2d( setup );
 
 
+        waveProp->PrintParameters();
+
         // set Reflection
         bool reflectionLeft;
         bool reflectRight;
@@ -91,6 +93,13 @@ int main( int   /*i_argc*/,
         ppGeometry.query( "reflection_right", reflectRight );
         ppGeometry.query( "reflection_top", reflectTop );
         ppGeometry.query( "reflection_bottom", reflectBottom );
+
+        amrex::Print() << "Activated Reflection: " << green
+            << ( reflectionLeft ? "left, " : "" )
+            << ( reflectRight ? "right, " : "" )
+            << ( reflectTop ? "top, " : "" )
+            << ( reflectBottom ? "bottom" : "" )
+            << reset << std::endl;
         waveProp->setReflection( tsunami_lab::amr::AMRCoreWavePropagation2d::Side::LEFT, reflectionLeft );
         waveProp->setReflection( tsunami_lab::amr::AMRCoreWavePropagation2d::Side::RIGHT, reflectRight );
         waveProp->setReflection( tsunami_lab::amr::AMRCoreWavePropagation2d::Side::TOP, reflectTop );

@@ -226,6 +226,11 @@ public:
     AMRCoreWavePropagation2d( tsunami_lab::setups::Setup* setup );
 
     /**
+     * Print some parameters to the console
+    */
+    void PrintParameters();
+
+    /**
      * Set the time step of the simulation
      *
      * @param timeStep set the timeStep to step forward
