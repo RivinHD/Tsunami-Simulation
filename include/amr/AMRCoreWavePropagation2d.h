@@ -156,7 +156,7 @@ private:
                                  int iteration );
 
     /**
-    * Advance phi at a single level for a single time step, update flux registers
+    * Advance phi at a single level for a single time step
     *
     * @param level the level to advance
     * @param time the current time

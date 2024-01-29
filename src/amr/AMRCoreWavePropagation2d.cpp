@@ -189,7 +189,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::timeStepWithSubcycling( int lev
 
     // ===== ADVANCE =====
 
-    // Advance a single level for a single time step, and update flux registers
+    // Advance a single level for a single time step
     tOld[level] = tNew[level];
     tNew[level] += dt[level];
 
@@ -246,16 +246,16 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::AdvanceGridAtLevel( int level,
 #endif
     for( MFIter mfi( state, false ); mfi.isValid(); ++mfi )
     {
-        // ===== COPY AND UPDATE X SWEEP =====
+        // ===== UPDATE X SWEEP =====
         const Box& bx = mfi.validbox();
 
-        // define the grid components and fluxes
+        // define the grid components
         Array4<Real const> height = state.const_array( mfi, HEIGHT );
         Array4<Real const> momentumX = state.const_array( mfi, MOMENTUM_X );
         Array4<Real const> bathymetry = state.const_array( mfi, BATHYMERTRY );
         Array4<Real      > gridOut = stateTemp.array( mfi );
 
-        // compute the x-sweep and the x fluxes
+        // compute the x-sweep
         launch( grow( bx, 1 ),
                 [=] AMREX_GPU_DEVICE( const Box & tbx )
         {
@@ -271,7 +271,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::AdvanceGridAtLevel( int level,
 #endif
     for( MFIter mfi( state, true ); mfi.isValid(); ++mfi )
     {
-        // ===== UPDATE Y SWEEP AND SCALE FLUX =====
+        // ===== UPDATE Y SWEEP =====
         const Box& bx = mfi.tilebox();
 
         // swap the grid components
@@ -280,7 +280,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::AdvanceGridAtLevel( int level,
         Array4<Real const> bathymetry = stateTemp.const_array( mfi, BATHYMERTRY );
         Array4<Real      > gridOut = state.array( mfi );
 
-        // compute the y-sweep and the y fluxes
+        // compute the y-sweep
         launch( grow( bx, 1 ),
                 [=] AMREX_GPU_DEVICE( const Box & tbx )
         {
