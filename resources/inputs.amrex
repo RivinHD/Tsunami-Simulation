@@ -2,13 +2,7 @@
 # Run until nsteps == max_step or time == stop_time, 
 #     whichever comes first
 # *****************************************************************
-# max_step  = 1000
 stop_time = 3000.0
-
-# *****************************************************************
-# Are we restarting from an existing checkpoint file?
-# *****************************************************************
-# amr.restart  = chk00060 # restart from this checkpoint file
 
 # *****************************************************************
 # Problem size and geometry
@@ -59,9 +53,9 @@ amr.max_grid_size   = 128
 amr.regrid_int      = 2       # how often to regrid should be larger than 0
 
 # *****************************************************************
-# Tagging -  if err > 1.01 at level 0, then refine 
-#            if err > 1.1  at level 1, then refine 
-#            if err > 1.5  at level 2, then refine 
+# Tagging -  if err > 0.01 at level 0, then refine 
+#            if err > 0.04 at level 1, then refine 
+#            if err > 0.1  at level 2, then refine 
 # *****************************************************************
 tsunami.griderr = 0.01 0.04 0.1
 
@@ -78,10 +72,3 @@ amr.plot_file   = plt       # root name of plot file
 amr.plot_folder = solution  # the folder to plot into
 amr.plot_int    = 50        # number of simulation time between plot files
                               # if negative then no plot files will be written
-
-# *****************************************************************
-# Checkpoint name and frequency
-# *****************************************************************
-# amr.chk_file = chk      # root name of checkpoint file
-# amr.chk_int  = -1       # number of timesteps between checkpoint files
-                          # if negative then no checkpoint files will be written

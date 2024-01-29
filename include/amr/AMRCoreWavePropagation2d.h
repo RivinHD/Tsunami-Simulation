@@ -75,14 +75,6 @@ private:
     //! 4-components: Height, MomentumX, MomentumY, Bathymetry
     amrex::Vector<amrex::BCRec> physicalBoundary;
 
-    //! Stores fluxes at coarse-fine interface for synchronization
-    //! This will be sized "nlevs_max+1"
-    //! NOTE: The flux register associated with flux_reg[level] is associated
-    //! with the level/level-1 interface (and has grid spacing associated with level-1)
-    //! Therefore flux_reg[0] and flux_reg[nlevs_max] are never actually
-    //! used in the reflux operation
-    amrex::Vector<std::unique_ptr<amrex::FluxRegister>> fluxRegister;
-
     //! time to simulate
     amrex::Real simulationTime = std::numeric_limits<amrex::Real>::max();
 
@@ -118,11 +110,13 @@ private:
                         amrex::MultiFab& mf );
 
     /**
-     * Fix an entire multifab that was interpolating from the coarser level
-     * This comes into play when the fine level was created or updated
+     * Fix an entire multifab that was interpolating from the coarser level.
+     * This comes into play when the fine level was created or updated.
+     * This will file the cell near the shore i.e. |bathymetry| < bathymetryMinValue with the values of cons_mf
+     * instead of using the mf and set any height on the coast to zero.
      *
      * @param mf the multiFab to interpolate to
-     * @param cons_mf the multiFab wth constant bathymetry interpolation
+     * @param cons_mf the multiFab wth pairwise constant bathymetry interpolation
     */
     void FixFinePatch( amrex::MultiFab& mf,
                        const amrex::MultiFab& cons_mf );
