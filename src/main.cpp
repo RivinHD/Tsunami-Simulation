@@ -91,10 +91,10 @@ int main( int   /*i_argc*/,
         ppGeometry.query( "reflection_right", reflectRight );
         ppGeometry.query( "reflection_top", reflectTop );
         ppGeometry.query( "reflection_bottom", reflectBottom );
-        waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::LEFT, reflectionLeft );
-        waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::RIGHT, reflectRight );
-        waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::TOP, reflectTop );
-        waveProp->setReflection( tsunami_lab::patches::WavePropagation::Side::BOTTOM, reflectBottom );
+        waveProp->setReflection( tsunami_lab::amr::AMRCoreWavePropagation2d::Side::LEFT, reflectionLeft );
+        waveProp->setReflection( tsunami_lab::amr::AMRCoreWavePropagation2d::Side::RIGHT, reflectRight );
+        waveProp->setReflection( tsunami_lab::amr::AMRCoreWavePropagation2d::Side::TOP, reflectTop );
+        waveProp->setReflection( tsunami_lab::amr::AMRCoreWavePropagation2d::Side::BOTTOM, reflectBottom );
 
         // derive constant time step; changes at simulation time are ignored
 

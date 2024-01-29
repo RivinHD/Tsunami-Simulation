@@ -52,7 +52,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::FixFinePatch( MultiFab& mf, con
 #endif
     for( MFIter mfi( mf, false ); mfi.isValid(); ++mfi )
     {
-        Box bx = mfi.tilebox();
+        Box bx = mfi.validbox();
 
         Array4<Real> height = mf.array( mfi, HEIGHT );
         Array4<Real> momentumX = mf.array( mfi, MOMENTUM_X );
@@ -247,7 +247,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::AdvanceGridAtLevel( int level,
     for( MFIter mfi( state, false ); mfi.isValid(); ++mfi )
     {
         // ===== COPY AND UPDATE X SWEEP =====
-        const Box& bx = mfi.tilebox();
+        const Box& bx = mfi.validbox();
 
         // define the grid components and fluxes
         Array4<Real const> height = state.const_array( mfi, HEIGHT );
@@ -364,9 +364,9 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::InitData( int level )
 #ifdef AMREX_USE_OMP
 #pragma omp parallel
 #endif
-    for( MFIter mfi( gridNew[level], true ); mfi.isValid(); ++mfi )
+    for( MFIter mfi( gridNew[level], false ); mfi.isValid(); ++mfi )
     {
-        Box bx = mfi.tilebox();
+        Box bx = mfi.validbox();
 
         Array4<Real> height = gridNew[level].array( mfi, HEIGHT );
         Array4<Real> momentumX = gridNew[level].array( mfi, MOMENTUM_X );
@@ -485,7 +485,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::ErrorEst( int level,
 #endif
     for( MFIter mfi( state, false ); mfi.isValid(); ++mfi )
     {
-        const Box& bx = mfi.tilebox();
+        const Box& bx = mfi.validbox();
 
         Array4<const Real> height = state.const_array( mfi, HEIGHT );
         Array4<const Real> momentumX = state.const_array( mfi, MOMENTUM_X );
@@ -558,13 +558,11 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::ClearLevel( int level )
     gridOld[level].clear();
 }
 
-void tsunami_lab::amr::AMRCoreWavePropagation2d::setReflection( tsunami_lab::patches::WavePropagation::Side side,
+void tsunami_lab::amr::AMRCoreWavePropagation2d::setReflection( Side side,
                                                                 bool enable )
 {
-    int dim = ( side == tsunami_lab::patches::WavePropagation::Side::BOTTOM
-                || side == tsunami_lab::patches::WavePropagation::Side::TOP );
-    if( side == tsunami_lab::patches::WavePropagation::Side::BOTTOM
-        || side == tsunami_lab::patches::WavePropagation::Side::LEFT )
+    int dim = side == BOTTOM || side == TOP;
+    if( side == BOTTOM || side == LEFT )
     {
         physicalBoundary[HEIGHT].setLo( dim, enable ? BCType::reflect_even : BCType::foextrap );
         physicalBoundary[MOMENTUM_X].setLo( dim, enable ? BCType::reflect_odd : BCType::foextrap );

@@ -16,7 +16,6 @@
 #include <AMReX_BCRec.H>
 #include <AMReX_Interpolater.H>
 
-#include "../../include/patches/WavePropagation.h"
 #include "../../include/setups/Setup.h"
 
 namespace tsunami_lab
@@ -209,6 +208,17 @@ public:
     };
 
     /**
+     * Choose a side to which a value is to be applied
+    */
+    enum Side
+    {
+        LEFT = 0,
+        RIGHT = 1,
+        TOP = 2,
+        BOTTOM = 3
+    };
+
+    /**
      * Construct Wave Propagation with AMR using the given setup
      *
      * @param setup the setup to initialize the data with
@@ -296,7 +306,7 @@ public:
      * @param side the side to set
      * @param enable true if reflection should be enabled, false for outflow boundary
     */
-    void setReflection( tsunami_lab::patches::WavePropagation::Side side,
+    void setReflection( Side side,
                         bool enable );
 };
 
