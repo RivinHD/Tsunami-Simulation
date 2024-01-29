@@ -144,7 +144,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::timeStepWithSubcycling( int lev
 
     // ===== ADVANCE =====
 
-    // Advance a single level for a single time step, and update flux registers
+    // Advance a single level for a single time step
     tOld[level] = tNew[level];
     tNew[level] += dt[level];
 
@@ -169,8 +169,6 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::timeStepWithSubcycling( int lev
         }
 
         // update level based on coarse-fine flux mismatch
-        //fluxRegister[level + 1]->Reflux( gridNew[level], 1.0, 0, 0, 3, geom[level] );
-
         AverageDownTo( level ); // average level+1 down to level
     }
 }
@@ -213,7 +211,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::AdvanceGridAtLevel( int level,
     for( MFIter mfi( stateNewX, false ); mfi.isValid(); ++mfi )
     {
         // ===== COPY AND UPDATE X SWEEP =====
-        const Box& bx = mfi.tilebox();
+        const Box& bx = mfi.validbox();
 
         // define the grid components and fluxes
         Array4<Real const> height = stateBorder.const_array( mfi, HEIGHT );
@@ -358,7 +356,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::InitData( int level )
 #endif
     for( MFIter mfi( gridNew[level], true ); mfi.isValid(); ++mfi )
     {
-        Box bx = mfi.tilebox();
+        Box bx = mfi.validbox();
 
         // size in x & y direction
         const Real dx = geom[level].CellSize( 0 );
