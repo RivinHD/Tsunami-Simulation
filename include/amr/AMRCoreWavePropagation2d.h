@@ -115,10 +115,10 @@ private:
      * instead of using the mf and set any height on the coast to zero.
      *
      * @param mf the multiFab to interpolate to
-     * @param cons_mf the multiFab wth pairwise constant bathymetry interpolation
+     * @param const_mf the multiFab wth piecewise constant bathymetry interpolation
     */
     void FixFinePatch( amrex::MultiFab& mf,
-                       const amrex::MultiFab& cons_mf );
+                       const amrex::MultiFab& const_mf );
 
     /**
      * Utility to copy in data from gridOld and/or gridNew into another multifab

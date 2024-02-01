@@ -36,7 +36,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::FillFinePatch( int level,
                            cphysbc, 0, fphysbc, 0, refRatio( level - 1 ),
                            interpolator, physicalBoundary, 0 );
 
-    // do a pairwise constant interpolation to fill cell near the shore i.e. |bathymetry| < bathymetryMinValue
+    // do a piecewise constant interpolation to fill cell near the shore i.e. |bathymetry| < bathymetryMinValue
     MultiFab tmf( mf.boxArray(), mf.DistributionMap(), 4, mf.nGrow() );
     InterpFromCoarseLevel( tmf, time, *cmf[0], 0, 0, 4, geom[level - 1], geom[level],
                            cphysbc, 0, fphysbc, 0, refRatio( level - 1 ),
@@ -45,7 +45,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::FillFinePatch( int level,
     FixFinePatch( mf, tmf );
 }
 
-void tsunami_lab::amr::AMRCoreWavePropagation2d::FixFinePatch( MultiFab& mf, const MultiFab& cons_mf )
+void tsunami_lab::amr::AMRCoreWavePropagation2d::FixFinePatch( MultiFab& mf, const MultiFab& const_mf )
 {
 #ifdef AMREX_USE_OMP
 #pragma omp parallel
@@ -58,10 +58,10 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::FixFinePatch( MultiFab& mf, con
         Array4<Real> momentumX = mf.array( mfi, MOMENTUM_X );
         Array4<Real> momentumY = mf.array( mfi, MOMENTUM_Y );
         Array4<Real> bathymetry = mf.array( mfi, BATHYMERTRY );
-        Array4<const Real> consHeight = cons_mf.array( mfi, HEIGHT );
-        Array4<const Real> consMomentumX = cons_mf.array( mfi, MOMENTUM_X );
-        Array4<const Real> consMomentumY = cons_mf.array( mfi, MOMENTUM_Y );
-        Array4<const Real> consBathymetry = cons_mf.array( mfi, BATHYMERTRY );
+        Array4<const Real> consHeight = const_mf.array( mfi, HEIGHT );
+        Array4<const Real> consMomentumX = const_mf.array( mfi, MOMENTUM_X );
+        Array4<const Real> consMomentumY = const_mf.array( mfi, MOMENTUM_Y );
+        Array4<const Real> consBathymetry = const_mf.array( mfi, BATHYMERTRY );
 
         ParallelFor( bx,
                      [=] AMREX_GPU_DEVICE( int i, int j, int k )
@@ -137,7 +137,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::FillPatch( int level, Real time
                             cphysbc, 0, fphysbc, 0, refRatio( level - 1 ),
                             interpolator, physicalBoundary, 0 );
 
-        // do a pairwise constant interpolation to fill cell near the shore i.e. |bathymetry| < bathymetryMinValue
+        // do a piecewise constant interpolation to fill cell near the shore i.e. |bathymetry| < bathymetryMinValue
         MultiFab tmf( mf.boxArray(), mf.DistributionMap(), 4, mf.nGrow() );
         FillPatchTwoLevels( tmf, time, cmf, ctime, fmf, ftime,
                             0, 0, 4, geom[level - 1], geom[level],
@@ -224,6 +224,8 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::AdvanceGridAtLevel( int level,
                                                                      int /*iteration*/,
                                                                      int /*nCycle*/ )
 {
+    // swapping the grid to keep the current time step in gridOld
+    // and advance with the MultiFab in gridNew
     std::swap( gridOld[level], gridNew[level] );
 
     MultiFab& state = gridNew[level];
@@ -236,7 +238,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::AdvanceGridAtLevel( int level,
     Real dtdx = dtLevel / dx;
     Real dtdy = dtLevel / dy;
 
-    // State with ghost cells
+    // state with ghost cells
     MultiFab stateTemp( grids[level], dmap[level], 4, nGhostRow );
     FillPatch( level, time, stateTemp );
     state.ParallelCopy( stateTemp, 0, 0, 4, nGhostRow, nGhostRow );

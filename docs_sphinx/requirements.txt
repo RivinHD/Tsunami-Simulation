@@ -2,3 +2,4 @@ sphinx
 sphinx-rtd-theme
 breathe
 sphinx-copybutton
+sphinx-design

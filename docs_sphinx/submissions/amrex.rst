@@ -28,7 +28,7 @@ A ``Box`` contains no floating-point data."[6]_
 
 "``BoxArray`` is a class in ``AMReX_BoxArray.H`` for storing a collection of Boxes on a single AMR level. One can make a
 ``BoxArray`` out of a single ``Box`` and then chop it into multiple Boxes. In AMReX, ``BoxArray`` is a global data structure.
-It holds all the Boxes in a collection, even though a single process in a parallel run only owns someof the Boxes via
+It holds all the Boxes in a collection, even though a single process in a parallel run only owns some of the Boxes via
 domain decomposition."[4]_
 
 **DistributionMapping**
@@ -40,7 +40,7 @@ or by simply making a copy."[5]_
 
 **BaseFab**
 
-"``BaseFab`` is a class template for multi-dimensional array-like data structure on a ``Box``. The template parameter
+"``BaseFab`` is a class template for multidimensional array-like data structure on a ``Box``. The template parameter
 is typically basic types such as Real, int or char. The dimensionality of the array is ``AMREX_SPACEDIM`` (here 2) plus
 one. The additional dimension is for the number of components."[7]_
 
@@ -91,13 +91,13 @@ overview of the steps that the program must execute.
 11.2 Code-Walkthrough
 ---------------------
 
-In this section, we want to explain the process of our programme step by step, so that you can become familiar with the
+In this section, we want to explain the process of our program step by step, so that you can become familiar with the
 code. We are going to start the course in our ``main.cpp`` file and follow along with the code.
 
 Initialize & Finalize
 ^^^^^^^^^^^^^^^^^^^^^
 
-"To use AMReX, we need to call ``Initialize`` to initialise the execution environment for AMReX, and ``Finalize`` needs
+"To use AMReX, we need to call ``Initialize`` to initialize the execution environment for AMReX, and ``Finalize`` needs
 to be paired with Initialize to free the resources used by AMReX. Because many AMReX classes and functions don't work
 properly after amrex::Finalize is called, it's best to put the code between amrex::Initialize and amrex::Finalize in its
 scope to make sure that resources are freed properly"[1]_.
@@ -119,7 +119,7 @@ scope to make sure that resources are freed properly"[1]_.
 ParmParse
 ^^^^^^^^^
 
-Before starting a simulation, the user must define it's configuration. To simplify this process, you only need to adjust
+Before starting a simulation, the user must define its configuration. To simplify this process, you only need to adjust
 the parameters in the ``root/resources/inputs.amrex file``.  "We use the AMReX class ``AMReX_ParmParse.H``, which
 provides a database for storing and retrieving command line and input file arguments"[2]_. This technique is used
 throughout the project to get the correct parameters when they are needed. Here is an example of how to get the
@@ -182,10 +182,10 @@ To initialize our data, we pass the start time, which is still zero, to ``InitFr
     // init the domain
     InitFromScratch( 0.0 );
 
-This initializes ``BoxArray``, ``DistributionMapping`` and data from scratch. Calling this function requires the derive class
+This initializes ``BoxArray``, ``DistributionMapping`` and data from scratch. Calling this function requires the derived class
 implement its own ``MakeNewLevelFromScratch`` (root/src/AMRCoreWavePropagation2d.cpp) to allocate and initialize data.
 This method makes a new level from scratch using provided ``BoxArray`` and ``DistributionMapping`` and then calls
-``InitData`` to initialize our datastructures.
+``InitData`` to initialize our data structures.
 
 InitData
 ^^^^^^^^
@@ -288,7 +288,7 @@ timeStepWithSubcycling
 
 ``timeStepWithSubcycling`` advances a level by dt, includes a recursive call for finer levels. First of all we check
 if we want to regrid. To regrid, three conditions must be met. The current level must be lower than the maximum
-refinement level ``max_level``. Than we have to be sure that we dont regrid fine levels again if it was taken care of
+refinement level ``max_level``. Then we have to be sure that we don't regrid fine levels again if it was taken care of
 during a coarse regird. Additionally, we need to check if it is time to regrid based on the ``regridFrequency`` variable,
 which defines the number of time steps between each regrid.
 
@@ -469,7 +469,7 @@ and ``FillDomainBoundary`` to fill interior, periodic, and physical boundary gho
 The second instance of ``FillPatchTwoLevels`` is required to fill cells near the coast and prevent the dry-wet problem.
 This is necessary because our simulation is not capable of handling this issue. The last line ``FiXFinePatch`` fixes the
 ``MultiFab`` interpolation from the coarser level. This is relevant when the fine level is created or updated. It
-replaces the values of ``mf`` with ``const_mf`` for the cell near the shore where |bathymetry| < ``bathymetryMinValue``
+replaces the values of ``mf`` with ``const_mf`` for the cell near the shore where \|bathymetry\| < ``bathymetryMinValue``
 and set the height on the coast to zero. To prevent the issue of dry-wet, this is also necessary.
 
 A ``FillPatch`` uses an ``Interpolator``. This is largely hidden from application codes. ``AMReX_Interpolater.cpp/H``
@@ -486,7 +486,80 @@ eventually. The interpolation is conservative in finite-volume sense for both Ca
 
 
 
+11.3 Performance
+----------------
 
+Load Balancing
+^^^^^^^^^^^^^^
+
+Benchmarks
+^^^^^^^^^^
+
+This benchmark use the Tohoku tsunami with 2704 cells in x direction and 1504 cells in y direction while writing every 60 time steps.
+
++--------------+-------------------------------------+------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+|              |:raw-html:`<center>Original</center>`|:raw-html:`<center>1 Level</center>`|:raw-html:`<center>2 Levels</center>`|:raw-html:`<center>3 Levels</center>`|:raw-html:`<center>4 Levels</center>`|
++==============+=====================================+====================================+=====================================+=====================================+=====================================+
+| I/0 Enabled  | 2 min 31 sec                        | 2 min 21 sec                       | 9 min 20 sec                        | 23 min 29 sec                       | 46 min 20 sec                       |
++--------------+-------------------------------------+------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+| I/0 Disabled | 1 min 34 sec                        | 1 min 48 sec                       | 8 min 43 sec                        | 22 min 31 sec                       | 45 min 11 sec                       |
++--------------+-------------------------------------+------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+
+
+11.4 Visualization
+------------------
+
+Accuracy
+^^^^^^^^
+
+**Station 1**
+
+.. tab-set::
+
+    .. tab-item:: All
+        :sync: StationsAll
+
+        .. image:: ../_static/photos/Station1_all.png
+
+    .. tab-item:: AMR
+        :sync: StationsAMR
+
+        .. image:: ../_static/photos/Station1_amr.png
+
+    .. tab-item:: AMR 1 & 4 Levels
+        :sync: StationsAMR14
+
+        .. image:: ../_static/photos/Station1_amr_0_3.png
+
+    .. tab-item:: AMR 1 Level & Original
+        :sync: StationsAMR1Original
+        
+        .. image:: ../_static/photos/Station1_amr0_origin.png
+
+
+**Station 2**
+
+.. tab-set::
+
+    .. tab-item:: All
+        :sync: StationsAll
+
+        .. image:: ../_static/photos/Station2_all.png
+
+    .. tab-item:: AMR
+        :sync: StationsAMR
+
+        .. image:: ../_static/photos/Station2_amr.png
+
+    .. tab-item:: AMR 1 & 4 Levels
+        :sync: StationsAMR14
+
+        .. image:: ../_static/photos/Station2_amr_0_3.png
+
+    .. tab-item:: AMR 1 Level & Original
+        :sync: StationsAMR1Original
+        
+        .. image:: ../_static/photos/Station2_amr0_origin.png
 
 Contribution
 ------------
