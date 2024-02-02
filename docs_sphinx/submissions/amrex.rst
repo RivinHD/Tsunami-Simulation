@@ -6,13 +6,35 @@
 11. Adaptive Mesh Refinement
 ============================
 
-11.1 Essential data infrastructures
+11.1 Introduction
+-----------------
+
+**What is Adaptive Mesh Refinement and why does it make sense to use it to simulate tsunamis?**
+
+Adaptive mesh refinement (AMR) serves as a valuable numerical technique in simulations, dynamically adjusting
+computational mesh resolution based on evolving solution features. This approach provides several overarching
+advantages.
+
+AMR optimizes computational efficiency by strategically allocating grid points. This involves concentrating resources
+in regions of interest while reducing resolution in less critical areas. Consequently, this adaptive strategy yields
+significant computational savings compared to simulations employing a uniform mesh.
+
+In terms of accuracy, AMR proves advantageous by maintaining high resolution in areas experiencing rapid changes or
+featuring important phenomena. This adaptability results in more precise and reliable simulation outcomes compared to
+those achieved with a fixed mesh.
+
+Moreover, AMR contributes to reduced memory requirements. By utilizing a finer mesh only where necessary, memory
+demands are minimized. This is particularly beneficial for large-scale simulations where memory constraints often serve
+as limiting factors.
+
+11.2 Essential data infrastructures
 -----------------------------------
 
-To avoid misunderstandings and to provide a basic overview of AMReX data structures, let us introduce the concept of
+To avoid misunderstandings and to provide a basic overview of ``AMReX`` data structures, let us introduce the concept of
 the data types we use. We will begin by providing a list of classes, allowing you to refer back to them as needed.
 Afterwards, we will use a simple diagram to help you understand the construction and relationships between the different
-data types used.
+data types used. Additional information is always available in the
+`AMReX documentation <https://amrex-codes.github.io/amrex/docs_html/>`_.
 
 Basics
 ^^^^^^
@@ -22,42 +44,42 @@ Basics
 "``Box`` in ``AMReX_Box.H`` is the data structure for representing a rectangular domain in indexing space. ``Box`` is a
 dimension-dependent class. It has lower and upper corners (represented by `IntVect <https://amrex-codes.github.io/amrex/docs_html/Basics.html#intvect>`_)
 and an index type (represented by `IndexType <https://amrex-codes.github.io/amrex/docs_html/Basics.html#indextype>`_).
-A ``Box`` contains no floating-point data."[6]_
+A ``Box`` contains no floating-point data."[1]_
 
 **BoxArray**
 
 "``BoxArray`` is a class in ``AMReX_BoxArray.H`` for storing a collection of Boxes on a single AMR level. One can make a
 ``BoxArray`` out of a single ``Box`` and then chop it into multiple Boxes. In AMReX, ``BoxArray`` is a global data structure.
 It holds all the Boxes in a collection, even though a single process in a parallel run only owns some of the Boxes via
-domain decomposition."[4]_
+domain decomposition."[2]_
 
 **DistributionMapping**
 
 "``DistributionMapping`` is a class in ``AMReX_DistributionMapping.H`` that describes which process owns the data living on the
 domains specified by the Boxes in a ``BoxArray``. Like ``BoxArray``, there is an element for each ``Box`` in ``DistributionMapping``,
 including the ones owned by other parallel processes. One can construct a ``DistributionMapping`` object given a ``BoxArray``,
-or by simply making a copy."[5]_
+or by simply making a copy."[3]_
 
 **BaseFab**
 
 "``BaseFab`` is a class template for multidimensional array-like data structure on a ``Box``. The template parameter
 is typically basic types such as Real, int or char. The dimensionality of the array is ``AMREX_SPACEDIM`` (here 2) plus
-one. The additional dimension is for the number of components."[7]_
+one. The additional dimension is for the number of components."[4]_
 
 **Array4**
 
-"Array4 is a class template for accessing BaseFab data in a more array like manner."[7]_
+"Array4 is a class template for accessing BaseFab data in a more array like manner."[4]_
 
 **FabArray**
 
 "``FabArray<FAB>`` is a class template in AMReX_FabArray.H for a collection of FABs on the same AMR level associated
-with a ``BoxArray``. The template parameter ``FAB`` is usually ``BaseFab<T>``."[8]_
+with a ``BoxArray``. The template parameter ``FAB`` is usually ``BaseFab<T>``."[5]_
 
 **MultiFab**
 
 "In AMReX, there are some specialized classes derived from ``FabArray``. The most commonly used ``FabArray`` kind class
 is ``MultiFab`` in AMReX_MultiFab.H derived from ``FabArray <FArrayBox>``
-(`FArrayBox <https://amrex-codes.github.io/amrex/docs_html/Basics.html#basefab-farraybox-iarraybox-and-array4>`_)."[8]_
+(`FArrayBox <https://amrex-codes.github.io/amrex/docs_html/Basics.html#basefab-farraybox-iarraybox-and-array4>`_)."[5]_
 
 Structure
 ^^^^^^^^^
@@ -81,18 +103,221 @@ Structure
 Flowchart
 ^^^^^^^^^
 
-The program's flowchart is presented here. The following chapter will provide an explanation of the process, giving an
-overview of the steps that the program must execute.
+Here we want to give you a rough overview of the programme. To do this, we have made a **flowchart** of the main
+functions that the programme goes through. The following chapter will explain the process and give an overview of the
+steps the programme has to perform.
 
-.. error::
+.. raw:: html
 
-    Insert flowchart!
+    <center>
+        <img src="../_static/photos/AMRFlowchart.png" alt="Visualization of the input data">
+    </center>
 
-11.2 Code-Walkthrough
+11.3 Code-Walkthrough
 ---------------------
 
 In this section, we want to explain the process of our program step by step, so that you can become familiar with the
 code. We are going to start the course in our ``main.cpp`` file and follow along with the code.
+
+AmrMesh and AmrCore
+^^^^^^^^^^^^^^^^^^^
+
+.. _meshandcore:
+
+We use ``AmrMesh`` and ``AmrCore`` as the basic structure.
+
+"For single-level simulations the user needs to build ``Geometry``, ``DistributionMapping``, and ``BoxArray`` objects
+associated with the simulation. For simulations with multiple levels of refinement, the ``AmrMesh`` class can be thought
+of as a container to store arrays of these objects (one for each level), and information about the current grid structure."[6]_
+
+"``AMReX_AmrCore.cpp/H`` contains the pure virtual class ``AmrCore``, which is derived from the ``AmrMesh`` class.
+``AmrCore`` does not actually have any data members, just additional member functions, some of which override the base
+class ``AmrMesh``."[6]_
+
+"There are no pure virtual functions in ``AmrMesh``, but there are 5 pure virtual functions in the ``AmrCore`` class.
+Any applications you create must implement these functions. The tutorial code ``Amr/Advection_AmrCore`` provides
+sample implementation in the derived class ``AmrCoreAdv``."[6]_
+
+We will introduce them now because some of them are only called internally by ``AMReX`` functions, so we may not mention
+them in the code walkthrough.
+
+**ErrorEst**
+
+To refine cells, this method uses ``TagBoxArray`` tags built on level grids. The refinement process begins by
+calculating an **error** with the kernel ``state_error``, and then tagging the cells accordingly.
+Do not be overwhelmed by this block of code.
+
+.. code-block:: cpp
+    :emphasize-lines: 7, 18, 21
+
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
+    /// Function: 'ErrorEst'
+
+    void tsunami_lab::amr::AMRCoreWavePropagation2d::ErrorEst( [ ... ] )
+    {
+        [ ... ]
+        for( MFIter mfi( state, false ); mfi.isValid(); ++mfi )
+        {
+            const Box& bx = mfi.validbox();
+
+            Array4<const Real> height = state.const_array( mfi, HEIGHT );
+            Array4<const Real> momentumX = state.const_array( mfi, MOMENTUM_X );
+            Array4<const Real> momentumY = state.const_array( mfi, MOMENTUM_Y );
+            Array4<const Real> bathymetry = state.const_array( mfi, BATHYMERTRY );
+            Array4<Real> error = state.array( mfi, ERROR );
+            const auto tagfab = tags.array( mfi );
+
+            ParallelFor( bx,
+                         [=] AMREX_GPU_DEVICE( int i, int j, int k ) noexcept
+            {
+                state_error( i, j, k, tagfab, height, momentumX, momentumY, bathymetry, error, gridError, tagval );
+            } );
+        }
+    }
+
+:ref:`Here <initdata>` we will explain the logic behind the ``MFIter`` and ``ParallelFor`` loop. We will skip this for
+now because we do not want to throw you in at the deep end. It is only important at the moment that we call
+``state_error``, which is our kernel function.
+
+.. code-block:: cpp
+    :emphasize-lines: 10, 12
+
+    /// File:     'root/include/amr/Kernels.h'
+    /// Function: 'state_error
+
+    void state_error( [ ... ] )
+    {
+        amrex::Real divHeight = 1 / height( i, j, k );
+        amrex::Real velocityX = momentumX( i, j, k ) * divHeight;
+        amrex::Real velocityY = momentumY( i, j, k ) * divHeight;
+        amrex::Real waveHeight = height( i, j, k ) + bathymetry( i, j, k );
+        error( i, j, k ) = ( velocityX * velocityX + velocityY * velocityY ) * waveHeight * waveHeight;
+        // the gridErr is squared therefore we can use the error squared too
+        tag( i, j, k ) = ( error( i, j, k ) > gridErr ) * tagval;
+    }
+
+Our criteria for determining whether to tag the cell is in the first highlighted line. The calculation involves squaring
+the velocity in both the x and y directions and multiplying the result by the squared water height. In the second
+highlighted line, we either set or do not set the tag.
+
+**MakeNewLevelFromScratch**
+
+Make a new level from scratch using provided ``BoxArray`` and ``DistributionMapping``. Only used during initialization.
+Upon creating the simulation, the first level is initialized.
+
+.. code-block:: cpp
+
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
+    /// Function: 'MakeNewLevelFromScratch'
+
+    void tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromScratch( [ ... ] )
+    {
+
+        // init the multifab
+        gridNew[level].define( ba, dm, nComponents, nGhostRow );
+        gridOld[level].define( ba, dm, nComponents, nGhostRow );
+
+        // set the time
+        tNew[level] = time;
+        tOld[level] = time - dt[level];
+
+        InitData( level );
+    }
+
+**MakeNewLevelFromCoarse**
+
+Make a new level using provided ``BoxArray`` and ``DistributionMapping`` and fill with interpolated coarse level data.
+This phrase is used whenever a new level needs to be created. For example, to create a refinement of level 3, we must
+create a level from level 2, which is considered coarse in this case.
+
+.. code-block:: cpp
+    :emphasize-lines: 14
+
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
+    /// Function: 'MakeNewLevelFromCoarse'
+
+    void tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromCoarse( [ ... ] )
+    {
+        // init the multifab
+        gridNew[level].define( ba, dm, nComponents, nGhostRow );
+        gridOld[level].define( ba, dm, nComponents, nGhostRow );
+
+        // set the time
+        tNew[level] = time;
+        tOld[level] = time - dt[level];
+
+        FillFinePatch( level, time, gridNew[level] );
+    }
+
+``FillFinePatch`` is a helper function. The entire ``MultiFab`` is filled by interpolating from the coarser level when
+a new level of refinement appears.
+
+.. code-block:: cpp
+    :emphasize-lines: 14
+
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
+    /// Function: 'FillFinePatch'
+
+    void tsunami_lab::amr::AMRCoreWavePropagation2d::FillFinePatch( [ ... ] )
+    {
+        [ ... ]
+        // decomp is the starting component of the destination. Therefore scomp = dcomp
+        InterpFromCoarseLevel( mf, time, *cmf[0], 0, 0, 4, geom[level - 1], geom[level],
+                               cphysbc, 0, fphysbc, 0, refRatio( level - 1 ),
+                               interpolator, physicalBoundary, 0 );
+
+        // do a piecewise constant interpolation to fill cell near the shore i.e. |bathymetry| < bathymetryMinValue
+        MultiFab tmf( mf.boxArray(), mf.DistributionMap(), 4, mf.nGrow() );
+        InterpFromCoarseLevel( tmf, time, *cmf[0], 0, 0, 4, geom[level - 1], geom[level],
+                               cphysbc, 0, fphysbc, 0, refRatio( level - 1 ),
+                               &pc_interp, physicalBoundary, 0 );
+
+        FixFinePatch( mf, tmf );
+    }
+
+The last line ``FixFinePatch`` fixes the ``MultiFab`` interpolation from the coarser level. This is relevant when
+the fine level is created or updated. It replaces the values of mf with ``const_mf`` for the cell near the shore where
+\|bathymetry| < bathymetryMinValue and set the height on the coast to zero. To prevent the issue of dry-wet, this is
+necessary.
+
+**RemakeLevel**
+
+Remake an existing level using provided ``BoxArray`` and ``DistributionMapping`` and fill with existing fine and coarse
+data.
+
+.. code-block:: cpp
+
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
+    /// Function: 'RemakeLevel'
+
+    void tsunami_lab::amr::AMRCoreWavePropagation2d::RemakeLevel( [ ... ] )
+    {
+        MultiFab new_state( ba, dm, nComponents, nGhostRow );
+        MultiFab old_state( ba, dm, nComponents, nGhostRow );
+
+        FillPatch( level, time, new_state );
+
+        std::swap( new_state, gridNew[level] );
+        std::swap( old_state, gridOld[level] );
+
+        tNew[level] = time;
+        tOld[level] = time - dt[level];
+    }
+
+**ClearLevel**
+
+This function deletes level data to clean up.
+
+.. code-block:: cpp
+
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
+    /// Function: 'ClearLevel'
+
+    void tsunami_lab::amr::AMRCoreWavePropagation2d::ClearLevel( int level )
+    {
+        gridNew[level].clear();
+        gridOld[level].clear();
+    }
 
 Initialize & Finalize
 ^^^^^^^^^^^^^^^^^^^^^
@@ -100,7 +325,7 @@ Initialize & Finalize
 "To use AMReX, we need to call ``Initialize`` to initialize the execution environment for AMReX, and ``Finalize`` needs
 to be paired with Initialize to free the resources used by AMReX. Because many AMReX classes and functions don't work
 properly after amrex::Finalize is called, it's best to put the code between amrex::Initialize and amrex::Finalize in its
-scope to make sure that resources are freed properly"[1]_.
+scope to make sure that resources are freed properly"[7]_.
 
 .. code-block:: cpp
     :emphasize-lines: 6, 8
@@ -121,7 +346,7 @@ ParmParse
 
 Before starting a simulation, the user must define its configuration. To simplify this process, you only need to adjust
 the parameters in the ``root/resources/inputs.amrex file``.  "We use the AMReX class ``AMReX_ParmParse.H``, which
-provides a database for storing and retrieving command line and input file arguments"[2]_. This technique is used
+provides a database for storing and retrieving command line and input file arguments"[8]_. This technique is used
 throughout the project to get the correct parameters when they are needed. Here is an example of how to get the
 displacement and bathymetry file paths:
 
@@ -157,7 +382,7 @@ To initialize our data, we pass the start time, which is still zero, to ``InitFr
 .. code-block:: cpp
     :emphasize-lines: 4, 5, 24
 
-    /// File:     'root/src/AMRCoreWavePropagation2d.cpp'
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
     /// Function: 'AMRCoreWavePropagation2d'
 
     ReadParameters();
@@ -183,12 +408,14 @@ To initialize our data, we pass the start time, which is still zero, to ``InitFr
     InitFromScratch( 0.0 );
 
 This initializes ``BoxArray``, ``DistributionMapping`` and data from scratch. Calling this function requires the derived class
-implement its own ``MakeNewLevelFromScratch`` (root/src/AMRCoreWavePropagation2d.cpp) to allocate and initialize data.
+implement its own ``MakeNewLevelFromScratch`` (root/src/amr/AMRCoreWavePropagation2d.cpp) to allocate and initialize data.
 This method makes a new level from scratch using provided ``BoxArray`` and ``DistributionMapping`` and then calls
 ``InitData`` to initialize our data structures.
 
 InitData
 ^^^^^^^^
+
+.. _initdata:
 
 The data from the setup is read into the grid by ``InitData``. To accomplish this, we will now provide a detailed
 explanation of how to loop over the grid and access its cells. Working with AMReX will require this as a prerequisite.
@@ -197,7 +424,7 @@ explanation of how to loop over the grid and access its cells. Working with AMRe
     :linenos:
     :emphasize-lines: 5, 19-20
 
-    /// File:     'root/src/AMRCoreWavePropagation2d.cpp'
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
     /// Function: 'InitData'
 
     [ ... ]
@@ -266,7 +493,7 @@ generate a plot file at the start. We call ``WritePlotFile`` to write a simulati
 
 .. code-block:: cpp
 
-    /// File:     'root/src/AMRCoreWavePropagation2d.cpp'
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
     /// Function: 'Evolve'
 
     [ ... ]
@@ -279,7 +506,7 @@ generate a plot file at the start. We call ``WritePlotFile`` to write a simulati
 
 The tsunami-specific values 'Height', 'MomentumX', 'MomentumY', 'Bathymetry', and 'Error' are defined in WritePlotFile
 and are intended to be saved in the plot. We call the provided function ``WriteMultiLevelPlotfile`` to create the actual
-plot. "AMReX has its own native plotfile format. Many visualization tools are available for AMReX plotfiles"[3]_.
+plot. "AMReX has its own native plotfile format. Many visualization tools are available for AMReX plotfiles"[11]_.
 We used **ParaView** to visualize the plot files with confidence. If you want to get more information about this we
 recommend the chapter `Visualization <https://amrex-codes.github.io/amrex/docs_html/Visualization.html#paraview>`_.
 
@@ -293,9 +520,9 @@ during a coarse regird. Additionally, we need to check if it is time to regrid b
 which defines the number of time steps between each regrid.
 
 .. code-block:: cpp
-    :emphasize-lines: 5-7
+    :emphasize-lines: 5-7, 12
 
-    /// File:     'root/src/AMRCoreWavePropagation2d.cpp'
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
     /// Function: 'timeStepWithSubcycling'
 
     [ ... ]
@@ -322,11 +549,81 @@ which defines the number of time steps between each regrid.
     }
     [ ... ]
 
+If regridding is necessary, we use the internal method ``regrid``. ``MakeNewGrids`` will be invoked by this method,
+which will use ``ErrorEst`` to tag the cells for regridding. Afterwards, ``RemakeLevel`` is called to remake an existing
+level using the provided ``BoxArray`` and ``DistributionMapping``, and fill it with existing fine and coarse data.
+Then, ``MakeNewLevelFromCoarse`` is called to create a new level using the provided ``BoxArray`` and
+``DistributionMapping``, and fill it with interpolated coarse level data. At this point, a new refinement level is
+created. ``ClearLevel`` is then used to delete level data at the end.
+
+.. code-block:: cpp
+    :emphasize-lines: 10, 28, 40, 49
+
+    /// File:     'root/submodules/amrex/Src/AmrCore/AMReX_AmrCore.cpp'
+    /// Function: 'regrid'
+
+    void AmrCore::regrid (int lbase, Real time, bool)
+    {
+        if (lbase >= max_level) { return; }
+
+        int new_finest;
+        Vector<BoxArray> new_grids(finest_level+2);
+        MakeNewGrids(lbase, time, new_finest, new_grids);
+
+        BL_ASSERT(new_finest <= finest_level+1);
+
+        bool coarse_ba_changed = false;
+        for (int lev = lbase+1; lev <= new_finest; ++lev)
+        {
+            if (lev <= finest_level) // an old level
+            {
+                bool ba_changed = (new_grids[lev] != grids[lev]);
+                if (ba_changed || coarse_ba_changed) {
+                    BoxArray level_grids = grids[lev];
+                    DistributionMapping level_dmap = dmap[lev];
+                    if (ba_changed) {
+                        level_grids = new_grids[lev];
+                        level_dmap = MakeDistributionMap(lev, level_grids);
+                    }
+                    const auto old_num_setdm = num_setdm;
+                    RemakeLevel(lev, time, level_grids, level_dmap);
+                    SetBoxArray(lev, level_grids);
+                    if (old_num_setdm == num_setdm) {
+                        SetDistributionMap(lev, level_dmap);
+                    }
+                }
+                coarse_ba_changed = ba_changed;;
+            }
+            else  // a new level
+            {
+                DistributionMapping new_dmap = MakeDistributionMap(lev, new_grids[lev]);
+                const auto old_num_setdm = num_setdm;
+                MakeNewLevelFromCoarse(lev, time, new_grids[lev], new_dmap);
+                SetBoxArray(lev, new_grids[lev]);
+                if (old_num_setdm == num_setdm) {
+                    SetDistributionMap(lev, new_dmap);
+                }
+            }
+        }
+
+        for (int lev = new_finest+1; lev <= finest_level; ++lev) {
+            ClearLevel(lev);
+            ClearBoxArray(lev);
+            ClearDistributionMap(lev);
+        }
+
+        finest_level = new_finest;
+    }
+
+Since we already introduced most of these functions at the :ref:`beginning of this chapter <meshandcore>`, we will
+not provide a detailed explanation of them here. Furthermore, ``AMReX`` aims to implement these functions to ensure
+compatibility with the framework. The above code provides an example of how the framework works using these methods.
+
 After regridding, we advance one level for one time step by calling ``AdvanceGridAtLevel``.
 
 .. code-block:: cpp
 
-    /// File:     'root/src/AMRCoreWavePropagation2d.cpp'
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
     /// Function: 'timeStepWithSubcycling'
 
     [ ... ]
@@ -339,7 +636,7 @@ aim to progress through time on a smaller scale. To achieve this, we use the rec
 .. code-block:: cpp
     :emphasize-lines: 10, 14
 
-    /// File:     'root/src/AMRCoreWavePropagation2d.cpp'
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
     /// Function: 'timeStepWithSubcycling'
 
     [ ... ]
@@ -361,7 +658,7 @@ We defined this method ourselves to limit the arguments of the ``average_down`` 
 .. code-block:: cpp
     :emphasize-lines: 7-9
 
-    /// File:     'root/src/AMRCoreWavePropagation2d.cpp'
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
     /// Function: 'AverageDownTo'
 
     void tsunami_lab::amr::AMRCoreWavePropagation2d::AverageDownTo( int coarseLevel )
@@ -381,7 +678,7 @@ for one time step. Before performing the x and y sweep, it is necessary to call 
 .. code-block::
     :emphasize-lines: 20-21
 
-    /// File:     'root/src/AMRCoreWavePropagation2d.cpp'
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
     /// Function: 'AdvanceGridAtLevel'
 
     [ ... ]
@@ -412,19 +709,20 @@ interpolated data from the next-coarser level, neighboring grids at the same lev
 **FillPatch**
 
 This method is needed to fill a patch with data. The code includes two functions: ``FillPatchSingleLevel`` and
-``FillPatchTwoLevels``.
+``FillPatchTwoLevels``. To enable this, we must first use our utility function, `GetData`.  This method copies data from
+gridOld and/or gridNew into another `MultiFab` for further use.
 
-1. "``FillPatchSingleLevel`` fills a ``MultiFab`` and its ghost region at a single level of refinement. The routine is flexible enough to interpolate in time between two ``MultiFabs`` associated with different times."[11]_
+1. "``FillPatchSingleLevel`` fills a ``MultiFab`` and its ghost region at a single level of refinement. The routine is flexible enough to interpolate in time between two ``MultiFabs`` associated with different times."[12]_
 
-2. "``FillPatchTwoLevels`` fills a ``MultiFab`` and its ghost region at a single level of refinement, assuming there is an underlying coarse level. This routine is flexible enough to interpolate the coarser level in time first using ``FillPatchSingleLevel``."[11]_
+2. "``FillPatchTwoLevels`` fills a ``MultiFab`` and its ghost region at a single level of refinement, assuming there is an underlying coarse level. This routine is flexible enough to interpolate the coarser level in time first using ``FillPatchSingleLevel``."[12]_
 
 "Note that ``FillPatchSingleLevel`` and ``FillPatchTwoLevels`` call the single-level routines ``MultiFab::FillBoundary``
-and ``FillDomainBoundary`` to fill interior, periodic, and physical boundary ghost cells."[11]_
+and ``FillDomainBoundary`` to fill interior, periodic, and physical boundary ghost cells."[12]_
 
 .. code-block:: cpp
-    :emphasize-lines: 14, 29, 36
+    :emphasize-lines: 9, 14, 29, 36
 
-    /// File:     'root/src/AMRCoreWavePropagation2d.cpp'
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
     /// Function: 'FillPatch'
 
     [ ... ]
@@ -467,7 +765,7 @@ and ``FillDomainBoundary`` to fill interior, periodic, and physical boundary gho
         FixFinePatch( mf, tmf );
 
 The second instance of ``FillPatchTwoLevels`` is required to fill cells near the coast and prevent the dry-wet problem.
-This is necessary because our simulation is not capable of handling this issue. The last line ``FiXFinePatch`` fixes the
+This is necessary because our simulation is not capable of handling this issue. The last line ``FixFinePatch`` fixes the
 ``MultiFab`` interpolation from the coarser level. This is relevant when the fine level is created or updated. It
 replaces the values of ``mf`` with ``const_mf`` for the cell near the shore where \|bathymetry\| < ``bathymetryMinValue``
 and set the height on the coast to zero. To prevent the issue of dry-wet, this is also necessary.
@@ -482,11 +780,128 @@ to the special case, we are using the ``amrex::lincc_interp`` interpolator.
 "Dimension-by-dimension linear interpolation with `MC limiter <https://en.wikipedia.org/wiki/Flux_limiter>`_ for
 cell-centered data. For multi-component data, the strictest limiter is used for all components. For example,
 if one component after its own limiting has a slope of zero, all other components will have zero slopes as well
-eventually. The interpolation is conservative in finite-volume sense for both Cartesian and curvilinear coordinates."[12]_
+eventually. The interpolation is conservative in finite-volume sense for both Cartesian and curvilinear coordinates."[13]_
 
+Back in `AdvanceGridAtLevel` we finally do the x and y sweep of the cells.
 
+.. code-block:: cpp
+    :emphasize-lines: 23, 48
 
-11.3 Performance
+    /// File:     'root/src/amr/AMRCoreWavePropagation2d.cpp'
+    /// Function: 'AdvanceGridAtLevel'
+
+    [ ... ]
+    #ifdef AMREX_USE_OMP
+    #pragma omp parallel
+    #endif
+        for( MFIter mfi( state, false ); mfi.isValid(); ++mfi )
+        {
+            // ===== UPDATE X SWEEP =====
+            const Box& bx = mfi.validbox();
+
+            // define the grid components
+            Array4<Real const> height = state.const_array( mfi, HEIGHT );
+            Array4<Real const> momentumX = state.const_array( mfi, MOMENTUM_X );
+            Array4<Real const> bathymetry = state.const_array( mfi, BATHYMERTRY );
+            Array4<Real      > gridOut = stateTemp.array( mfi );
+
+            // compute the x-sweep
+            launch( grow( bx, 1 ),
+                    [=] AMREX_GPU_DEVICE( const Box & tbx )
+            {
+                xSweep( tbx, dtdx, height, momentumX, bathymetry, gridOut );
+            } );
+        }
+
+        state.ParallelCopy( stateTemp, 0, 0, 4, 0, 0 );
+        state.FillBoundary();
+
+    #ifdef AMREX_USE_OMP
+    #pragma omp parallel
+    #endif
+        for( MFIter mfi( state, true ); mfi.isValid(); ++mfi )
+        {
+            // ===== UPDATE Y SWEEP =====
+            const Box& bx = mfi.tilebox();
+
+            // swap the grid components
+            Array4<Real const> height = stateTemp.const_array( mfi, HEIGHT );
+            Array4<Real const> momentumY = stateTemp.const_array( mfi, MOMENTUM_Y );
+            Array4<Real const> bathymetry = stateTemp.const_array( mfi, BATHYMERTRY );
+            Array4<Real      > gridOut = state.array( mfi );
+
+            // compute the y-sweep
+            launch( grow( bx, 1 ),
+                    [=] AMREX_GPU_DEVICE( const Box & tbx )
+            {
+                ySweep( tbx, dtdy, height, momentumY, bathymetry, gridOut );
+            } );
+        }
+
+The ``xSweep`` and ``ySweep`` are kernel methods declared in ``root/include/amr/Kernels.h``. Both are very similar. We first
+calculate the reflection and then compute the net-updates using our ``F-Wave solver`` to update the grid cells. Below is
+the procedure for ``xSweep``, which is analogous to ``ySweep``.
+
+.. code-block:: cpp
+    :emphasize-lines: 13, 18, 29, 30, 31, 33-34, 36-37
+
+    /// File:     'root/include/amr/Kernels.h'
+    /// Function: 'xSweep'
+
+    void xSweep( [ ... ] )
+    {
+        [ ... ]
+        for( int j = lo.y; j < hi.y; ++j )
+        {
+            AMREX_PRAGMA_SIMD
+                for( int i = lo.x; i < hi.x; ++i )
+                {
+                    // noting to compute both shore cells
+                    if( height( i, j, 0 ) <= amrex::Real( 0.0 ) && height( i + 1, j, 0 ) <= amrex::Real( 0.0 ) )
+                    {
+                        continue;
+                    }
+
+                    // calculate the reflection
+                    bool leftReflection = ( height( i + 1, j, 0 ) <= amrex::Real( 0.0 ) );
+                    amrex::Real heightRight = leftReflection ? height( i, j, 0 ) : height( i + 1, j, 0 );
+                    amrex::Real momentumRight = leftReflection ? -momentumX( i, j, 0 ) : momentumX( i + 1, j, 0 );
+                    amrex::Real bathymetryRight = leftReflection ? bathymetry( i, j, 0 ) : bathymetry( i + 1, j, 0 );
+
+                    bool rightReflection = ( height( i, j, 0 ) <= amrex::Real( 0.0 ) );
+                    amrex::Real heightLeft = rightReflection ? height( i + 1, j, 0 ) : height( i, j, 0 );
+                    amrex::Real momentumLeft = rightReflection ? -momentumX( i + 1, j, 0 ) : momentumX( i, j, 0 );
+                    amrex::Real bathymetryLeft = rightReflection ? bathymetry( i + 1, j, 0 ) : bathymetry( i, j, 0 );
+
+                    // compute net-updates
+                    tsunami_lab::t_real netUpdates[2][2];
+                    tsunami_lab::solvers::FWave::netUpdates( [ ... ] );
+
+                    gridOut( i, j, 0, Component::HEIGHT ) -= scaling * netUpdates[0][0] * !rightReflection;
+                    gridOut( i, j, 0, Component::MOMENTUM_X ) -= scaling * netUpdates[0][1] * !rightReflection;
+
+                    gridOut( i + 1, j, 0, Component::HEIGHT ) -= scaling * netUpdates[1][0] * !leftReflection;
+                    gridOut( i + 1, j, 0, Component::MOMENTUM_X ) -= scaling * netUpdates[1][1] * !leftReflection;
+                }
+        }
+    }
+
+After completing the sweeps and finishing AverageDownTo, we have performed a cycle successfully. We now return to the
+``Evolve`` method to check if the current time is less than the time to simulate. If it is, we execute the next
+``timeStepWithSubcycling``. If not, the simulation is complete.
+
+We hope this code walkthrough was helpful in understanding the behaviour and functionality of our adaptive mesh
+refinement tsunami simulation. We covered all the methods we defined in ``AMRCoreWavePropagation2d``. Of course we use
+functions of the ``AMReX`` framework. These are internal and could be used by us without modification. If you want to
+learn more about ``AMReX`` and the functions it provides, we recommend you read the
+`source documentation <https://amrex-codes.github.io/amrex/docs_html/>`_ and the
+`tutorial documentation <https://amrex-codes.github.io/amrex/tutorials_html/>`_.
+
+But enough theory. Adaptive mesh refinement has two main goals that go hand in hand. We want to increase the accuracy
+of our simulation while maintaining good runtime performance. In the next two chapters we will test our program and
+take a closer look at the results and whether we have achieved the expected behaviour.
+
+11.4 Performance
 ----------------
 
 Load Balancing
@@ -506,7 +921,7 @@ This benchmark use the Tohoku tsunami with 2704 cells in x direction and 1504 ce
 +--------------+-------------------------------------+------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
 
 
-11.4 Visualization
+11.5 Visualization
 ------------------
 
 Accuracy
@@ -566,16 +981,16 @@ Contribution
 
 All team members contributed equally to the tasks.
 
-.. [6] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#box-intvect-and-indextype (29.01.2024)
-.. [4] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#boxarray (29.01.2024)
-.. [5] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#distributionmapping (29.01.2024)
-.. [7] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#basefab-farraybox-iarraybox-and-array4 (29.01.2024)
-.. [8] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#sec-basics-multifab (29.01.2024)
-.. [1] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#initialize-and-finalize (28.01.2024)
-.. [2] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#parmparse (28.01.2024)
-.. [3] From https://amrex-codes.github.io/amrex/docs_html/IO.html# (28.01.2024)
+.. [1] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#box-intvect-and-indextype (29.01.2024)
+.. [2] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#boxarray (29.01.2024)
+.. [3] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#distributionmapping (29.01.2024)
+.. [4] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#basefab-farraybox-iarraybox-and-array4 (29.01.2024)
+.. [5] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#sec-basics-multifab (29.01.2024)
+.. [6] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html#amrmesh-and-amrcore (02.02.2024)
+.. [7] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#initialize-and-finalize (28.01.2024)
+.. [8] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#parmparse (28.01.2024)
 .. [9] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#mfiter-and-tiling (29.01.2024)
 .. [10] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#parallelfor (29.01.2024)
-.. [11] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html?highlight=fillpatchtwolevels#fillpatchutil-and-interpolater (29.01.2024)
-.. [12] From https://github.com/AMReX-Codes/amrex/issues/396#issuecomment-455806287 (29.01.2024)
-
+.. [11] From https://amrex-codes.github.io/amrex/docs_html/IO.html# (28.01.2024)
+.. [12] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html?highlight=fillpatchtwolevels#fillpatchutil-and-interpolater (29.01.2024)
+.. [13] From https://github.com/AMReX-Codes/amrex/issues/396#issuecomment-455806287 (29.01.2024)

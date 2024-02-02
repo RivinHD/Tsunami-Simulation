@@ -244,7 +244,7 @@ public:
     void Evolve();
 
     /**
-     * Tag cells for refinement. TagBoxArray tags is built on level level grids.
+     * Tag cells for refinement. TagBoxArray tags is built on level grids.
      *
      * @param level the level to estimate and tag
      * @param tags the box that holds the tag values

@@ -525,7 +525,6 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromScratch( int le
                                                                           const BoxArray& ba,
                                                                           const DistributionMapping& dm )
 {
-
     // init the multifab
     gridNew[level].define( ba, dm, nComponents, nGhostRow );
     gridOld[level].define( ba, dm, nComponents, nGhostRow );
@@ -538,7 +537,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromScratch( int le
 }
 
 void tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromCoarse( int level,
-                                                                         Real time,
+                                                                                Real time,
                                                                          const BoxArray& ba,
                                                                          const DistributionMapping& dm )
 {
