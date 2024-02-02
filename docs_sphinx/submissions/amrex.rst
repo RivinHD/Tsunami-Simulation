@@ -118,7 +118,7 @@ To achieve this we use Subscycling. The figure below shows the main concept for 
 .. figure:: https://amrex-codes.github.io/amrex/docs_html/_images/subcycling.png
     :width: 70%
 
-    "Schematic of subcycling-in-time algorithm."[X]_
+    "Schematic of subcycling-in-time algorithm."[6]_
 
 Therefore, we calculate the simulation in the following sequence of steps: 
 
@@ -146,14 +146,14 @@ At the end one coarse step is finished, and we evolve to the next coarse time st
 
 To compensate for the mismatch in height, momentum X and momentum Y in level :math:`\ell` and :math:`\ell + 1`.
 We synchronize between these levels.
-"This is simply corrected by overwriting covered coarse cells to be the average of the overlying fine cells."[X]_
+"This is simply corrected by overwriting covered coarse cells to be the average of the overlying fine cells."[6]_
 
 Flowchart
 ^^^^^^^^^
 
-Here we want to give you a rough overview of the programme. To do this, we have made a **flowchart** of the main
-functions that the programme goes through. The following chapter will explain the process and give an overview of the
-steps the programme has to perform.
+Here we want to give you a rough overview of the program. To do this, we have made a **flowchart** of the main
+functions that the program goes through. The following chapter will explain the process and give an overview of the
+steps the program has to perform.
 
 .. raw:: html
 
@@ -176,15 +176,15 @@ We use ``AmrMesh`` and ``AmrCore`` as the basic structure.
 
 "For single-level simulations the user needs to build ``Geometry``, ``DistributionMapping``, and ``BoxArray`` objects
 associated with the simulation. For simulations with multiple levels of refinement, the ``AmrMesh`` class can be thought
-of as a container to store arrays of these objects (one for each level), and information about the current grid structure."[6]_
+of as a container to store arrays of these objects (one for each level), and information about the current grid structure."[7]_
 
 "``AMReX_AmrCore.cpp/H`` contains the pure virtual class ``AmrCore``, which is derived from the ``AmrMesh`` class.
 ``AmrCore`` does not actually have any data members, just additional member functions, some of which override the base
-class ``AmrMesh``."[6]_
+class ``AmrMesh``."[7]_
 
 "There are no pure virtual functions in ``AmrMesh``, but there are 5 pure virtual functions in the ``AmrCore`` class.
 Any applications you create must implement these functions. The tutorial code ``Amr/Advection_AmrCore`` provides
-sample implementation in the derived class ``AmrCoreAdv``."[6]_
+sample implementation in the derived class ``AmrCoreAdv``."[7]_
 
 We will introduce them now because some of them are only called internally by ``AMReX`` functions, so we may not mention
 them in the code walkthrough.
@@ -378,7 +378,7 @@ Initialize & Finalize
 "To use AMReX, we need to call ``Initialize`` to initialize the execution environment for AMReX, and ``Finalize`` needs
 to be paired with Initialize to free the resources used by AMReX. Because many AMReX classes and functions don't work
 properly after amrex::Finalize is called, it's best to put the code between amrex::Initialize and amrex::Finalize in its
-scope to make sure that resources are freed properly"[7]_.
+scope to make sure that resources are freed properly"[8]_.
 
 .. code-block:: cpp
     :emphasize-lines: 6, 8
@@ -399,7 +399,7 @@ ParmParse
 
 Before starting a simulation, the user must define its configuration. To simplify this process, you only need to adjust
 the parameters in the ``root/resources/inputs.amrex file``.  "We use the AMReX class ``AMReX_ParmParse.H``, which
-provides a database for storing and retrieving command line and input file arguments"[8]_. This technique is used
+provides a database for storing and retrieving command line and input file arguments"[9]_. This technique is used
 throughout the project to get the correct parameters when they are needed. Here is an example of how to get the
 displacement and bathymetry file paths:
 
@@ -512,21 +512,21 @@ explanation of how to loop over the grid and access its cells. Working with AMRe
     [ ... ]
 
 "Above we see how you can operate on the ``MultiFab`` data with your own functions. AMReX provides an iterator, ``MFIter``
-for looping over the ``FArrayBoxes`` in ``MultiFabs``. MFIter only loops over grids owned by this process."[9]_
+for looping over the ``FArrayBoxes`` in ``MultiFabs``. MFIter only loops over grids owned by this process."[10]_
 ``Tiling`` is being used in this ``MFiter`` loop because it was set to true in line five. ``Tiling`` improves data
 locality. One way to achieve this is by transforming loops into tiling loops that iterate over tiles and element loops
 that iterate over the data elements within a tile. We use tiling only where it makes sense. For example, it improves our
 ``ySweep`` but not our ``xSweep``, which will be introduced later.
 
-1. passing ``true`` when defining ``MFIter`` to indicate tiling
+1. Passing ``true`` when defining ``MFIter`` to indicate tiling.
 
-2. calling ``tilebox`` instead of ``validbox`` to obtain the work region for the loop iteration
+2. Calling ``tilebox`` instead of ``validbox`` to obtain the work region for the loop iteration.
 
 To simplify data management, we create an ``Array4`` for each component that holds its specific values.
 Currently, we are only iterating over the ``Boxes`` of our ``MultiFab``. In order to iterate over the cells,
 we will use ``ParallelFor``. "``ParallelFor`` takes two arguments. The first argument is a ``Box`` specifying the
-iteration index space, and the second argument is a C++ lambda function that works on cell (i,j,k). Variables a, b and c
-in the lambda function are captured by value from the enclosing scope. The code above is performance portable."[10]_
+iteration index space, and the second argument is a C++ lambda function that works on cell (i, j, k). Variables a, b and c
+in the lambda function are captured by value from the enclosing scope. The code above is performance portable."[11]_
 
 Evolve
 ^^^^^^
@@ -561,7 +561,7 @@ generate a plot file at the start. We call ``WritePlotFile`` to write a simulati
 
 The tsunami-specific values 'Height', 'MomentumX', 'MomentumY', 'Bathymetry', and 'Error' are defined in WritePlotFile
 and are intended to be saved in the plot. We call the provided function ``WriteMultiLevelPlotfile`` to create the actual
-plot. "AMReX has its own native plotfile format. Many visualization tools are available for AMReX plotfiles"[11]_.
+plot. "AMReX has its own native plotfile format. Many visualization tools are available for AMReX plotfiles"[12]_.
 We used **ParaView** to visualize the plot files with confidence. If you want to get more information about this we
 recommend the chapter `Visualization <https://amrex-codes.github.io/amrex/docs_html/Visualization.html#paraview>`_.
 
@@ -767,12 +767,12 @@ This method is needed to fill a patch with data. The code includes two functions
 ``FillPatchTwoLevels``. To enable this, we must first use our utility function, `GetData`.  This method copies data from
 gridOld and/or gridNew into another `MultiFab` for further use.
 
-1. "``FillPatchSingleLevel`` fills a ``MultiFab`` and its ghost region at a single level of refinement. The routine is flexible enough to interpolate in time between two ``MultiFabs`` associated with different times."[12]_
+1. "``FillPatchSingleLevel`` fills a ``MultiFab`` and its ghost region at a single level of refinement. The routine is flexible enough to interpolate in time between two ``MultiFabs`` associated with different times."[13]_
 
-2. "``FillPatchTwoLevels`` fills a ``MultiFab`` and its ghost region at a single level of refinement, assuming there is an underlying coarse level. This routine is flexible enough to interpolate the coarser level in time first using ``FillPatchSingleLevel``."[12]_
+2. "``FillPatchTwoLevels`` fills a ``MultiFab`` and its ghost region at a single level of refinement, assuming there is an underlying coarse level. This routine is flexible enough to interpolate the coarser level in time first using ``FillPatchSingleLevel``."[13]_
 
 "Note that ``FillPatchSingleLevel`` and ``FillPatchTwoLevels`` call the single-level routines ``MultiFab::FillBoundary``
-and ``FillDomainBoundary`` to fill interior, periodic, and physical boundary ghost cells."[12]_
+and ``FillDomainBoundary`` to fill interior, periodic, and physical boundary ghost cells."[13]_
 
 .. code-block:: cpp
     :emphasize-lines: 9, 14, 29, 36
@@ -835,7 +835,7 @@ to the special case, we are using the ``amrex::lincc_interp`` interpolator.
 "Dimension-by-dimension linear interpolation with `MC limiter <https://en.wikipedia.org/wiki/Flux_limiter>`_ for
 cell-centered data. For multi-component data, the strictest limiter is used for all components. For example,
 if one component after its own limiting has a slope of zero, all other components will have zero slopes as well
-eventually. The interpolation is conservative in finite-volume sense for both Cartesian and curvilinear coordinates."[13]_
+eventually. The interpolation is conservative in finite-volume sense for both Cartesian and curvilinear coordinates."[14]_
 
 Back in `AdvanceGridAtLevel` we finally do the x and y sweep of the cells.
 
@@ -941,12 +941,12 @@ the procedure for ``xSweep``, which is analogous to ``ySweep``.
         }
     }
 
-After completing the sweeps and finishing AverageDownTo, we have performed a cycle successfully. We now return to the
+After completing the sweeps and finishing ``AverageDownTo``, we have performed a cycle successfully. We now return to the
 ``Evolve`` method to check if the current time is less than the time to simulate. If it is, we execute the next
 ``timeStepWithSubcycling``. If not, the simulation is complete.
 
-We hope this code walkthrough was helpful in understanding the behaviour and functionality of our adaptive mesh
-refinement tsunami simulation. We covered all the methods we defined in ``AMRCoreWavePropagation2d``. Of course we use
+We hope this code walkthrough was helpful in understanding the behavior and functionality of our adaptive mesh
+refinement tsunami simulation. We covered all the methods we defined in ``AMRCoreWavePropagation2d``. Of course, we use
 functions of the ``AMReX`` framework. These are internal and could be used by us without modification. If you want to
 learn more about ``AMReX`` and the functions it provides, we recommend you read the
 `source documentation <https://amrex-codes.github.io/amrex/docs_html/>`_ and the
@@ -954,7 +954,7 @@ learn more about ``AMReX`` and the functions it provides, we recommend you read 
 
 But enough theory. Adaptive mesh refinement has two main goals that go hand in hand. We want to increase the accuracy
 of our simulation while maintaining good runtime performance. In the next two chapters we will test our program and
-take a closer look at the results and whether we have achieved the expected behaviour.
+take a closer look at the results and whether we have achieved the expected behavior.
 
 11.4 Performance
 ----------------
@@ -963,11 +963,11 @@ Load Balancing
 ^^^^^^^^^^^^^^
 
 "Single-level load balancing algorithms are sequentially applied to each AMR level independently, and the resulting distributions are mapped onto the ranks taking into account the weights already assigned to them (assign heaviest set of grids to the least loaded rank).
-Note that the load of each process is measured by how much memory has already been allocated, not how much memory will be allocated."[14]_
+Note that the load of each process is measured by how much memory has already been allocated, not how much memory will be allocated."[15]_
 
-AMRex provides three load balancing algorithms: Knapsack, SFC and Round-robin.
+AMReX provides three load balancing algorithms: Knapsack, SFC and Round-robin.
 
-We kept the default algorithm SFC which "enumerate grids with a space-filling Z-morton curve, then partition the resulting ordering across ranks in a way that balances the load."[14]_
+We kept the default algorithm SFC which "enumerate grids with a space-filling Z-morton curve, then partition the resulting ordering across ranks in a way that balances the load."[15]_
 
 Benchmarks
 ^^^^^^^^^^
@@ -1086,7 +1086,7 @@ Some small difference in wave height can be observed across the videos.
         .. raw:: html
 
             <center>
-                <video width="700" controls>
+                <video width="900" controls>
                     <source src="../_static/videos/AMR_ref0.mp4" type="video/mp4">
                 </video>
             </center>
@@ -1096,7 +1096,7 @@ Some small difference in wave height can be observed across the videos.
         .. raw:: html
 
             <center>
-                <video width="700" controls>
+                <video width="900" controls>
                     <source src="../_static/videos/AMR_ref1.mp4" type="video/mp4">
                 </video>
             </center>
@@ -1106,7 +1106,7 @@ Some small difference in wave height can be observed across the videos.
         .. raw:: html
 
             <center>
-                <video width="700" controls>
+                <video width="900" controls>
                     <source src="../_static/videos/AMR_ref2.mp4" type="video/mp4">
                 </video>
             </center>
@@ -1116,7 +1116,7 @@ Some small difference in wave height can be observed across the videos.
         .. raw:: html
 
             <center>
-                <video width="700" controls>
+                <video width="900" controls>
                     <source src="../_static/videos/AMR_ref3.mp4" type="video/mp4">
                 </video>
             </center>
@@ -1128,7 +1128,7 @@ The shore is preferred by the criteria as it has high waves and high velocity du
 .. raw:: html
 
     <center>
-        <video width="700" controls>
+        <video width="900" controls>
             <source src="../_static/videos/AMR_ref3_levels.mp4" type="video/mp4">
         </video>
     </center>
@@ -1144,13 +1144,13 @@ All team members contributed equally to the tasks.
 .. [3] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#distributionmapping (29.01.2024)
 .. [4] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#basefab-farraybox-iarraybox-and-array4 (29.01.2024)
 .. [5] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#sec-basics-multifab (29.01.2024)
-.. [6] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html#amrmesh-and-amrcore (02.02.2024)
-.. [7] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#initialize-and-finalize (28.01.2024)
-.. [8] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#parmparse (28.01.2024)
-.. [9] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#mfiter-and-tiling (29.01.2024)
-.. [10] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#parallelfor (29.01.2024)
-.. [11] From https://amrex-codes.github.io/amrex/docs_html/IO.html# (28.01.2024)
-.. [12] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html?highlight=fillpatchtwolevels#fillpatchutil-and-interpolater (29.01.2024)
-.. [13] From https://github.com/AMReX-Codes/amrex/issues/396#issuecomment-455806287 (29.01.2024)
-.. [14] From https://amrex-codes.github.io/amrex/docs_html/LoadBalancing.html (02.02.2024)
-.. [X] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html#the-advection-equation (02.02.2024)
+.. [6] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html#the-advection-equation (02.02.2024)
+.. [7] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html#amrmesh-and-amrcore (02.02.2024)
+.. [8] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#initialize-and-finalize (28.01.2024)
+.. [9] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#parmparse (28.01.2024)
+.. [10] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#mfiter-and-tiling (29.01.2024)
+.. [11] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#parallelfor (29.01.2024)
+.. [12] From https://amrex-codes.github.io/amrex/docs_html/IO.html# (28.01.2024)
+.. [13] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html?highlight=fillpatchtwolevels#fillpatchutil-and-interpolater (29.01.2024)
+.. [14] From https://github.com/AMReX-Codes/amrex/issues/396#issuecomment-455806287 (29.01.2024)
+.. [15] From https://amrex-codes.github.io/amrex/docs_html/LoadBalancing.html (02.02.2024)

@@ -537,7 +537,7 @@ void tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromScratch( int le
 }
 
 void tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromCoarse( int level,
-                                                                                Real time,
+                                                                         Real time,
                                                                          const BoxArray& ba,
                                                                          const DistributionMapping& dm )
 {
