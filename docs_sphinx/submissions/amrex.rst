@@ -197,8 +197,13 @@ now because we do not want to throw you in at the deep end. It is only important
     }
 
 Our criteria for determining whether to tag the cell is in the first highlighted line. The calculation involves squaring
-the velocity in both the x and y directions and multiplying the result by the squared water height. In the second
-highlighted line, we either set or do not set the tag.
+the velocity in both the x and y directions and multiplying the result by the squared water height. The reason for using
+these criteria is simple. We debugged different characteristics of our cells and experimented with various combinations.
+We ended up with the best and most reliable criteria, which you can see here. Overall, it is logical that velocity and
+water height are descriptive properties.
+
+In the second highlighted line, we either set or do not set the tag. The ``gridErr`` is defined in ``inputs.amrex``
+(**tsunami.griderr**) and varies depending on the level.
 
 **MakeNewLevelFromScratch**
 
@@ -375,9 +380,11 @@ The setup and preparation process of the simulation starts by initializing our `
 InitFromScratch
 ^^^^^^^^^^^^^^^
 
-The **constructor** calls ``ReadParameters`` to retrieve input file parameters and then resizes our characteristics.
-***THIS IS NECESSARY TO???**. We set the refinement ratio for each level and established our boundaries with confidence.
-To initialize our data, we pass the start time, which is still zero, to ``InitFromScratch``.
+The constructor invokes the ``ReadParameters`` function to obtain the input file parameters and resizes them to the
+maximum level, ``nLevelMax``. Therefore, if we declare parameters in our ``inputs.amerx`` file for levels one to five,
+but only have a maximum of three levels, we will only require the first three entries in the vectors. We then set the
+refinement ratio for each level and established our boundaries with confidence. To initialize our data, we pass the
+start time, which is still zero, to ``InitFromScratch``.
 
 .. code-block:: cpp
     :emphasize-lines: 4, 5, 24
