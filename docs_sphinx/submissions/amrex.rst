@@ -64,19 +64,67 @@ Structure
 
 **Basic structure**
 
-.. raw:: html
+.. image:: ../_static/photos/AMR_Explanation_01.png
 
-    <center>
-        <img src="../_static/photos/AMR_Explanation_01.png" alt="AMReX structure overall">
-    </center>
+The ``MultiFab`` can be seen as a storage container for multiple boxes that are distributed over multiple processes managed by the ``DistributionMapping``.
+Each ``Box`` contains the array index required to iterate over the correct part of the underlying array.
+Note that a ``Box`` does **not** include the index for ghost cells that are defined through the ``MultiFab``.
+The underlying array is called ``Array4`` as it stores x, y, z dimension and an additional dimension for components.
+The components are used to store multiple values in one ``Array4`` respectively ``MultiFab``.
+E.g. In this project the components are used to store the height, momentum X, momentum Y, bathymetry and the error in one single ``MultiFab``.
 
-**Neighbouring cells in detail**
+The next stage is realized by creating a new ``MultiFab``, which stores boxes that do not extend over the entire area.
+These boxes are filled by the coarser underlying boxes.
 
-.. raw:: html
 
-    <center>
-        <img src="../_static/photos/AMR_Explanation_02.png" alt="AMReX structure box">
-    </center>
+**Neighbouring Boxes in detail**
+
+.. image:: ../_static/photos/AMR_Explanation_02.png
+
+As mentioned before the boxes are distributed over the processes.
+Therefore communication is needed to transfer data between boxes.
+This is automatically done by AMReX by calling ``FillBoundary`` function.
+The ghost cells are then filled with the data of valid cells, i.e. with the overlapping cells within the adjacent ``Box``.
+
+Subcycling & Level synchronization
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Since we divide the cells to fine the level, the time step needs to be divided too to keep numerical accuracy.
+On the other we need to synchronize the time step to transfer the data from the fine to the coarse and fill new fine patches with data from the coarser level.
+To achieve this we use Subscycling. The figure below shows the main concept for 3 AMR levels.
+
+.. figure:: https://amrex-codes.github.io/amrex/docs_html/_images/subcycling.png
+    :width: 70%
+
+    "Schematic of subcycling-in-time algorithm."[X]_
+
+Therefore, we calculate the simulation in the following sequence of steps: 
+
+#. Advance :math:`\ell=0` over :math:`\Delta t`.
+
+#. Advance :math:`\ell=1` over :math:`\Delta t/2`.
+
+#. Advance :math:`\ell=2` over :math:`\Delta t/4`.
+
+#. Advance :math:`\ell=2` over :math:`\Delta t/4`.
+
+#. Synchronize levels :math:`\ell=1,2`.
+
+#. Advance :math:`\ell=1` over :math:`\Delta t/2`.
+
+#. Advance :math:`\ell=2` over :math:`\Delta t/4`.
+
+#. Advance :math:`\ell=2` over :math:`\Delta t/4`.
+
+#. Synchronize levels :math:`\ell=1,2`.
+
+#. Synchronize levels :math:`\ell=0,1`.
+
+At the end one coarse step is finished, and we evolve to the next coarse time step.
+
+To compensate for the mismatch in height, momentum X and momentum Y in level :math:`\ell` and :math:`\ell + 1`.
+We synchronize between these levels.
+"This is simply corrected by overwriting covered coarse cells to be the average of the overlying fine cells."[X]_
 
 Flowchart
 ^^^^^^^^^
@@ -485,17 +533,23 @@ if one component after its own limiting has a slope of zero, all other component
 eventually. The interpolation is conservative in finite-volume sense for both Cartesian and curvilinear coordinates."[12]_
 
 
-
 11.3 Performance
 ----------------
 
 Load Balancing
 ^^^^^^^^^^^^^^
 
+"Single-level load balancing algorithms are sequentially applied to each AMR level independently, and the resulting distributions are mapped onto the ranks taking into account the weights already assigned to them (assign heaviest set of grids to the least loaded rank).
+Note that the load of each process is measured by how much memory has already been allocated, not how much memory will be allocated."[14]_
+
+AMRex provides three load balancing algorithms: Knapsack, SFC and Round-robin.
+
+We kept the default algorithm SFC which "enumerate grids with a space-filling Z-morton curve, then partition the resulting ordering across ranks in a way that balances the load."[14]_
+
 Benchmarks
 ^^^^^^^^^^
 
-This benchmark use the Tohoku tsunami with 2704 cells in x direction and 1504 cells in y direction while writing every 60 time steps.
+This benchmark use the Tohoku tsunami setup with 1000 m cells while writing every 60 seconds of simulation time.
 
 +--------------+-------------------------------------+------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
 |              |:raw-html:`<center>Original</center>`|:raw-html:`<center>1 Level</center>`|:raw-html:`<center>2 Levels</center>`|:raw-html:`<center>3 Levels</center>`|:raw-html:`<center>4 Levels</center>`|
@@ -505,12 +559,30 @@ This benchmark use the Tohoku tsunami with 2704 cells in x direction and 1504 ce
 | I/0 Disabled | 1 min 34 sec                        | 1 min 48 sec                       | 8 min 43 sec                        | 22 min 31 sec                       | 45 min 11 sec                       |
 +--------------+-------------------------------------+------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
 
+The Levels are referred to as 1 Level is only the coarse level, the 2 Levels has the coarse and one additional fine level, 3 Levels has the coarse and two addition fine level and so on.
+From one fine level to another the cells are divided in half i.e. one 1000 m cells becomes four 500 m cells.
+Therefore the levels have the following sizes: Level 1 with 1000 m, Level 2 with 500 m, Level 3 with 250 m and Level 4 with 125 m.
+
+The comparison of ``Original`` and ``1 Level`` shows that the AMR implementation requires more computational for the simulation itself.
+But using AMReX output format is faster than the netCdf writer.
+
+We also used the Original code to run on 250 m cells with I/O which took ``1 h 47 min 13 sec`` and can be compared with ``3 Levels``.
+Using AMR to only partially refine the mesh we get a significant performance increase with a Speedup of ``4.76``.
+
 
 11.4 Visualization
 ------------------
 
 Accuracy
 ^^^^^^^^
+
+We check the wave height to visually compare the increase in accuracy per level.
+We plotted two stations the location can be seen below.
+
+.. image:: ../_static/photos/StationsPositions.png
+
+The Stations are plot over the time and the output data from the benchmark is used.
+Station 1 is the marker near to the coast and Station 2 is the marker on the right side of the displaced wave.
 
 **Station 1**
 
@@ -534,8 +606,12 @@ Accuracy
     .. tab-item:: AMR 1 Level & Original
         :sync: StationsAMR1Original
         
-        .. image:: ../_static/photos/Station1_amr0_origin.png
+        .. image:: ../_static/photos/Station1_amr0_original.png
 
+The plot of the original as a significant difference to the AMR Level 1 plot which are theoretical both identical.
+This could be due to shifted initialization of the bathymetry or simply an interpolation error of Paraview as our AMR code use a different format to output the simulation.
+
+We can see a difference in the water height as the AMR Level increases, especial the AMR 4 Levels plot has additional bumps in the graphs. 
 
 **Station 2**
 
@@ -559,7 +635,71 @@ Accuracy
     .. tab-item:: AMR 1 Level & Original
         :sync: StationsAMR1Original
         
-        .. image:: ../_static/photos/Station2_amr0_origin.png
+        .. image:: ../_static/photos/Station2_amr0_original.png
+
+The differences in the seconds stations are not very noticeable.
+Only at simulation time 8000 seconds a significant difference can be seen between 1 and 4 Levels.
+
+AMR Tsunami
+^^^^^^^^^^^
+
+These videos show the rendered tsunami for different level of refinements using the output data from the benchmark.
+Some small difference in wave height can be observed across the videos.
+
+.. tab-set::
+
+    .. tab-item:: 1 Level
+
+        .. raw:: html
+
+            <center>
+                <video width="700" controls>
+                    <source src="../_static/videos/AMR_ref0.mp4" type="video/mp4">
+                </video>
+            </center>
+        
+    .. tab-item:: 2 Levels
+
+        .. raw:: html
+
+            <center>
+                <video width="700" controls>
+                    <source src="../_static/videos/AMR_ref1.mp4" type="video/mp4">
+                </video>
+            </center>
+        
+    .. tab-item:: 3 Levels
+
+        .. raw:: html
+
+            <center>
+                <video width="700" controls>
+                    <source src="../_static/videos/AMR_ref2.mp4" type="video/mp4">
+                </video>
+            </center>
+        
+    .. tab-item:: 4 Levels
+
+        .. raw:: html
+
+            <center>
+                <video width="700" controls>
+                    <source src="../_static/videos/AMR_ref3.mp4" type="video/mp4">
+                </video>
+            </center>
+
+The next video shows the level of refinement that was used to simulate the tsunami with 4 AMR levels.
+The criteria yields visually a very good level of refinement near the shore and at the moving waves.
+The shore is preferred by the criteria as it has high waves and high velocity due to reflections.
+
+.. raw:: html
+
+    <center>
+        <video width="700" controls>
+            <source src="../_static/videos/AMR_ref3_levels.mp4" type="video/mp4">
+        </video>
+    </center>
+
 
 Contribution
 ------------
@@ -578,4 +718,6 @@ All team members contributed equally to the tasks.
 .. [10] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#parallelfor (29.01.2024)
 .. [11] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html?highlight=fillpatchtwolevels#fillpatchutil-and-interpolater (29.01.2024)
 .. [12] From https://github.com/AMReX-Codes/amrex/issues/396#issuecomment-455806287 (29.01.2024)
+.. [14] From https://amrex-codes.github.io/amrex/docs_html/LoadBalancing.html (02.02.2024)
 
+.. [X] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html#the-advection-equation (02.02.2024)
