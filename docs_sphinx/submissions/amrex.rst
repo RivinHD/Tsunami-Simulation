@@ -81,12 +81,22 @@ with a ``BoxArray``. The template parameter ``FAB`` is usually ``BaseFab<T>``."[
 is ``MultiFab`` in AMReX_MultiFab.H derived from ``FabArray <FArrayBox>``
 (`FArrayBox <https://amrex-codes.github.io/amrex/docs_html/Basics.html#basefab-farraybox-iarraybox-and-array4>`_)."[5]_
 
+**Geometry**
+
+"The ``Geometry`` class in`` AMReX_Geometry.H`` describes problem domain and coordinate system for rectangular problem
+domains."[16]_
+
 Structure
 ^^^^^^^^^
 
 **Basic structure**
 
-.. image:: ../_static/photos/AMR_Explanation_01.png
+.. raw:: html
+
+    <center>
+        <img src="../_static/photos/AMR_Explanation_01.png" alt="Visualization of the input data">
+    </center>
+    <br>
 
 The ``MultiFab`` can be seen as a storage container for multiple boxes that are distributed over multiple processes managed by the ``DistributionMapping``.
 Each ``Box`` contains the array index required to iterate over the correct part of the underlying array.
@@ -96,12 +106,17 @@ The components are used to store multiple values in one ``Array4`` respectively 
 E.g. In this project the components are used to store the height, momentum X, momentum Y, bathymetry and the error in one single ``MultiFab``.
 
 The next stage is realized by creating a new ``MultiFab``, which stores boxes that do not extend over the entire area.
-These boxes are filled by the coarser underlying boxes.
+These boxes are filled by the coarses underlying boxes.
 
 
 **Neighbouring Boxes in detail**
 
-.. image:: ../_static/photos/AMR_Explanation_02.png
+.. raw:: html
+
+    <center>
+        <img src="../_static/photos/AMR_Explanation_02.png" alt="Visualization of the input data">
+    </center>
+    <br>
 
 As mentioned before the boxes are distributed over the processes.
 Therefore communication is needed to transfer data between boxes.
@@ -111,9 +126,10 @@ The ghost cells are then filled with the data of valid cells, i.e. with the over
 Subcycling & Level synchronization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Since we divide the cells to fine the level, the time step needs to be divided too to keep numerical accuracy.
-On the other we need to synchronize the time step to transfer the data from the fine to the coarse and fill new fine patches with data from the coarser level.
-To achieve this we use Subscycling. The figure below shows the main concept for 3 AMR levels.
+Since we divide the cells to fine the level, the time step needs to be divided too to keep numerical accuracy. On the
+other hand, we need to synchronise the time step to transfer the data from fine to coarse and to fill new fine patches
+with data from the coarser level. To achieve this we use **subscycling**. The figure below shows the main concept for
+three AMR levels.
 
 .. figure:: https://amrex-codes.github.io/amrex/docs_html/_images/subcycling.png
     :width: 70%
@@ -144,9 +160,9 @@ Therefore, we calculate the simulation in the following sequence of steps:
 
 At the end one coarse step is finished, and we evolve to the next coarse time step.
 
-To compensate for the mismatch in height, momentum X and momentum Y in level :math:`\ell` and :math:`\ell + 1`.
-We synchronize between these levels.
-"This is simply corrected by overwriting covered coarse cells to be the average of the overlying fine cells."[6]_
+To compensate for the mismatch in height, momentum X and momentum Y in levels :math:`\ell` and :math:`\ell + 1`, we
+synchronise between these levels. "This is simply corrected by overwriting covered coarse cells to be the average of the
+overlying fine cells."[6]_
 
 Flowchart
 ^^^^^^^^^
@@ -1144,6 +1160,7 @@ All team members contributed equally to the tasks.
 .. [3] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#distributionmapping (29.01.2024)
 .. [4] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#basefab-farraybox-iarraybox-and-array4 (29.01.2024)
 .. [5] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#sec-basics-multifab (29.01.2024)
+.. [16] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#realbox-and-geometry (03.02.2024)
 .. [6] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html#the-advection-equation (02.02.2024)
 .. [7] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html#amrmesh-and-amrcore (02.02.2024)
 .. [8] From https://amrex-codes.github.io/amrex/docs_html/Basics.html#initialize-and-finalize (28.01.2024)
