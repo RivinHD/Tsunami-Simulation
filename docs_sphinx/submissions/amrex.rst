@@ -168,8 +168,8 @@ Flowchart
 ^^^^^^^^^
 
 Here we want to give you a rough overview of the program. To do this, we have made a **flowchart** of the main
-functions that the program goes through. The following chapter will explain the process and give an overview of the
-steps the program has to perform.
+functions that the program goes through. The :ref:`next chapter <codewalkthrough>` explains the process in more detail and the steps the
+programme has to perform.
 
 .. raw:: html
 
@@ -179,6 +179,8 @@ steps the program has to perform.
 
 11.3 Code-Walkthrough
 ---------------------
+
+.. _codewalkthrough:
 
 In this section, we want to explain the process of our program step by step, so that you can become familiar with the
 code. We are going to start the course in our ``main.cpp`` file and follow along with the code.
@@ -981,14 +983,16 @@ Load Balancing
 "Single-level load balancing algorithms are sequentially applied to each AMR level independently, and the resulting distributions are mapped onto the ranks taking into account the weights already assigned to them (assign heaviest set of grids to the least loaded rank).
 Note that the load of each process is measured by how much memory has already been allocated, not how much memory will be allocated."[15]_
 
-AMReX provides three load balancing algorithms: Knapsack, SFC and Round-robin.
+``AMReX`` provides three load balancing algorithms: Knapsack, SFC and Round-robin.
 
 We kept the default algorithm SFC which "enumerate grids with a space-filling Z-morton curve, then partition the resulting ordering across ranks in a way that balances the load."[15]_
 
 Benchmarks
 ^^^^^^^^^^
 
-This benchmark use the Tohoku tsunami setup with 1000 m cells while writing every 60 seconds of simulation time.
+This benchmark uses the Tohoku tsunami setup with 1000 m cells, writing every 60 seconds of simulation time. ``Original``
+is our last release that does not include ``AMRex``
+`Submission 9. Parallelization <https://github.com/RivinHD/Tsunami-Simulation/releases/tag/9-Parallelization>`_.
 
 +--------------+-------------------------------------+------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
 |              |:raw-html:`<center>Original</center>`|:raw-html:`<center>1 Level</center>`|:raw-html:`<center>2 Levels</center>`|:raw-html:`<center>3 Levels</center>`|:raw-html:`<center>4 Levels</center>`|
@@ -998,25 +1002,27 @@ This benchmark use the Tohoku tsunami setup with 1000 m cells while writing ever
 | I/0 Disabled | 1 min 34 sec                        | 1 min 48 sec                       | 8 min 43 sec                        | 22 min 31 sec                       | 45 min 11 sec                       |
 +--------------+-------------------------------------+------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
 
+The levels are designated as follows: 1 level is the coarse level only, 2 levels has the coarse level and one additional
+fine level, 3 levels has the coarse level and two additional fine levels and so on. From one fine level to another, the
+cells are divided in half, i.e. one 1000 m cell becomes four 500 m cells. The levels therefore have the following sizes:
+Level 1 with 1000 m, Level 2 with 500 m, Level 3 with 250 m and Level 4 with 125 m.
+
+The comparison of ``Original`` and ``1 Level`` shows that the AMR implementation requires more computation for the
+simulation itself. However, using the ``AMReX`` output format is faster than using the netCdf writer.
+
+We also used the Original code to run on 250 m cells with I/O which took ``1 h 47 min 13 sec`` and can be compared with ``3 Levels``.
+Using AMR to only partially refine the mesh we get a significant performance increase with a Speedup of ``4.76``.
+
 The Levels are referred to as 1 Level is only the coarse level, the 2 Levels has the coarse and one additional fine level, 3 Levels has the coarse and two addition fine level and so on.
 From one fine level to another the cells are divided in half i.e. one 1000 m cells becomes four 500 m cells.
 Therefore the levels have the following sizes: Level 1 with 1000 m, Level 2 with 500 m, Level 3 with 250 m and Level 4 with 125 m.
 
 The comparison of ``Original`` and ``1 Level`` shows that the AMR implementation requires more computational for the simulation itself.
-But using AMReX output format is faster than the netCdf writer.
+But using ``AMReX`` output format is faster than the netCdf writer.
 
-We also used the Original code to run on 250 m cells with I/O which took ``1 h 47 min 13 sec`` and can be compared with ``3 Levels``.
-Using AMR to only partially refine the mesh we get a significant performance increase with a Speedup of ``4.76``.
-
-The Levels are referred to as 1 Level is only the coarse level, the 2 Levels has the coarse and one additional fine level, 3 Levels has the coarse and two addition fine level and so on.
-From one fine level to another the cells are divided in half i.e. one 1000 m cells becomes four 500 m cells.
-Therefore the levels have the following sizes: Level 1 with 1000 m, Level 2 with 500 m, Level 3 with 250 m and Level 4 with 125 m.
-
-The comparison of ``Original`` and ``1 Level`` shows that the AMR implementation requires more computational for the simulation itself.
-But using AMReX output format is faster than the netCdf writer.
-
-We also used the Original code to run on 250 m cells with I/O which took ``1 h 47 min 13 sec`` and can be compared with ``3 Levels``.
-Using AMR to only partially refine the mesh we get a significant performance increase with a Speedup of ``4.76``.
+We also used the ``Original`` program to run on 250 m cells with I/O, which took ``1 h 47 min 13 sec`` compared to
+``3 Levels`` which took only ``23 min 29 sec``. Using AMR to only partially refine the mesh we get a significant
+performance increase with a speedup of ``4.76``.
 
 
 11.5 Visualization
@@ -1025,13 +1031,13 @@ Using AMR to only partially refine the mesh we get a significant performance inc
 Accuracy
 ^^^^^^^^
 
-We check the wave height to visually compare the increase in accuracy per level.
-We plotted two stations the location can be seen below.
+We check the wave height to visually compare the increase in accuracy per level. We plotted the **water level** of two
+stations, marked with a cross in the image below.
 
 .. image:: ../_static/photos/StationsPositions.png
 
-The Stations are plot over the time and the output data from the benchmark is used.
-Station 1 is the marker near to the coast and Station 2 is the marker on the right side of the displaced wave.
+The stations are plotted over time using the output data from the benchmark. **Station 1** is the marker close to shore
+and **Station 2** is the marker to the right of the displaced wave.
 
 **Station 1**
 
@@ -1047,20 +1053,28 @@ Station 1 is the marker near to the coast and Station 2 is the marker on the rig
 
         .. image:: ../_static/photos/Station1_amr.png
 
+    .. tab-item:: AMR 1 Level & Original
+        :sync: StationsAMR1Original
+
+        .. image:: ../_static/photos/Station1_amr0_original.png
+
     .. tab-item:: AMR 1 & 4 Levels
         :sync: StationsAMR14
 
         .. image:: ../_static/photos/Station1_amr_0_3.png
 
-    .. tab-item:: AMR 1 Level & Original
-        :sync: StationsAMR1Original
-        
-        .. image:: ../_static/photos/Station1_amr0_original.png
+There is a significant difference between the original plot and the AMR Level 1 plot, which are both theoretically
+identical. This could be due to a shifted initialisation of the bathymetry or simply an interpolation error by ParaView
+as our AMR code uses a different format to output the simulation.
 
-The plot of the original as a significant difference to the AMR Level 1 plot which are theoretical both identical.
-This could be due to shifted initialization of the bathymetry or simply an interpolation error of Paraview as our AMR code use a different format to output the simulation.
+.. error::
 
-We can see a difference in the water height as the AMR Level increases, especial the AMR 4 Levels plot has additional bumps in the graphs. 
+    Sure its interpolation?
+
+We can see a difference in the water level as the number of AMR levels used increases, especially the AMR 4 Levels plot
+is much more detailed compared to the AMR 1 Level plot. The more levels used, the more irregular the curve becomes.
+This is because we are in the coastal region, where the water interacts very much, and the simulation can handle rapid
+changes with more precision.
 
 **Station 2**
 
@@ -1076,23 +1090,33 @@ We can see a difference in the water height as the AMR Level increases, especial
 
         .. image:: ../_static/photos/Station2_amr.png
 
+    .. tab-item:: AMR 1 Level & Original
+        :sync: StationsAMR1Original
+
+        .. image:: ../_static/photos/Station2_amr0_original.png
+
     .. tab-item:: AMR 1 & 4 Levels
         :sync: StationsAMR14
 
         .. image:: ../_static/photos/Station2_amr_0_3.png
 
-    .. tab-item:: AMR 1 Level & Original
-        :sync: StationsAMR1Original
-        
-        .. image:: ../_static/photos/Station2_amr0_original.png
+The differences in the seconds stations are not very noticeable. This is because the water doesn't phase very much and
+we have a long going wave to the right. Only at simulation time 8000 seconds a significant difference can be seen
+between 1 and 4 Levels.
 
-The differences in the seconds stations are not very noticeable.
-Only at simulation time 8000 seconds a significant difference can be seen between 1 and 4 Levels.
+.. error::
+
+    Why at 8000?
 
 AMR Tsunami
 ^^^^^^^^^^^
 
-These videos show the rendered tsunami for different level of refinements using the output data from the benchmark.
+.. error::
+
+    Where is the comparison to the "old" simulation?
+    Why are there TWO waveHeight scales?
+
+These videos show the rendered tsunami for different levels of refinement using the output data from the benchmark.
 Some small difference in wave height can be observed across the videos.
 
 .. tab-set::
@@ -1137,9 +1161,9 @@ Some small difference in wave height can be observed across the videos.
                 </video>
             </center>
 
-The next video shows the level of refinement that was used to simulate the tsunami with 4 AMR levels.
+The last video shows the levels of refinement created and destroyed by AMReX. Here we have used 4 AMR levels.
 The criteria yields visually a very good level of refinement near the shore and at the moving waves.
-The shore is preferred by the criteria as it has high waves and high velocity due to reflections.
+The shore is preferred by the criteria because it has high waves and high velocity due to reflections.
 
 .. raw:: html
 
