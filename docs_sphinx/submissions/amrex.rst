@@ -983,9 +983,10 @@ We kept the default algorithm SFC which "enumerate grids with a space-filling Z-
 Benchmarks
 ^^^^^^^^^^
 
-This benchmark uses the Tohoku tsunami setup with 1000 m cells, writing every 60 seconds of simulation time. ``Original``
-is our last release that does not include ``AMReX``, see
+This benchmark uses the Tohoku tsunami setup with 1000 m cells, writing every 60 seconds of simulation time.
+``Original`` is our last release that does not include ``AMReX``, see
 `Submission 9. Parallelization <https://github.com/RivinHD/Tsunami-Simulation/releases/tag/9-Parallelization>`_.
+This :download:`inputs.amrex <../_static/resources/inputs.amrex>` configuration file was used for the AMR simulation with ``AMReX``.
 
 +--------------+-------------------------------------+------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
 |              |:raw-html:`<center>Original</center>`|:raw-html:`<center>1 Level</center>`|:raw-html:`<center>2 Levels</center>`|:raw-html:`<center>3 Levels</center>`|:raw-html:`<center>4 Levels</center>`|

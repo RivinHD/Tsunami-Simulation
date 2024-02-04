@@ -1,13 +1,13 @@
 # *****************************************************************
 # Run until time == stop_time
 # *****************************************************************
-stop_time = 500.0
+stop_time = 13000.0
 
 # *****************************************************************
 # Problem size and geometry
 # *****************************************************************
 geometry.prob_lo     =  0.0  0.0  0.0 
-geometry.prob_hi     =  10000.0  10000.0  0.0
+geometry.prob_hi     =  2700000.0  1500000.0  0.0
 
 # 1 = periodic
 # 0 = walls
@@ -28,7 +28,7 @@ amr.v              = 1       # verbosity in Amr
 # *****************************************************************
 # Resolution and refinement
 # *****************************************************************
-amr.n_cell          = 1000 1000 0 # must be divisible by blocking factor
+amr.n_cell          = 2704 1504 0 # must be divisible by blocking factor
 amr.max_level       = 3           # maximum level number allowed -- 
                                     # number of levels = max_level + 1
 
@@ -52,18 +52,18 @@ amr.max_grid_size   = 128
 amr.regrid_int      = 2       # how often to regrid should be larger than 0
 
 # *****************************************************************
-# Tagging -  if err > 0.02 at level 0, then refine 
-#            if err > 0.06 at level 1, then refine 
-#            if err > 0.12 at level 2, then refine 
+# Tagging -  if err > 0.01 at level 0, then refine 
+#            if err > 0.04 at level 1, then refine 
+#            if err > 0.1  at level 2, then refine 
 # *****************************************************************
-tsunami.griderr = 0.02 0.06 0.12
+tsunami.griderr = 0.01 0.04 0.1
 
 # *****************************************************************
 # Input Files for Tsunami Simulation
 # *****************************************************************
-tsunami.bathymetry_file      = "resources/artificialtsunami_bathymetry_1000.nc"
-tsunami.displacement_file    = "resources/artificialtsunami_displ_1000.nc"
-tsunami.bathymetry_min_value = 20.0  # The minimum height for bathymetry away from 
+tsunami.bathymetry_file      = "resources/gebco20/tohoku_gebco20_usgs_250m_bath.nc"
+tsunami.displacement_file    = "resources/gebco20/tohoku_gebco20_usgs_250m_displ.nc"
+tsunami.bathymetry_min_value = 40.0  # The minimum height for bathymetry away from 
                                         # the water level, i.e. 0, to overcome dry-wet problems
 
 # *****************************************************************
@@ -71,5 +71,5 @@ tsunami.bathymetry_min_value = 20.0  # The minimum height for bathymetry away fr
 # *****************************************************************
 amr.plot_file   = plt       # root name of plot file
 amr.plot_folder = solution  # the folder to plot into
-amr.plot_int    = 50        # number of simulation time between plot files
+amr.plot_int    = 60        # number of simulation time between plot files
                               # if negative then no plot files will be written

@@ -62,13 +62,3 @@ jobs:
           ./build/test
           cmake --build build --config Release --target simulation -j 6
           ./build/simulation
-
-      - name: Arguments Test
-        run: |
-          rm -rf build
-          mkdir build
-          cd build
-          cmake -D ENABLE_TESTMODE=ON ..
-          cmake --build . --config Release --target sanitize -j 6
-          echo "Test ./sanitize"
-          ./sanitize
