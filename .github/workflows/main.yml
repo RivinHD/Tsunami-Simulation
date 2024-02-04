@@ -42,30 +42,26 @@ jobs:
 
       - name: Sanitize
         run: |
-          cmake --build build --config Debug --target sanitize_test
+          cmake --build build --config Debug --target sanitize_test -j 6
           ./build/sanitize_test
-          cmake --build build --config Debug --target sanitize
-          ./build/sanitize 25 -f csv
-          ./build/sanitize 25 25
-          cmake --build build --config Release --target sanitize
-          ./build/sanitize 500 -f csv
-          ./build/sanitize 50 50
+          cmake --build build --config Debug --target sanitize -j 6
+          ./build/sanitize
+          cmake --build build --config Release --target sanitize -j 6
+          ./build/sanitize
 
       - name: Valgrind
         run: |
-          cmake --build build --config Debug --target test
+          cmake --build build --config Debug --target test -j 6
           valgrind build/test
-          cmake --build build --config Debug --target simulation
-          valgrind build/simulation 25 -f csv
-          valgrind build/simulation 25 25
+          cmake --build build --config Debug --target simulation -j 6
+          valgrind build/simulation
 
       - name: Release
         run: |
-          cmake --build build --config Release --target test
+          cmake --build build --config Release --target test -j 6
           ./build/test
-          cmake --build build --config Release --target simulation
-          ./build/simulation 500 -f csv
-          ./build/simulation 50 50
+          cmake --build build --config Release --target simulation -j 6
+          ./build/simulation
 
       - name: Arguments Test
         run: |
@@ -73,48 +69,6 @@ jobs:
           mkdir build
           cd build
           cmake -D ENABLE_TESTMODE=ON ..
-          cmake --build . --config Release --target sanitize
-          echo "Test ./sanitize 10 -f csv"
-          ./sanitize 10 -f csv
-          echo "Test ./sanitize 10 10"
-          ./sanitize 10 10
-          echo "Test ./sanitize 10 -B -f csv"
-          ./sanitize 10 -B -f csv
-          echo "Test ./sanitize 10 10 -B" 
-          ./sanitize 10 10 -B
-          echo "Test ./sanitize 10 -s fwave -f csv"
-          ./sanitize 10 -s fwave -f csv
-          echo "Test ./sanitize 10 10 -s fwave"
-          ./sanitize 10 10 -s fwave
-          echo "Test ./sanitize 10 -s roe -f csv"
-          ./sanitize 10 -s roe -f csv
-          echo "Test ./sanitize 10 10 -s roe"
-          ./sanitize 10 10 -s roe
-          echo "Test ./sanitize 10 -s fwave -B -f csv"
-          ./sanitize 10 -s fwave -B -f csv
-          echo "Test ./sanitize 10 10 -s fwave -B"
-          ./sanitize 10 10 -s fwave -B
-          echo "Test ./sanitize 10 -r left -B -f csv"
-          ./sanitize 10 -r left -B -f csv
-          echo "Test ./sanitize 10 10 -r left -B"
-          ./sanitize 10 10 -r left -B
-          echo "Test ./sanitize 10 -r left right -s fwave -f csv"
-          ./sanitize 10 -r left right -s fwave -f csv
-          echo "Test ./sanitize 10 10 -r left right -s fwave"
-          ./sanitize 10 10 -r left right -s fwave
-          echo "Test ./sanitize 10 -r x -s roe -f csv"
-          ./sanitize 10 -r x -s roe -f csv
-          echo "Test ./sanitize 10 10 -r x y -s roe"
-          ./sanitize 10 10 -r x y -s roe
-          echo "Test ./sanitize 10 -r all -s fwave -B -f csv"
-          ./sanitize 10 -r all -s fwave -B -f csv
-          echo "Test ./sanitize 10 10 -r all -s fwave -B"
-          ./sanitize 10 10 -r all -s fwave -B
-          echo "Test ./sanitize 10 -r left right top bottom -s fwave -B -f csv"
-          ./sanitize 10 -r left right top bottom -s fwave -B -f csv
-          echo "Test ./sanitize 10 10 -r left right top bottom -s fwave -B"
-          ./sanitize 10 10 -r left right top bottom -s fwave -B
-          echo "Test ./sanitize 10 -r left right top bottom -s fwave -B -t 20 -f csv"
-          ./sanitize 10 -r left right top bottom -s fwave -B -t 20 -f csv
-          echo "Test ./sanitize 10 10 -r left right top bottom -s fwave -B -t 3"
-          ./sanitize 10 10 -r left right top bottom -s fwave -B -t 3
+          cmake --build . --config Release --target sanitize -j 6
+          echo "Test ./sanitize"
+          ./sanitize

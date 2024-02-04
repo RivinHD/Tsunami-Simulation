@@ -11,7 +11,6 @@
 #include <iostream>
 #include <filesystem>
 #include <cstdlib>
-#include "../../include/patches/WavePropagation2d.h"
 
 #define private public
 #include "../../include/io/NetCdf.h"
