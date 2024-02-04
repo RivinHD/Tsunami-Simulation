@@ -105,8 +105,8 @@ The underlying array is called ``Array4`` as it stores x, y, z dimension and an 
 The components are used to store multiple values in one ``Array4`` respectively ``MultiFab``.
 E.g. In this project the components are used to store the height, momentum X, momentum Y, bathymetry and the error in one single ``MultiFab``.
 
-The next stage is realized by creating a new ``MultiFab``, which stores boxes that do not extend over the entire area.
-These boxes are filled by the coarses underlying boxes.
+The next stage is realized by creating a new ``MultiFab``, which stores boxes that do not extend over the entire domain.
+These boxes are filled by the coarser underlying boxes.
 
 
 **Neighbouring Boxes in detail**
@@ -121,13 +121,13 @@ These boxes are filled by the coarses underlying boxes.
 As mentioned before the boxes are distributed over the processes.
 Therefore communication is needed to transfer data between boxes.
 This is automatically done by AMReX by calling ``FillBoundary`` function.
-The ghost cells are then filled with the data of valid cells, i.e. with the overlapping cells within the adjacent ``Box``.
+The ghost cells are then typically filled with the data of valid cells, i.e. with the overlapping cells within the adjacent ``Box``.
 
 Subcycling & Level synchronization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Since we divide the cells to fine the level, the time step needs to be divided too to keep numerical accuracy. On the
-other hand, we need to synchronise the time step to transfer the data from fine to coarse and to fill new fine patches
+other hand, we need to synchronize the time step to transfer the data from fine to coarse and to fill new fine patches
 with data from the coarser level. To achieve this we use **subscycling**. The figure below shows the main concept for
 three AMR levels.
 
@@ -416,7 +416,7 @@ ParmParse
 ^^^^^^^^^
 
 Before starting a simulation, the user must define its configuration. To simplify this process, you only need to adjust
-the parameters in the ``root/resources/inputs.amrex file``.  "We use the AMReX class ``AMReX_ParmParse.H``, which
+the parameters in the ``root/resources/inputs.amrex`` file.  "We use the AMReX class ``AMReX_ParmParse.H``, which
 provides a database for storing and retrieving command line and input file arguments"[9]_. This technique is used
 throughout the project to get the correct parameters when they are needed. Here is an example of how to get the
 displacement and bathymetry file paths:
@@ -449,7 +449,7 @@ InitFromScratch
 The constructor invokes the ``ReadParameters`` function to obtain the input file parameters and resizes them to the
 maximum level, ``nLevelMax``. Therefore, if we declare parameters in our ``inputs.amerx`` file for levels one to five,
 but only have a maximum of three levels, we will only require the first three entries in the vectors. We then set the
-refinement ratio for each level and established our boundaries with confidence. To initialize our data, we pass the
+refinement ratio for each level and fill our boundaries. To initialize our data, we pass the
 start time, which is still zero, to ``InitFromScratch``.
 
 .. code-block:: cpp
@@ -501,50 +501,43 @@ explanation of how to loop over the grid and access its cells. Working with AMRe
     /// Function: 'InitData'
 
     [ ... ]
-    for( MFIter mfi( gridNew[level], true ); mfi.isValid(); ++mfi )
+    for( MFIter mfi( gridNew[level], false ); mfi.isValid(); ++mfi )
     {
-        Box bx = mfi.tilebox();
+        Box bx = mfi.validbox();
 
-        // size in x & y direction
-        const Real dx = geom[level].CellSize( 0 );
-        const Real dy = geom[level].CellSize( 1 );
+        Array4<Real> height = gridNew[level].array( mfi, HEIGHT );
+        Array4<Real> momentumX = gridNew[level].array( mfi, MOMENTUM_X );
+        Array4<Real> momentumY = gridNew[level].array( mfi, MOMENTUM_Y );
+        Array4<Real> bathymetry = gridNew[level].array( mfi, BATHYMERTRY );
 
-        Array4<amrex::Real> height = gridNew[level].array( mfi, HEIGHT );
-        Array4<amrex::Real> momentumX = gridNew[level].array( mfi, MOMENTUM_X );
-        Array4<amrex::Real> momentumY = gridNew[level].array( mfi, MOMENTUM_Y );
-        Array4<amrex::Real> bathymetry = gridNew[level].array( mfi, BATHYMERTRY );
-        Array4<amrex::Real> error = gridNew[level].array( mfi, ERROR );
-
-        amrex::ParallelFor( bx,
-                            [=] AMREX_GPU_DEVICE( int i, int j, int k )
+        ParallelFor( bx,
+                    [=] AMREX_GPU_DEVICE( int i, int j, int k )
         {
-            amrex::Real x = i * dx;
-            amrex::Real y = j * dy;
+            Real x = i * dx;
+            Real y = j * dy;
             height( i, j, k ) = setup->getHeight( x, y );
             momentumX( i, j, k ) = setup->getMomentumX( x, y );
             momentumY( i, j, k ) = setup->getMomentumY( x, y );
             bathymetry( i, j, k ) = setup->getBathymetry( x, y );
-            error( i, j, k ) = 0;
         } );
     }
     [ ... ]
 
-"Above we see how you can operate on the ``MultiFab`` data with your own functions. AMReX provides an iterator, ``MFIter``
+"Above we see how you can operate on the ``MultiFab`` data with your own functions. ``AMReX`` provides an iterator, ``MFIter``
 for looping over the ``FArrayBoxes`` in ``MultiFabs``. MFIter only loops over grids owned by this process."[10]_
-``Tiling`` is being used in this ``MFiter`` loop because it was set to true in line five. ``Tiling`` improves data
-locality. One way to achieve this is by transforming loops into tiling loops that iterate over tiles and element loops
+``Tiling`` is not being used in this ``MFiter`` loop because it was set to false in line five. ``Tiling`` improves data
+locality when loading data that is not directly consecutive in memory. One way to achieve this is by transforming loops into tiling loops that iterate over tiles and element loops
 that iterate over the data elements within a tile. We use tiling only where it makes sense. For example, it improves our
 ``ySweep`` but not our ``xSweep``, which will be introduced later.
 
 1. Passing ``true`` when defining ``MFIter`` to indicate tiling.
 
-2. Calling ``tilebox`` instead of ``validbox`` to obtain the work region for the loop iteration.
+2. Calling ``tilebox`` instead of ``validbox`` to obtain the tiled work region for the loop iteration.
 
 To simplify data management, we create an ``Array4`` for each component that holds its specific values.
 Currently, we are only iterating over the ``Boxes`` of our ``MultiFab``. In order to iterate over the cells,
 we will use ``ParallelFor``. "``ParallelFor`` takes two arguments. The first argument is a ``Box`` specifying the
-iteration index space, and the second argument is a C++ lambda function that works on cell (i, j, k). Variables a, b and c
-in the lambda function are captured by value from the enclosing scope. The code above is performance portable."[11]_
+iteration index space, and the second argument is a C++ lambda function that works on cell (i, j, k)."[11]_
 
 Evolve
 ^^^^^^
@@ -561,7 +554,7 @@ We have completed the setup of our simulation and returned to our ``main.cpp``. 
 WritePlotFile
 ^^^^^^^^^^^^^
 
-The ``Evolve`` method progresses through time step by step using a loop. The program confidently determines whether to
+The ``Evolve`` method progresses through time step by step using a loop. The program determines independently whether to
 generate a plot file at the start. We call ``WritePlotFile`` to write a simulation step.
 
 .. code-block:: cpp
@@ -991,7 +984,7 @@ Benchmarks
 ^^^^^^^^^^
 
 This benchmark uses the Tohoku tsunami setup with 1000 m cells, writing every 60 seconds of simulation time. ``Original``
-is our last release that does not include ``AMRex``
+is our last release that does not include ``AMReX``, see
 `Submission 9. Parallelization <https://github.com/RivinHD/Tsunami-Simulation/releases/tag/9-Parallelization>`_.
 
 +--------------+-------------------------------------+------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
@@ -1010,20 +1003,9 @@ Level 1 with 1000 m, Level 2 with 500 m, Level 3 with 250 m and Level 4 with 125
 The comparison of ``Original`` and ``1 Level`` shows that the AMR implementation requires more computation for the
 simulation itself. However, using the ``AMReX`` output format is faster than using the netCdf writer.
 
-We also used the Original code to run on 250 m cells with I/O which took ``1 h 47 min 13 sec`` and can be compared with ``3 Levels``.
-Using AMR to only partially refine the mesh we get a significant performance increase with a Speedup of ``4.76``.
-
-The Levels are referred to as 1 Level is only the coarse level, the 2 Levels has the coarse and one additional fine level, 3 Levels has the coarse and two addition fine level and so on.
-From one fine level to another the cells are divided in half i.e. one 1000 m cells becomes four 500 m cells.
-Therefore the levels have the following sizes: Level 1 with 1000 m, Level 2 with 500 m, Level 3 with 250 m and Level 4 with 125 m.
-
-The comparison of ``Original`` and ``1 Level`` shows that the AMR implementation requires more computational for the simulation itself.
-But using ``AMReX`` output format is faster than the netCdf writer.
-
 We also used the ``Original`` program to run on 250 m cells with I/O, which took ``1 h 47 min 13 sec`` compared to
 ``3 Levels`` which took only ``23 min 29 sec``. Using AMR to only partially refine the mesh we get a significant
 performance increase with a speedup of ``4.76``.
-
 
 11.5 Visualization
 ------------------
@@ -1064,12 +1046,8 @@ and **Station 2** is the marker to the right of the displaced wave.
         .. image:: ../_static/photos/Station1_amr_0_3.png
 
 There is a significant difference between the original plot and the AMR Level 1 plot, which are both theoretically
-identical. This could be due to a shifted initialisation of the bathymetry or simply an interpolation error by ParaView
-as our AMR code uses a different format to output the simulation.
-
-.. error::
-
-    Sure its interpolation?
+identical. This could be due to a shifted initialisation of the bathymetry or simply an interpolation error at the station location
+by ParaView as our AMR code uses a different format to output the simulation.
 
 We can see a difference in the water level as the number of AMR levels used increases, especially the AMR 4 Levels plot
 is much more detailed compared to the AMR 1 Level plot. The more levels used, the more irregular the curve becomes.
@@ -1100,13 +1078,11 @@ changes with more precision.
 
         .. image:: ../_static/photos/Station2_amr_0_3.png
 
-The differences in the seconds stations are not very noticeable. This is because the water doesn't phase very much and
-we have a long going wave to the right. Only at simulation time 8000 seconds a significant difference can be seen
-between 1 and 4 Levels.
+The differences in the seconds stations are not very noticeable. 
+This is because the water is not very hectic and we have a long wave travelling to the right. 
+Only at simulation time 8000 seconds a significant difference can be seen between 1 and 4 Levels.
+Apparently there is a change at station 2 at this time which could only be taken into account by a high level of refinement.
 
-.. error::
-
-    Why at 8000?
 
 AMR Tsunami
 ^^^^^^^^^^^
@@ -1118,6 +1094,8 @@ AMR Tsunami
 
 These videos show the rendered tsunami for different levels of refinement using the output data from the benchmark.
 Some small difference in wave height can be observed across the videos.
+The bottom right color legend ranges from -6 to 20 and color the waves.
+The color legend in the top right corner is a snippet from -1 to 1 of the legend below.
 
 .. tab-set::
 
@@ -1161,7 +1139,7 @@ Some small difference in wave height can be observed across the videos.
                 </video>
             </center>
 
-The last video shows the levels of refinement created and destroyed by AMReX. Here we have used 4 AMR levels.
+The last video shows the levels of refinement created and merged by ``AMReX``. Here we have used 4 AMR levels.
 The criteria yields visually a very good level of refinement near the shore and at the moving waves.
 The shore is preferred by the criteria because it has high waves and high velocity due to reflections.
 
