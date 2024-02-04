@@ -99,8 +99,8 @@ set(RESOURCE_FILES
         artificialtsunami_displ_1000.nc
         artificialtsunami_bathymetry_1000.nc
         inputs.amrex
-        gebco20/tohoku_gebco20_usgs_250m_displ.nc
-        gebco20/tohoku_gebco20_usgs_250m_bath.nc
+        #gebco20/tohoku_gebco20_usgs_250m_displ.nc
+        #gebco20/tohoku_gebco20_usgs_250m_bath.nc
 )
 
 # Create SOURCE_FILES

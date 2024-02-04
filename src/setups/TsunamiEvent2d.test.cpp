@@ -7,8 +7,6 @@
 #include <catch2/catch.hpp>
 #include "../../include/setups/TsunamiEvent2d.h"
 
-#include <iostream> // TODO REMOVE
-
 TEST_CASE( "Test the two-dimensional tsunami event setup.", "[TsunamiEvent2d]" )
 {
 

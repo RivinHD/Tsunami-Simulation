@@ -1157,6 +1157,56 @@ The shore is preferred by the criteria because it has high waves and high veloci
     </center>
 
 
+11.6 Building & Running the AMR Project
+---------------------------------------
+
+The **requierements** and **building process** are the same as in :ref:`getting_started_building_project`.
+
+Running the Simulation
+^^^^^^^^^^^^^^^^^^^^^^
+
+The executables have been build in to the ``../Tsunami-Simulation/build`` directory with their corresponding name.
+E.g. For ``simulation`` the executable name would be ``simulation`` (or ``simulation.exe`` on Windows), etc.
+
+All the executables can be found in ``../Tsunami-Simulation/build``.
+The available executables are ``simulation``, ``sanitize``, ``test``, ``sanitize_test`` and ``test_middle_states``.
+
+.. note::
+    They are only available when build with their respective ``--target``
+
+E.g. the ``simulation`` executable can be run with the following command:
+
+.. code-block::
+
+    ./simulation
+
+Or on Windows with
+
+.. code-block::
+
+    ./simulation.exe
+
+.. important::
+
+    The AMR project uses a settings file ``inputs.amrex`` to configure the simulation, which is located in ``root/resources/inputs.amrex``.
+
+Simulation Output
+^^^^^^^^^^^^^^^^^
+
+The output of the simulation consists of multiple plot folders.
+The files are stored in a separate ``solutions/`` folder, which is located in the working directory of the executable.
+
+Visualization
+^^^^^^^^^^^^^
+
+"There are several visualization tools that can be used for AMReX plotfiles.
+The standard tool used within the AMReX-community is Amrvis, a package developed
+and supported by CCSE that is designed specifically for highly efficient visualization
+of block-structured hierarchical AMR data. Plotfiles can also be viewed using the VisIt, ParaView,
+and yt packages. Particle data can be viewed using ParaView."[17]_
+
+`Here <https://amrex-codes.github.io/amrex/docs_html/Visualization_Chapter.html>`_ you can find information how to visulaize.
+
 Contribution
 ------------
 
@@ -1178,3 +1228,4 @@ All team members contributed equally to the tasks.
 .. [14] From https://amrex-codes.github.io/amrex/docs_html/AmrCore.html?highlight=fillpatchtwolevels#fillpatchutil-and-interpolater (29.01.2024)
 .. [15] From https://github.com/AMReX-Codes/amrex/issues/396#issuecomment-455806287 (29.01.2024)
 .. [16] From https://amrex-codes.github.io/amrex/docs_html/LoadBalancing.html (02.02.2024)
+.. [17] From https://amrex-codes.github.io/amrex/docs_html/Visualization_Chapter.html (04.02.2024)
