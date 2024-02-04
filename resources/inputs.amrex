@@ -28,7 +28,7 @@ amr.v              = 1       # verbosity in Amr
 # *****************************************************************
 # Resolution and refinement
 # *****************************************************************
-amr.n_cell          = 100 100 0   # must be divisible by blocking factor
+amr.n_cell          = 104 104 0   # must be divisible by blocking factor
 amr.max_level       = 2           # maximum level number allowed -- 
                                     # number of levels = max_level + 1
 
