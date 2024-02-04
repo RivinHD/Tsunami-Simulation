@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['enablebathymetry_106',['enableBathymetry',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#a57339ee0e9b96e497be5fed7f08739ac',1,'tsunami_lab::patches::WavePropagation::enableBathymetry()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#a4ce63e4beb16058d00e59cebabd349bb',1,'tsunami_lab::patches::WavePropagation1d::enableBathymetry()'],['../classtsunami__lab_1_1patches_1_1WavePropagation2d.html#aa92a9a84a6ef912e6b4d54616d7ba373',1,'tsunami_lab::patches::WavePropagation2d::enableBathymetry()']]]
+  ['errorest_82',['ErrorEst',['../classtsunami__lab_1_1amr_1_1AMRCoreWavePropagation2d.html#a848de2601249a4fce0ff3bb80cbc270e',1,'tsunami_lab::amr::AMRCoreWavePropagation2d']]],
+  ['evolve_83',['Evolve',['../classtsunami__lab_1_1amr_1_1AMRCoreWavePropagation2d.html#a9b266aa267020441d48cf6d70e4fa233',1,'tsunami_lab::amr::AMRCoreWavePropagation2d']]]
 ];

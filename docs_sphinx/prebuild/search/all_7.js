@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['maxnumberofoptions_25',['maxNumberOfOptions',['../classArgSetup.html#ae5be3b7482b393ea8d55227d290459bd',1,'ArgSetup']]],
-  ['middlestates1d_26',['MiddleStates1d',['../classtsunami__lab_1_1setups_1_1MiddleStates1d.html#ab15340b1070ee2a0f080643212350558',1,'tsunami_lab::setups::MiddleStates1d::MiddleStates1d()'],['../classtsunami__lab_1_1setups_1_1MiddleStates1d.html',1,'tsunami_lab::setups::MiddleStates1d']]]
+  ['makenewlevelfromcoarse_20',['MakeNewLevelFromCoarse',['../classtsunami__lab_1_1amr_1_1AMRCoreWavePropagation2d.html#a774867c44b4533c579680c28eca38e55',1,'tsunami_lab::amr::AMRCoreWavePropagation2d']]],
+  ['makenewlevelfromscratch_21',['MakeNewLevelFromScratch',['../classtsunami__lab_1_1amr_1_1AMRCoreWavePropagation2d.html#a57943eba5e3e314e3c892a008a0c7b0c',1,'tsunami_lab::amr::AMRCoreWavePropagation2d']]],
+  ['middlestates1d_22',['MiddleStates1d',['../classtsunami__lab_1_1setups_1_1MiddleStates1d.html#ab15340b1070ee2a0f080643212350558',1,'tsunami_lab::setups::MiddleStates1d::MiddleStates1d()'],['../classtsunami__lab_1_1setups_1_1MiddleStates1d.html',1,'tsunami_lab::setups::MiddleStates1d']]]
 ];

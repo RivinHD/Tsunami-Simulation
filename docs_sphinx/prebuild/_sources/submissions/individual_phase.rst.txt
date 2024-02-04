@@ -118,6 +118,23 @@ Conclusion
 The successful implementation of Adaptive Mesh Refinement will enhance the accuracy and efficiency of our tsunami simulation.
 Utilizing the AMReX library and following the outlined steps, this project aims to achieve these goals within a four-week timeframe.
 
+
+10.3 Status
+-----------
+
+During the first week we read a lot of the AMReX documentation to get up to speed. AMReX provides a lot of documentation
+and also tutorials on first projects, so this was our main source of information as there aren't many tutorials elsewhere
+on the web. Unfortunately, the API documentation is very sketchy. We were forced to study the AMReX source code and
+tutorials in detail to understand the workflow of this framework.
+
+The second week's priority was to implement AMReX into our existing project. After attempting to do so, we decided to
+change our approach and integrate our logic into the AMReX framework. Our best practice strategy involved utilizing the
+AMReX data structures and functions, resulting in a reduction of our ``main.cpp`` file and the creation of
+``AMRCoreWavePropagation2d.cpp``, where our logic is combined with AMReX.  However, we encountered difficulties due to
+insufficient documentation at certain stages, which required us to troubleshoot the issue ourselves.
+
+In the end, we are happy to say that we reached our milestone on time!
+
 Contribution
 ------------
 

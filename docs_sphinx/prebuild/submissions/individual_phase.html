@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
 
   
   <!--[if lt IE 9]>
@@ -22,10 +23,11 @@
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script src="../_static/design-tabs.js?v=36754332"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tsunami_lab" href="../api/tsunami_lab.html" />
+    <link rel="next" title="11. Adaptive Mesh Refinement" href="amrex.html" />
     <link rel="prev" title="9. Parallelization" href="parallelization.html" />
     <link href="../_static/style.css" rel="stylesheet" type="text/css">
 
@@ -76,9 +78,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#conclusion">Conclusion</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#status">10.3 Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contribution">Contribution</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="amrex.html">11. Adaptive Mesh Refinement</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -251,6 +255,19 @@ Implement ParaView integration for visualization of adaptive meshes.</p>
 Utilizing the AMReX library and following the outlined steps, this project aims to achieve these goals within a four-week timeframe.</p>
 </section>
 </section>
+<section id="status">
+<h2>10.3 Status<a class="headerlink" href="#status" title="Link to this heading"></a></h2>
+<p>During the first week we read a lot of the AMReX documentation to get up to speed. AMReX provides a lot of documentation
+and also tutorials on first projects, so this was our main source of information as there aren’t many tutorials elsewhere
+on the web. Unfortunately, the API documentation is very sketchy. We were forced to study the AMReX source code and
+tutorials in detail to understand the workflow of this framework.</p>
+<p>The second week’s priority was to implement AMReX into our existing project. After attempting to do so, we decided to
+change our approach and integrate our logic into the AMReX framework. Our best practice strategy involved utilizing the
+AMReX data structures and functions, resulting in a reduction of our <code class="docutils literal notranslate"><span class="pre">main.cpp</span></code> file and the creation of
+<code class="docutils literal notranslate"><span class="pre">AMRCoreWavePropagation2d.cpp</span></code>, where our logic is combined with AMReX.  However, we encountered difficulties due to
+insufficient documentation at certain stages, which required us to troubleshoot the issue ourselves.</p>
+<p>In the end, we are happy to say that we reached our milestone on time!</p>
+</section>
 <section id="contribution">
 <h2>Contribution<a class="headerlink" href="#contribution" title="Link to this heading"></a></h2>
 <p>All team members contributed equally to the tasks.</p>
@@ -262,7 +279,7 @@ Utilizing the AMReX library and following the outlined steps, this project aims 
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="parallelization.html" class="btn btn-neutral float-left" title="9. Parallelization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../api/tsunami_lab.html" class="btn btn-neutral float-right" title="tsunami_lab" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="amrex.html" class="btn btn-neutral float-right" title="11. Adaptive Mesh Refinement" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

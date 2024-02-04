@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vartype_165',['VarType',['../classtsunami__lab_1_1io_1_1NetCdf.html#a60ba7cc202578a2c784710ddbcf47cbe',1,'tsunami_lab::io::NetCdf']]]
+  ['side_124',['Side',['../classtsunami__lab_1_1amr_1_1AMRCoreWavePropagation2d.html#aeb123e57f4d372aea1c23857e1d955fa',1,'tsunami_lab::amr::AMRCoreWavePropagation2d']]]
 ];
