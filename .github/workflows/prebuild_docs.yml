@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Requirements
         run: sudo apt-get install doxygen
-          && pip3 install -r docs_sphinx/requirements.txt
+          && pip3 install -r ./docs_sphinx/requirements.txt
 
       - name: Checkout repo
         uses: actions/checkout@v4.1.0
