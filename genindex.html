@@ -8,6 +8,7 @@
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
 
   
   <!--[if lt IE 9]>
@@ -21,6 +22,7 @@
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="_static/copybutton.js?v=f281be69"></script>
+        <script src="_static/design-tabs.js?v=36754332"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
@@ -64,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="submissions/optimization.html">8. Optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="submissions/parallelization.html">9. Parallelization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="submissions/individual_phase.html">10. Individual Phase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="submissions/amrex.html">11. Adaptive Mesh Refinement</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -104,6 +107,108 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/tsunami_lab.html#_CPPv4I0EN11tsunami_lab13aligned_allocEP1TRP1T6size_t6size_t">tsunami_lab::aligned_alloc (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2dE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d (C++ class)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d18AdvanceGridAtLevelEiN5amrex4RealEN5amrex4RealEii">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::AdvanceGridAtLevel (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d24AMRCoreWavePropagation2dEPN11tsunami_lab6setups5SetupE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::AMRCoreWavePropagation2d (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d13AverageDownToEi">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::AverageDownTo (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d18bathymetryMinValueE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::bathymetryMinValue (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d10ClearLevelEi">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::ClearLevel (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d9ComponentE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::Component (C++ enum)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d9Component11BATHYMERTRYE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::Component::BATHYMERTRY (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d9Component5ERRORE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::Component::ERROR (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d9Component6HEIGHTE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::Component::HEIGHT (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d9Component10MOMENTUM_XE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::Component::MOMENTUM_X (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d9Component10MOMENTUM_YE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::Component::MOMENTUM_Y (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d2dtE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::dt (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d8ErrorEstEiRN5amrex11TagBoxArrayEN5amrex4RealEi">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::ErrorEst (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d6EvolveEv">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::Evolve (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d13FillFinePatchEiN5amrex4RealERN5amrex8MultiFabE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::FillFinePatch (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d9FillPatchEiN5amrex4RealERN5amrex8MultiFabE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::FillPatch (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d12FixFinePatchERN5amrex8MultiFabERKN5amrex8MultiFabE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::FixFinePatch (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d7GetDataEiN5amrex4RealERN5amrex6VectorIPN5amrex8MultiFabEEERN5amrex6VectorIN5amrex4RealEEE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::GetData (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d7gridErrE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::gridErr (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d7gridNewE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::gridNew (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d7gridOldE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::gridOld (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d8InitDataEi">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::InitData (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d12interpolatorE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::interpolator (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d22MakeNewLevelFromCoarseEiN5amrex4RealERKN5amrex8BoxArrayERKN5amrex19DistributionMappingE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromCoarse (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d23MakeNewLevelFromScratchEiN5amrex4RealERKN5amrex8BoxArrayERKN5amrex19DistributionMappingE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::MakeNewLevelFromScratch (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d11nComponentsE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::nComponents (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d9nGhostRowE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::nGhostRow (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d9nSubStepsE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::nSubSteps (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d16physicalBoundaryE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::physicalBoundary (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d8plotFileE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::plotFile (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d10plotFolderE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::plotFolder (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d15PrintParametersEv">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::PrintParameters (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d14ReadParametersEv">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::ReadParameters (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d15regridFrequencyE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::regridFrequency (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d11RemakeLevelEiN5amrex4RealERKN5amrex8BoxArrayERKN5amrex19DistributionMappingE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::RemakeLevel (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d13setReflectionE4Sideb">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::setReflection (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d11setTimeStepEN5amrex4RealEi">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::setTimeStep (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d5setupE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::setup (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d4SideE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::Side (C++ enum)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d4Side6BOTTOME">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::Side::BOTTOM (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d4Side4LEFTE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::Side::LEFT (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d4Side5RIGHTE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::Side::RIGHT (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d4Side3TOPE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::Side::TOP (C++ enumerator)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d14simulationTimeE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::simulationTime (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d4stepE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::step (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d22timeStepWithSubcyclingEiN5amrex4RealEi">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::timeStepWithSubcycling (C++ function)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d4tNewE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::tNew (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d4tOldE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::tOld (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d14writeFrequencyE">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::writeFrequency (C++ member)</a>
+</li>
+      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab3amr11tsunami_lab3amr24AMRCoreWavePropagation2d13WritePlotFileEv">tsunami_lab::amr::tsunami_lab::amr::AMRCoreWavePropagation2d::WritePlotFile (C++ function)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io3CsvE">tsunami_lab::io::tsunami_lab::io::Csv (C++ class)</a>
 </li>
@@ -225,256 +330,6 @@
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io6NetCdfD0Ev">tsunami_lab::io::tsunami_lab::io::NetCdf::~NetCdf (C++ function)</a>
 </li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8StationsE">tsunami_lab::io::tsunami_lab::io::Stations (C++ class)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations18getOutputFrequencyEv">tsunami_lab::io::tsunami_lab::io::Stations::getOutputFrequency (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations4m_nxE">tsunami_lab::io::tsunami_lab::io::Stations::m_nx (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations4m_nyE">tsunami_lab::io::tsunami_lab::io::Stations::m_ny (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations17m_outputFrequencyE">tsunami_lab::io::tsunami_lab::io::Stations::m_outputFrequency (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations8m_scaleXE">tsunami_lab::io::tsunami_lab::io::Stations::m_scaleX (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations8m_scaleYE">tsunami_lab::io::tsunami_lab::io::Stations::m_scaleY (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations10m_stationsE">tsunami_lab::io::tsunami_lab::io::Stations::m_stations (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations8m_strideE">tsunami_lab::io::tsunami_lab::io::Stations::m_stride (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations7StationE">tsunami_lab::io::tsunami_lab::io::Stations::Station (C++ struct)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations7Station7m_indexE">tsunami_lab::io::tsunami_lab::io::Stations::Station::m_index (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations7Station6m_nameE">tsunami_lab::io::tsunami_lab::io::Stations::Station::m_name (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations7Station6m_pathE">tsunami_lab::io::tsunami_lab::io::Stations::Station::m_path (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations7Station7StationENSt6stringE5t_idxNSt6stringE">tsunami_lab::io::tsunami_lab::io::Stations::Station::Station (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab2io11tsunami_lab2io8Stations8StationsE5t_idx5t_idx5t_idx6t_real6t_realb">tsunami_lab::io::tsunami_lab::io::Stations::Stations (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab2io11tsunami_lab2io8Stations5writeE6t_realPK6t_realPK6t_realPK6t_real">tsunami_lab::io::tsunami_lab::io::Stations::write (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches6SolverE">tsunami_lab::patches::Solver (C++ enum)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches6Solver5FWAVEE">tsunami_lab::patches::Solver::FWAVE (C++ enumerator)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches6Solver3ROEE">tsunami_lab::patches::Solver::ROE (C++ enumerator)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagationE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation (C++ class)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1dE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d (C++ class)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d19calculateReflectionEP6t_realP6t_real5t_idxR6t_realR6t_realR6t_realR6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::calculateReflection (C++ function)</a>, <a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d19calculateReflectionEP6t_realP6t_real5t_idxR6t_realR6t_realR6t_realR6t_realR6t_realR6t_real">[1]</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d16enableBathymetryEb">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::enableBathymetry (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13getBathymetryEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::getBathymetry (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d9getHeightEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::getHeight (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d12getMomentumXEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::getMomentumX (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d12getMomentumYEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::getMomentumY (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d9getStrideEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::getStride (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d14getTotalHeightEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::getTotalHeight (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13hasBathymetryE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::hasBathymetry (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13hasReflectionE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::hasReflection (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d18isDirtyTotalHeightE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::isDirtyTotalHeight (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d12m_bathymetryE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::m_bathymetry (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d3m_hE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::m_h (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d4m_huE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::m_hu (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d8m_nCellsE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::m_nCells (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d6m_stepE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::m_step (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13m_totalHeightE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::m_totalHeight (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d10ReflectionE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::Reflection (C++ enum)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d10Reflection4BOTHE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::Reflection::BOTH (C++ enumerator)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d10Reflection4LEFTE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::Reflection::LEFT (C++ enumerator)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d10Reflection4NONEE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::Reflection::NONE (C++ enumerator)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d10Reflection5RIGHTE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::Reflection::RIGHT (C++ enumerator)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13setBathymetryE5t_idx5t_idx6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::setBathymetry (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d15setGhostOutflowEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::setGhostOutflow (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d9setHeightE5t_idx5t_idx6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::setHeight (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d12setMomentumXE5t_idx5t_idx6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::setMomentumX (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d12setMomentumYE5t_idx5t_idx6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::setMomentumY (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d13setReflectionE4Sideb">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::setReflection (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d9setSolverE6Solver">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::setSolver (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d6solverE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::solver (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d8timeStepE6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::timeStep (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d17updateWaterHeightEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::updateWaterHeight (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1d17WavePropagation1dE5t_idx">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::WavePropagation1d (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation1dD0Ev">tsunami_lab::patches::tsunami_lab::patches::WavePropagation1d::~WavePropagation1d (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2dE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d (C++ class)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d19calculateReflectionEP6t_realP6t_real5t_idx5t_idxR6t_realR6t_realR6t_realR6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::calculateReflection (C++ function)</a>, <a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d19calculateReflectionEP6t_realP6t_real5t_idx5t_idxR6t_realR6t_realR6t_realR6t_realR6t_realR6t_real">[1]</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16enableBathymetryEb">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::enableBathymetry (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d11full_xCellsE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::full_xCells (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d13getBathymetryEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::getBathymetry (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d9getHeightEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::getHeight (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d12getMomentumXEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::getMomentumX (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d12getMomentumYEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::getMomentumY (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d9getStrideEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::getStride (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d14getTotalHeightEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::getTotalHeight (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d13hasBathymetryE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::hasBathymetry (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d13hasReflectionE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::hasReflection (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d18isDirtyTotalHeightE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::isDirtyTotalHeight (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16ITERATIONS_CACHEE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::ITERATIONS_CACHE (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d12m_bathymetryE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_bathymetry (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d15m_bathymetryPtrE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_bathymetryPtr (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d3m_hE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_h (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d6m_hPtrE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_hPtr (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d4m_huE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_hu (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d7m_huPtrE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_huPtr (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d4m_hvE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_hv (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d7m_hvPtrE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_hvPtr (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d6m_stepE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_step (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d13m_totalHeightE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_totalHeight (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16m_totalHeightPtrE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_totalHeightPtr (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d8m_xCellsE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_xCells (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d8m_yCellsE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::m_yCells (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d10ReflectionE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::Reflection (C++ enum)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d10Reflection4BOTHE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::Reflection::BOTH (C++ enumerator)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d10Reflection4LEFTE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::Reflection::LEFT (C++ enumerator)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d10Reflection4NONEE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::Reflection::NONE (C++ enumerator)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d10Reflection5RIGHTE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::Reflection::RIGHT (C++ enumerator)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d16remaining_xCellsE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::remaining_xCells (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d13setBathymetryE5t_idx5t_idx6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::setBathymetry (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d15setGhostOutflowEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::setGhostOutflow (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d9setHeightE5t_idx5t_idx6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::setHeight (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d12setMomentumXE5t_idx5t_idx6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::setMomentumX (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d12setMomentumYE5t_idx5t_idx6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::setMomentumY (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d13setReflectionE4Sideb">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::setReflection (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d9setSolverE6Solver">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::setSolver (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d6solverE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::solver (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d6strideE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::stride (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d8timeStepE6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::timeStep (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d10totalCellsE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::totalCells (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d17updateWaterHeightEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::updateWaterHeight (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2d17WavePropagation2dE5t_idx5t_idx">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::WavePropagation2d (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches17WavePropagation2dD0Ev">tsunami_lab::patches::tsunami_lab::patches::WavePropagation2d::~WavePropagation2d (C++ function)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation16enableBathymetryEb">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::enableBathymetry (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation13getBathymetryEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::getBathymetry (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation9getHeightEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::getHeight (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation12getMomentumXEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::getMomentumX (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation12getMomentumYEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::getMomentumY (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation9getStrideEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::getStride (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation14getTotalHeightEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::getTotalHeight (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation13setBathymetryE5t_idx5t_idx6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::setBathymetry (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation15setGhostOutflowEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::setGhostOutflow (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation9setHeightE5t_idx5t_idx6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::setHeight (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation12setMomentumXE5t_idx5t_idx6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::setMomentumX (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation12setMomentumYE5t_idx5t_idx6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::setMomentumY (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation13setReflectionE4Sideb">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::setReflection (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation9setSolverE6Solver">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::setSolver (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation4SideE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::Side (C++ enum)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation4Side6BOTTOME">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::Side::BOTTOM (C++ enumerator)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation4Side4LEFTE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::Side::LEFT (C++ enumerator)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation4Side5RIGHTE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::Side::RIGHT (C++ enumerator)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation4Side3TOPE">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::Side::TOP (C++ enumerator)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation8timeStepE6t_real">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::timeStep (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagation17updateWaterHeightEv">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::updateWaterHeight (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7patches11tsunami_lab7patches15WavePropagationD0Ev">tsunami_lab::patches::tsunami_lab::patches::WavePropagation::~WavePropagation (C++ function)</a>
-</li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2dE">tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d (C++ class)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d19ArtificialTsunami2dEv">tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::ArtificialTsunami2d (C++ function)</a>
@@ -489,27 +344,9 @@
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12getMomentumXE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::getMomentumX (C++ function)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups19ArtificialTsunami2d12getMomentumYE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::ArtificialTsunami2d::getMomentumY (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10CheckpointE">tsunami_lab::setups::tsunami_lab::setups::Checkpoint (C++ class)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10Checkpoint10CheckpointEPKcR5t_idxR6t_realR6t_realRNSt6vectorIPcEE">tsunami_lab::setups::tsunami_lab::setups::Checkpoint::Checkpoint (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10Checkpoint4dataE">tsunami_lab::setups::tsunami_lab::setups::Checkpoint::data (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10Checkpoint13getBathymetryE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::Checkpoint::getBathymetry (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10Checkpoint9getHeightE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::Checkpoint::getHeight (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10Checkpoint12getMomentumXE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::Checkpoint::getMomentumX (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4NK11tsunami_lab6setups11tsunami_lab6setups10Checkpoint12getMomentumYE6t_real6t_real">tsunami_lab::setups::tsunami_lab::setups::Checkpoint::getMomentumY (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10Checkpoint6scaleXE">tsunami_lab::setups::tsunami_lab::setups::Checkpoint::scaleX (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10Checkpoint6scaleYE">tsunami_lab::setups::tsunami_lab::setups::Checkpoint::scaleY (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups10Checkpoint9variablesE">tsunami_lab::setups::tsunami_lab::setups::Checkpoint::variables (C++ member)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab6setups11tsunami_lab6setups18CircularDamBreak2dE">tsunami_lab::setups::tsunami_lab::setups::CircularDamBreak2d (C++ class)</a>
 </li>
@@ -742,16 +579,6 @@
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave7m_gSqrtE">tsunami_lab::solvers::tsunami_lab::solvers::FWave::m_gSqrt (C++ member)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave10netUpdatesE6t_real6t_real6t_real6t_real6t_real6t_realAL2E_AL2E_6t_real">tsunami_lab::solvers::tsunami_lab::solvers::FWave::netUpdates (C++ function)</a>, <a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers5FWave10netUpdatesE6t_real6t_real6t_real6t_realAL2E_AL2E_6t_real">[1]</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers3RoeE">tsunami_lab::solvers::tsunami_lab::solvers::Roe (C++ class)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers3Roe7m_gSqrtE">tsunami_lab::solvers::tsunami_lab::solvers::Roe::m_gSqrt (C++ member)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers3Roe10netUpdatesE6t_real6t_real6t_real6t_realAL2E_AL2E_6t_real">tsunami_lab::solvers::tsunami_lab::solvers::Roe::netUpdates (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers3Roe10waveSpeedsE6t_real6t_real6t_real6t_realR6t_realR6t_real">tsunami_lab::solvers::tsunami_lab::solvers::Roe::waveSpeeds (C++ function)</a>
-</li>
-      <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab7solvers11tsunami_lab7solvers3Roe13waveStrengthsE6t_real6t_real6t_real6t_real6t_real6t_realR6t_realR6t_real">tsunami_lab::solvers::tsunami_lab::solvers::Roe::waveStrengths (C++ function)</a>
 </li>
       <li><a href="api/tsunami_lab.html#_CPPv4N11tsunami_lab5t_idxE">tsunami_lab::t_idx (C++ type)</a>
 </li>

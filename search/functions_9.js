@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['timestep_135',['timeStep',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#a3d8390f139fc8cede21eb4f534a4e7fc',1,'tsunami_lab::patches::WavePropagation::timeStep()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#ac1884ddb6a52c08a5b65f60e21f6a547',1,'tsunami_lab::patches::WavePropagation1d::timeStep()'],['../classtsunami__lab_1_1patches_1_1WavePropagation2d.html#a1608e328dc04c2147cfaebe86fd90315',1,'tsunami_lab::patches::WavePropagation2d::timeStep()']]],
-  ['tsunamievent1d_136',['TsunamiEvent1d',['../classtsunami__lab_1_1setups_1_1TsunamiEvent1d.html#a982921adc6812972d615730e7e3023d5',1,'tsunami_lab::setups::TsunamiEvent1d']]],
-  ['tsunamievent2d_137',['TsunamiEvent2d',['../classtsunami__lab_1_1setups_1_1TsunamiEvent2d.html#a91ed79e3730abcce8b1c9c848c8c69cd',1,'tsunami_lab::setups::TsunamiEvent2d']]]
+  ['setreflection_100',['setReflection',['../classtsunami__lab_1_1amr_1_1AMRCoreWavePropagation2d.html#a9e9954d8f5b0d77c6161eaaf3dedc1c9',1,'tsunami_lab::amr::AMRCoreWavePropagation2d']]],
+  ['settimestep_101',['setTimeStep',['../classtsunami__lab_1_1amr_1_1AMRCoreWavePropagation2d.html#a1ae53c31e1ec2a781484f4a9a90ae9a8',1,'tsunami_lab::amr::AMRCoreWavePropagation2d']]],
+  ['shockshock1d_102',['ShockShock1d',['../classtsunami__lab_1_1setups_1_1ShockShock1d.html#a666e149d96368b492776a778933cc631',1,'tsunami_lab::setups::ShockShock1d']]],
+  ['subcriticalflow1d_103',['SubcriticalFlow1d',['../classtsunami__lab_1_1setups_1_1SubcriticalFlow1d.html#ac1687dd0031a81d2c54cc51d08be2b42',1,'tsunami_lab::setups::SubcriticalFlow1d::SubcriticalFlow1d()'],['../classtsunami__lab_1_1setups_1_1SubcriticalFlow1d.html#a19ae021f3fc4e9b61e68a63859ab834d',1,'tsunami_lab::setups::SubcriticalFlow1d::SubcriticalFlow1d(t_real momentum, t_real range[2], t_real bathymetryOutRange, t_real(*bathymetryInRange)(t_real))']]],
+  ['supercriticalflow1d_104',['SupercriticalFlow1d',['../classtsunami__lab_1_1setups_1_1SupercriticalFlow1d.html#a1eefa598ddf51fad09457f3fe980ecad',1,'tsunami_lab::setups::SupercriticalFlow1d::SupercriticalFlow1d()'],['../classtsunami__lab_1_1setups_1_1SupercriticalFlow1d.html#ab1649ad7870be5e50ad48c57d437d45e',1,'tsunami_lab::setups::SupercriticalFlow1d::SupercriticalFlow1d(t_real momentum, t_real range[2], t_real bathymetryOutRange, t_real(*bathymetryInRange)(t_real))']]]
 ];

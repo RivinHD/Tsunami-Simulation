@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['side_164',['Side',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#a1a0d9d0dc22ce003186289ae1231a226',1,'tsunami_lab::patches::WavePropagation']]]
+  ['component_123',['Component',['../classtsunami__lab_1_1amr_1_1AMRCoreWavePropagation2d.html#acaee91040dc50434eacb4a125b49de90',1,'tsunami_lab::amr::AMRCoreWavePropagation2d']]]
 ];
