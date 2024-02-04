@@ -21,6 +21,7 @@
    submissions/optimization.rst
    submissions/parallelization.rst
    submissions/individual_phase.rst
+   submissions/amrex.rst
 
 .. toctree::
    :maxdepth: 4

@@ -15,10 +15,11 @@
 # from sphinx.builders.html import StandaloneHTMLBuilder
 from datetime import date
 import subprocess
-# import os
+import os
 
 # Doxygen
-subprocess.call('doxygen Doxyfile.in', shell=True)
+if not os.path.exists("_build/xml/"):
+    subprocess.call('doxygen Doxyfile.in', shell=True)
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -44,7 +45,8 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.inheritance_diagram',
-    'breathe'
+    'breathe',
+    'sphinx_design'
 ]
 
 autosectionlabel_prefix_document = True

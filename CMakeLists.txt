@@ -27,24 +27,18 @@ if(ENABLE_TESTMODE)
     message(STATUS "Starting in Test Mode")
 endif()
 
-option(DISABLE_IO "Disable the io of the simulation")
-if(DISABLE_IO)
-    add_compile_definitions(TSUNAMI_SIMULATION_DISABLE_IO)
-    message(STATUS "Disabling IO")
-endif()
-
 option(REPORT "Generate a report if enabled")
 message("Compiler: ${CMAKE_CXX_COMPILER_ID}")
 if(REPORT)
     if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
         if(WIN32)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Qopt-report=5")
+            add_compile_options(/Qopt-report=5)
         else()
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -qopt-report=5")
+            add_compile_options(-qopt-report=5)
         endif()
         message(STATUS "Activeted Report")
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopt-info-optimized=opt_gnu.optrpt")
+        add_compile_options(-fopt-info-optimized=opt_gnu.optrpt)
         message(STATUS "Activeted Report")
     endif()
 endif()
@@ -53,11 +47,11 @@ endif()
 if(MSVC)
     message(FATAL_ERROR "This project cannot be compiled with MSVC due to https://developercommunity.visualstudio.com/t/using-c17-new-stdalign-val-tn-syntax-results-in-er/528320")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -pthread -qopenmp")
+    add_compile_options(-Wall -Wextra -pthread -qopenmp)
     set(CMAKE_CXX_FLAGS_RELEASE "-O2" CACHE STRING "" FORCE)
     set(CMAKE_CXX_FLAGS_DEBUG "-g -O0" CACHE STRING "" FORCE)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror -pthread -fopenmp")
+    add_compile_options(-Wall -Wextra -Wpedantic -pthread -fopenmp)
     set(CMAKE_CXX_FLAGS_RELEASE "-O2" CACHE STRING "" FORCE)
     set(CMAKE_CXX_FLAGS_DEBUG "-g -O0" CACHE STRING "" FORCE)
 endif()
@@ -71,7 +65,6 @@ set(PROJECT_INCLUDE_DIR "include")
 
 set(SRC_FILES
         solvers/FWave
-        solvers/Roe
         setups/MiddleStates1d
         setups/DamBreak1d
         setups/ShockShock1d
@@ -82,23 +75,11 @@ set(SRC_FILES
         setups/CircularDamBreak2d
         setups/ArtificialTsunami2d
         setups/TsunamiEvent2d
-        patches/WavePropagation1d
-        patches/WavePropagation2d
         io/NetCdf
         io/Csv
 )
-set(SRC_FILES_IO
-        setups/CheckPoint
-        io/Stations
-)
 set(SRC_FILES_NO_TEST
-
-)
-set(SRC_FILES_HEADER_ONLY
-        io/ArgSetup
-)
-set(SRC_FILES_HEADER_ONLY_NO_TEST
-
+        amr/AMRCoreWavePropagation2d
 )
 set(TEST_FILES ${PROJECT_SOURCE_DIR}/tests.cpp)
 set(MAIN_FILE ${PROJECT_SOURCE_DIR}/main.cpp)
@@ -117,6 +98,9 @@ set(RESOURCE_FILES
         WriteNetCDF_M.test.txt
         artificialtsunami_displ_1000.nc
         artificialtsunami_bathymetry_1000.nc
+        inputs.amrex
+        #gebco20/tohoku_gebco20_usgs_250m_displ.nc
+        #gebco20/tohoku_gebco20_usgs_250m_bath.nc
 )
 
 # Create SOURCE_FILES
@@ -129,33 +113,9 @@ foreach(file ${SRC_FILES})
             ${PROJECT_SOURCE_DIR}/${file}.test.cpp
     )
 endforeach()
-if(NOT DISABLE_IO)
-    foreach(file ${SRC_FILES_IO})
-        list(APPEND SOURCE_FILES
-                ${PROJECT_SOURCE_DIR}/${file}.cpp
-                ${PROJECT_INCLUDE_DIR}/${file}.h
-        )
-        list(APPEND TEST_FILES
-                ${PROJECT_SOURCE_DIR}/${file}.test.cpp
-        )
-    endforeach()
-endif(NOT DISABLE_IO)
 foreach(file ${SRC_FILES_NO_TEST})
     list(APPEND SOURCE_FILES
             ${PROJECT_SOURCE_DIR}/${file}.cpp
-            ${PROJECT_INCLUDE_DIR}/${file}.h
-    )
-endforeach()
-foreach(file ${SRC_FILES_HEADER_ONLY})
-    list(APPEND SOURCE_FILES
-            ${PROJECT_INCLUDE_DIR}/${file}.h
-    )
-    list(APPEND TEST_FILES
-            ${PROJECT_INCLUDE_DIR}/${file}.test.h
-    )
-endforeach()
-foreach(file ${SRC_FILES_HEADER_ONLY_NO_TEST})
-    list(APPEND SOURCE_FILES
             ${PROJECT_INCLUDE_DIR}/${file}.h
     )
 endforeach()
@@ -165,28 +125,20 @@ foreach(file ${RESOURCE_FILES})
     configure_file(${PROJECT_RESOURCE_DIR}/${file} ${PROJECT_RESOURCE_DIR}/${file} COPYONLY)
 endforeach()
 
-
 # Set up such that your IDE organizes the files correctly
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
-add_subdirectory(submodules/Catch2)
-
-if(NOT DISABLE_IO)
-    # Linking the json libary
-    add_subdirectory(submodules/json)
-    link_libraries(nlohmann_json::nlohmann_json)
-endif(NOT DISABLE_IO)
-
+###################
+##### Targets #####
+###################
 
 # Setup Testing
 add_executable(test ${SOURCE_FILES})
-target_link_libraries(test PRIVATE Catch2::Catch2)
 target_sources(test PRIVATE ${TEST_FILES})
 target_compile_definitions(test PRIVATE TSUNAMI_SIMULATION_TEST)
 
 # Setup Testing + Sanitizer
 add_executable(sanitize_test ${SOURCE_FILES})
-target_link_libraries(sanitize_test PRIVATE Catch2::Catch2)
 target_sources(sanitize_test PRIVATE ${TEST_FILES})
 target_compile_definitions(sanitize_test PRIVATE TSUNAMI_SIMULATION_TEST)
 
@@ -201,6 +153,34 @@ target_sources(simulation PRIVATE ${MAIN_FILE})
 # Setup Simulation + Sanitizer
 add_executable(sanitize ${SOURCE_FILES})
 target_sources(sanitize PRIVATE ${MAIN_FILE})
+
+################################
+##### Including submodules #####
+################################
+
+# Add Catch2
+add_subdirectory(submodules/Catch2)
+target_link_libraries(test PRIVATE Catch2::Catch2)
+target_link_libraries(sanitize_test PRIVATE Catch2::Catch2)
+
+# Add AMReX (https://amrex-codes.github.io/amrex/docs_html/BuildingAMReX.html#customization-options)
+set(AMReX_SPACEDIM 2 CACHE STRING "" FORCE) # Dimension of AMReX build
+set(AMReX_MPI NO CACHE STRING "" FORCE) # Build with MPI support
+set(AMReX_OMP YES CACHE STRING "" FORCE) # Build with OpenMP support
+set(AMReX_PRECISION SINGLE CACHE STRING "" FORCE) # Set the precision of reals
+set(AMReX_PARTICLES NO CACHE STRING "" FORCE) # Build particle classes
+set(AMReX_INSTALL NO CACHE STRING "" FORCE) # Generate Install Targets
+add_subdirectory(submodules/amrex)
+target_link_libraries(test PRIVATE AMReX::amrex_2d)
+target_link_libraries(sanitize_test PRIVATE AMReX::amrex_2d)
+target_link_libraries(test_middle_states PRIVATE AMReX::amrex_2d)
+target_link_libraries(simulation PRIVATE AMReX::amrex_2d)
+target_link_libraries(sanitize PRIVATE AMReX::amrex_2d)
+
+# Add mpi
+# find_package(MPI REQUIRED)
+# target_link_libraries(AMReX::amrex INTERFACE ${MPI_LIBRARIES})
+
 
 # Init sanitizer
 set_target_properties(sanitize
